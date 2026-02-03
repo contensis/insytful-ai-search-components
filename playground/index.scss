@@ -1,0 +1,49 @@
+
+@use "./app.scss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.my-council-theme {
+  .ai-lib-modal {
+    --fs-multipler: 1.6;
+    --fs: calc((var(--fs-multipler) * 100)%);
+
+    /* Text Colors */
+    --ai-lib-text-default: #0b3d2e;      /* deep green */
+    --ai-lib-text-muted: #3f6f5f;        /* muted green */
+    --ai-lib-text-link-default: #1f7a4d;
+    --ai-lib-text-link-hover: #145c39;
+
+    /* Button: Prompts */
+    --ai-lib-btn-prompt-bg-default: #d8f0e3;
+    --ai-lib-btn-prompt-bg-hover: #bfe3d1;
+    --ai-lib-btn-prompt-text: #0b3d2e;
+
+    /* Button: Icon Search */
+    --ai-lib-btn-icon-search-bg-default: #0b3d2e;
+    --ai-lib-btn-icon-search-bg-hover: #145c39;
+    --ai-lib-btn-icon-search-bg-disabled: #cfe8db;
+    --ai-lib-btn-icon-search-icon: #ffffff;
+
+    /* Semantic: Search Field */
+    --ai-lib-semantic-search-field-stroke: #0b3d2e;
+    --ai-lib-semantic-search-field-focus: #2ecc71;
+  }
+}

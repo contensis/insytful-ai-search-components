@@ -1,0 +1,64 @@
+.markdown {
+  &__paragraph {
+    margin-bottom: 0.75rem;
+    line-height: 1.5rem;
+    color: var(--ai-lib-text, #111827);
+  }
+
+  &__link {
+    color: #1d70b8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #184b76;
+      text-decoration: none;
+    }
+  }
+
+  &__list {
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    > li + li {
+      margin-top: 0.25rem;
+    }
+
+    &--unordered {
+      list-style-type: disc;
+    }
+
+    &--ordered {
+      list-style-type: decimal;
+    }
+  }
+
+  &__list-item {
+    line-height: 1.5rem;
+  }
+
+  &__strong {
+    font-weight: 600;
+  }
+
+  &__em {
+    font-style: italic;
+  }
+
+  &__code {
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    background-color: var(--ai-lib-code-bg, #f5f5f5);
+    color: var(--ai-lib-code-text, #111827);
+    font-size: 0.875rem;
+  }
+
+  &__pre {
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    background-color: var(--ai-lib-code-bg, #f5f5f5);
+    overflow-x: auto;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+}

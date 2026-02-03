@@ -9,9 +9,11 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+
+    /* Types */
+    "composite": true,
     "noEmit": true,
 
     /* Linting */

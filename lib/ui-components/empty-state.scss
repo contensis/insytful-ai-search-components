@@ -1,0 +1,38 @@
+@use './mixins' as *;
+
+.empty-state {
+  margin: 0 auto;
+  text-align: center;
+
+  &__title {
+    color: var(--ai-lib-text-default);
+
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+
+    margin-bottom: 0.5rem;
+
+    @include respond-to(md) {
+      margin-bottom: 1rem;
+
+      font-size: 3.5rem;
+      line-height: 4rem;
+    }
+  }
+
+  &__text {
+    color: var(--ai-lib-text-default);
+
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+
+    @include respond-to(md) {
+      font-size: 1.25rem;
+      line-height: 2rem;
+    }
+  }
+}

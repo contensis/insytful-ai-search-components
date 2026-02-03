@@ -1,0 +1,68 @@
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+
+  &--user {
+    flex-direction: row-reverse;
+  }
+
+  &--assistant {
+    flex-direction: row;
+  }
+
+  &__logo {
+    flex-shrink: 0;
+
+    // Hidden on mobile for assistant messages
+    &.hidden-md {
+      display: block;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+  }
+
+  &__bubble {
+    max-width: 80%;
+    font-size: 1em;
+    line-height: 1.6;
+    border-radius: 0.75rem;
+
+    // Add spacing for <hr> elements inside
+    hr {
+      margin: 1.5rem 0;
+    }
+
+    &--user {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 0.75rem;
+      gap: 10px;
+      background-color: var(--ai-lib-btn-prompt-bg-default);
+      color: var(--ai-lib-text-default);
+    }
+
+    &--assistant {
+      color: var(--ai-lib-text-default);
+
+      &__first-paragraph {
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+
+        @media (min-width: 768px) {
+          display: block;
+          gap: 0;
+        }
+      }
+
+      &__paragraph {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
