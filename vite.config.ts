@@ -1,3 +1,14 @@
+/**
+ * Vite Build Configuration for Insytful AI Search Components Library
+ * 
+ * This configuration builds a React component library that:
+ * - Supports ES modules only (no CommonJS)
+ * - Works with React 17+ using legacy ReactDOM.render() API
+ * - Externalises peer dependencies to avoid bundling conflicts
+ * - Generates TypeScript declaration files
+ * - Bundles contensis-rag-react as a regular dependency
+ */
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
@@ -5,25 +16,60 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   plugins: [
-    react(),
+    // React plugin with automatic JSX runtime (no need to import React in every file)
+    react({ jsxRuntime: 'automatic' }),
+    // Generate TypeScript declaration files (.d.ts) for consumers
     dts({
       tsconfigPath: resolve(__dirname, "tsconfig.app.json"),
       entryRoot: "lib",
       outDir: "dist/types",
-      insertTypesEntry: true,
+      insertTypesEntry: true, // Auto-generates types entry in package.json
     }),
   ],
   build: {
+    // target: "esnext", 
+    // Library mode configuration
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
-      name: "InsytfulAISearchComponents",
-      formats: ["es", "cjs"],
-      fileName: (format) => `insytful-ai-search-components.${format}.js`,
+      formats: ["es"], // ES modules only - modern bundlers required
+      fileName: () => `insytful-ai-search-components.js`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime" ],
+      /**
+       * External Dependencies Strategy:
+       * 
+       * We externalise (don't bundle) these dependencies to prevent conflicts:
+       * 
+       * 1. react/react-dom: Consumers must have their own React (peer dependency)
+       *    - Prevents multiple React instances (breaks hooks, context, etc.)
+       *    - Function checks all React subpaths (react/jsx-runtime, react-dom/client, etc.)
+       * 
+       * 2. react-markdown/rehype-external-links: Development-only dependencies
+       *    - Used in playground, not in the actual library code
+       * 
+       * 3. contensis-rag-react: Bundled as regular dependency (NOT externalised)
+       *    - Users don't need to install it separately
+       *    - Included in the final bundle
+       * 
+       * Note: We use a function instead of an array to catch all React subpath imports
+       */
+      external: (id) => {
+        return id === 'react' || 
+        id === 'react-dom' || 
+        id === 'react-dom/client' ||  // Optional - only exists in React 18+
+        id.startsWith('react/') ||    // Catches react/jsx-runtime, react/jsx-dev-runtime, etc.
+        id === 'react-markdown' || 
+        id === 'rehype-external-links';
+      },
       output: { 
-        globals: { react: "React", "react-dom": "ReactDOM", "react/jsx-runtime": "jsxRuntime" } 
+        // Global variable names for externalized dependencies (for UMD builds)
+        // Not currently used since we only build ES modules, but required by Rollup
+        globals: { 
+          react: "React", 
+          "react-dom": "ReactDOM", 
+          "react/jsx-runtime": "jsxRuntime",
+          "contensis-rag-react": "ContensisRagReact"
+        } 
       },
     },
   },

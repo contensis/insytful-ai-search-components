@@ -1,0 +1,300 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Root styles for the widget */
+:host {
+  font-size: 16px;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  color: #333;
+  line-height: 1.4;
+
+  /* Component Vars */
+
+  /* Text */
+  --ai-lib-text-default: #333333;
+  --ai-lib-text-muted: #6c6c6c;
+  --ai-lib-text-link-default: #1d70b8;
+  --ai-lib-text-link-hover: #184b76;
+
+  /* Buttons */
+  --ai-lib-btn-prompt-bg-default: #e2eefa;
+  --ai-lib-btn-prompt-bg-hover: #c8daec;
+  --ai-lib-btn-prompt-text: #333333;
+
+  --ai-lib-btn-icon-search-bg-default: #2e3339;
+  --ai-lib-btn-icon-search-bg-hover: #3c444d;
+  --ai-lib-btn-icon-search-bg-disabled: #e7e7e7;
+  --ai-lib-btn-icon-search-icon: #ffffff;
+
+  /* Inputs */
+  --ai-lib-semantic-search-field-background: #ffffff;
+  --ai-lib-semantic-search-field-stroke: #333333;
+  --ai-lib-semantic-search-field-focus: #35d2c5;
+
+  /* Header */
+  --ai-lib-btn-header-search-bg-default: #ffffff;
+  --ai-lib-btn-header-search-bg-hover: #f4f4f4;
+  --ai-lib-btn-header-search-text: #333333;
+
+  /* Markdown CSS Vars */
+
+ /* Colors */
+  --ai-md-primary-color: #1a1a1a;      /* Primary text */
+  --ai-md-secondary-color: #6c6c6c;    /* Secondary text / muted */
+
+  /* Typography */
+  --ai-md-font-family: system-ui, sans-serif;
+  --ai-md-font-size: 1rem;
+  --ai-md-line-height: 1.6;
+  --ai-md-heading-weight: 600;
+
+  /* Headings sizes */
+  --ai-md-h1-font-size: 2rem;
+  --ai-md-h2-font-size: 1.75rem;
+  --ai-md-h3-font-size: 1.5rem;
+  --ai-md-h4-font-size: 1.25rem;
+  --ai-md-h5-font-size: 1.125rem;
+  --ai-md-h6-font-size: 1rem;
+
+  /* Paragraph / body */
+  --ai-md-p-font-size: 1rem;
+  --ai-md-p-line-height: 1.6;
+
+  /* Links */
+  --ai-md-link-color: #005fcc;
+  --ai-md-link-hover: #003d99;
+
+  /* Quotes */
+  --ai-md-quote-color: #555;
+  --ai-md-quote-border: #ccc;
+
+  /* Code */
+  --ai-md-code-bg: rgba(0,0,0,0.05);
+  --ai-md-code-radius: 4px;
+  --ai-md-pre-bg: rgba(0,0,0,0.05);
+
+  /* Spacing */
+  --ai-md-block-gap: 0.75rem;
+  --ai-md-heading-gap: 1rem;
+
+  /* Font Sizes (pixels) */
+  --font-xs: 12px;
+  --leading-xs: 16px;
+  --font-sm: 14px;
+  --leading-sm: 20px;
+  --font-base: 16px;
+  --leading-base: 24px;
+  --font-lg: 18px;
+  --leading-lg: 28px;
+  --font-xl: 20px;
+  --leading-xl: 28px;
+  --font-2xl: 24px;
+  --leading-2xl: 32px;
+  --font-3xl: 30px;
+  --leading-3xl: 36px;
+  --font-4xl: 36px;
+  --leading-4xl: 40px;
+  --font-5xl: 48px;
+  --leading-5xl: 1;
+  --font-6xl: 60px;
+  --leading-6xl: 1;
+  --font-7xl: 72px;
+  --leading-7xl: 1;
+  --font-8xl: 96px;
+  --leading-8xl: 1;
+  --font-9xl: 128px;
+  --leading-9xl: 1;
+
+  /* Spacing Scale (pixels) */
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-2-5: 10px;
+  --space-3: 12px;
+  --space-3-5: 14px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-28: 112px;
+  --space-32: 128px;
+  --space-36: 144px;
+  --space-40: 160px;
+  --space-44: 176px;
+  --space-48: 192px;
+  --space-52: 208px;
+  --space-56: 224px;
+  --space-60: 240px;
+  --space-64: 256px;
+  --space-72: 288px;
+  --space-80: 320px;
+  --space-96: 384px;
+
+  /* Border Radius (pixels) */
+  --rounded-sm: 2px;
+  --rounded: 4px;
+  --rounded-md: 6px;
+  --rounded-lg: 8px;
+  --rounded-xl: 12px;
+  --rounded-2xl: 16px;
+  --rounded-3xl: 24px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Custom layer for component-specific styles */
+@layer components {
+  /* Focus styles for accessibility */
+  button:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 3px var(--ai-lib-semantic-search-field-focus);
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 4px var(--ai-lib-semantic-search-field-focus);
+  }
+
+  /* HR spacing in message bubbles - use pixels instead of rem */
+  .message hr {
+    margin: 24px 0;
+  }
+}
+/* Markdown container */
+.markup-content {
+  font-family: var(--ai-md-font-family);
+  font-size: var(--ai-md-font-size);
+  line-height: var(--ai-md-line-height);
+  color: var(--ai-md-primary-color);
+}
+
+/* Spacing for block elements */
+.markup-content * + * {
+  margin-top: var(--ai-md-block-gap);
+}
+
+/* Headings */
+.markup-content h1 {
+  font-size: var(--ai-md-h1-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+.markup-content h2 {
+  font-size: var(--ai-md-h2-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+.markup-content h3 {
+  font-size: var(--ai-md-h3-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+.markup-content h4 {
+  font-size: var(--ai-md-h4-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+.markup-content h5 {
+  font-size: var(--ai-md-h5-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+.markup-content h6 {
+  font-size: var(--ai-md-h6-font-size);
+  font-weight: var(--ai-md-heading-weight);
+  margin-top: var(--ai-md-heading-gap);
+  color: var(--ai-md-primary-color);
+}
+
+/* Paragraphs */
+.markup-content p {
+  font-size: var(--ai-md-p-font-size);
+  line-height: var(--ai-md-p-line-height);
+  color: var(--ai-md-secondary-color);
+  margin-top: var(--ai-md-block-gap);
+}
+
+/* Links */
+.markup-content a {
+  color: var(--ai-md-link-color);
+  text-decoration: underline;
+}
+.markup-content a:hover {
+  color: var(--ai-md-link-hover);
+}
+
+/* Blockquotes */
+.markup-content blockquote {
+  color: var(--ai-md-quote-color);
+  border-left: 4px solid var(--ai-md-quote-border);
+  padding-left: 1rem;
+  margin-left: 0;
+}
+
+/* Inline code */
+.markup-content code {
+  background: var(--ai-md-code-bg);
+  border-radius: var(--ai-md-code-radius);
+  padding: 0.15rem 0.25rem;
+}
+
+/* Code blocks / pre */
+.markup-content pre {
+  background: var(--ai-md-pre-bg);
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+/* Lists */
+.markup-content ul,
+.markup-content ol {
+  padding-left: 1.5rem;
+  margin-top: var(--ai-md-block-gap);
+}
+
+/* List items */
+.markup-content li {
+  margin-top: 0.5rem;
+}

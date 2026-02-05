@@ -5,9 +5,9 @@ interface TypingIndicatorProps {
 
 export function TypingIndicator({ logo }: TypingIndicatorProps) {
   return (
-    <li className="typing-indicator">
-      {logo && <div className="typing-indicator__logo">{logo}</div>}
-      <div className="typing-indicator__message">
+    <li className="flex items-start gap-5">
+      {logo && <div className="flex-shrink-0">{logo}</div>}
+      <div className="text-ai-lib-text-muted">
         <span>Searching.</span>
       </div>
     </li>

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import type { WidgetProps } from '../../lib/main';
-import '../../lib/shadow-dom-widgets/chat-modal-widget';
-import { RenderSwitch } from "./render-switch";
+import type { WidgetProps } from "../../lib/main";
+import "../../lib/shadow-dom-widgets/chat-modal-widget";
+
+import { Markdown } from "./markdown";
 
 const config = {
   config: import.meta.env.VITE_AI_CONFIG_ID,
@@ -27,8 +28,7 @@ type ChatModalElement = HTMLElement & {
   props: Partial<WidgetProps>;
 };
 
-
-export const AISearchModal = () => {
+export const SearchModal = () => {
   const ref = useRef<ChatModalElement | null>(null);
 
   const isDesktop = useDetectDesktop();
@@ -40,18 +40,38 @@ export const AISearchModal = () => {
       options: config,
       title: "What are you looking for?",
       text: "AI search can help. Tell us what you need in your own words.",
-      disclaimer:
-        '<span>AI-generated answers may include mistakes. Please verify important information. <a href="/">Find out more</a>.</span>',
+      renderMarkdown:  (text) => <Markdown content={text}/>,
+      disclaimer: (
+        <span className="text-s text-[#6B6B6B]">
+          AI-generated answers may include mistakes. Please verify important
+          information.{" "}
+          <a
+            className="underline text-[#1D70B8] hover:text-[#1D70B8]/80 hover:no-underline focus:outline-none"
+            href="/"
+          >
+            Find out more
+          </a>
+          .
+        </span>
+      ),
       suggestions: [
         "How can I report a pothole?",
         "I need a blue badge",
         "When's the next school holiday?",
       ],
-      // renderSwitch: (fn) => (
-      //   <RenderSwitch text="Prefer not to use AI?" btn={{ text: "Use classic search."}} onClick={fn} />
-      // ),
+      renderSwitch: (onClick) => (
+        <div className="text-sm md:text-lg w-full text-center">
+          <span className="text-[#505A5F]">Prefer not to use AI? </span>
+          <button
+            className="underline text-[#1D70B8] hover:text-[#1D70B8]/80 hover:no-underline focus:outline-none"
+            onClick={onClick}
+          >
+            Use classic search.
+          </button>
+        </div>
+      ),
       offsets: {
-        top: isDesktop ? '88px' : '71px',
+        top: isDesktop ? "84px" : "56px",
         bottom: 0,
         left: 0,
         right: 0,
@@ -65,9 +85,17 @@ export const AISearchModal = () => {
           "School term dates",
         ],
         path: "/q=",
-        // renderSwitch: (fn) => (
-        //   // <RenderSwitch text="Want detailed answers?" btn={{ text: "Try AI search."}} onClick={fn} />
-        // ),
+        renderSwitch: (fn) => (
+            <div className="text-sm md:text-lg w-full text-center">
+          <span className="text-[#505A5F]">Want detailed answers?{" "}</span>
+          <button
+            className="underline text-[#1D70B8] hover:text-[#1D70B8]/80 hover:no-underline focus:outline-none"
+            onClick={fn}
+          >
+            Try AI search
+          </button>
+        </div>
+        ),
       },
     };
   }, [isDesktop]);
@@ -75,7 +103,9 @@ export const AISearchModal = () => {
   return (
     // @ts-ignore
     <insytful-ai-chat-modal
-      ref={(element: ChatModalElement) => (ref.current = element as ChatModalElement)}
+      ref={(element: ChatModalElement) =>
+        (ref.current = element as ChatModalElement)
+      }
       style={{ fontFamily: "inherit" }}
     />
   );

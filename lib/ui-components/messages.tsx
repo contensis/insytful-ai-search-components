@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Message, type MessageProps } from "./message";
 import { TypingIndicator } from "./typing-indicator";
 import { hash } from "../utilities/hash.util";
@@ -19,9 +19,6 @@ export function Messages({
 }: MessagesProps) {
   const elMessagesRef = useRef<HTMLDivElement>(null);
 
-  const [initalHeight, setInitalHeight] = useState<number | null>(null);
-  const height = elMessagesRef?.current?.clientHeight;
-
   useEffect(() => {
     elMessagesRef.current?.scrollTo({
       top: elMessagesRef.current.scrollHeight,
@@ -29,31 +26,24 @@ export function Messages({
     });
   }, [loading]);
 
-  useEffect(() => {
-    if (!initalHeight && !!height) setInitalHeight(height);
-  }, [initalHeight, height]);
-
   if (!messages || messages.length === 0) return null;
 
   return (
-    <div className="messages">
-      <div
-        ref={elMessagesRef}
-        style={{ maxHeight: `${initalHeight}px` }}
-        className="messages__scroll-container"
-      >
-        <ul className="messages__list">
-          {messages.map((message, i) => (
-            <Message
-              key={`${i}-${hash(message.content)}`}
-              renderContent={renderMarkdown}
-              logo={logo}
-              message={message}
-            />
-          ))}
-          {loading && <TypingIndicator logo={logo} />}
-        </ul>
-      </div>
+    <div
+      ref={elMessagesRef}
+      className="flex-1 overflow-y-auto w-full max-w-[49em] mx-auto min-h-0"
+    >
+      <ul className="flex flex-col gap-8 max-w-[49em] w-full p-0 m-0 list-none">
+        {messages.map((message, i) => (
+          <Message
+            key={`${i}-${hash(message.content)}`}
+            renderContent={renderMarkdown}
+            logo={logo}
+            message={message}
+          />
+        ))}
+        {loading && <TypingIndicator logo={logo} />}
+      </ul>
     </div>
   );
 }

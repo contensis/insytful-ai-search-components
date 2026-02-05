@@ -1,5 +1,4 @@
 import { hash } from "../utilities/hash.util";
-import "./message.scss";
 
 export interface MessageProps {
   logo?: React.ReactNode;
@@ -15,29 +14,29 @@ export function Message({ logo, message, renderContent }: MessageProps) {
   const paragraphs = message.content.split("\n\n");
 
   return (
-    <li className={`message ${isUser ? "message--user" : "message--assistant"}`}>
+    <li className={`flex items-start gap-5 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
       {logo && !isUser && (
-        <div className="message__logo hidden-md">{logo}</div>
+        <div className="flex-shrink-0 hidden md:block">{logo}</div>
       )}
 
       <div
-        className={`message__bubble ${
-          isUser ? "message__bubble--user" : "message__bubble--assistant"
+        className={`message max-w-[80%] text-base leading-[1.6] rounded-xl ${
+          isUser ? "flex flex-col justify-center items-end p-3 gap-2.5 bg-ai-lib-btn-prompt-bg-default text-ai-lib-text-default" : "text-ai-lib-text-default"
         }`}
       >
         {isUser ? (
           message.content
         ) : (
           <>
-            <div className="message__bubble__first-paragraph">
-              {logo && <div className="message__logo md:hidden">{logo}</div>}
+            <div className="flex items-start gap-3 md:block md:gap-0">
+              {logo && <div className="flex-shrink-0 md:hidden">{logo}</div>}
               <p>
                 {renderContent ? renderContent(paragraphs[0]) : paragraphs[0]}
               </p>
             </div>
 
             {paragraphs.slice(1).map((p, i) => (
-              <p key={`${i}-${hash(p)}`} className="message__bubble__paragraph">
+              <p key={`${i}-${hash(p)}`} className="mt-2">
                 {renderContent ? renderContent(p) : p}
               </p>
             ))}

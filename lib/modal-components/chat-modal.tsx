@@ -1,6 +1,5 @@
-import { ModalButton } from "../ui-components/modal-button";
 import { useRAGConversationContext } from "contensis-rag-react";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 import { ChatModalDialog } from "./chat-modal-dialog";
 import type { ChatModalProps } from "./chat-modal.types";
@@ -18,64 +17,54 @@ export function ChatModal(props: ChatModalProps) {
     styles,
     renderSwitch,
     renderMarkdown,
+    isOpen = false,
+    onOpenChange,
   } = props;
 
   const { messages, loading, error, ask } = useRAGConversationContext();
 
-  const [isOpen, setOpen] = useState(false);
-  const toggle = useCallback(() => {
-    setOpen((prev) => !prev);
-  }, []);
+  // useCallback here so setOpen isn't recreated on every render, which would break the focus trap
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
+  
+  const setOpen = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    const nextValue = typeof value === 'function' ? value(isOpen) : value;
+    onOpenChange?.(nextValue);
+  }, [onOpenChange]);
 
   const [isClassic, setClassic] = useState(false);
   const onSwitch = useCallback(() => setClassic((p) => !p), []);
 
-  const { elModalRef, elTriggerRef } = useModalFocusTrap(setOpen, isOpen);
+  const onSwitchClassic = useCallback(() => {
+    setClassic(true);
+  }, []);
+
+  const { elModalRef } = useModalFocusTrap(setOpen, isOpen);
 
   const onSend = useChatSend({ isClassic, ask, classic });
 
-  const a11y = useMemo(
-    () => ({
-      "aria-haspopup": "dialog" as const,
-      "aria-expanded": isOpen,
-      "aria-controls": "ai-search-dialog",
-    }),
-    [isOpen],
+  const modal = isOpen && (
+    <ChatModalDialog
+      styles={styles}
+      title={title}
+      text={text}
+      disclaimer={disclaimer}
+      classic={classic}
+      suggestions={suggestions}
+      offsets={offsets}
+      logo={logo}
+      renderMarkdown={renderMarkdown}
+      renderSwitch={renderSwitch}
+      isClassic={isClassic}
+      onSwitchClassic={onSwitchClassic}
+      onSwitch={onSwitch}
+      messages={messages}
+      loading={loading}
+      error={error}
+      onSend={onSend}
+      ref={elModalRef}
+    />
   );
 
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
-  }, [isOpen]);
-
-  return (
-    <>
-      <ModalButton
-        ref={elTriggerRef}
-        toggle={toggle}
-        isOpen={isOpen}
-        {...a11y}
-      />
-      {isOpen && (
-        <ChatModalDialog
-          styles={styles}
-          title={title}
-          text={text}
-          disclaimer={disclaimer}
-          classic={classic}
-          suggestions={suggestions}
-          offsets={offsets}
-          logo={logo}
-          renderMarkdown={renderMarkdown}
-          renderSwitch={renderSwitch}
-          isClassic={isClassic}
-          onSwitch={onSwitch}
-          messages={messages}
-          loading={loading}
-          error={error}
-          onSend={onSend}
-          ref={elModalRef}
-        />
-      )}
-    </>
-  );
+  return modal;
 }

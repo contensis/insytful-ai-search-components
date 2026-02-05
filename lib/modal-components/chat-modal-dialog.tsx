@@ -6,7 +6,7 @@ import { Suggestions } from "../ui-components/suggestions";
 import { EmptyState } from "../ui-components/empty-state";
 import type { ChatModalProps } from "./chat-modal.types";
 
-type ChatModalDialogProps = {
+export type ChatModalDialogProps = {
   title: ChatModalProps["title"];
   text: ChatModalProps["text"];
   disclaimer?: ChatModalProps["disclaimer"];
@@ -18,6 +18,7 @@ type ChatModalDialogProps = {
   renderSwitch?: ChatModalProps["renderSwitch"];
 
   isClassic: boolean;
+  onSwitchClassic: () => void;
   onSwitch: () => void;
 
   messages: { role: "user" | "assistant"; content: string }[];
@@ -42,6 +43,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
       renderMarkdown,
       isClassic,
       onSwitch,
+      onSwitchClassic,
       messages,
       loading,
       error,
@@ -49,81 +51,110 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
       renderSwitch,
       styles,
     },
-    ref
+    ref,
   ) {
     const { top, bottom, left, right } = offsets || { top: "4em" };
     const hasMessages = messages.length >= 1;
 
     return (
       <div
+        tabIndex={-1}
         id="ai-search-dialog"
         ref={ref}
         role="dialog"
         aria-modal="true"
         aria-labelledby="ai-search-heading"
-        className="ai-lib-modal"
-        style={{
-          top,
-          bottom,
-          left,
-          right,
-          height: "calc(100svh - var(--offset-top, 0px) - var(--offset-bottom, 0px))",
-          "--offset-top": typeof top === "number" ? `${top}px` : top,
-          "--offset-bottom": typeof bottom === "number" ? `${bottom}px` : bottom,
-          ...styles,
-        } as React.CSSProperties}
+        className="absolute inset-0 flex flex-col bg-white overflow-hidden min-h-0 py-8 px-4"
+        style={
+          {
+            top,
+            bottom,
+            left,
+            right,
+            height:
+              "calc(100svh - var(--offset-top, 0px) - var(--offset-bottom, 0px))",
+            "--offset-top": typeof top === "number" ? `${top}px` : top,
+            "--offset-bottom":
+              typeof bottom === "number" ? `${bottom}px` : bottom,
+            ...styles,
+          } as React.CSSProperties
+        }
       >
-        <div className={`ai-lib-modal__container ${hasMessages ? "with-messages" : "without-messages"}`}>
-          <div className={`ai-lib-modal__inner ${hasMessages ? "with-messages" : "without-messages"}`}>
-            <h1 id="ai-search-heading" className="sr-only">AI Search</h1>
+        <div
+          className={`max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center ${hasMessages ? "gap-6" : "gap-6"}`}
+        >
+          <h1 id="ai-search-heading" className="sr-only">
+            AI Search
+          </h1>
 
-            {messages.length === 0 && (
+          {(messages.length === 0 || isClassic && messages.length >= 1) && (
+            <div className="flex flex-col md:mt-auto items-stretch gap-6 md:items-center md:gap-8 flex justify-start md:justify-center items-center overflow-auto">
               <EmptyState
-                title={isClassic ? classic?.title ?? "" : title}
-                text={isClassic ? classic?.text ?? "" : text}
+                title={isClassic ? (classic?.title ?? "") : title}
+                text={isClassic ? (classic?.text ?? "") : text}
               />
-            )}
+            </div>
+          )}
 
-            <Messages
-              logo={logo}
-              messages={messages}
-              loading={loading}
-              renderMarkdown={renderMarkdown}
-            />
+          {!isClassic && (
+            <>
+              <Messages
+                logo={logo}
+                messages={messages}
+                loading={loading}
+                renderMarkdown={renderMarkdown}
+              />
+              {error && (
+                <div className="flex items-center justify-start max-w-[740px] w-full mx-auto">
+                  <ErrorCallout
+                    onSwitchClassic={() => {
+                      onSwitchClassic();
+                    }}
+                    message={error}
+                  />
+                </div>
+              )}
+            </>
+          )}
 
-            <MessageInput isClassic={isClassic} onSend={onSend} disabled={loading} />
+          <MessageInput
+            isClassic={isClassic}
+            onSend={onSend}
+            disabled={loading}
+            hasMessages={messages.length > 0}
+          />
 
-            {error && (
-              <div className="flex items-center justify-center w-full">
-                <ErrorCallout
-                  message={error}
-                  onClose={() => window.location.reload()}
-                />
-              </div>
-            )}
+          {(messages.length === 0 || isClassic && messages.length >= 1) && (
+            <div className="flex flex-col gap-[16px] md:gap-[40px]">
+              <Suggestions
+                onSend={onSend}
+                suggestions={
+                  isClassic ? (classic?.suggestions ?? []) : suggestions
+                }
+              />
+              {isClassic && classic?.renderSwitch
+                ? classic.renderSwitch(onSwitch)
+                : !isClassic && renderSwitch
+                  ? renderSwitch(onSwitch)
+                  : null}
+            </div>
+          )}
 
-            {messages.length === 0 && (
-              <div>
-                <Suggestions
-                  onSend={onSend}
-                  suggestions={isClassic ? classic?.suggestions ?? [] : suggestions}
-                />
-                {isClassic && classic?.renderSwitch
-                  ? classic.renderSwitch(onSwitch)
-                  : !isClassic && renderSwitch
-                    ? renderSwitch(onSwitch)
-                    : null}
+          <div className="flex flex-col gap-4 mt-auto">
+            {disclaimer && !isClassic && (
+              <div className="hidden md:block text-sm leading-6 font-normal text-center text-ai-lib-text-muted">
+                {typeof disclaimer === "string" ? (
+                  <span dangerouslySetInnerHTML={{ __html: disclaimer }} />
+                ) : (
+                  disclaimer
+                )}
               </div>
             )}
           </div>
-
-          {disclaimer && !isClassic && (
-            <span className="ai-lib-modal__disclaimer">{disclaimer}</span>
-          )}
         </div>
       </div>
     );
-  }
+  },
 );
 
 ChatModalDialog.displayName = "ChatModalDialog";

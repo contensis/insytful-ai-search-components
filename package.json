@@ -1,29 +1,34 @@
 {
   "name": "insytful-ai-search-components",
+  "description": "An accessible, AI-powered search modal component library built with React, TypeScript, and Tailwind CSS",
+  "version": "0.1.0",
+  "author": "Zengenti",
+  "license": "MIT",
   "keywords": [
     "react",
-    "vite",
     "components",
     "ai",
-    "search"
+    "search",
+    "modal",
+    "web-components",
+    "shadow-dom",
+    "tailwind",
+    "typescript",
+    "accessibility"
   ],
-  "version": "0.1.0",
   "type": "module",
   "files": [
     "dist",
-    "package.json",
     "README.md",
     "LICENSE"
   ],
-  "main": "./dist/insytful-ai-search-components.cjs.js",
-  "module": "./dist/insytful-ai-search-components.es.js",
+  "module": "./dist/insytful-ai-search-components.js",
   "types": "./dist/types/main.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/main.d.ts",
-      "import": "./dist/insytful-ai-search-components.es.js",
-      "require": "./dist/insytful-ai-search-components.cjs.js",
-      "default": "./dist/insytful-ai-search-components.es.js"
+      "import": "./dist/insytful-ai-search-components.js",
+      "default": "./dist/insytful-ai-search-components.js"
     },
     "./theme.css": "./dist/insytful-ai-search-components.css"
   },
@@ -32,31 +37,41 @@
     "prebuild": "rimraf dist",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pack": "npm run build && npm pack",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "focus-trap": "^7.8.0",
-    "react-markdown": "^10.1.0",
-    "rehype-external-links": "^3.0.0"
+    "contensis-rag-react": "^0.3.4",
+    "focus-trap": "^7.8.0"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "overrides": {
+    "@types/react": "^18.3.25",
+    "@types/react-dom": "^18.3.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.5",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^18.3.25",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.1.1",
-    "autoprefixer": "^10.4.23",
-    "contensis-rag-react": "^0.5.2",
+    "autoprefixer": "^10.4.24",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "rehype-external-links": "^3.0.0",
     "rimraf": "^6.1.2",
-    "sass": "^1.97.3",
+    "tailwindcss": "^3.4.19",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.1",

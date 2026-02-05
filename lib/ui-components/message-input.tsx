@@ -1,21 +1,21 @@
 import { useState } from "react";
-import "./message-input.scss";
 
 interface MessageInputProps {
+  hasMessages: boolean;
   isClassic?: boolean;
   onSend: (message: string) => Promise<void>;
   disabled?: boolean;
 }
 
 export function MessageInput({
+  hasMessages,
   isClassic,
   onSend,
   disabled = false,
 }: MessageInputProps) {
   const [input, setInput] = useState("");
 
-  async function handleSend(e?: React.FormEvent) {
-    e?.preventDefault();
+  const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed) return;
     setInput("");
@@ -23,11 +23,17 @@ export function MessageInput({
   }
 
   return (
-    <form onSubmit={handleSend} className="message-input">
+    <form
+      onSubmit={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        handleSend();
+      }}
+      className="w-full max-w-[46.25em] mx-auto relative flex"
+    >
       {isClassic ? (
-        <div className="message-input__icon">
+        <div className="absolute top-4 left-4 z-20">
           <svg
-            className="absolute z-20 top-[1rem] left-[1rem]"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -41,7 +47,7 @@ export function MessageInput({
           </svg>
         </div>
       ) : (
-        <div className="message-input__icon">
+        <div className="absolute top-4 left-4 z-20">
           <svg
             focusable="false"
             aria-hidden="true"
@@ -61,8 +67,11 @@ export function MessageInput({
       )}
 
       {!isClassic && (
-        <div className="message-input__textarea-wrapper">
-          <div className="message-input__glow" aria-hidden="true" />
+        <div className="absolute inset-0 h-full w-full max-w-[49em] rounded-2xl group-focus-within:opacity-60">
+          <div
+            className={`pointer-events-none absolute inset-[-4px] rounded-2xl opacity-60 blur-[13px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
+            aria-hidden="true"
+          />
         </div>
       )}
 
@@ -74,16 +83,17 @@ export function MessageInput({
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
+            e.stopPropagation();
             handleSend();
           }
         }}
-        className="message-input__textarea"
+        className="relative z-10 w-full py-4 pr-[64px] pl-12 resize-none rounded-2xl border border-[var(--ai-lib-semantic-search-field-stroke)] bg-white max-h-16 outline-none"
       />
 
       <button
         type="submit"
         disabled={disabled}
-        className="message-input__button"
+        className="z-20 absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--ai-lib-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--ai-lib-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Send message"
       >
         <span className="sr-only">Search</span>

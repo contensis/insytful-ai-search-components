@@ -4,6 +4,16 @@ export interface ChatModalProps {
   title: string;
   text: string;
 
+  /**
+   * External control for modal open state (optional)
+   */
+  isOpen?: boolean;
+  
+  /**
+   * Callback when modal open state changes (optional)
+   */
+  onOpenChange?: (isOpen: boolean) => void;
+
   disclaimer?: React.ReactNode;
 
   /**
@@ -32,26 +42,6 @@ export interface ChatModalProps {
   logo?: React.ReactNode;
 
   renderMarkdown?: (markdown: string) => React.ReactNode;
-
-  /**
-   * Custom trigger renderer.
-   * IMPORTANT: if you attach `elTriggerRef` to your trigger element,
-   * focus-trap logic can correctly treat trigger clicks as special-cased.
-   */
-  // renderTrigger?: (controls: {
-  //   open: () => void;
-  //   close: () => void;
-  //   toggle: () => void;
-  //   isOpen: boolean;
-
-  //   a11y: {
-  //     "aria-haspopup": "dialog";
-  //     "aria-expanded": boolean;
-  //     "aria-controls": string;
-  //   };
-
-  //   elTriggerRef: React.RefObject<HTMLButtonElement | null>;
-  // }) => React.ReactNode;
 
   styles?: React.CSSProperties;
 }
