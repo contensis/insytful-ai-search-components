@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { ChatModalDialog } from "./chat-modal-dialog";
 import type { ChatModalProps } from "./chat-modal.types";
 import { useChatSend, useModalFocusTrap } from "../utilities/hooks.util";
+import { useMockFetch } from "../utilities/mock-fetch";
 
 export function ChatModal(props: ChatModalProps) {
   const {
@@ -19,7 +20,13 @@ export function ChatModal(props: ChatModalProps) {
     renderMarkdown,
     isOpen = false,
     onOpenChange,
+    isDevMode = false,
+    options,
   } = props;
+
+  // if it is dev mode we will give a "fake" conversation context so that the UI doesn't break, but it won't have any real functionality
+  // and so we can test the response UI in isolation
+  useMockFetch(isDevMode, options?.baseUrl ?? '');
 
   const { messages, loading, error, ask } = useRAGConversationContext();
 

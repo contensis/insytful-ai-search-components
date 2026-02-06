@@ -31,9 +31,9 @@ export function Messages({
   return (
     <div
       ref={elMessagesRef}
-      className="flex-1 overflow-y-auto w-full max-w-[49em] mx-auto min-h-0"
+      className="flex-1 overflow-y-auto w-full max-w-[784px] mx-auto min-h-0"
     >
-      <ul className="flex flex-col gap-8 max-w-[49em] w-full p-0 m-0 list-none">
+      <ul className="flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
         {messages.map((message, i) => (
           <Message
             key={`${i}-${hash(message.content)}`}

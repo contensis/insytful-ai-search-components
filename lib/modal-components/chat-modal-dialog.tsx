@@ -67,15 +67,14 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         className="absolute inset-0 flex flex-col bg-white overflow-hidden min-h-0 py-8 px-4"
         style={
           {
+            zIndex: 999,
             top,
             bottom,
             left,
             right,
-            height:
-              "calc(100svh - var(--offset-top, 0px) - var(--offset-bottom, 0px))",
+            height: "calc(100svh - var(--offset-top, 0px) - var(--offset-bottom, 0px))",
             "--offset-top": typeof top === "number" ? `${top}px` : top,
-            "--offset-bottom":
-              typeof bottom === "number" ? `${bottom}px` : bottom,
+            "--offset-bottom": typeof bottom === "number" ? `${bottom}px` : bottom,
             ...styles,
           } as React.CSSProperties
         }
@@ -142,7 +141,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
 
           <div className="flex flex-col gap-4 mt-auto">
             {disclaimer && !isClassic && (
-              <div className="hidden md:block text-sm leading-6 font-normal text-center text-ai-lib-text-muted">
+              <div className="hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
                 {typeof disclaimer === "string" ? (
                   <span dangerouslySetInnerHTML={{ __html: disclaimer }} />
                 ) : (

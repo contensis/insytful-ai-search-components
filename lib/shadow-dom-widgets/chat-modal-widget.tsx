@@ -19,30 +19,27 @@ import { ChatModal } from "../modal-components/chat-modal";
 import type { ChatModalProps } from "../modal-components/chat-modal.types";
 import { RAGProvider } from "contensis-rag-react";
 
-// Import CSS as inline string (Vite ?inline query parameter)
 import css from '../main.css?inline';
 
-/**
- * Props that can be passed to the Web Component
- */
 export type WidgetProps = Partial<ChatModalProps> & {
   options?: { config: string; baseUrl?: string };
+  css?: string;
 };
 
-// Store reference to widget instance for programmatic control
-let widgetInstance: ChatModalWidget | null = null;
+let elWidgetInstance: ChatModalWidget | null = null;
 
-/**
- * Custom Element class for <insytful-ai-chat-modal>
- */
 class ChatModalWidget extends HTMLElement {
-  private mountEl!: HTMLDivElement; // React mount point
-  private portalEl!: HTMLDivElement; // Portal target on body
-  private portalShadow!: ShadowRoot; // Shadow root for portal
+
+  private elMount!: HTMLDivElement; 
+  private elPortal!: HTMLDivElement;
+  private elPortalShadowDOM!: ShadowRoot; 
+
   private _props: WidgetProps = {};
   private _isOpen = false;
+
   private root?: Root; // React 18
-  private isReact18 = false; // Track React version
+  private isReact18 = false; 
+
   private createRootFn?: (container: Element | DocumentFragment) => Root;
 
   constructor() {
@@ -60,29 +57,26 @@ class ChatModalWidget extends HTMLElement {
     }
     
     // Create portal container on document.body with Shadow DOM
-    this.portalEl = document.createElement("div");
-    this.portalEl.id = "insytful-ai-modal-portal";
-    this.portalShadow = this.portalEl.attachShadow({ mode: "open" });
-    
-    // Apply styles to portal's Shadow DOM
-    const portalBase = document.createElement("style");
-    const portalStyle = document.createElement("style");
-    portalStyle.textContent = css;
+    this.elPortal = document.createElement("div");
+    this.elPortal.id = "insytful-ai-modal-portal";
+    this.elPortalShadowDOM = this.elPortal.attachShadow({ mode: "open" });
 
-    // Mount point inside portal's Shadow DOM
-    const portalMount = document.createElement("div");
-    this.portalShadow.append(portalBase, portalStyle, portalMount);
-    this.mountEl = portalMount;
+    // Apply styles to portal's Shadow DOM
+    const elPortalBase = document.createElement("style");
+    const elPortalStyle = document.createElement("style");
+    elPortalStyle.textContent = css;
     
-    // Store instance reference
-    widgetInstance = this;
+    const elPortalMount = document.createElement("div");
+    this.elPortalShadowDOM.append(elPortalBase, elPortalStyle, elPortalMount);
+    this.elMount = elPortalMount;
+    
+    elWidgetInstance = this;
   }
 
   connectedCallback() {
-    // Check if the portal already exists to prevent dups
       const doesExist = document.getElementById('insytful-ai-modal-portal');
       if (!doesExist) {
-        document.body.appendChild(this.portalEl);
+        document.body.appendChild(this.elPortal);
       }
       this.render();
   }
@@ -91,10 +85,10 @@ class ChatModalWidget extends HTMLElement {
     if (this.isReact18 && this.root) {
       this.root.unmount();
     } else if (!this.isReact18) {
-      ReactDOM.unmountComponentAtNode(this.mountEl);
+      ReactDOM.unmountComponentAtNode(this.elMount);
     }
-    if (this.portalEl.parentNode) {
-      document.body.removeChild(this.portalEl);
+    if (this.elPortal.parentNode) {
+      document.body.removeChild(this.elPortal);
     }
   }
 
@@ -117,12 +111,9 @@ class ChatModalWidget extends HTMLElement {
     this.render();
   }
 
-  /**
-   * Public method to toggle modal state
-   */
-  public toggle(open?: boolean) {
+  public onToggle(open?: boolean) {
     const nextState = open !== undefined ? open : !this._isOpen;
-    if (nextState === this._isOpen) return; // Prevent unnecessary re-renders
+    if (nextState === this._isOpen) return;
     
     this._isOpen = nextState;
     document.body.style.overflow = this._isOpen ? "hidden" : "";
@@ -130,7 +121,7 @@ class ChatModalWidget extends HTMLElement {
   }
 
   private handleOpenChange = (isOpen: boolean) => {
-    this.toggle(isOpen);
+    this.onToggle(isOpen);
   };
 
   private render() {
@@ -141,6 +132,7 @@ class ChatModalWidget extends HTMLElement {
         {...(p as ChatModalProps)}
         title={p.title ?? ""}
         text={p.text ?? ""}
+        options={options} 
         isOpen={this._isOpen}
         onOpenChange={this.handleOpenChange}
       />
@@ -155,42 +147,35 @@ class ChatModalWidget extends HTMLElement {
     // React 18: Use createRoot API
     if (this.isReact18) {
       if (!this.root && this.createRootFn) {
-        this.root = this.createRootFn(this.mountEl);
+        this.root = this.createRootFn(this.elMount);
       }
       this.root?.render(content);
     } else {
       // React 17: Use legacy ReactDOM.render
-      ReactDOM.render(content, this.mountEl);
+      ReactDOM.render(content, this.elMount);
     }
   }
 }
 
 /**
- * Programmatic API for controlling the modal
- * 
  * Usage:
  * import { onToggleModal } from 'insytful-ai-search-components';
  * 
  * <button onClick={() => onToggleModal(true)}>Open Modal</button>
  */
 export function onToggleModal(open?: boolean) {
-  if (!widgetInstance) {
+  if (!elWidgetInstance) {
     console.warn('Modal widget not found. Ensure <insytful-ai-chat-modal> is in the DOM.');
     return;
   }
   
-  widgetInstance.toggle(open);
+  elWidgetInstance.onToggle(open);
 }
 
-/**
- * Get the current widget instance
- */
 export function getModalInstance(): ChatModalWidget | null {
-  return widgetInstance;
+  return elWidgetInstance;
 }
 
-// Register the custom element
 customElements.define("insytful-ai-chat-modal", ChatModalWidget);
 
-// Export for TypeScript users
 export { ChatModalWidget as ChatModalWidget };

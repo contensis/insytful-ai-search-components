@@ -26,8 +26,5 @@ export { onToggleModal, getModalInstance } from "./shadow-dom-widgets/chat-modal
 // This provides AI conversation functionality
 export { RAGProvider, useRAGConversationContext } from "./utilities/rag.util";
 
-// Export individual UI components for advanced custom layouts
-export { Messages, MessageInput, Suggestions, ModalButton } from "./ui-components";
-
 // Export TypeScript types for Web Component props
 export type { WidgetProps } from './shadow-dom-widgets/chat-modal-widget';

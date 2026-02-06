@@ -1,4 +1,4 @@
-import { SearchModal } from "./components/ai-search-modal";
+import { SearchModal } from "./components/modal";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 

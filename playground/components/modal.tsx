@@ -37,10 +37,11 @@ export const SearchModal = () => {
     if (!ref.current) return;
 
     ref.current.props = {
+      isDevMode: true,
       options: config,
       title: "What are you looking for?",
       text: "AI search can help. Tell us what you need in your own words.",
-      renderMarkdown:  (text) => <Markdown content={text}/>,
+      renderMarkdown: (text) => <Markdown content={text} />,
       disclaimer: (
         <span className="text-s text-[#6B6B6B]">
           AI-generated answers may include mistakes. Please verify important
@@ -86,27 +87,29 @@ export const SearchModal = () => {
         ],
         path: "/q=",
         renderSwitch: (fn) => (
-            <div className="text-sm md:text-lg w-full text-center">
-          <span className="text-[#505A5F]">Want detailed answers?{" "}</span>
-          <button
-            className="underline text-[#1D70B8] hover:text-[#1D70B8]/80 hover:no-underline focus:outline-none"
-            onClick={fn}
-          >
-            Try AI search
-          </button>
-        </div>
+          <div className="text-sm md:text-lg w-full text-center">
+            <span className="text-[#505A5F]">Want detailed answers? </span>
+            <button
+              className="underline text-[#1D70B8] hover:text-[#1D70B8]/80 hover:no-underline focus:outline-none"
+              onClick={fn}
+            >
+              Try AI search
+            </button>
+          </div>
         ),
       },
     };
   }, [isDesktop]);
 
   return (
-    // @ts-ignore
-    <insytful-ai-chat-modal
-      ref={(element: ChatModalElement) =>
-        (ref.current = element as ChatModalElement)
-      }
-      style={{ fontFamily: "inherit" }}
-    />
+    <>
+      {/* @ts-ignore */}
+      <insytful-ai-chat-modal
+        ref={(element: ChatModalElement) =>
+          (ref.current = element as ChatModalElement)
+        }
+        style={{ fontFamily: "inherit" }}
+      />
+    </>
   );
 };

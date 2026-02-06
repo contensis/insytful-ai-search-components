@@ -29,10 +29,10 @@ export function MessageInput({
         e.preventDefault();
         handleSend();
       }}
-      className="w-full max-w-[46.25em] mx-auto relative flex"
+      className="w-full max-w-[750px] mx-auto relative flex"
     >
       {isClassic ? (
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-[16px] left-[16px] z-20">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -41,13 +41,13 @@ export function MessageInput({
             fill="none"
           >
             <path
-              fill="var(--ai-lib-text-default)"
+              fill="var(--insytful-text-default)"
               d="M11.27 18.54c1.613-.001 3.18-.541 4.45-1.535L19.715 21 21 19.715l-3.995-3.995a7.225 7.225 0 0 0 1.535-4.45C18.54 7.26 15.279 4 11.27 4 7.262 4 4 7.261 4 11.27c0 4.008 3.262 7.27 7.27 7.27Zm0-12.723a5.458 5.458 0 0 1 5.453 5.453 5.458 5.458 0 0 1-5.453 5.452 5.458 5.458 0 0 1-5.452-5.452 5.458 5.458 0 0 1 5.452-5.453Z"
             />
           </svg>
         </div>
       ) : (
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-[16px] left-[16px] z-20">
           <svg
             focusable="false"
             aria-hidden="true"
@@ -59,7 +59,7 @@ export function MessageInput({
             fill="none"
           >
             <path
-              fill="var(--ai-lib-text-default)"
+              fill="var(--insytful-text-default)"
               d="M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z"
             />
           </svg>
@@ -67,9 +67,9 @@ export function MessageInput({
       )}
 
       {!isClassic && (
-        <div className="absolute inset-0 h-full w-full max-w-[49em] rounded-2xl group-focus-within:opacity-60">
+        <div className="absolute inset-0 h-full w-full max-w-[750px] rounded-[16px] group-focus-within:opacity-60">
           <div
-            className={`pointer-events-none absolute inset-[-4px] rounded-2xl opacity-60 blur-[13px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
+            className={`pointer-events-none absolute inset-[-4px] rounded-[16px] opacity-60 blur-[14px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
             aria-hidden="true"
           />
         </div>
@@ -87,13 +87,13 @@ export function MessageInput({
             handleSend();
           }
         }}
-        className="relative z-10 w-full py-4 pr-[64px] pl-12 resize-none rounded-2xl border border-[var(--ai-lib-semantic-search-field-stroke)] bg-white max-h-16 outline-none"
+        className="relative z-10 w-full py-[16px] pr-[64px] pl-[48px] resize-none rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white max-h-[64px] outline-none"
       />
 
       <button
         type="submit"
         disabled={disabled}
-        className="z-20 absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--ai-lib-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--ai-lib-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+        className="z-20 absolute right-[8px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Send message"
       >
         <span className="sr-only">Search</span>
@@ -105,14 +105,14 @@ export function MessageInput({
         >
           <g clipPath="url(#a)">
             <path
-              fill="var(--ai-lib-btn-icon-search-icon)"
+              fill="var(--insytful-btn-icon-search-icon)"
               d="M15.991 8a1.606 1.606 0 0 0-.543-1.2L7.996.24a.96.96 0 0 0-1.267 1.442l5.758 5.067a.166.166 0 0 1 .046.183.167.167 0 0 1-.156.108H.967a.96.96 0 1 0 0 1.92h11.408a.167.167 0 0 1 .11.292l-5.758 5.067a.96.96 0 1 0 1.267 1.44L15.448 9.2A1.606 1.606 0 0 0 15.99 8Z"
             />
           </g>
           <defs>
             <clipPath id="a">
               <path
-                fill="var(--ai-lib-btn-icon-search-icon)"
+                fill="var(--insytful-btn-icon-search-icon)"
                 d="M0 0h16v16H0z"
               />
             </clipPath>

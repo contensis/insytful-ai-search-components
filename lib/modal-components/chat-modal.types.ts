@@ -1,6 +1,9 @@
 import type React from "react";
 
 export interface ChatModalProps {
+  isDevMode?: boolean;
+  options: { config: string; baseUrl?: string };
+
   title: string;
   text: string;
 
