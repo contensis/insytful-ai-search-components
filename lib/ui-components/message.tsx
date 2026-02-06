@@ -14,13 +14,13 @@ export function Message({ logo, message, renderContent }: MessageProps) {
   const paragraphs = message.content.split("\n\n");
 
   return (
-    <li className={`flex items-start gap-[24px] ${isUser ? "flex-row-reverse" : "flex-row"}`}>
+    <li className={`insytful-search-message flex items-start gap-[24px] ${isUser ? "flex-row-reverse" : "flex-row"}`}>
       {logo && !isUser && (
-        <div className="flex-shrink-0 hidden md:block">{logo}</div>
+        <div className="insytful-search-message-logo flex-shrink-0 hidden md:block">{logo}</div>
       )}
 
       <div
-        className={`message max-w-[80%] text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${
+        className={`insytful-search-message-content-outer max-w-[80%] text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${
           isUser ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]" : "text-[var(--insytful-text-default)]"
         }`}
       >
@@ -28,14 +28,14 @@ export function Message({ logo, message, renderContent }: MessageProps) {
           message.content
         ) : (
           <>
-            <div className="flex items-start gap-[12px] md:block md:gap-0">
-              {logo && <div className="flex-shrink-0 md:hidden">{logo}</div>}
-              <p className="">
+            <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
+              {logo && <div className="insytful-search-message-logo flex-shrink-0 md:hidden">{logo}</div>}
+              <p className="insytful-search-message-content">
                 {renderContent ? renderContent(paragraphs[0]) : paragraphs[0]}
               </p>
             </div>
             {paragraphs.slice(1).map((p, i) => (
-              <p key={`${i}-${hash(p)}`} className="mt-[8px]">
+              <p key={`${i}-${hash(p)}`} className="insytful-search-message-content mt-[8px]">
                 {renderContent ? renderContent(p) : p}
               </p>
             ))}

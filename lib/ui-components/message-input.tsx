@@ -29,10 +29,10 @@ export function MessageInput({
         e.preventDefault();
         handleSend();
       }}
-      className="w-full max-w-[750px] mx-auto relative flex"
+      className="insytful-search-message-input w-full max-w-[750px] mx-auto relative flex"
     >
       {isClassic ? (
-        <div className="absolute top-[16px] left-[16px] z-20">
+        <div className="insytful-search-message-input-icon absolute top-[16px] left-[16px] z-20">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -47,7 +47,7 @@ export function MessageInput({
           </svg>
         </div>
       ) : (
-        <div className="absolute top-[16px] left-[16px] z-20">
+        <div className="insytful-search-message-input-icon absolute top-[16px] left-[16px] z-20">
           <svg
             focusable="false"
             aria-hidden="true"
@@ -67,7 +67,7 @@ export function MessageInput({
       )}
 
       {!isClassic && (
-        <div className="absolute inset-0 h-full w-full max-w-[750px] rounded-[16px] group-focus-within:opacity-60">
+        <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[750px] rounded-[16px] group-focus-within:opacity-60">
           <div
             className={`pointer-events-none absolute inset-[-4px] rounded-[16px] opacity-60 blur-[14px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
             aria-hidden="true"
@@ -87,13 +87,13 @@ export function MessageInput({
             handleSend();
           }
         }}
-        className="relative z-10 w-full py-[16px] pr-[64px] pl-[48px] resize-none rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white max-h-[64px] outline-none"
+        className="insytful-search-message-input-textarea relative z-10 w-full py-[16px] pr-[64px] pl-[48px] resize-none rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white max-h-[64px] outline-none"
       />
 
       <button
         type="submit"
         disabled={disabled}
-        className="z-20 absolute right-[8px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+        className="insytful-search-message-input-btn z-20 absolute right-[8px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Send message"
       >
         <span className="sr-only">Search</span>

@@ -59,12 +59,12 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
     return (
       <div
         tabIndex={-1}
-        id="ai-search-dialog"
+        id="insytful-search-dialog"
         ref={ref}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="ai-search-heading"
-        className="absolute inset-0 flex flex-col bg-white overflow-hidden min-h-0 py-8 px-4"
+        aria-labelledby="insytful-search-heading"
+        className="insytful-search-dialog-outer absolute inset-0 flex flex-col bg-white overflow-hidden min-h-0 py-8 px-4"
         style={
           {
             zIndex: 999,
@@ -80,14 +80,14 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         }
       >
         <div
-          className={`max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center ${hasMessages ? "gap-6" : "gap-6"}`}
+          className={`insytful-search-dialog-inner max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center ${hasMessages ? "gap-6" : "gap-6"}`}
         >
-          <h1 id="ai-search-heading" className="sr-only">
+          <h1 id="insytful-search-heading" className="sr-only">
             AI Search
           </h1>
 
           {(messages.length === 0 || isClassic && messages.length >= 1) && (
-            <div className="flex flex-col md:mt-auto items-stretch gap-6 md:items-center md:gap-8 flex justify-start md:justify-center items-center overflow-auto">
+            <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-6 md:items-center md:gap-8 flex justify-start md:justify-center items-center overflow-auto">
               <EmptyState
                 title={isClassic ? (classic?.title ?? "") : title}
                 text={isClassic ? (classic?.text ?? "") : text}
@@ -104,7 +104,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
                 renderMarkdown={renderMarkdown}
               />
               {error && (
-                <div className="flex items-center justify-start max-w-[740px] w-full mx-auto">
+                <div className="insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto">
                   <ErrorCallout
                     onSwitchClassic={() => {
                       onSwitchClassic();
@@ -124,7 +124,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
           />
 
           {(messages.length === 0 || isClassic && messages.length >= 1) && (
-            <div className="flex flex-col gap-[16px] md:gap-[40px]">
+            <div className="insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]">
               <Suggestions
                 onSend={onSend}
                 suggestions={
@@ -139,14 +139,10 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
             </div>
           )}
 
-          <div className="flex flex-col gap-4 mt-auto">
+          <div className="insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto">
             {disclaimer && !isClassic && (
-              <div className="hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
-                {typeof disclaimer === "string" ? (
-                  <span dangerouslySetInnerHTML={{ __html: disclaimer }} />
-                ) : (
-                  disclaimer
-                )}
+              <div className="insytful-search-disclaimer-inner hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
+                {disclaimer}
               </div>
             )}
           </div>
