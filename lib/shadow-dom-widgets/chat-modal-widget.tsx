@@ -8,8 +8,12 @@
  * <insytful-ai-chat-modal></insytful-ai-chat-modal>
  * 
  * Programmatic API:
- * import { onToggleModal } from 'insytful-ai-search-components';
- * onToggleModal(true); // Open modal
+ * import { onToggleModal, onOpenModal, onCloseModal } from 'insytful-ai-search-components';
+ * 
+ * Custom CSS:
+ * The theme prop accepts either:
+ * 1. Inline CSS string: import theme from './custom.css?inline'; props.theme = theme;
+ * 2. CSS file URL: props.theme = '/path/to/custom.css';
  */
 
 import ReactDOM from "react-dom";
@@ -23,7 +27,7 @@ import css from '../main.css?inline';
 
 export type WidgetProps = Partial<ChatModalProps> & {
   options?: { config: string; baseUrl?: string };
-  css?: string;
+  theme?: string; // Custom CSS as inline string or URL path
 };
 
 let elWidgetInstance: ChatModalWidget | null = null;
@@ -33,9 +37,10 @@ class ChatModalWidget extends HTMLElement {
   private elMount!: HTMLDivElement; 
   private elPortal!: HTMLDivElement;
   private elPortalShadowDOM!: ShadowRoot; 
+  private elCustomStyle!: HTMLStyleElement; // For custom CSS
 
   private _props: WidgetProps = {};
-  private _isOpen = false;
+  public _isOpen = false;
 
   private root?: Root; // React 18
   private isReact18 = false; 
@@ -66,8 +71,11 @@ class ChatModalWidget extends HTMLElement {
     const elPortalStyle = document.createElement("style");
     elPortalStyle.textContent = css;
     
+    // Create placeholder for custom CSS
+    this.elCustomStyle = document.createElement("style");
+    
     const elPortalMount = document.createElement("div");
-    this.elPortalShadowDOM.append(elPortalBase, elPortalStyle, elPortalMount);
+    this.elPortalShadowDOM.append(elPortalBase, elPortalStyle, this.elCustomStyle, elPortalMount);
     this.elMount = elPortalMount;
     
     elWidgetInstance = this;
@@ -94,8 +102,12 @@ class ChatModalWidget extends HTMLElement {
 
   set props(next: WidgetProps) {
     this._props = { ...this._props, ...next };
+
+    if (next.theme) this.elCustomStyle.textContent = next.theme;
+
     this.render();
   }
+
   
   get props(): WidgetProps {
     return this._props;
@@ -112,17 +124,14 @@ class ChatModalWidget extends HTMLElement {
   }
 
   public onToggle(open?: boolean) {
-    const nextState = open !== undefined ? open : !this._isOpen;
-    if (nextState === this._isOpen) return;
-    
-    this._isOpen = nextState;
-    document.body.style.overflow = this._isOpen ? "hidden" : "";
+    const nextOpen = open ?? !this._isOpen;
+
+    if (nextOpen === this._isOpen) return;
+
+    this._isOpen = nextOpen;
+    document.body.style.overflow = nextOpen ? "hidden" : "";
     this.render();
   }
-
-  private handleOpenChange = (isOpen: boolean) => {
-    this.onToggle(isOpen);
-  };
 
   private render() {
     const { options, ...p } = this._props;
@@ -132,9 +141,9 @@ class ChatModalWidget extends HTMLElement {
         {...(p as ChatModalProps)}
         title={p.title ?? ""}
         text={p.text ?? ""}
-        options={options} 
+        options={options!} 
         isOpen={this._isOpen}
-        onOpenChange={this.handleOpenChange}
+        onOpenChange={(open: boolean) => this.onToggle(open)}
       />
     );
 
@@ -157,19 +166,28 @@ class ChatModalWidget extends HTMLElement {
   }
 }
 
-/**
- * Usage:
- * import { onToggleModal } from 'insytful-ai-search-components';
- * 
- * <button onClick={() => onToggleModal(true)}>Open Modal</button>
- */
-export function onToggleModal(open?: boolean) {
-  if (!elWidgetInstance) {
-    console.warn('Modal widget not found. Ensure <insytful-ai-chat-modal> is in the DOM.');
-    return;
-  }
-  
-  elWidgetInstance.onToggle(open);
+export function onToggleModal() {
+  const modal = getModalInstance();
+  if (!modal) return;
+  modal.onToggle(); 
+}
+
+export function onOpenModal() {
+  const modal = getModalInstance();
+  if (!modal) return;
+  modal.onToggle(true);
+}
+
+export function onCloseModal() {
+  const modal = getModalInstance();
+  if (!modal) return;
+  modal.onToggle(false);
+}
+
+export function isModalOpen(): boolean {
+  const modal = getModalInstance();
+  if (!modal) return false;
+  return modal._isOpen;
 }
 
 export function getModalInstance(): ChatModalWidget | null {

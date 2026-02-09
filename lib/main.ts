@@ -20,7 +20,7 @@ import './main.css';
 import "./shadow-dom-widgets/chat-modal-widget";
 
 // Export modal control functions
-export { onToggleModal, getModalInstance } from "./shadow-dom-widgets/chat-modal-widget";
+export { onToggleModal, onOpenModal, onCloseModal, isModalOpen, getModalInstance } from "./shadow-dom-widgets/chat-modal-widget";
 
 // Re-export RAG (Retrieval-Augmented Generation) utilities from contensis-rag-react
 // This provides AI conversation functionality

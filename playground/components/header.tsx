@@ -1,4 +1,5 @@
-import { onToggleModal } from "../../lib/main";
+import { useEffect, useState } from "react";
+import { onToggleModal, isModalOpen } from "../../lib/main";
 import { Logo } from "./logo";
 
 export const Header = () => {
@@ -10,10 +11,13 @@ export const Header = () => {
 
       <div className="flex items-stretch">
         <button
-          onClick={() => onToggleModal(true)}
+          onClick={() => onToggleModal()}
           className="flex items-center gap-2 py-[1rem] md:py-[1.75rem] px-[1rem] bg-white"
         >
-          <span className="hidden md:inline text-xl font-semibold text-[#333]">Search</span>
+          <span className="hidden md:inline text-xl font-semibold text-[#333]">
+            <span className="sr-only">{isModalOpen() ? "Close " : "Open "}</span>
+            Search
+          </span>
           <svg
             className="min-w-[24px]"
             xmlns="http://www.w3.org/2000/svg"

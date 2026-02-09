@@ -30,14 +30,14 @@ export function Message({ logo, message, renderContent }: MessageProps) {
           <>
             <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
               {logo && <div className="insytful-search-message-logo flex-shrink-0 md:hidden">{logo}</div>}
-              <p className="insytful-search-message-content">
+              <div className="insytful-search-message-content">
                 {renderContent ? renderContent(paragraphs[0]) : paragraphs[0]}
-              </p>
+              </div>
             </div>
             {paragraphs.slice(1).map((p, i) => (
-              <p key={`${i}-${hash(p)}`} className="insytful-search-message-content mt-[8px]">
+              <div key={`${i}-${hash(p)}`} className="insytful-search-message-content mt-[8px]">
                 {renderContent ? renderContent(p) : p}
-              </p>
+              </div>
             ))}
           </>
         )}

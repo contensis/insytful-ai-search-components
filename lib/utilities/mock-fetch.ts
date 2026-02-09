@@ -60,10 +60,10 @@ const setupMockFetch = (baseUrl: string) => {
         ' with',
         ' some',
         ' inline',
-        '`code`',
+        ' `code`',
         ' and',
         ' a',
-        '[link](https://example.com).',
+        ' [link](https://example.com).',
         '\n\n',
 
         '> This',
@@ -137,10 +137,10 @@ const setupMockFetch = (baseUrl: string) => {
   return () => window.fetch = originalFetch;
 };
 
-export const useMockFetch = (isDevMode=false, base: string) => {
+export const useMockFetch = (isDevMode = false, base: string) => {
   useEffect(() => {
-    if (!isDevMode || !base) return; 
-    const cleanup = setupMockFetch(base);
-    return cleanup;
+    if (!isDevMode || !base) return;
+    setupMockFetch(base);
+    
   }, [isDevMode, base]);
 };

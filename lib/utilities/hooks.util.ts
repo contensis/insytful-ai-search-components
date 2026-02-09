@@ -64,6 +64,7 @@ export function useModalFocusTrap(
 ) {
   const elModalRef = useRef<HTMLDivElement | null>(null);
   const elpreviousFocusRef = useRef<HTMLElement | null>(null);
+  const elTrapRef = useRef<ReturnType<typeof createFocusTrap> | null>(null);
 
   // Store setOpen and isOpen in refs so the focus trap can access the latest values without needing to be re-created
   // Prevents focus trap from breaking when setOpen changes on every render
@@ -78,27 +79,31 @@ export function useModalFocusTrap(
     // Element that was focused before opening the modal, to restore focus on close.
     elpreviousFocusRef.current = document.activeElement as HTMLElement;
 
-    
-
     const trap = createFocusTrap(elModalRef.current, {
       fallbackFocus: elModalRef.current,
       initialFocus: () => elModalRef.current?.querySelector("textarea") ?? elModalRef.current,
       escapeDeactivates: true,           // pressing Escape closes modal
       allowOutsideClick: true,
-      clickOutsideDeactivates: (event) => {
-        const target = event.target as Node;
-        // Keep modal open if clicking anywhere inside it
-        if (elModalRef.current?.contains(target)) return false;
-        return true;
+      clickOutsideDeactivates: (e) => {
+        // Check if the click target is the close/toggle button
+        // If so, let the button handle the toggle without deactivating the trap first
+        const target = e.target as HTMLElement;
+        const isToggleButton = target.closest('button')?.textContent?.includes('Open') || 
+                               target.closest('button')?.textContent?.includes('Close');
+        
+        // Only auto-deactivate if clicking outside AND not on a toggle button
+        return !isToggleButton;
       },
       onDeactivate: () => setOpen(false),
-      returnFocusOnDeactivate: true,      // restore focus to previous element
+      returnFocusOnDeactivate: false,    
     });
 
+    elTrapRef.current = trap;
     trap.activate();
 
     return () => {
       trap.deactivate();
+      elTrapRef.current = null;
       elpreviousFocusRef.current?.focus();
     };
   }, [isOpen, setOpen]);

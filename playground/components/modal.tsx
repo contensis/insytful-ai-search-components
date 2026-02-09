@@ -4,6 +4,9 @@ import "../../lib/shadow-dom-widgets/chat-modal-widget";
 
 import { Markdown } from "./markdown";
 
+// @ts-ignore
+import theme from './modal-theme';
+
 const config = {
   config: import.meta.env.VITE_AI_CONFIG_ID,
   baseUrl: import.meta.env.VITE_AI_BASE_URL,
@@ -39,6 +42,7 @@ export const SearchModal = () => {
     ref.current.props = {
       isDevMode: true,
       options: config,
+      theme: theme, // Pass inline CSS string
       title: "What are you looking for?",
       text: "AI search can help. Tell us what you need in your own words.",
       renderMarkdown: (text) => <Markdown content={text} />,
@@ -99,7 +103,7 @@ export const SearchModal = () => {
         ),
       },
     };
-  }, [isDesktop]);
+  }, [isDesktop, theme]);
 
   return (
     <>

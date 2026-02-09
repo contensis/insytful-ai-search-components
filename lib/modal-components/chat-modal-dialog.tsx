@@ -54,7 +54,6 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
     ref,
   ) {
     const { top, bottom, left, right } = offsets || { top: "4em" };
-    const hasMessages = messages.length >= 1;
 
     return (
       <div
@@ -80,14 +79,14 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         }
       >
         <div
-          className={`insytful-search-dialog-inner max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center ${hasMessages ? "gap-6" : "gap-6"}`}
+          className={`insytful-search-dialog-inner max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center gap-[24px] md:gap-[32px]`}
         >
           <h1 id="insytful-search-heading" className="sr-only">
             AI Search
           </h1>
 
           {(messages.length === 0 || isClassic && messages.length >= 1) && (
-            <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-6 md:items-center md:gap-8 flex justify-start md:justify-center items-center overflow-auto">
+            <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px] flex justify-start md:justify-center items-center overflow-auto">
               <EmptyState
                 title={isClassic ? (classic?.title ?? "") : title}
                 text={isClassic ? (classic?.text ?? "") : text}
