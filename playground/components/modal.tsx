@@ -112,7 +112,6 @@ export const SearchModal = () => {
         ref={(element: ChatModalElement) =>
           (ref.current = element as ChatModalElement)
         }
-        style={{ fontFamily: "inherit" }}
       />
     </>
   );
