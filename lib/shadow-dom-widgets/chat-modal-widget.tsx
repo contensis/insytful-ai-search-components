@@ -8,7 +8,7 @@
  * <insytful-ai-chat-modal></insytful-ai-chat-modal>
  * 
  * Programmatic API:
- * import { onToggleModal, onOpenModal, onCloseModal } from 'insytful-ai-search-components';
+ * import { onToggleModal } from 'insytful-ai-search-components';
  * 
  * Custom CSS:
  * The theme prop accepts either:
@@ -119,7 +119,7 @@ class ChatModalWidget extends BaseElement {
   }
 
   set props(next: WidgetProps) {
-    this._hasRendered = true; // Mark that we're about to render
+    this._hasRendered = true; // Toggle that we're going to render
     this._props = { ...this._props, ...next };
 
     if (next.theme) this.elCustomStyle.textContent = next.theme;
@@ -132,6 +132,11 @@ class ChatModalWidget extends BaseElement {
     return this._props;
   }
 
+  /**
+   * A static getter method that returns an array of attribute names (strings) 
+   * that a custom element wishes to observe for changes
+   */
+  // TODO: might need other props here in the future
   static get observedAttributes() {
     return ["title", "text"];
   }
@@ -168,8 +173,8 @@ class ChatModalWidget extends BaseElement {
       />
     );
 
-    // Always wrap in RAGProvider to prevent context errors
-    // Use key to force remount when config changes (prevents stale context on navigation)
+    // always wrap in RAGProvider to prevent context errors
+    // use key to force remount when config changes
     const content = (
       <RAGProvider 
         key={options?.config || 'default'} 
@@ -180,14 +185,14 @@ class ChatModalWidget extends BaseElement {
       </RAGProvider>
     );
 
-    // React 18: Use createRoot API
+    // React18: Use createRoot API
     if (this.isReact18) {
       if (!this.root && this.createRootFn) {
         this.root = this.createRootFn(this.elMount);
       }
       this.root?.render(content);
     } else {
-      // React 17: Use legacy ReactDOM.render
+      // React17: Use legacy ReactDOM.render
       ReactDOM.render(content, this.elMount);
     }
   }
@@ -199,17 +204,22 @@ export function onToggleModal() {
   modal.onToggle(); 
 }
 
-export function onOpenModal() {
-  const modal = getModalInstance();
-  if (!modal) return;
-  modal.onToggle(true);
-}
+/**
+ * Don't need separate open/close functions since onToggle can handle both states
+ * but will keep these here if we want to add more specific logic in the future
+ */
 
-export function onCloseModal() {
-  const modal = getModalInstance();
-  if (!modal) return;
-  modal.onToggle(false);
-}
+// export function onOpenModal() {
+//   const modal = getModalInstance();
+//   if (!modal) return;
+//   modal.onToggle(true);
+// }
+
+// export function onCloseModal() {
+//   const modal = getModalInstance();
+//   if (!modal) return;
+//   modal.onToggle(false);
+// }
 
 export function isModalOpen(): boolean {
   const modal = getModalInstance();
