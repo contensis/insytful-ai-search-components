@@ -1,5 +1,6 @@
+import React from "react";
 import { useEffect, useState } from "react";
-import { onToggleModal, isModalOpen } from "../../lib/main";
+import { onToggleModal } from "../../lib/main";
 import { Logo } from "./logo";
 
 export const Header = () => {
@@ -15,7 +16,7 @@ export const Header = () => {
           className="flex items-center gap-2 py-[1rem] md:py-[1.75rem] px-[1rem] bg-white"
         >
           <span className="hidden md:inline text-xl font-semibold text-[#333]">
-            <span className="sr-only">{isModalOpen() ? "Close " : "Open "}</span>
+            <span className="sr-only">Open/Close</span>
             Search
           </span>
           <svg

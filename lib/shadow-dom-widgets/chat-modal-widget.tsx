@@ -28,6 +28,7 @@ export type WidgetProps = Partial<ChatModalProps> & {
 
 // Global state to try and fix loosing props after disconnecting/reconnecting the widget. 
 let globalWidgetState: { props: WidgetProps; isOpen: boolean } = { props: {}, isOpen: false };
+let globalWidgetStateListeners: Set<(isOpen: boolean) => void> = new Set();
 let elWidgetInstance: ChatModalWidget | null = null;
 let instanceCounter = 0; // Track how many instances have been created
 
@@ -160,6 +161,8 @@ class ChatModalWidget extends BaseElement {
 
     globalWidgetState.isOpen = nextOpen;
     document.body.style.overflow = nextOpen ? "hidden" : "";
+
+    globalWidgetStateListeners.forEach(listener => listener(nextOpen));
     
     this.render();
   }
@@ -246,9 +249,11 @@ export function setModalProps(props: WidgetProps) {
   modal.props = props;
 }
 
-export function isModalOpen(): boolean {
-  const open = globalWidgetState.isOpen;
-  return open;
+export function onModalStateChange(callback: (isOpen: boolean) => void): () => void {
+  globalWidgetStateListeners.add(callback);
+  return () => {
+    globalWidgetStateListeners.delete(callback);
+  };
 }
 
 export function getModalInstance(): ChatModalWidget | null {

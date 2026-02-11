@@ -28,6 +28,6 @@ declare class ChatModalWidget extends BaseElement {
 }
 export declare function onToggleModal(): void;
 export declare function setModalProps(props: WidgetProps): void;
-export declare function isModalOpen(): boolean;
+export declare function onModalStateChange(callback: (isOpen: boolean) => void): () => void;
 export declare function getModalInstance(): ChatModalWidget | null;
 export { ChatModalWidget };

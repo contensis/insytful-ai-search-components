@@ -1,23 +1,23 @@
-import p, { createContext as He, useState as te, useRef as Z, useEffect as Y, useCallback as oe, useMemo as Ve, useContext as Ue, forwardRef as st } from "react";
-import $e from "react-dom";
+import p, { createContext as Ve, useState as te, useRef as Z, useEffect as Y, useCallback as oe, useMemo as Ue, useContext as We, forwardRef as lt } from "react";
+import De from "react-dom";
 var Te = function() {
   return Te = Object.assign || function(t) {
     for (var e, r = 1, n = arguments.length; r < n; r++) for (var o in e = arguments[r]) Object.prototype.hasOwnProperty.call(e, o) && (t[o] = e[o]);
     return t;
   }, Te.apply(this, arguments);
-}, Ce, lt = function(t) {
+}, Ce, ct = function(t) {
   var e;
   t ? (function(r) {
     if (r) for (; r.lastChild; ) r.lastChild.remove();
   })(typeof t == "string" ? document.getElementById(t) : t) : (e = document.querySelector(".grecaptcha-badge")) && e.parentNode && document.body.removeChild(e.parentNode);
-}, ct = function(t, e) {
-  lt(e), window.___grecaptcha_cfg = void 0;
+}, ut = function(t, e) {
+  ct(e), window.___grecaptcha_cfg = void 0;
   var r = document.querySelector("#" + t);
   r && r.remove(), (function() {
     var n = document.querySelector('script[src^="https://www.gstatic.com/recaptcha/releases"]');
     n && n.remove();
   })();
-}, ut = function(t) {
+}, dt = function(t) {
   var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, u = t.scriptProps, d = u === void 0 ? {} : u, m = d.nonce, f = m === void 0 ? "" : m, g = d.defer, T = g !== void 0 && g, C = d.async, R = C !== void 0 && C, F = d.id, A = F === void 0 ? "" : F, M = d.appendTo, O = A || "google-recaptcha-v3";
   if ((function(x) {
     return !!document.querySelector("#" + x);
@@ -28,17 +28,17 @@ var Te = function() {
     })({ useEnterprise: a, useRecaptchaNet: i }), N = document.createElement("script");
     N.id = O, N.src = I + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), f && (N.nonce = f), N.defer = !!T, N.async = !!R, N.onload = o, (M === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(N);
   }
-}, De = function(t) {
+}, je = function(t) {
   typeof process < "u" && process.env && process.env.NODE_ENV !== "production" || console.warn(t);
 };
 (function(t) {
   t.SCRIPT_NOT_AVAILABLE = "Recaptcha script is not available";
 })(Ce || (Ce = {}));
-var Me = He({ executeRecaptcha: function() {
+var Oe = Ve({ executeRecaptcha: function() {
   throw Error("GoogleReCaptcha Context has not yet been implemented, if you are using useGoogleReCaptcha hook, make sure the hook is called inside component wrapped by GoogleRecaptchaProvider");
 } });
-Me.Consumer;
-function dt(t) {
+Oe.Consumer;
+function ft(t) {
   var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, u = t.language, d = t.container, m = t.children, f = te(null), g = f[0], T = f[1], C = Z(e), R = JSON.stringify(a), F = JSON.stringify(d?.parameters);
   Y((function() {
     if (e) {
@@ -46,34 +46,34 @@ function dt(t) {
       return window[I] = function() {
         var N = n ? window.grecaptcha.enterprise : window.grecaptcha, x = Te({ badge: "inline", size: "invisible", sitekey: e }, d?.parameters || {});
         C.current = N.render(d?.element, x);
-      }, ut({ render: d?.element ? "explicit" : e, onLoadCallbackName: I, useEnterprise: n, useRecaptchaNet: i, scriptProps: a, language: u, onLoad: function() {
+      }, dt({ render: d?.element ? "explicit" : e, onLoadCallbackName: I, useEnterprise: n, useRecaptchaNet: i, scriptProps: a, language: u, onLoad: function() {
         if (window && window.grecaptcha) {
           var N = n ? window.grecaptcha.enterprise : window.grecaptcha;
           N.ready((function() {
             T(N);
           }));
-        } else De("<GoogleRecaptchaProvider /> " + Ce.SCRIPT_NOT_AVAILABLE);
+        } else je("<GoogleRecaptchaProvider /> " + Ce.SCRIPT_NOT_AVAILABLE);
       } }), function() {
-        ct(O, d?.element);
+        ut(O, d?.element);
       };
     }
-    De("<GoogleReCaptchaProvider /> recaptcha key not provided");
+    je("<GoogleReCaptchaProvider /> recaptcha key not provided");
   }), [n, i, R, F, u, e, d?.element]);
   var A = oe((function(O) {
     if (!g || !g.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
     return g.execute(C.current, { action: O });
-  }), [g, C]), M = Ve((function() {
+  }), [g, C]), M = Ue((function() {
     return { executeRecaptcha: g ? A : void 0, container: d?.element };
   }), [A, g, d?.element]);
-  return p.createElement(Me.Provider, { value: M }, m);
+  return p.createElement(Oe.Provider, { value: M }, m);
 }
-var ft = function() {
-  return Ue(Me);
+var pt = function() {
+  return We(Oe);
 };
-function We(t, e) {
+function Ze(t, e) {
   return t(e = { exports: {} }, e.exports), e.exports;
 }
-var $ = typeof Symbol == "function" && Symbol.for, Re = $ ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = $ ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, le = $ ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, ce = $ ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ue = $ ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, de = $ ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, fe = $ ? /* @__PURE__ */ Symbol.for("react.context") : 60110, Fe = $ ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, ve = $ ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, pe = $ ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, me = $ ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, pt = $ ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, he = $ ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, be = $ ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, mt = $ ? /* @__PURE__ */ Symbol.for("react.block") : 60121, ht = $ ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, bt = $ ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, vt = $ ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+var $ = typeof Symbol == "function" && Symbol.for, Re = $ ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = $ ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, le = $ ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, ce = $ ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ue = $ ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, de = $ ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, fe = $ ? /* @__PURE__ */ Symbol.for("react.context") : 60110, Fe = $ ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, ve = $ ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, pe = $ ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, me = $ ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, mt = $ ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, he = $ ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, be = $ ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, ht = $ ? /* @__PURE__ */ Symbol.for("react.block") : 60121, bt = $ ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, vt = $ ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, gt = $ ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
 function B(t) {
   if (typeof t == "object" && t !== null) {
     var e = t.$$typeof;
@@ -104,12 +104,12 @@ function B(t) {
     }
   }
 }
-function je(t) {
+function ze(t) {
   return B(t) === ve;
 }
-var gt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvider: de, Element: Re, ForwardRef: pe, Fragment: le, Lazy: be, Memo: he, Portal: Pe, Profiler: ue, StrictMode: ce, Suspense: me, isAsyncMode: function(t) {
-  return je(t) || B(t) === Fe;
-}, isConcurrentMode: je, isContextConsumer: function(t) {
+var yt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvider: de, Element: Re, ForwardRef: pe, Fragment: le, Lazy: be, Memo: he, Portal: Pe, Profiler: ue, StrictMode: ce, Suspense: me, isAsyncMode: function(t) {
+  return ze(t) || B(t) === Fe;
+}, isConcurrentMode: ze, isContextConsumer: function(t) {
   return B(t) === fe;
 }, isContextProvider: function(t) {
   return B(t) === de;
@@ -132,8 +132,8 @@ var gt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
 }, isSuspense: function(t) {
   return B(t) === me;
 }, isValidElementType: function(t) {
-  return typeof t == "string" || typeof t == "function" || t === le || t === ve || t === ue || t === ce || t === me || t === pt || typeof t == "object" && t !== null && (t.$$typeof === be || t.$$typeof === he || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === pe || t.$$typeof === ht || t.$$typeof === bt || t.$$typeof === vt || t.$$typeof === mt);
-}, typeOf: B }, k = We((function(t, e) {
+  return typeof t == "string" || typeof t == "function" || t === le || t === ve || t === ue || t === ce || t === me || t === mt || typeof t == "object" && t !== null && (t.$$typeof === be || t.$$typeof === he || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === pe || t.$$typeof === bt || t.$$typeof === vt || t.$$typeof === gt || t.$$typeof === ht);
+}, typeOf: B }, k = Ze((function(t, e) {
   process.env.NODE_ENV !== "production" && (function() {
     var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, u = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, f = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, g = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, T = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, C = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, R = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, F = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, A = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, M = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, O = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, I = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, N = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
     function x(c) {
@@ -151,14 +151,14 @@ var gt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
               case C:
                 return P;
               default:
-                var L = P && P.$$typeof;
-                switch (L) {
+                var z = P && P.$$typeof;
+                switch (z) {
                   case m:
                   case T:
                   case A:
                   case F:
                   case d:
-                    return L;
+                    return z;
                   default:
                     return w;
                 }
@@ -168,11 +168,11 @@ var gt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
         }
       }
     }
-    var D = f, q = g, U = m, G = d, H = n, z = T, _ = i, E = A, s = F, l = o, h = u, y = a, v = C, S = !1;
+    var D = f, q = g, U = m, G = d, H = n, j = T, _ = i, E = A, s = F, l = o, h = u, y = a, v = C, S = !1;
     function b(c) {
       return x(c) === g;
     }
-    e.AsyncMode = D, e.ConcurrentMode = q, e.ContextConsumer = U, e.ContextProvider = G, e.Element = H, e.ForwardRef = z, e.Fragment = _, e.Lazy = E, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = y, e.Suspense = v, e.isAsyncMode = function(c) {
+    e.AsyncMode = D, e.ConcurrentMode = q, e.ContextConsumer = U, e.ContextProvider = G, e.Element = H, e.ForwardRef = j, e.Fragment = _, e.Lazy = E, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = y, e.Suspense = v, e.isAsyncMode = function(c) {
       return S || (S = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), b(c) || x(c) === f;
     }, e.isConcurrentMode = b, e.isContextConsumer = function(c) {
       return x(c) === m;
@@ -200,19 +200,19 @@ var gt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
       return typeof c == "string" || typeof c == "function" || c === i || c === g || c === u || c === a || c === C || c === R || typeof c == "object" && c !== null && (c.$$typeof === A || c.$$typeof === F || c.$$typeof === d || c.$$typeof === m || c.$$typeof === T || c.$$typeof === O || c.$$typeof === I || c.$$typeof === N || c.$$typeof === M);
     }, e.typeOf = x;
   })();
-})), ze = (k.AsyncMode, k.ConcurrentMode, k.ContextConsumer, k.ContextProvider, k.Element, k.ForwardRef, k.Fragment, k.Lazy, k.Memo, k.Portal, k.Profiler, k.StrictMode, k.Suspense, k.isAsyncMode, k.isConcurrentMode, k.isContextConsumer, k.isContextProvider, k.isElement, k.isForwardRef, k.isFragment, k.isLazy, k.isMemo, k.isPortal, k.isProfiler, k.isStrictMode, k.isSuspense, k.isValidElementType, k.typeOf, We((function(t) {
-  process.env.NODE_ENV === "production" ? t.exports = gt : t.exports = k;
-}))), yt = { $$typeof: !0, compare: !0, defaultProps: !0, displayName: !0, propTypes: !0, type: !0 }, Le = {};
-Le[ze.ForwardRef] = { $$typeof: !0, render: !0, defaultProps: !0, displayName: !0, propTypes: !0 }, Le[ze.Memo] = yt;
-var Ze = He(null), Xe = function(t) {
-  var e = t.children, r = t.baseUrl, n = r === void 0 ? "http://rag-api.insytful.com/api/v1" : r, o = t.config, i = t.recaptchaSiteKey, a = p.createElement(Ze.Provider, { value: { config: o, baseUrl: n, recaptchaSiteKey: i } }, e);
-  return i ? p.createElement(dt, { reCaptchaKey: i, scriptProps: { async: !0, defer: !0, appendTo: "head" } }, a) : a;
-}, wt = function() {
-  var t = Ue(Ze);
+})), Le = (k.AsyncMode, k.ConcurrentMode, k.ContextConsumer, k.ContextProvider, k.Element, k.ForwardRef, k.Fragment, k.Lazy, k.Memo, k.Portal, k.Profiler, k.StrictMode, k.Suspense, k.isAsyncMode, k.isConcurrentMode, k.isContextConsumer, k.isContextProvider, k.isElement, k.isForwardRef, k.isFragment, k.isLazy, k.isMemo, k.isPortal, k.isProfiler, k.isStrictMode, k.isSuspense, k.isValidElementType, k.typeOf, Ze((function(t) {
+  process.env.NODE_ENV === "production" ? t.exports = yt : t.exports = k;
+}))), wt = { $$typeof: !0, compare: !0, defaultProps: !0, displayName: !0, propTypes: !0, type: !0 }, Be = {};
+Be[Le.ForwardRef] = { $$typeof: !0, render: !0, defaultProps: !0, displayName: !0, propTypes: !0 }, Be[Le.Memo] = wt;
+var Xe = Ve(null), Je = function(t) {
+  var e = t.children, r = t.baseUrl, n = r === void 0 ? "http://rag-api.insytful.com/api/v1" : r, o = t.config, i = t.recaptchaSiteKey, a = p.createElement(Xe.Provider, { value: { config: o, baseUrl: n, recaptchaSiteKey: i } }, e);
+  return i ? p.createElement(ft, { reCaptchaKey: i, scriptProps: { async: !0, defer: !0, appendTo: "head" } }, a) : a;
+}, xt = function() {
+  var t = We(Xe);
   if (!t) throw new Error("useRAGConfig must be used within RAGProvider");
   return t;
 };
-function xt(t, e, r, n) {
+function St(t, e, r, n) {
   return new (r || (r = Promise))(function(o, i) {
     function a(m) {
       try {
@@ -237,7 +237,7 @@ function xt(t, e, r, n) {
     d((n = n.apply(t, [])).next());
   });
 }
-function St(t, e) {
+function Et(t, e) {
   var r, n, o, i = { label: 0, sent: function() {
     if (1 & o[0]) throw o[1];
     return o[1];
@@ -300,17 +300,17 @@ function re(t, e, r) {
   if (r || arguments.length === 2) for (var n, o = 0, i = e.length; o < i; o++) !n && o in e || (n || (n = Array.prototype.slice.call(e, 0, o)), n[o] = e[o]);
   return t.concat(n || Array.prototype.slice.call(e));
 }
-var Et = function(t, e, r) {
+var kt = function(t, e, r) {
   var n = te([]), o = n[0], i = n[1], a = te(!1), u = a[0], d = a[1], m = te(null), f = m[0], g = m[1], T = oe(function(C, R) {
-    return xt(void 0, void 0, void 0, function() {
-      var F, A, M, O, I, N, x, D, q, U, G, H, z, _, E, s, l, h, y, v, S, b;
-      return St(this, function(c) {
+    return St(void 0, void 0, void 0, function() {
+      var F, A, M, O, I, N, x, D, q, U, G, H, j, _, E, s, l, h, y, v, S, b;
+      return Et(this, function(c) {
         switch (c.label) {
           case 0:
             if (F = null, !r) return [3, 5];
             c.label = 1;
           case 1:
-            return c.trys.push([1, 4, , 5]), (A = ft().executeRecaptcha) ? [4, A("rag_search")] : [3, 3];
+            return c.trys.push([1, 4, , 5]), (A = pt().executeRecaptcha) ? [4, A("rag_search")] : [3, 3];
           case 2:
             F = c.sent(), c.label = 3;
           case 3:
@@ -338,7 +338,7 @@ var Et = function(t, e, r) {
             throw new Error(D);
           case 13:
             if (x.headers.has("X-Session-Id") && localStorage.setItem("rag-session-id", x.headers.get("X-Session-Id")), !x.body) throw new Error("No response body");
-            U = x.body.getReader(), G = new TextDecoder("utf-8"), H = "", z = "", i(function(w) {
+            U = x.body.getReader(), G = new TextDecoder("utf-8"), H = "", j = "", i(function(w) {
               return re(re([], w, !0), [{ role: "assistant", content: "" }], !1);
             }), c.label = 14;
           case 14:
@@ -350,9 +350,9 @@ var Et = function(t, e, r) {
 `), H = s.pop() || "", l = 0, h = s; l < h.length; l++) {
               if ((y = h[l]).startsWith("event: done")) return d(!1), [2];
               if (y.startsWith("data:")) try {
-                (v = JSON.parse(y.replace("data: ", ""))) != null && v.content && (z += v.content, i(function(w) {
+                (v = JSON.parse(y.replace("data: ", ""))) != null && v.content && (j += v.content, i(function(w) {
                   var P = re([], w, !0);
-                  return P[P.length - 1] = { role: "assistant", content: z }, P;
+                  return P[P.length - 1] = { role: "assistant", content: j }, P;
                 }));
               } catch (w) {
                 console.error("Failed to parse SSE chunk", w, y);
@@ -370,17 +370,17 @@ var Et = function(t, e, r) {
     });
   }, [t, e]);
   return { messages: o, loading: u, error: f, ask: T };
-}, Je = function() {
-  var t = wt(), e = t.config, r = t.baseUrl, n = t.recaptchaSiteKey;
-  return Et(e, r, n);
+}, Ye = function() {
+  var t = xt(), e = t.config, r = t.baseUrl, n = t.recaptchaSiteKey;
+  return kt(e, r, n);
 };
-function Oe(t) {
+function $e(t) {
   let e = 0;
   for (let r = 0; r < t.length; r++)
     e = (e << 5) - e + t.charCodeAt(r), e |= 0;
   return e.toString();
 }
-function kt({ logo: t, message: e, renderContent: r }) {
+function Nt({ logo: t, message: e, renderContent: r }) {
   const n = e.role === "user", o = e.content.split(`
 
 `);
@@ -389,13 +389,13 @@ function kt({ logo: t, message: e, renderContent: r }) {
     {
       className: `insytful-search-message-content-outer max-w-[80%] text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${n ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]" : "text-[var(--insytful-text-default)]"}`
     },
-    n ? e.content : /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0" }, t && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 md:hidden" }, t), /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content" }, r ? r(o[0]) : o[0])), o.slice(1).map((i, a) => /* @__PURE__ */ p.createElement("div", { key: `${a}-${Oe(i)}`, className: "insytful-search-message-content mt-[8px]" }, r ? r(i) : i)))
+    n ? e.content : /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0" }, t && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 md:hidden" }, t), /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content" }, r ? r(o[0]) : o[0])), o.slice(1).map((i, a) => /* @__PURE__ */ p.createElement("div", { key: `${a}-${$e(i)}`, className: "insytful-search-message-content mt-[8px]" }, r ? r(i) : i)))
   ));
 }
-function Nt({ logo: t }) {
+function Tt({ logo: t }) {
   return /* @__PURE__ */ p.createElement("li", { className: "insytful-search-typing-indicator flex items-start gap-[24px]" }, t && /* @__PURE__ */ p.createElement("div", { className: "flex-shrink-0" }, t), /* @__PURE__ */ p.createElement("div", { className: "text-[20px] leading-[32px] text-[var(--insytful-text-secondary)]" }, /* @__PURE__ */ p.createElement("span", null, "Searching...")));
 }
-function Tt({
+function Ct({
   messages: t,
   loading: e,
   logo: r,
@@ -414,17 +414,17 @@ function Tt({
       className: "insytful-search-messages-outer flex-1 overflow-y-auto w-full max-w-[784px] mx-auto min-h-0"
     },
     /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, t.map((i, a) => /* @__PURE__ */ p.createElement(
-      kt,
+      Nt,
       {
-        key: `${a}-${Oe(i.content)}`,
+        key: `${a}-${$e(i.content)}`,
         renderContent: n,
         logo: r,
         message: i
       }
-    )), e && /* @__PURE__ */ p.createElement(Nt, { logo: r }))
+    )), e && /* @__PURE__ */ p.createElement(Tt, { logo: r }))
   );
 }
-function Ct({
+function Rt({
   hasMessages: t,
   isClassic: e,
   onSend: r,
@@ -533,7 +533,7 @@ function Ct({
     )
   );
 }
-function Rt({ message: t, onSwitchClassic: e }) {
+function Pt({ message: t, onSwitchClassic: e }) {
   return /* @__PURE__ */ p.createElement("div", { className: "insytful-search-error-callout-inner flex items-start flex-col gap-[12px] p-[16px] border-l-[4px] border-[var(--insytful-callout-error-border)] bg-[var(--insytful-callout-error-bg)] rounded-r-lg max-w-full w-full" }, /* @__PURE__ */ p.createElement("div", { className: "insytful-search-error-callout-content flex-1 gap-[8px] flex flex-col" }, /* @__PURE__ */ p.createElement("p", { className: "insytful-search-error-callout-title font-semibold text-[var(--insytful-callout-error-text)] m-0" }, "Something went wrong"), /* @__PURE__ */ p.createElement("p", { className: "insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0" }, t)), /* @__PURE__ */ p.createElement(
     "button",
     {
@@ -543,13 +543,13 @@ function Rt({ message: t, onSwitchClassic: e }) {
     "Try classic?"
   ));
 }
-function Pt({ suggestions: t, onSend: e }) {
-  return !t || t.length <= 0 ? null : /* @__PURE__ */ p.createElement("div", { className: "insytful-search-suggestions-outer w-full overflow-hidden self-stretch" }, /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center p-0 m-0 list-none" }, t?.map((r, n) => /* @__PURE__ */ p.createElement("li", { key: `${n}-${Oe(r)}`, className: "insytful-search-suggestions-item flex-shrink-0" }, /* @__PURE__ */ p.createElement("button", { type: "button", onClick: () => e(r), className: "insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] rwhitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[12px] " }, r)))));
+function Ft({ suggestions: t, onSend: e }) {
+  return !t || t.length <= 0 ? null : /* @__PURE__ */ p.createElement("div", { className: "insytful-search-suggestions-outer w-full overflow-hidden self-stretch" }, /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center p-0 m-0 list-none" }, t?.map((r, n) => /* @__PURE__ */ p.createElement("li", { key: `${n}-${$e(r)}`, className: "insytful-search-suggestions-item flex-shrink-0" }, /* @__PURE__ */ p.createElement("button", { type: "button", onClick: () => e(r), className: "insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] rwhitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[12px] " }, r)))));
 }
-function Ft({ title: t, text: e }) {
+function It({ title: t, text: e }) {
   return !t && !e ? null : /* @__PURE__ */ p.createElement("div", { className: "insytful-search-empty-state-inner mx-auto text-center flex flex-col gap-[8px] md:gap-[16px]" }, t && /* @__PURE__ */ p.createElement("p", { className: "insytful-search-empty-state-title text-[var(--insytful-text-default)] text-[24px] leading-[32px] font-bold md:text-[56px] md:leading-[64px]" }, t), e && /* @__PURE__ */ p.createElement("p", { className: "insytful-search-empty-state-text text-[var(--insytful-text-default)] text-[14px] leading-[24px] font-normal md:text-[20px] md:leading-[32px]" }, e));
 }
-const Ye = st(
+const Qe = lt(
   function({
     title: e,
     text: r,
@@ -579,7 +579,7 @@ const Ye = st(
         role: "dialog",
         "aria-modal": "true",
         "aria-labelledby": "insytful-search-heading",
-        className: "insytful-search-dialog-outer absolute inset-0 flex flex-col bg-white overflow-hidden min-h-0 py-8 px-4",
+        className: "insytful-search-dialog-outer absolute inset-0 flex flex-col bg-white overflow-y-auto  min-h-0 py-8 px-4",
         style: {
           zIndex: 999,
           top: I,
@@ -595,18 +595,18 @@ const Ye = st(
       /* @__PURE__ */ p.createElement(
         "div",
         {
-          className: "insytful-search-dialog-inner max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center gap-[24px] md:gap-[32px]"
+          className: "insytful-search-dialog-inner min-h-[400px] max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center gap-[24px] md:gap-[32px]"
         },
         /* @__PURE__ */ p.createElement("h1", { id: "insytful-search-heading", className: "sr-only" }, "AI Search"),
         (T.length === 0 || m && T.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px] flex justify-start md:justify-center items-center overflow-auto" }, /* @__PURE__ */ p.createElement(
-          Ft,
+          It,
           {
             title: m ? o?.title ?? "" : e,
             text: m ? o?.text ?? "" : r
           }
         )),
         !m && /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement(
-          Tt,
+          Ct,
           {
             logo: u,
             messages: T,
@@ -614,7 +614,7 @@ const Ye = st(
             renderMarkdown: d
           }
         ), R && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto" }, /* @__PURE__ */ p.createElement(
-          Rt,
+          Pt,
           {
             onSwitchClassic: () => {
               g();
@@ -623,7 +623,7 @@ const Ye = st(
           }
         ))),
         /* @__PURE__ */ p.createElement(
-          Ct,
+          Rt,
           {
             isClassic: m,
             onSend: F,
@@ -632,7 +632,7 @@ const Ye = st(
           }
         ),
         (T.length === 0 || m && T.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]" }, /* @__PURE__ */ p.createElement(
-          Pt,
+          Ft,
           {
             onSend: F,
             suggestions: m ? o?.suggestions ?? [] : i
@@ -643,9 +643,9 @@ const Ye = st(
     );
   }
 );
-Ye.displayName = "ChatModalDialog";
-var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] *)", "textarea:not([inert]):not([inert] *)", "a[href]:not([inert]):not([inert] *)", "button:not([inert]):not([inert] *)", "[tabindex]:not(slot):not([inert]):not([inert] *)", "audio[controls]:not([inert]):not([inert] *)", "video[controls]:not([inert]):not([inert] *)", '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', "details>summary:first-of-type:not([inert]):not([inert] *)", "details:not([inert]):not([inert] *)"], ge = /* @__PURE__ */ Qe.join(","), et = typeof Element > "u", Q = et ? function() {
-} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector, ye = !et && Element.prototype.getRootNode ? function(t) {
+Qe.displayName = "ChatModalDialog";
+var et = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] *)", "textarea:not([inert]):not([inert] *)", "a[href]:not([inert]):not([inert] *)", "button:not([inert]):not([inert] *)", "[tabindex]:not(slot):not([inert]):not([inert] *)", "audio[controls]:not([inert]):not([inert] *)", "video[controls]:not([inert]):not([inert] *)", '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', "details>summary:first-of-type:not([inert]):not([inert] *)", "details:not([inert]):not([inert] *)"], ge = /* @__PURE__ */ et.join(","), tt = typeof Element > "u", Q = tt ? function() {
+} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector, ye = !tt && Element.prototype.getRootNode ? function(t) {
   var e;
   return t == null || (e = t.getRootNode) === null || e === void 0 ? void 0 : e.call(t);
 } : function(t) {
@@ -657,10 +657,10 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   // lookup upward, in case it is not defined.
   (typeof e.closest == "function" ? e.closest("[inert]") : we(e.parentNode));
   return a;
-}, It = function(e) {
+}, At = function(e) {
   var r, n = e == null || (r = e.getAttribute) === null || r === void 0 ? void 0 : r.call(e, "contenteditable");
   return n === "" || n === "true";
-}, tt = function(e, r, n) {
+}, rt = function(e, r, n) {
   if (we(e))
     return [];
   var o = Array.prototype.slice.apply(e.querySelectorAll(ge));
@@ -691,31 +691,31 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
       }
   }
   return o;
-}, rt = function(e) {
+}, nt = function(e) {
   return !isNaN(parseInt(e.getAttribute("tabindex"), 10));
 }, J = function(e) {
   if (!e)
     throw new Error("No node provided");
-  return e.tabIndex < 0 && (/^(AUDIO|VIDEO|DETAILS)$/.test(e.tagName) || It(e)) && !rt(e) ? 0 : e.tabIndex;
-}, At = function(e, r) {
-  var n = J(e);
-  return n < 0 && r && !rt(e) ? 0 : n;
+  return e.tabIndex < 0 && (/^(AUDIO|VIDEO|DETAILS)$/.test(e.tagName) || At(e)) && !nt(e) ? 0 : e.tabIndex;
 }, Mt = function(e, r) {
+  var n = J(e);
+  return n < 0 && r && !nt(e) ? 0 : n;
+}, Ot = function(e, r) {
   return e.tabIndex === r.tabIndex ? e.documentOrder - r.documentOrder : e.tabIndex - r.tabIndex;
-}, nt = function(e) {
+}, at = function(e) {
   return e.tagName === "INPUT";
-}, Ot = function(e) {
-  return nt(e) && e.type === "hidden";
 }, $t = function(e) {
+  return at(e) && e.type === "hidden";
+}, Dt = function(e) {
   var r = e.tagName === "DETAILS" && Array.prototype.slice.apply(e.children).some(function(n) {
     return n.tagName === "SUMMARY";
   });
   return r;
-}, Dt = function(e, r) {
+}, jt = function(e, r) {
   for (var n = 0; n < e.length; n++)
     if (e[n].checked && e[n].form === r)
       return e[n];
-}, jt = function(e) {
+}, zt = function(e) {
   if (!e.name)
     return !0;
   var r = e.form || ye(e), n = function(u) {
@@ -729,13 +729,13 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
     } catch (a) {
       return console.error("Looks like you have a radio button with a name attribute containing invalid CSS selector characters and need the CSS.escape polyfill: %s", a.message), !1;
     }
-  var i = Dt(o, e.form);
+  var i = jt(o, e.form);
   return !i || i === e;
-}, zt = function(e) {
-  return nt(e) && e.type === "radio";
 }, Lt = function(e) {
-  return zt(e) && !jt(e);
+  return at(e) && e.type === "radio";
 }, Bt = function(e) {
+  return Lt(e) && !zt(e);
+}, _t = function(e) {
   var r, n = e && ye(e), o = (r = n) === null || r === void 0 ? void 0 : r.host, i = !1;
   if (n && n !== e) {
     var a, u, d;
@@ -745,10 +745,10 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
     }
   }
   return i;
-}, Be = function(e) {
+}, _e = function(e) {
   var r = e.getBoundingClientRect(), n = r.width, o = r.height;
   return n === 0 && o === 0;
-}, _t = function(e, r) {
+}, Kt = function(e, r) {
   var n = r.displayCheck, o = r.getShadowRoot;
   if (n === "full-native" && "checkVisibility" in e) {
     var i = e.checkVisibility({
@@ -778,19 +778,19 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
       for (var d = e; e; ) {
         var m = e.parentElement, f = ye(e);
         if (m && !m.shadowRoot && o(m) === !0)
-          return Be(e);
+          return _e(e);
         e.assignedSlot ? e = e.assignedSlot : !m && f !== e.ownerDocument ? e = f.host : e = m;
       }
       e = d;
     }
-    if (Bt(e))
+    if (_t(e))
       return !e.getClientRects().length;
     if (n !== "legacy-full")
       return !0;
   } else if (n === "non-zero-area")
-    return Be(e);
+    return _e(e);
   return !1;
-}, Kt = function(e) {
+}, qt = function(e) {
   if (/^(INPUT|BUTTON|SELECT|TEXTAREA)$/.test(e.tagName))
     for (var r = e.parentElement; r; ) {
       if (r.tagName === "FIELDSET" && r.disabled) {
@@ -805,17 +805,17 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
     }
   return !1;
 }, Se = function(e, r) {
-  return !(r.disabled || Ot(r) || _t(r, e) || // For a details element with a summary, the summary element gets the focus
-  $t(r) || Kt(r));
+  return !(r.disabled || $t(r) || Kt(r, e) || // For a details element with a summary, the summary element gets the focus
+  Dt(r) || qt(r));
 }, Ie = function(e, r) {
-  return !(Lt(r) || J(r) < 0 || !Se(e, r));
-}, qt = function(e) {
+  return !(Bt(r) || J(r) < 0 || !Se(e, r));
+}, Gt = function(e) {
   var r = parseInt(e.getAttribute("tabindex"), 10);
   return !!(isNaN(r) || r >= 0);
-}, at = function(e) {
+}, ot = function(e) {
   var r = [], n = [];
   return e.forEach(function(o, i) {
-    var a = !!o.scopeParent, u = a ? o.scopeParent : o, d = At(u, a), m = a ? at(o.candidates) : u;
+    var a = !!o.scopeParent, u = a ? o.scopeParent : o, d = Mt(u, a), m = a ? ot(o.candidates) : u;
     d === 0 ? a ? r.push.apply(r, m) : r.push(u) : n.push({
       documentOrder: i,
       tabIndex: d,
@@ -823,47 +823,47 @@ var Qe = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
       isScope: a,
       content: m
     });
-  }), n.sort(Mt).reduce(function(o, i) {
+  }), n.sort(Ot).reduce(function(o, i) {
     return i.isScope ? o.push.apply(o, i.content) : o.push(i.content), o;
   }, []).concat(r);
-}, Gt = function(e, r) {
+}, Ht = function(e, r) {
   r = r || {};
   var n;
   return r.getShadowRoot ? n = xe([e], r.includeContainer, {
     filter: Ie.bind(null, r),
     flatten: !1,
     getShadowRoot: r.getShadowRoot,
-    shadowRootFilter: qt
-  }) : n = tt(e, r.includeContainer, Ie.bind(null, r)), at(n);
-}, Ht = function(e, r) {
+    shadowRootFilter: Gt
+  }) : n = rt(e, r.includeContainer, Ie.bind(null, r)), ot(n);
+}, Vt = function(e, r) {
   r = r || {};
   var n;
   return r.getShadowRoot ? n = xe([e], r.includeContainer, {
     filter: Se.bind(null, r),
     flatten: !0,
     getShadowRoot: r.getShadowRoot
-  }) : n = tt(e, r.includeContainer, Se.bind(null, r)), n;
+  }) : n = rt(e, r.includeContainer, Se.bind(null, r)), n;
 }, ee = function(e, r) {
   if (r = r || {}, !e)
     throw new Error("No node provided");
   return Q.call(e, ge) === !1 ? !1 : Ie(r, e);
-}, Vt = /* @__PURE__ */ Qe.concat("iframe:not([inert]):not([inert] *)").join(","), Ne = function(e, r) {
+}, Ut = /* @__PURE__ */ et.concat("iframe:not([inert]):not([inert] *)").join(","), Ne = function(e, r) {
   if (r = r || {}, !e)
     throw new Error("No node provided");
-  return Q.call(e, Vt) === !1 ? !1 : Se(r, e);
+  return Q.call(e, Ut) === !1 ? !1 : Se(r, e);
 };
 function Ae(t, e) {
   (e == null || e > t.length) && (e = t.length);
   for (var r = 0, n = Array(e); r < e; r++) n[r] = t[r];
   return n;
 }
-function Ut(t) {
+function Wt(t) {
   if (Array.isArray(t)) return Ae(t);
 }
-function _e(t, e) {
+function Ke(t, e) {
   var r = typeof Symbol < "u" && t[Symbol.iterator] || t["@@iterator"];
   if (!r) {
-    if (Array.isArray(t) || (r = ot(t)) || e) {
+    if (Array.isArray(t) || (r = it(t)) || e) {
       r && (t = r);
       var n = 0, o = function() {
       };
@@ -907,22 +907,22 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     }
   };
 }
-function Wt(t, e, r) {
-  return (e = Qt(e)) in t ? Object.defineProperty(t, e, {
+function Zt(t, e, r) {
+  return (e = er(e)) in t ? Object.defineProperty(t, e, {
     value: r,
     enumerable: !0,
     configurable: !0,
     writable: !0
   }) : t[e] = r, t;
 }
-function Zt(t) {
+function Xt(t) {
   if (typeof Symbol < "u" && t[Symbol.iterator] != null || t["@@iterator"] != null) return Array.from(t);
 }
-function Xt() {
+function Jt() {
   throw new TypeError(`Invalid attempt to spread non-iterable instance.
 In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`);
 }
-function Ke(t, e) {
+function qe(t, e) {
   var r = Object.keys(t);
   if (Object.getOwnPropertySymbols) {
     var n = Object.getOwnPropertySymbols(t);
@@ -932,21 +932,21 @@ function Ke(t, e) {
   }
   return r;
 }
-function qe(t) {
+function Ge(t) {
   for (var e = 1; e < arguments.length; e++) {
     var r = arguments[e] != null ? arguments[e] : {};
-    e % 2 ? Ke(Object(r), !0).forEach(function(n) {
-      Wt(t, n, r[n]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(t, Object.getOwnPropertyDescriptors(r)) : Ke(Object(r)).forEach(function(n) {
+    e % 2 ? qe(Object(r), !0).forEach(function(n) {
+      Zt(t, n, r[n]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(t, Object.getOwnPropertyDescriptors(r)) : qe(Object(r)).forEach(function(n) {
       Object.defineProperty(t, n, Object.getOwnPropertyDescriptor(r, n));
     });
   }
   return t;
 }
-function Jt(t) {
-  return Ut(t) || Zt(t) || ot(t) || Xt();
+function Yt(t) {
+  return Wt(t) || Xt(t) || it(t) || Jt();
 }
-function Yt(t, e) {
+function Qt(t, e) {
   if (typeof t != "object" || !t) return t;
   var r = t[Symbol.toPrimitive];
   if (r !== void 0) {
@@ -956,11 +956,11 @@ function Yt(t, e) {
   }
   return (e === "string" ? String : Number)(t);
 }
-function Qt(t) {
-  var e = Yt(t, "string");
+function er(t) {
+  var e = Qt(t, "string");
   return typeof e == "symbol" ? e : e + "";
 }
-function ot(t, e) {
+function it(t, e) {
   if (t) {
     if (typeof t == "string") return Ae(t, e);
     var r = {}.toString.call(t).slice(8, -1);
@@ -994,17 +994,17 @@ var V = {
     var r = V.getActiveTrap(e);
     r && !r._isManuallyPaused() && r._setPausedState(!1);
   }
-}, er = function(e) {
-  return e.tagName && e.tagName.toLowerCase() === "input" && typeof e.select == "function";
 }, tr = function(e) {
+  return e.tagName && e.tagName.toLowerCase() === "input" && typeof e.select == "function";
+}, rr = function(e) {
   return e?.key === "Escape" || e?.key === "Esc" || e?.keyCode === 27;
 }, ie = function(e) {
   return e?.key === "Tab" || e?.keyCode === 9;
-}, rr = function(e) {
-  return ie(e) && !e.shiftKey;
 }, nr = function(e) {
+  return ie(e) && !e.shiftKey;
+}, ar = function(e) {
   return ie(e) && e.shiftKey;
-}, Ge = function(e) {
+}, He = function(e) {
   return setTimeout(e, 0);
 }, ne = function(e) {
   for (var r = arguments.length, n = new Array(r > 1 ? r - 1 : 0), o = 1; o < r; o++)
@@ -1012,14 +1012,14 @@ var V = {
   return typeof e == "function" ? e.apply(void 0, n) : e;
 }, se = function(e) {
   return e.target.shadowRoot && typeof e.composedPath == "function" ? e.composedPath()[0] : e.target;
-}, ar = [], or = function(e, r) {
-  var n = r?.document || document, o = r?.trapStack || ar, i = qe({
+}, or = [], ir = function(e, r) {
+  var n = r?.document || document, o = r?.trapStack || or, i = Ge({
     returnFocusOnDeactivate: !0,
     escapeDeactivates: !0,
     delayInitialFocus: !0,
     isolateSubtrees: !1,
-    isKeyForward: rr,
-    isKeyBackward: nr
+    isKeyForward: nr,
+    isKeyBackward: ar
   }, r), a = {
     // containers given to createFocusTrap()
     /** @type {Array<HTMLElement>} */
@@ -1076,7 +1076,7 @@ var V = {
     });
   }, f = function(s) {
     var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, h = l.hasFallback, y = h === void 0 ? !1 : h, v = l.params, S = v === void 0 ? [] : v, b = i[s];
-    if (typeof b == "function" && (b = b.apply(void 0, Jt(S))), b === !0 && (b = void 0), !b) {
+    if (typeof b == "function" && (b = b.apply(void 0, Yt(S))), b === !0 && (b = void 0), !b) {
       if (b === void 0 || b === !1)
         return b;
       throw new Error("`".concat(s, "` was specified but was not a node, or did not return a node"));
@@ -1111,7 +1111,7 @@ var V = {
     return s;
   }, T = function() {
     if (a.containerGroups = a.containers.map(function(s) {
-      var l = Gt(s, i.tabbableOptions), h = Ht(s, i.tabbableOptions), y = l.length > 0 ? l[0] : void 0, v = l.length > 0 ? l[l.length - 1] : void 0, S = h.find(function(w) {
+      var l = Ht(s, i.tabbableOptions), h = Vt(s, i.tabbableOptions), y = l.length > 0 ? l[0] : void 0, v = l.length > 0 ? l[l.length - 1] : void 0, S = h.find(function(w) {
         return ee(w);
       }), b = h.slice().reverse().find(function(w) {
         return ee(w);
@@ -1148,12 +1148,12 @@ var V = {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode: function(P) {
-          var L = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, K = l.indexOf(P);
-          return K < 0 ? L ? h.slice(h.indexOf(P) + 1).find(function(X) {
+          var z = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, K = l.indexOf(P);
+          return K < 0 ? z ? h.slice(h.indexOf(P) + 1).find(function(X) {
             return ee(X);
           }) : h.slice(0, h.indexOf(P)).reverse().find(function(X) {
             return ee(X);
-          }) : l[K + (L ? 1 : -1)];
+          }) : l[K + (z ? 1 : -1)];
         }
       };
     }), a.tabbableGroups = a.containerGroups.filter(function(s) {
@@ -1176,7 +1176,7 @@ var V = {
       }
       s.focus({
         preventScroll: !!i.preventScroll
-      }), a.mostRecentlyFocusedNode = s, er(s) && s.select();
+      }), a.mostRecentlyFocusedNode = s, tr(s) && s.select();
     }
   }, F = function(s) {
     var l = f("setReturnFocus", {
@@ -1197,8 +1197,8 @@ var V = {
           return l === ke;
         });
         if (w < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !ee(l, i.tabbableOptions) && !c.nextTabbableNode(l, !1)) && (w = b), w >= 0) {
-          var P = w === 0 ? a.tabbableGroups.length - 1 : w - 1, L = a.tabbableGroups[P];
-          S = J(l) >= 0 ? L.lastTabbableNode : L.lastDomTabbableNode;
+          var P = w === 0 ? a.tabbableGroups.length - 1 : w - 1, z = a.tabbableGroups[P];
+          S = J(l) >= 0 ? z.lastTabbableNode : z.lastDomTabbableNode;
         } else ie(h) || (S = c.nextTabbableNode(l, !1));
       } else {
         var K = a.tabbableGroups.findIndex(function(Ee) {
@@ -1273,13 +1273,13 @@ var V = {
   }, N = function(s) {
     (i.isKeyForward(s) || i.isKeyBackward(s)) && I(s, i.isKeyBackward(s));
   }, x = function(s) {
-    tr(s) && ne(i.escapeDeactivates, s) !== !1 && (s.preventDefault(), u.deactivate());
+    rr(s) && ne(i.escapeDeactivates, s) !== !1 && (s.preventDefault(), u.deactivate());
   }, D = function(s) {
     var l = se(s);
     m(l, s) >= 0 || ne(i.clickOutsideDeactivates, s) || ne(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
   }, q = function() {
     if (a.active)
-      return V.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? Ge(function() {
+      return V.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? He(function() {
         R(g());
       }) : R(g()), n.addEventListener("focusin", O, !0), n.addEventListener("mousedown", M, {
         capture: !0,
@@ -1296,7 +1296,7 @@ var V = {
       }), n.addEventListener("keydown", x), u;
   }, U = function(s) {
     a.active && !a.paused && u._setSubtreeIsolation(!1), a.adjacentElements.clear(), a.alreadySilent.clear();
-    var l = /* @__PURE__ */ new Set(), h = /* @__PURE__ */ new Set(), y = _e(s), v;
+    var l = /* @__PURE__ */ new Set(), h = /* @__PURE__ */ new Set(), y = Ke(s), v;
     try {
       for (y.s(); !(v = y.n()).done; ) {
         var S = v.value;
@@ -1305,16 +1305,16 @@ var V = {
           l.add(c);
           var w = c.parentElement, P = [];
           w ? P = w.children : !w && b && (P = c.getRootNode().children, w = c.getRootNode().host, b = typeof ShadowRoot < "u" && w.getRootNode() instanceof ShadowRoot);
-          var L = _e(P), K;
+          var z = Ke(P), K;
           try {
-            for (L.s(); !(K = L.n()).done; ) {
+            for (z.s(); !(K = z.n()).done; ) {
               var X = K.value;
               h.add(X);
             }
           } catch (W) {
-            L.e(W);
+            z.e(W);
           } finally {
-            L.f();
+            z.f();
           }
           c = w;
         }
@@ -1338,9 +1338,9 @@ var V = {
       });
     });
     l && R(g());
-  }, z = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(H) : void 0, _ = function() {
-    z && (z.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
-      z.observe(s, {
+  }, j = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(H) : void 0, _ = function() {
+    j && (j.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
+      j.observe(s, {
         subtree: !0,
         childList: !0
       });
@@ -1381,7 +1381,7 @@ var V = {
     deactivate: function(s) {
       if (!a.active)
         return this;
-      var l = qe({
+      var l = Ge({
         onDeactivate: i.onDeactivate,
         onPostDeactivate: i.onPostDeactivate,
         checkCanReturnFocus: i.checkCanReturnFocus
@@ -1390,7 +1390,7 @@ var V = {
       var h = d(l, "onDeactivate"), y = d(l, "onPostDeactivate"), v = d(l, "checkCanReturnFocus"), S = d(l, "returnFocus", "returnFocusOnDeactivate");
       h?.();
       var b = function() {
-        Ge(function() {
+        He(function() {
           S && R(F(a.nodeFocusedBeforeActivation)), y?.();
         });
       };
@@ -1438,13 +1438,13 @@ var V = {
     }
   }), u.updateContainerElements(e), u;
 };
-function ir({
+function sr({
   isClassic: t,
   ask: e,
   classic: r,
   onClose: n
 }) {
-  return Ve(() => t ? async (o) => {
+  return Ue(() => t ? async (o) => {
     n?.();
     const i = encodeURIComponent(o), a = r?.path ?? "/search?q=";
     r?.onNavigate ? r.onNavigate(`${a}${i}`) : window.location.href = `${a}${i}`;
@@ -1452,7 +1452,7 @@ function ir({
     await e(o);
   }, [t, e, r?.path, r?.onNavigate]);
 }
-function sr(t, e) {
+function lr(t, e) {
   const r = Z(null), n = Z(null), o = Z(null), i = Z(t), a = Z(e);
   return Y(() => {
     i.current = t;
@@ -1461,7 +1461,7 @@ function sr(t, e) {
   }, [e]), Y(() => {
     if (!e || !r.current) return;
     n.current = document.activeElement;
-    const u = or(r.current, {
+    const u = ir(r.current, {
       fallbackFocus: r.current,
       initialFocus: () => r.current?.querySelector("textarea") ?? r.current,
       escapeDeactivates: !0,
@@ -1482,7 +1482,7 @@ function sr(t, e) {
     elModalRef: r
   };
 }
-const lr = (t) => {
+const cr = (t) => {
   const e = window.fetch;
   return window.fetch = async (r, n) => {
     if ((typeof r == "string" ? r : r.toString()).includes(t)) {
@@ -1636,12 +1636,12 @@ data: {}
     }
     return e(r, n);
   }, () => window.fetch = e;
-}, cr = (t = !1, e) => {
+}, ur = (t = !1, e) => {
   Y(() => {
-    !t || !e || lr(e);
+    !t || !e || cr(e);
   }, [t, e]);
 };
-function ur(t) {
+function dr(t) {
   const {
     title: e,
     text: r,
@@ -1657,18 +1657,18 @@ function ur(t) {
     isDevMode: T = !1,
     options: C
   } = t;
-  cr(T, C?.baseUrl ?? "");
-  const { messages: R, loading: F, error: A, ask: M } = Je(), O = Z(f);
+  ur(T, C?.baseUrl ?? "");
+  const { messages: R, loading: F, error: A, ask: M } = Ye(), O = Z(f);
   Y(() => {
     O.current = f;
   }, [f]);
-  const I = oe((z) => {
-    g?.(z);
-  }, [g]), [N, x] = te(!1), D = oe(() => x((z) => !z), []), q = oe(() => {
+  const I = oe((j) => {
+    g?.(j);
+  }, [g]), [N, x] = te(!1), D = oe(() => x((j) => !j), []), q = oe(() => {
     x(!0);
-  }, []), { elModalRef: U } = sr(I, f), G = ir({ isClassic: N, ask: M, classic: o, onClose: () => I(!1) });
+  }, []), { elModalRef: U } = lr(I, f), G = sr({ isClassic: N, ask: M, classic: o, onClose: () => I(!1) });
   return f && /* @__PURE__ */ p.createElement(
-    Ye,
+    Qe,
     {
       title: e,
       text: r,
@@ -1690,11 +1690,11 @@ function ur(t) {
     }
   );
 }
-const dr = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media(min-width:640px){.container{max-width:640px}}@media(min-width:768px){.container{max-width:768px}}@media(min-width:1024px){.container{max-width:1024px}}@media(min-width:1280px){.container{max-width:1280px}}@media(min-width:1536px){.container{max-width:1536px}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.pointer-events-none{pointer-events:none}.static{position:static}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-4px\\]{inset:-4px}.left-\\[16px\\]{left:16px}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.inline{display:inline}.flex{display:flex}.hidden{display:none}.h-\\[48px\\]{height:48px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[62px\\]{min-height:62px}.min-h-screen{min-height:100vh}.w-\\[48px\\]{width:48px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[24px\\]{min-width:24px}.max-w-\\[52em\\]{max-width:52em}.max-w-\\[740px\\]{max-width:740px}.max-w-\\[750px\\]{max-width:750px}.max-w-\\[784px\\]{max-width:784px}.max-w-\\[80\\%\\]{max-width:80%}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-nowrap{flex-wrap:nowrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.self-stretch{align-self:stretch}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:.25rem}.rounded-\\[12px\\]{border-radius:12px}.rounded-\\[16px\\]{border-radius:16px}.rounded-full{border-radius:9999px}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-semantic-search-field-stroke\\)\\]{border-color:var(--insytful-semantic-search-field-stroke)}.bg-\\[\\#2E3339\\]{--tw-bg-opacity: 1;background-color:rgb(46 51 57 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity: 1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-3{padding:.75rem}.p-\\[16px\\]{padding:16px}.px-1{padding-left:.25rem;padding-right:.25rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[1rem\\]{padding-left:1rem;padding-right:1rem}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-0\\.5{padding-top:.125rem;padding-bottom:.125rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[1rem\\]{padding-top:1rem;padding-bottom:1rem}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pl-6{padding-left:1.5rem}.pl-\\[48px\\]{padding-left:48px}.pr-\\[64px\\]{padding-right:64px}.text-center{text-align:center}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[20px\\]{font-size:20px}.text-\\[24px\\]{font-size:24px}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.text-\\[\\#1D70B8\\]{--tw-text-opacity: 1;color:rgb(29 112 184 / var(--tw-text-opacity, 1))}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[\\#505A5F\\]{--tw-text-opacity: 1;color:rgb(80 90 95 / var(--tw-text-opacity, 1))}.text-\\[\\#6B6B6B\\]{--tw-text-opacity: 1;color:rgb(107 107 107 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-text-secondary\\)\\]{color:var(--insytful-text-secondary)}.text-\\[var\\(--lib-color-text-secondary\\)\\]{color:var(--lib-color-text-secondary)}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.opacity-60{opacity:.6}.outline-none{outline:2px solid transparent;outline-offset:2px}.blur-\\[14px\\]{--tw-blur: blur(14px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}:host,:root,.insytful-root{--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5}.hover\\:bg-\\[\\#\\#2E3339\\]:hover{background-color:##2E3339}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#1D70B8\\]\\/80:hover{color:#1d70b8cc}.hover\\:text-blue-900:hover{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:inline{display:inline}.md\\:hidden{display:none}.md\\:flex-wrap{flex-wrap:wrap}.md\\:items-center{align-items:center}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:gap-\\[40px\\]{gap:40px}.md\\:overflow-x-visible{overflow-x:visible}.md\\:px-\\[0\\.875rem\\]{padding-left:.875rem;padding-right:.875rem}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[1\\.75rem\\]{padding-top:1.75rem;padding-bottom:1.75rem}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}';
-let j = { props: {}, isOpen: !1 }, ae = null, fr = 0;
-const pr = typeof HTMLElement < "u" ? HTMLElement : class {
+const fr = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media(min-width:640px){.container{max-width:640px}}@media(min-width:768px){.container{max-width:768px}}@media(min-width:1024px){.container{max-width:1024px}}@media(min-width:1280px){.container{max-width:1280px}}@media(min-width:1536px){.container{max-width:1536px}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.pointer-events-none{pointer-events:none}.static{position:static}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-4px\\]{inset:-4px}.left-\\[16px\\]{left:16px}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.inline{display:inline}.flex{display:flex}.hidden{display:none}.h-\\[48px\\]{height:48px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[400px\\]{min-height:400px}.min-h-\\[62px\\]{min-height:62px}.min-h-screen{min-height:100vh}.w-\\[48px\\]{width:48px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[24px\\]{min-width:24px}.max-w-\\[52em\\]{max-width:52em}.max-w-\\[740px\\]{max-width:740px}.max-w-\\[750px\\]{max-width:750px}.max-w-\\[784px\\]{max-width:784px}.max-w-\\[80\\%\\]{max-width:80%}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-nowrap{flex-wrap:nowrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.self-stretch{align-self:stretch}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:.25rem}.rounded-\\[12px\\]{border-radius:12px}.rounded-\\[16px\\]{border-radius:16px}.rounded-full{border-radius:9999px}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-semantic-search-field-stroke\\)\\]{border-color:var(--insytful-semantic-search-field-stroke)}.bg-\\[\\#2E3339\\]{--tw-bg-opacity: 1;background-color:rgb(46 51 57 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity: 1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-3{padding:.75rem}.p-\\[16px\\]{padding:16px}.px-1{padding-left:.25rem;padding-right:.25rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[1rem\\]{padding-left:1rem;padding-right:1rem}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-0\\.5{padding-top:.125rem;padding-bottom:.125rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[1rem\\]{padding-top:1rem;padding-bottom:1rem}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pl-6{padding-left:1.5rem}.pl-\\[48px\\]{padding-left:48px}.pr-\\[64px\\]{padding-right:64px}.text-center{text-align:center}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[20px\\]{font-size:20px}.text-\\[24px\\]{font-size:24px}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.text-\\[\\#1D70B8\\]{--tw-text-opacity: 1;color:rgb(29 112 184 / var(--tw-text-opacity, 1))}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[\\#505A5F\\]{--tw-text-opacity: 1;color:rgb(80 90 95 / var(--tw-text-opacity, 1))}.text-\\[\\#6B6B6B\\]{--tw-text-opacity: 1;color:rgb(107 107 107 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-text-secondary\\)\\]{color:var(--insytful-text-secondary)}.text-\\[var\\(--lib-color-text-secondary\\)\\]{color:var(--lib-color-text-secondary)}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.opacity-60{opacity:.6}.outline-none{outline:2px solid transparent;outline-offset:2px}.blur-\\[14px\\]{--tw-blur: blur(14px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}:host,:root,.insytful-root{--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5}.hover\\:bg-\\[\\#\\#2E3339\\]:hover{background-color:##2E3339}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#1D70B8\\]\\/80:hover{color:#1d70b8cc}.hover\\:text-blue-900:hover{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:inline{display:inline}.md\\:hidden{display:none}.md\\:flex-wrap{flex-wrap:wrap}.md\\:items-center{align-items:center}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:gap-\\[40px\\]{gap:40px}.md\\:overflow-x-visible{overflow-x:visible}.md\\:px-\\[0\\.875rem\\]{padding-left:.875rem;padding-right:.875rem}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[1\\.75rem\\]{padding-top:1.75rem;padding-bottom:1.75rem}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}';
+let L = { props: {}, isOpen: !1 }, Me = /* @__PURE__ */ new Set(), ae = null, pr = 0;
+const mr = typeof HTMLElement < "u" ? HTMLElement : class {
 };
-class mr extends pr {
+class hr extends mr {
   elMount;
   elPortal;
   elPortalShadowDOM;
@@ -1704,7 +1704,7 @@ class mr extends pr {
   createRootFn;
   instanceId;
   constructor() {
-    if (super(), this.instanceId = ++fr, typeof window > "u" || typeof document > "u") return;
+    if (super(), this.instanceId = ++pr, typeof window > "u" || typeof document > "u") return;
     ae && ae !== this && ae.cleanup();
     try {
       const n = require("react-dom/client");
@@ -1714,34 +1714,34 @@ class mr extends pr {
     }
     this.elPortal = document.createElement("div"), this.elPortal.id = "insytful-ai-modal-portal", this.elPortalShadowDOM = this.elPortal.attachShadow({ mode: "open" });
     const e = document.createElement("style");
-    e.textContent = dr, this.elCustomStyle = document.createElement("style");
+    e.textContent = fr, this.elCustomStyle = document.createElement("style");
     const r = document.createElement("div");
     r.className = "insytful-root", this.elPortalShadowDOM.append(
       e,
       this.elCustomStyle,
       r
-    ), this.elMount = r, j.props.theme && (this.elCustomStyle.textContent = j.props.theme), ae = this;
+    ), this.elMount = r, L.props.theme && (this.elCustomStyle.textContent = L.props.theme), ae = this;
   }
   connectedCallback() {
     if (typeof window > "u" || typeof document > "u") return;
-    document.getElementById("insytful-ai-modal-portal") || document.body.appendChild(this.elPortal), Object.keys(j.props).length > 0 && this.render();
+    document.getElementById("insytful-ai-modal-portal") || document.body.appendChild(this.elPortal), Object.keys(L.props).length > 0 && this.render();
   }
   disconnectedCallback() {
     this.cleanup();
   }
   // Centralized cleanup method
   cleanup() {
-    typeof window > "u" || (this.isReact18 && this.root ? (this.root.unmount(), this.root = void 0) : !this.isReact18 && this.elMount && $e.unmountComponentAtNode(this.elMount), this.elPortal && this.elPortal.parentNode && document.body.removeChild(this.elPortal), j.isOpen = !1, document.body.style.overflow = "");
+    typeof window > "u" || (this.isReact18 && this.root ? (this.root.unmount(), this.root = void 0) : !this.isReact18 && this.elMount && De.unmountComponentAtNode(this.elMount), this.elPortal && this.elPortal.parentNode && document.body.removeChild(this.elPortal), L.isOpen = !1, document.body.style.overflow = "");
   }
   // Simplified props setter - just updates global state
   set props(e) {
-    j.props = {
-      ...j.props,
+    L.props = {
+      ...L.props,
       ...e
     }, e.theme && (this.elCustomStyle.textContent = e.theme), this.render();
   }
   get props() {
-    return j.props;
+    return L.props;
   }
   // Only observe attributes if you're using them via HTML
   static get observedAttributes() {
@@ -1749,26 +1749,26 @@ class mr extends pr {
   }
   onToggle(e) {
     if (typeof window > "u" || typeof document > "u") return;
-    const r = e ?? !j.isOpen;
-    r !== j.isOpen && (j.isOpen = r, document.body.style.overflow = r ? "hidden" : "", this.render());
+    const r = e ?? !L.isOpen;
+    r !== L.isOpen && (L.isOpen = r, document.body.style.overflow = r ? "hidden" : "", Me.forEach((n) => n(r)), this.render());
   }
   render() {
     if (typeof window > "u") return;
     !document.getElementById("insytful-ai-modal-portal") && this.elPortal && (console.warn(`[Insytful #${this.instanceId}] ⚠️ Portal not in DOM, adding it now`), document.body.appendChild(this.elPortal));
-    const { options: r, ...n } = j.props;
+    const { options: r, ...n } = L.props;
     if (!r?.config && !n.isDevMode) {
-      console.warn(`[Insytful #${this.instanceId}] ⚠️ Render skipped - options.config missing and not in dev mode`), console.warn(`[Insytful #${this.instanceId}] Current global state:`, j);
+      console.warn(`[Insytful #${this.instanceId}] ⚠️ Render skipped - options.config missing and not in dev mode`), console.warn(`[Insytful #${this.instanceId}] Current global state:`, L);
       return;
     }
     const o = (u) => {
       this.onToggle(u);
     }, i = /* @__PURE__ */ p.createElement(
-      ur,
+      dr,
       {
         options: r || { config: "" },
         title: n.title ?? "",
         text: n.text ?? "",
-        isOpen: j.isOpen,
+        isOpen: L.isOpen,
         onOpenChange: o,
         suggestions: n.suggestions,
         isDevMode: n.isDevMode,
@@ -1780,7 +1780,7 @@ class mr extends pr {
         logo: n.logo
       }
     ), a = /* @__PURE__ */ p.createElement(
-      Xe,
+      Je,
       {
         key: r?.config || "default",
         config: r?.config || "",
@@ -1788,41 +1788,43 @@ class mr extends pr {
       },
       i
     );
-    this.isReact18 ? (!this.root && this.createRootFn && (this.root = this.createRootFn(this.elMount)), this.root?.render(a)) : $e.render(a, this.elMount);
+    this.isReact18 ? (!this.root && this.createRootFn && (this.root = this.createRootFn(this.elMount)), this.root?.render(a)) : De.render(a, this.elMount);
   }
 }
-function vr() {
-  const t = it();
+function gr() {
+  const t = st();
   if (!t) {
     console.warn("[Insytful] No modal instance found");
     return;
   }
   t.onToggle();
 }
-function gr(t) {
-  const e = it();
+function yr(t) {
+  const e = st();
   if (!e) {
     console.warn("[Insytful] No modal instance found");
     return;
   }
   e.props = t;
 }
-function yr() {
-  return j.isOpen;
+function wr(t) {
+  return Me.add(t), () => {
+    Me.delete(t);
+  };
 }
-function it() {
+function st() {
   return ae;
 }
 typeof window < "u" && typeof customElements < "u" && customElements.define(
   "insytful-ai-chat-modal",
-  mr
+  hr
 );
-const wr = Xe, xr = Je;
+const xr = Je, Sr = Ye;
 export {
-  wr as RAGProvider,
-  it as getModalInstance,
-  yr as isModalOpen,
-  vr as onToggleModal,
-  gr as setModalProps,
-  xr as useRAGConversationContext
+  xr as RAGProvider,
+  st as getModalInstance,
+  wr as onModalStateChange,
+  gr as onToggleModal,
+  yr as setModalProps,
+  Sr as useRAGConversationContext
 };

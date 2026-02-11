@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useRef, useState } from "react";
 import type { WidgetProps } from "../../lib/main";
 import "../../lib/shadow-dom-widgets/chat-modal-widget";

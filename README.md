@@ -56,15 +56,20 @@ function SearchModal() {
 ### Controlling the Modal
 
 ```tsx
-import { onToggleModal, isModalOpen } from 'insytful-ai-search-components';
+import { onToggleModal, onModalStateChange } from 'insytful-ai-search-components';
 
 // Toggle modal open/closed
 <button onClick={() => onToggleModal()}>Toggle Search</button>
 
 // Check if modal is open
-if (isModalOpen()) {
-  console.log('Modal is currently open');
-}
+const [isModalOpen, setModalOpen] = useState<boolean>();
+useEffect(() => {
+  const unsubscribe = onModalStateChange(isOpen => {
+    setModalOpen(isOpen);
+  });
+
+  return unsubscribe;
+}, []);
 ```
 
 ## Advanced Usage
@@ -195,16 +200,21 @@ import { onToggleModal } from 'insytful-ai-search-components';
 <button onClick={() => onToggleModal()}>Open Search</button>
 ```
 
-### `isModalOpen(): boolean`
+### `onModalStateChange(): boolean`
 
 Returns the current open/closed state of the modal.
 
 ```tsx
-import { isModalOpen } from 'insytful-ai-search-components';
+import { onModalStateChange } from 'insytful-ai-search-components';
 
-if (isModalOpen()) {
-  console.log('Modal is open');
-}
+  const [isModalOpen, setModalOpen] = useState<boolean>();
+  useEffect(() => {
+    const unsubscribe = onModalStateChange(isOpen => {
+      setModalOpen(isOpen);
+    });
+
+    return unsubscribe;
+  }, []);
 ```
 
 ### `getModalInstance(): ChatModalWidget | null`
@@ -219,54 +229,3 @@ if (modal) {
   modal.onToggle(true); // Manually open
 }
 ```
-
-## Troubleshooting
-
-### Props not updating after navigation
-
-Use `setModalProps()`:
-
-```tsx
-
-// ✅ Use setModalProps
-setModalProps(newProps);
-```
-
-### Modal not showing after page navigation
-
-Ensure props are set in a `useEffect` that runs after navigation:
-
-```tsx
-useEffect(() => {
-  setModalProps(props);
-}, [props]);
-```
-
-### Styles not applying
-
-Make sure you're passing the theme as an inline string:
-
-```tsx
-import customTheme from './custom.css?inline'; // Note the ?inline
-Always use `setModalProps()` to set props:
-
-```tsx
-import { setModalProps } from 'insytful-ai-search-components';
-
-useEffect(() => {
-  setModalProps(props);
-}, [props]
-## TypeScript
-
-Full TypeScript support included:
-
-```tsx
-import type { WidgetProps } from 'insytful-ai-search-components';
-
-const props: WidgetProps = {
-  title: 'Search',
-  text: 'Ask anything...',
-  options: { config: 'your-config' }
-};
-```
-

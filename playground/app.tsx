@@ -1,3 +1,4 @@
+import React from 'react';
 import { SearchModal } from "./components/modal";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";

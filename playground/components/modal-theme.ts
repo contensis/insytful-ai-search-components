@@ -1,3 +1,4 @@
+import React from 'react';
 export default `
   /* Headings */
   .insytful-search-message-content h1 {
