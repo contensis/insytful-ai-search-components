@@ -6,13 +6,15 @@ export type WidgetProps = Partial<ChatModalProps> & {
     };
     theme?: string;
 };
-declare class ChatModalWidget extends HTMLElement {
+declare const BaseElement: typeof HTMLElement;
+declare class ChatModalWidget extends BaseElement {
     private elMount;
     private elPortal;
     private elPortalShadowDOM;
     private elCustomStyle;
     private _props;
     _isOpen: boolean;
+    private _hasRendered;
     private root?;
     private isReact18;
     private createRootFn?;
@@ -31,4 +33,4 @@ export declare function onOpenModal(): void;
 export declare function onCloseModal(): void;
 export declare function isModalOpen(): boolean;
 export declare function getModalInstance(): ChatModalWidget | null;
-export { ChatModalWidget as ChatModalWidget };
+export { ChatModalWidget };

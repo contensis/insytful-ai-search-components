@@ -1,3 +1,4 @@
+import { default as React } from 'react';
 export interface MessageProps {
     logo?: React.ReactNode;
     message: {
@@ -6,4 +7,4 @@ export interface MessageProps {
     };
     renderContent?: (content: string) => React.ReactNode;
 }
-export declare function Message({ logo, message, renderContent }: MessageProps): import("react/jsx-runtime").JSX.Element;
+export declare function Message({ logo, message, renderContent }: MessageProps): React.JSX.Element;

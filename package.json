@@ -22,16 +22,20 @@
     "README.md",
     "LICENSE"
   ],
+  "main": "./dist/insytful-ai-search-components.js",
   "module": "./dist/insytful-ai-search-components.js",
   "types": "./dist/types/main.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/main.d.ts",
       "import": "./dist/insytful-ai-search-components.js",
+      "require": "./dist/insytful-ai-search-components.js",
       "default": "./dist/insytful-ai-search-components.js"
-    },
-    "./theme.css": "./dist/insytful-ai-search-components.css"
+    }
   },
+  "sideEffects": [
+    "./dist/insytful-ai-search-components.js"
+  ],
   "scripts": {
     "dev": "vite",
     "prebuild": "rimraf dist",

@@ -1,3 +1,4 @@
+import React from "react";
 import { hash } from "../utilities/hash.util";
 
 export interface MessageProps {

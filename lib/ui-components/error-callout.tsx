@@ -1,3 +1,4 @@
+import React from "react";
 import type { ChatModalDialogProps } from "../modal-components/chat-modal-dialog";
 
 interface ErrorCalloutProps {

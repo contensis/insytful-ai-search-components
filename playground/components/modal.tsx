@@ -89,7 +89,7 @@ export const SearchModal = () => {
           "Apply for a blue badge",
           "School term dates",
         ],
-        path: "/q=",
+        path: "/search?term=",
         renderSwitch: (fn) => (
           <div className="text-sm md:text-lg w-full text-center">
             <span className="text-[#505A5F]">Want detailed answers? </span>

@@ -1,5 +1,5 @@
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useRAGConversationContext } from "contensis-rag-react";
-import { useState, useCallback, useEffect, useRef } from "react";
 
 import { ChatModalDialog } from "./chat-modal-dialog";
 import type { ChatModalProps } from "./chat-modal.types";

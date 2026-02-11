@@ -1,5 +1,6 @@
+import { default as React } from 'react';
 interface TypingIndicatorProps {
     logo: React.ReactNode;
 }
-export declare function TypingIndicator({ logo }: TypingIndicatorProps): import("react/jsx-runtime").JSX.Element;
+export declare function TypingIndicator({ logo }: TypingIndicatorProps): React.JSX.Element;
 export {};

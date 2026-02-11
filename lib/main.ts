@@ -8,15 +8,15 @@
  * 2. React Components: Import individual components for custom layouts
  * 
  * The Web Component automatically handles:
- * - Shadow DOM creation and style isolation
+ * - Shadow DOM creation and style isolation  
  * - React rendering using ReactDOM.render() (React 17+ compatible)
- * - Tailwind CSS injection into Shadow DOM
+ * - Tailwind CSS injection into Shadow DOM (loaded inline, no separate import needed)
+ * 
+ * Styles are automatically injected when the web component is used.
  */
 
-// Import and inject Tailwind CSS (compiled at build time)
-import './main.css';
-
 // Web Component registration (auto-registers <insytful-ai-chat-modal> custom element)
+// CSS is bundled inline within the component for automatic Shadow DOM injection
 import "./shadow-dom-widgets/chat-modal-widget";
 
 // Export modal control functions

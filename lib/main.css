@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* Define CSS variables for Shadow DOM and regular DOM contexts */
+:host,
+:root,
+.insytful-root {
   /* Text Colors */
   --insytful-text-default: #333333;
   --insytful-text-muted: #6c6c6c;

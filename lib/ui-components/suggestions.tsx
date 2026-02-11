@@ -1,4 +1,6 @@
+import React from "react";
 import { hash } from "../utilities/hash.util";
+
 interface SuggestionsProps {
   suggestions?: string[];
   onSend: (message: string) => Promise<void>;

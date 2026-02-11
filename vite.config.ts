@@ -16,8 +16,9 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   plugins: [
-    // React plugin with automatic JSX runtime (no need to import React in every file)
-    react({ jsxRuntime: 'automatic' }),
+    // React plugin with classic JSX runtime for React 17 compatibility
+    // This avoids react/jsx-runtime import issues
+    react({ jsxRuntime: 'classic' }),
     // Generate TypeScript declaration files (.d.ts) for consumers
     dts({
       tsconfigPath: resolve(__dirname, "tsconfig.app.json"),
@@ -26,8 +27,16 @@ export default defineConfig({
       insertTypesEntry: true, // Auto-generates types entry in package.json
     }),
   ],
+  // SSR configuration - resolves issues with browser-only code
+  ssr: {
+    noExternal: ['contensis-rag-react'], // Bundle this dependency for SSR compatibility
+  },
   build: {
-    // target: "esnext", 
+    // target: "esnext",
+    // Improve compatibility with Node.js ESM resolution
+    commonjsOptions: {
+      esmExternals: true, // Treat external ESM dependencies correctly
+    },
     // Library mode configuration
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
@@ -58,10 +67,15 @@ export default defineConfig({
         id === 'react-dom' || 
         id === 'react-dom/client' ||  // Optional - only exists in React 18+
         id.startsWith('react/') ||    // Catches react/jsx-runtime, react/jsx-dev-runtime, etc.
+        id.startsWith('react-dom/') || // Catches react-dom subpaths
         id === 'react-markdown' || 
         id === 'rehype-external-links';
       },
       output: { 
+        // Improve inter-module dependencies handling
+        interop: 'auto',
+        // Preserve module structure for better tree-shaking
+        preserveModules: false,
         // Global variable names for externalized dependencies (for UMD builds)
         // Not currently used since we only build ES modules, but required by Rollup
         globals: { 

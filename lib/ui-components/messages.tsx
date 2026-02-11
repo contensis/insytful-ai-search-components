@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Message, type MessageProps } from "./message";
 import { TypingIndicator } from "./typing-indicator";
 import { hash } from "../utilities/hash.util";
