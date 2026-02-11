@@ -29,6 +29,7 @@ export interface ChatModalProps {
     title?: string; // e.g., "You're using classic search"
     text?: string; // e.g., "Start typing to find pages..."
     path: string; // e.g., "/search?q="
+    onNavigate?: (path: string) => void; // Optional custom navigation function
     suggestions?: string[];
     renderSwitch?: (fn: () => void) => React.ReactNode;
   };
@@ -45,6 +46,4 @@ export interface ChatModalProps {
   logo?: React.ReactNode;
 
   renderMarkdown?: (markdown: string) => React.ReactNode;
-
-  styles?: React.CSSProperties;
 }

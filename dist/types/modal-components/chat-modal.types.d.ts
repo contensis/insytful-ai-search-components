@@ -25,6 +25,7 @@ export interface ChatModalProps {
         title?: string;
         text?: string;
         path: string;
+        onNavigate?: (path: string) => void;
         suggestions?: string[];
         renderSwitch?: (fn: () => void) => React.ReactNode;
     };
@@ -37,5 +38,4 @@ export interface ChatModalProps {
     };
     logo?: React.ReactNode;
     renderMarkdown?: (markdown: string) => React.ReactNode;
-    styles?: React.CSSProperties;
 }

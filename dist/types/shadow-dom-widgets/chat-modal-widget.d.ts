@@ -12,31 +12,22 @@ declare class ChatModalWidget extends BaseElement {
     private elPortal;
     private elPortalShadowDOM;
     private elCustomStyle;
-    private _props;
-    _isOpen: boolean;
-    private _hasRendered;
     private root?;
     private isReact18;
     private createRootFn?;
+    private instanceId;
     constructor();
     connectedCallback(): void;
     disconnectedCallback(): void;
+    private cleanup;
     set props(next: WidgetProps);
     get props(): WidgetProps;
-    /**
-     * A static getter method that returns an array of attribute names (strings)
-     * that a custom element wishes to observe for changes
-     */
-    static get observedAttributes(): string[];
-    attributeChangedCallback(name: string, _oldVal: string | null, newVal: string | null): void;
+    static get observedAttributes(): never[];
     onToggle(open?: boolean): void;
     private render;
 }
 export declare function onToggleModal(): void;
-/**
- * Don't need separate open/close functions since onToggle can handle both states
- * but will keep these here if we want to add more specific logic in the future
- */
+export declare function setModalProps(props: WidgetProps): void;
 export declare function isModalOpen(): boolean;
 export declare function getModalInstance(): ChatModalWidget | null;
 export { ChatModalWidget };

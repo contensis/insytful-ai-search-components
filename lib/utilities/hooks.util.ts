@@ -19,6 +19,7 @@ type UseChatSendArgs = {
   isClassic: boolean;  // Classic search mode vs AI conversation mode
   ask: (msg: string) => Promise<void>;  // AI conversation function
   classic?: ChatModalProps["classic"];  // Classic search configuration
+  onClose?: () => void; // Optional callback for when a message is sent (e.g., to close modal)
 };
 
 /**
@@ -30,12 +31,14 @@ type UseChatSendArgs = {
  * @param isClassic - Whether to use classic search mode
  * @param ask - RAG conversation function for AI mode
  * @param classic - Configuration for classic search mode
+ * @param onClose - Optional callback for when the modal should be closed
  * @returns Async function to send a message
  */
 export function useChatSend({
   isClassic,
   ask,
   classic,
+  onClose
 }: UseChatSendArgs): (msg: string) => Promise<void> {
   return useMemo(() => {
     // AI Mode: Send to RAG conversation
@@ -47,11 +50,18 @@ export function useChatSend({
 
     // Classic Mode: Redirect to search results page
     return async (msg: string) => {
+      // Close modal before navigation
+      onClose?.();
+
       const query = encodeURIComponent(msg);
       const path = classic?.path ?? "/search?q=";  // Default to /search?q=
-      window.location.href = `${path}${query}`;
+      if (classic?.onNavigate) {
+        classic.onNavigate(`${path}${query}`);
+      } else {
+        window.location.href = `${path}${query}`;
+      }
     };
-  }, [isClassic, ask, classic?.path]);
+  }, [isClassic, ask, classic?.path, classic?.onNavigate]);
 }
 
 /* ------------------------------------------------------------------ */
@@ -75,26 +85,29 @@ export function useModalFocusTrap(
 
   useEffect(() => {
     if (!isOpen || !elModalRef.current) return;
-
     // Element that was focused before opening the modal, to restore focus on close.
     elpreviousFocusRef.current = document.activeElement as HTMLElement;
 
     const trap = createFocusTrap(elModalRef.current, {
       fallbackFocus: elModalRef.current,
       initialFocus: () => elModalRef.current?.querySelector("textarea") ?? elModalRef.current,
-      escapeDeactivates: true,           // pressing Escape closes modal
+      escapeDeactivates: true,
       allowOutsideClick: true,
       clickOutsideDeactivates: (e) => {
-        // Check if the click target is the close/toggle button
-        // If so, let the button handle the toggle without deactivating the trap first
         const target = e.target as HTMLElement;
         const isToggleButton = target.closest('button')?.textContent?.includes('Open') || 
                                target.closest('button')?.textContent?.includes('Close');
         
-        // Only auto-deactivate if clicking outside AND not on a toggle button
-        return !isToggleButton;
+        const doClose = !isToggleButton;
+        
+        return doClose;
       },
-      onDeactivate: () => setOpen(false),
+      onDeactivate: () => {
+        // Use the ref to get the latest value
+        if (isOpenRef.current) {
+          setOpenRef.current(false);
+        }
+      },
       returnFocusOnDeactivate: false,    
     });
 

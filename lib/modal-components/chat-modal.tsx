@@ -15,7 +15,6 @@ export function ChatModal(props: ChatModalProps) {
     suggestions,
     offsets,
     logo,
-    styles,
     renderSwitch,
     renderMarkdown,
     isOpen = false,
@@ -34,8 +33,7 @@ export function ChatModal(props: ChatModalProps) {
   const isOpenRef = useRef(isOpen);
   useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
   
-  const setOpen = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
-    const nextValue = typeof value === 'function' ? value(isOpen) : value;
+  const setOpen = useCallback((nextValue: boolean) => {
     onOpenChange?.(nextValue);
   }, [onOpenChange]);
 
@@ -48,11 +46,10 @@ export function ChatModal(props: ChatModalProps) {
 
   const { elModalRef } = useModalFocusTrap(setOpen, isOpen);
 
-  const onSend = useChatSend({ isClassic, ask, classic });
+  const onSend = useChatSend({ isClassic, ask, classic, onClose: () => setOpen(false) });
 
   const modal = isOpen && (
     <ChatModalDialog
-      styles={styles}
       title={title}
       text={text}
       disclaimer={disclaimer}
