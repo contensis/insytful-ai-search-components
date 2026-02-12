@@ -63,7 +63,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         role="dialog"
         aria-modal="true"
         aria-labelledby="insytful-search-heading"
-        className="insytful-search-dialog-outer absolute inset-0 flex flex-col bg-white overflow-y-auto  min-h-0 py-8 px-4"
+        className="insytful-search-dialog-outer absolute inset-0 flex flex-col bg-white overflow-y-auto  min-h-0 py-8 "
         style={
           {
             zIndex: 999,
@@ -79,7 +79,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         }
       >
         <div
-          className={`insytful-search-dialog-inner min-h-[400px] max-w-[52em] w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center gap-[24px] md:gap-[32px]`}
+          className={`insytful-search-dialog-inner min-h-[400px] px-4 w-full mx-auto flex flex-col min-h-0 h-full justify-start md:justify-center gap-[24px]`}
         >
           <h1 id="insytful-search-heading" className="sr-only">
             AI Search
@@ -101,6 +101,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
                 messages={messages}
                 loading={loading}
                 renderMarkdown={renderMarkdown}
+                onSwitchClassic={onSwitchClassic}
               />
               {error && (
                 <div className="insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto">

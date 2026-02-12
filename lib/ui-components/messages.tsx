@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Message, type MessageProps } from "./message";
 import { TypingIndicator } from "./typing-indicator";
 import { hash } from "../utilities/hash.util";
+import { ResponseFeedback } from "./response-feedback";
+import type { ChatModalDialogProps } from "../modal-components/chat-modal-dialog";
 
 
 interface MessagesProps {
@@ -9,6 +11,7 @@ interface MessagesProps {
   loading: boolean;
   logo?: React.ReactNode;
   renderMarkdown?: (markdown: string) => React.ReactNode;
+  onSwitchClassic:  ChatModalDialogProps["onSwitch"];
 }
 
 export function Messages({
@@ -16,23 +19,16 @@ export function Messages({
   loading,
   logo,
   renderMarkdown,
+  onSwitchClassic,
 }: MessagesProps) {
-  const elMessagesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    elMessagesRef.current?.scrollTo({
-      top: elMessagesRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [loading]);
-
   if (!messages || messages.length === 0) return null;
 
   return (
+    <div className="insytful-search-messages-container-scroll overflow-y-auto min-h-0 flex-1 ">
     <div
-      ref={elMessagesRef}
-      className="insytful-search-messages-outer flex-1 overflow-y-auto w-full max-w-[784px] mx-auto min-h-0"
+      className="insytful-search-messages-outer w-full max-w-[784px] mx-auto "
     >
+
       <ul className="insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
         {messages.map((message, i) => (
           <Message
@@ -43,7 +39,9 @@ export function Messages({
           />
         ))}
         {loading && <TypingIndicator logo={logo} />}
+        {!loading && <ResponseFeedback onSwitchClassic={onSwitchClassic} />}
       </ul>
+    </div>
     </div>
   );
 }

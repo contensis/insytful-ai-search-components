@@ -5,7 +5,8 @@ import { Logo } from "./logo";
 
 export const Header = () => {
   return (
-    <header className="bg-gray-800 text-white pl-6 flex items-center justify-between gap-4">
+    <header className="bg-gray-800 text-white">
+      <div className="max-w-[1524px] m-full mx-auto pl-6 flex items-center justify-between gap-4">
       <div className="flex-shrink-0">
         <Logo />
       </div>
@@ -53,6 +54,7 @@ export const Header = () => {
             />
           </svg>
         </button>
+      </div>
       </div>
     </header>
   );
