@@ -26,9 +26,8 @@ export function Messages({
   return (
     <div className="insytful-search-messages-container-scroll overflow-y-auto min-h-0 flex-1 ">
     <div
-      className="insytful-search-messages-outer w-full max-w-[784px] mx-auto "
+      className="insytful-search-messages-outer w-full max-w-[784px] mx-auto"
     >
-
       <ul className="insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
         {messages.map((message, i) => (
           <Message
@@ -38,7 +37,7 @@ export function Messages({
             message={message}
           />
         ))}
-        {loading && <TypingIndicator logo={logo} />}
+        {loading &&  messages.length <= 1 && <TypingIndicator logo={logo} />}
         {!loading && <ResponseFeedback onSwitchClassic={onSwitchClassic} />}
       </ul>
     </div>
