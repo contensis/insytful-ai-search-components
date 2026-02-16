@@ -5,8 +5,9 @@ interface MessagesProps {
     messages: MessageProps["message"][];
     loading: boolean;
     logo?: React.ReactNode;
+    error?: ChatModalDialogProps['error'];
     renderMarkdown?: (markdown: string) => React.ReactNode;
     onSwitchClassic: ChatModalDialogProps["onSwitch"];
 }
-export declare function Messages({ messages, loading, logo, renderMarkdown, onSwitchClassic, }: MessagesProps): React.JSX.Element | null;
+export declare function Messages({ messages, loading, logo, error, renderMarkdown, onSwitchClassic, }: MessagesProps): React.JSX.Element | null;
 export {};

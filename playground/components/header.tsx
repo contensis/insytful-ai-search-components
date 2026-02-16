@@ -5,7 +5,7 @@ import { Logo } from "./logo";
 
 export const Header = () => {
   return (
-    <header className="bg-gray-800 text-white">
+    <header className="bg-gray-800 text-white" data-insytful-modal-offset>
       <div className="max-w-[1524px] m-full mx-auto pl-6 flex items-center justify-between gap-4">
       <div className="flex-shrink-0">
         <Logo />

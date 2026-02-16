@@ -37,7 +37,7 @@
     "./dist/insytful-ai-search-components.js"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "prebuild": "rimraf dist",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
