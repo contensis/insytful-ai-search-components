@@ -5,7 +5,7 @@ interface MessagesProps {
     messages: MessageProps["message"][];
     loading: boolean;
     logo?: React.ReactNode;
-    error?: ChatModalDialogProps['error'];
+    error?: ChatModalDialogProps["error"];
     renderMarkdown?: (markdown: string) => React.ReactNode;
     onSwitchClassic: ChatModalDialogProps["onSwitch"];
 }

@@ -9,7 +9,7 @@ interface MessagesProps {
   messages: MessageProps["message"][];
   loading: boolean;
   logo?: React.ReactNode;
-  error?: ChatModalDialogProps['error'];
+  error?: ChatModalDialogProps["error"];
   renderMarkdown?: (markdown: string) => React.ReactNode;
   onSwitchClassic: ChatModalDialogProps["onSwitch"];
 }
@@ -45,7 +45,9 @@ export function Messages({
 
     const buffer = 40;
     const onScroll = () => {
-      const atBottomNow = container.scrollTop + container.clientHeight >= container.scrollHeight - buffer;
+      const atBottomNow =
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - buffer;
       setBottom(atBottomNow);
 
       if (!loading && atBottomNow) hasHitBottomAfterLoadRef.current = true;
@@ -56,10 +58,42 @@ export function Messages({
     return () => container.removeEventListener("scroll", onScroll);
   }, [messages, loading]);
 
-  if (!messages || messages.length === 0) return null;
-
   const doShowMask = isOverflowing && !atBottom;
-  const doShowIcon = isOverflowing && (loading ? !atBottom : !hasHitBottomAfterLoadRef.current && !atBottom);
+  const doShowIcon =
+    isOverflowing &&
+    (loading ? !atBottom : !hasHitBottomAfterLoadRef.current && !atBottom);
+
+  const [isSearching, setShowSearching] = useState(false);
+
+  useEffect(() => {
+    if (!messages || messages.length === 0) {
+      setShowSearching(false);
+      return;
+    }
+
+    const isLastMessage = messages[messages.length - 1];
+
+    const isLastMessageTheUser = isLastMessage?.role === "user";
+    const isAIPending =
+      loading && (!isLastMessage || isLastMessage.role === "user");
+
+    setShowSearching(isLastMessageTheUser && isAIPending);
+  }, [messages, loading]);
+
+
+  useEffect(() => {
+    if (isSearching) {
+      const container = elContainerRef.current;
+      if (!container) return;
+      
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [isSearching]);
+
+  if (!messages || messages.length === 0) return null;
 
   return (
     <div className="flex-1 min-h-0 relative w-full max-w-full">
@@ -81,8 +115,10 @@ export function Messages({
                 message={message}
               />
             ))}
-            {loading && messages.length <= 1 && <TypingIndicator logo={logo} />}
-            {!loading && !error && <ResponseFeedback onSwitchClassic={onSwitchClassic} />}
+            {isSearching && <TypingIndicator logo={logo} />}
+            {!loading && !error && (
+              <ResponseFeedback onSwitchClassic={onSwitchClassic} />
+            )}
           </ul>
         </div>
       </div>

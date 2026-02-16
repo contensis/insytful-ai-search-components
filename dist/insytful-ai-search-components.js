@@ -1,4 +1,4 @@
-import f, { createContext as Ue, useState as X, useRef as Y, useEffect as V, useCallback as oe, useMemo as Ve, useContext as Ye, forwardRef as lt } from "react";
+import f, { createContext as Ue, useState as Y, useRef as W, useEffect as G, useCallback as oe, useMemo as Ve, useContext as Ye, forwardRef as lt } from "react";
 import De from "react-dom";
 var Te = function() {
   return Te = Object.assign || function(t) {
@@ -18,15 +18,15 @@ var Te = function() {
     n && n.remove();
   })();
 }, dt = function(t) {
-  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, u = t.scriptProps, d = u === void 0 ? {} : u, m = d.nonce, p = m === void 0 ? "" : m, b = d.defer, T = b !== void 0 && b, R = d.async, x = R !== void 0 && R, N = d.id, F = N === void 0 ? "" : N, A = d.appendTo, M = F || "google-recaptcha-v3";
+  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, u = t.scriptProps, d = u === void 0 ? {} : u, m = d.nonce, p = m === void 0 ? "" : m, b = d.defer, N = b !== void 0 && b, R = d.async, T = R !== void 0 && R, F = d.id, y = F === void 0 ? "" : F, P = d.appendTo, A = y || "google-recaptcha-v3";
   if ((function(k) {
     return !!document.querySelector("#" + k);
-  })(M)) o();
+  })(A)) o();
   else {
     var O = (function(k) {
       return "https://www." + (k.useRecaptchaNet ? "recaptcha.net" : "google.com") + "/recaptcha/" + (k.useEnterprise ? "enterprise.js" : "api.js");
-    })({ useEnterprise: a, useRecaptchaNet: i }), P = document.createElement("script");
-    P.id = M, P.src = O + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), p && (P.nonce = p), P.defer = !!T, P.async = !!x, P.onload = o, (A === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(P);
+    })({ useEnterprise: a, useRecaptchaNet: i }), I = document.createElement("script");
+    I.id = A, I.src = O + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), p && (I.nonce = p), I.defer = !!N, I.async = !!T, I.onload = o, (P === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(I);
   }
 }, ze = function(t) {
   typeof process < "u" && process.env && process.env.NODE_ENV !== "production" || console.warn(t);
@@ -39,33 +39,33 @@ var Oe = Ue({ executeRecaptcha: function() {
 } });
 Oe.Consumer;
 function ft(t) {
-  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, u = t.language, d = t.container, m = t.children, p = X(null), b = p[0], T = p[1], R = Y(e), x = JSON.stringify(a), N = JSON.stringify(d?.parameters);
-  V((function() {
+  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, u = t.language, d = t.container, m = t.children, p = Y(null), b = p[0], N = p[1], R = W(e), T = JSON.stringify(a), F = JSON.stringify(d?.parameters);
+  G((function() {
     if (e) {
-      var M = a?.id || "google-recaptcha-v3", O = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
+      var A = a?.id || "google-recaptcha-v3", O = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
       return window[O] = function() {
-        var P = n ? window.grecaptcha.enterprise : window.grecaptcha, k = Te({ badge: "inline", size: "invisible", sitekey: e }, d?.parameters || {});
-        R.current = P.render(d?.element, k);
+        var I = n ? window.grecaptcha.enterprise : window.grecaptcha, k = Te({ badge: "inline", size: "invisible", sitekey: e }, d?.parameters || {});
+        R.current = I.render(d?.element, k);
       }, dt({ render: d?.element ? "explicit" : e, onLoadCallbackName: O, useEnterprise: n, useRecaptchaNet: i, scriptProps: a, language: u, onLoad: function() {
         if (window && window.grecaptcha) {
-          var P = n ? window.grecaptcha.enterprise : window.grecaptcha;
-          P.ready((function() {
-            T(P);
+          var I = n ? window.grecaptcha.enterprise : window.grecaptcha;
+          I.ready((function() {
+            N(I);
           }));
         } else ze("<GoogleRecaptchaProvider /> " + Ce.SCRIPT_NOT_AVAILABLE);
       } }), function() {
-        ut(M, d?.element);
+        ut(A, d?.element);
       };
     }
     ze("<GoogleReCaptchaProvider /> recaptcha key not provided");
-  }), [n, i, x, N, u, e, d?.element]);
-  var F = oe((function(M) {
+  }), [n, i, T, F, u, e, d?.element]);
+  var y = oe((function(A) {
     if (!b || !b.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
-    return b.execute(R.current, { action: M });
-  }), [b, R]), A = Ve((function() {
-    return { executeRecaptcha: b ? F : void 0, container: d?.element };
-  }), [F, b, d?.element]);
-  return f.createElement(Oe.Provider, { value: A }, m);
+    return b.execute(R.current, { action: A });
+  }), [b, R]), P = Ve((function() {
+    return { executeRecaptcha: b ? y : void 0, container: d?.element };
+  }), [y, b, d?.element]);
+  return f.createElement(Oe.Provider, { value: P }, m);
 }
 var pt = function() {
   return Ye(Oe);
@@ -135,44 +135,44 @@ var yt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
   return typeof t == "string" || typeof t == "function" || t === le || t === ve || t === ue || t === ce || t === me || t === mt || typeof t == "object" && t !== null && (t.$$typeof === be || t.$$typeof === he || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === pe || t.$$typeof === bt || t.$$typeof === vt || t.$$typeof === gt || t.$$typeof === ht);
 }, typeOf: K }, C = We((function(t, e) {
   process.env.NODE_ENV !== "production" && (function() {
-    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, u = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, p = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, b = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, T = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, R = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, x = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, N = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, F = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, A = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, M = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, O = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, P = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, u = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, p = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, b = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, N = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, R = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, T = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, F = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, y = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, P = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, A = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, O = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, I = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
     function k(c) {
       if (typeof c == "object" && c !== null) {
-        var w = c.$$typeof;
-        switch (w) {
+        var x = c.$$typeof;
+        switch (x) {
           case n:
-            var I = c.type;
-            switch (I) {
+            var M = c.type;
+            switch (M) {
               case p:
               case b:
               case i:
               case u:
               case a:
               case R:
-                return I;
+                return M;
               default:
-                var B = I && I.$$typeof;
+                var B = M && M.$$typeof;
                 switch (B) {
                   case m:
-                  case T:
-                  case F:
                   case N:
+                  case y:
+                  case F:
                   case d:
                     return B;
                   default:
-                    return w;
+                    return x;
                 }
             }
           case o:
-            return w;
+            return x;
         }
       }
     }
-    var j = p, z = b, U = m, q = d, L = n, D = T, _ = i, S = F, s = N, l = o, h = u, y = a, g = R, E = !1;
+    var j = p, z = b, V = m, q = d, L = n, D = N, _ = i, S = y, s = F, l = o, h = u, w = a, g = R, E = !1;
     function v(c) {
       return k(c) === b;
     }
-    e.AsyncMode = j, e.ConcurrentMode = z, e.ContextConsumer = U, e.ContextProvider = q, e.Element = L, e.ForwardRef = D, e.Fragment = _, e.Lazy = S, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = y, e.Suspense = g, e.isAsyncMode = function(c) {
+    e.AsyncMode = j, e.ConcurrentMode = z, e.ContextConsumer = V, e.ContextProvider = q, e.Element = L, e.ForwardRef = D, e.Fragment = _, e.Lazy = S, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = w, e.Suspense = g, e.isAsyncMode = function(c) {
       return E || (E = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), v(c) || k(c) === p;
     }, e.isConcurrentMode = v, e.isContextConsumer = function(c) {
       return k(c) === m;
@@ -181,13 +181,13 @@ var yt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
     }, e.isElement = function(c) {
       return typeof c == "object" && c !== null && c.$$typeof === n;
     }, e.isForwardRef = function(c) {
-      return k(c) === T;
+      return k(c) === N;
     }, e.isFragment = function(c) {
       return k(c) === i;
     }, e.isLazy = function(c) {
-      return k(c) === F;
+      return k(c) === y;
     }, e.isMemo = function(c) {
-      return k(c) === N;
+      return k(c) === F;
     }, e.isPortal = function(c) {
       return k(c) === o;
     }, e.isProfiler = function(c) {
@@ -197,7 +197,7 @@ var yt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
     }, e.isSuspense = function(c) {
       return k(c) === R;
     }, e.isValidElementType = function(c) {
-      return typeof c == "string" || typeof c == "function" || c === i || c === b || c === u || c === a || c === R || c === x || typeof c == "object" && c !== null && (c.$$typeof === F || c.$$typeof === N || c.$$typeof === d || c.$$typeof === m || c.$$typeof === T || c.$$typeof === M || c.$$typeof === O || c.$$typeof === P || c.$$typeof === A);
+      return typeof c == "string" || typeof c == "function" || c === i || c === b || c === u || c === a || c === R || c === T || typeof c == "object" && c !== null && (c.$$typeof === y || c.$$typeof === F || c.$$typeof === d || c.$$typeof === m || c.$$typeof === N || c.$$typeof === A || c.$$typeof === O || c.$$typeof === I || c.$$typeof === P);
     }, e.typeOf = k;
   })();
 })), Le = (C.AsyncMode, C.ConcurrentMode, C.ContextConsumer, C.ContextProvider, C.Element, C.ForwardRef, C.Fragment, C.Lazy, C.Memo, C.Portal, C.Profiler, C.StrictMode, C.Suspense, C.isAsyncMode, C.isConcurrentMode, C.isContextConsumer, C.isContextProvider, C.isElement, C.isForwardRef, C.isFragment, C.isLazy, C.isMemo, C.isPortal, C.isProfiler, C.isStrictMode, C.isSuspense, C.isValidElementType, C.typeOf, We((function(t) {
@@ -301,28 +301,28 @@ function re(t, e, r) {
   return t.concat(n || Array.prototype.slice.call(e));
 }
 var St = function(t, e, r) {
-  var n = X([]), o = n[0], i = n[1], a = X(!1), u = a[0], d = a[1], m = X(null), p = m[0], b = m[1], T = oe(function(R, x) {
+  var n = Y([]), o = n[0], i = n[1], a = Y(!1), u = a[0], d = a[1], m = Y(null), p = m[0], b = m[1], N = oe(function(R, T) {
     return kt(void 0, void 0, void 0, function() {
-      var N, F, A, M, O, P, k, j, z, U, q, L, D, _, S, s, l, h, y, g, E, v;
+      var F, y, P, A, O, I, k, j, z, V, q, L, D, _, S, s, l, h, w, g, E, v;
       return Et(this, function(c) {
         switch (c.label) {
           case 0:
-            if (N = null, !r) return [3, 5];
+            if (F = null, !r) return [3, 5];
             c.label = 1;
           case 1:
-            return c.trys.push([1, 4, , 5]), (F = pt().executeRecaptcha) ? [4, F("rag_search")] : [3, 3];
+            return c.trys.push([1, 4, , 5]), (y = pt().executeRecaptcha) ? [4, y("rag_search")] : [3, 3];
           case 2:
-            N = c.sent(), c.label = 3;
+            F = c.sent(), c.label = 3;
           case 3:
             return [3, 5];
           case 4:
             return c.sent(), console.warn("reCAPTCHA skipped: no provider found"), [3, 5];
           case 5:
-            i(function(w) {
-              return re(re([], w, !0), [{ role: "user", content: R }], !1);
+            i(function(x) {
+              return re(re([], x, !0), [{ role: "user", content: R }], !1);
             }), d(!0), b(null), c.label = 6;
           case 6:
-            return c.trys.push([6, 17, , 18]), A = new URLSearchParams({ question: R, config: t, history: String(!0), stream: String(!0) }), x && x?.length >= 1 && A.set("sections", x.join(",")), M = A.toString(), O = new Headers({ Accept: "text/event-stream" }), N && O.append("X-Recaptcha-Token", N), (P = localStorage.getItem("rag-session-id")) && O.append("X-Session-Id", P), [4, fetch("".concat(e, "/query-collection?").concat(M), { method: "GET", headers: O })];
+            return c.trys.push([6, 17, , 18]), P = new URLSearchParams({ question: R, config: t, history: String(!0), stream: String(!0) }), T && T?.length >= 1 && P.set("sections", T.join(",")), A = P.toString(), O = new Headers({ Accept: "text/event-stream" }), F && O.append("X-Recaptcha-Token", F), (I = localStorage.getItem("rag-session-id")) && O.append("X-Session-Id", I), [4, fetch("".concat(e, "/query-collection?").concat(A), { method: "GET", headers: O })];
           case 7:
             if ((k = c.sent()).ok) return [3, 13];
             j = "Request failed (".concat(k.status, ")"), c.label = 8;
@@ -338,24 +338,24 @@ var St = function(t, e, r) {
             throw new Error(j);
           case 13:
             if (k.headers.has("X-Session-Id") && localStorage.setItem("rag-session-id", k.headers.get("X-Session-Id")), !k.body) throw new Error("No response body");
-            U = k.body.getReader(), q = new TextDecoder("utf-8"), L = "", D = "", i(function(w) {
-              return re(re([], w, !0), [{ role: "assistant", content: "" }], !1);
+            V = k.body.getReader(), q = new TextDecoder("utf-8"), L = "", D = "", i(function(x) {
+              return re(re([], x, !0), [{ role: "assistant", content: "" }], !1);
             }), c.label = 14;
           case 14:
-            return [4, U.read()];
+            return [4, V.read()];
           case 15:
             if (_ = c.sent(), S = _.value, _.done) return [3, 16];
             for (L += q.decode(S, { stream: !0 }), s = L.split(`
 
 `), L = s.pop() || "", l = 0, h = s; l < h.length; l++) {
-              if ((y = h[l]).startsWith("event: done")) return d(!1), [2];
-              if (y.startsWith("data:")) try {
-                (g = JSON.parse(y.replace("data: ", ""))) != null && g.content && (D += g.content, i(function(w) {
-                  var I = re([], w, !0);
-                  return I[I.length - 1] = { role: "assistant", content: D }, I;
+              if ((w = h[l]).startsWith("event: done")) return d(!1), [2];
+              if (w.startsWith("data:")) try {
+                (g = JSON.parse(w.replace("data: ", ""))) != null && g.content && (D += g.content, i(function(x) {
+                  var M = re([], x, !0);
+                  return M[M.length - 1] = { role: "assistant", content: D }, M;
                 }));
-              } catch (w) {
-                console.error("Failed to parse SSE chunk", w, y);
+              } catch (x) {
+                console.error("Failed to parse SSE chunk", x, w);
               }
             }
             return [3, 14];
@@ -369,7 +369,7 @@ var St = function(t, e, r) {
       });
     });
   }, [t, e]);
-  return { messages: o, loading: u, error: p, ask: T };
+  return { messages: o, loading: u, error: p, ask: N };
 }, Je = function() {
   var t = xt(), e = t.config, r = t.baseUrl, n = t.recaptchaSiteKey;
   return St(e, r, n);
@@ -384,13 +384,31 @@ function Nt({ logo: t, message: e, renderContent: r }) {
   const n = e.role === "user", o = e.content.split(`
 
 `);
-  return /* @__PURE__ */ f.createElement("li", { className: `insytful-search-message flex items-start gap-[24px] w-full max-w-full ${n ? "flex-row-reverse" : "flex-row"}` }, t && !n && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 hidden md:block" }, t), /* @__PURE__ */ f.createElement(
-    "div",
+  return /* @__PURE__ */ f.createElement(
+    "li",
     {
-      className: `insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${n ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]" : "text-[var(--insytful-text-default)]"}`
+      className: `insytful-search-message flex items-start gap-[24px] w-full max-w-full ${n ? "flex-row-reverse" : "flex-row"}`
     },
-    n ? e.content : /* @__PURE__ */ f.createElement(f.Fragment, null, /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0" }, t && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 md:hidden" }, t), /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-content" }, r ? r(o[0]) : o[0])), o.slice(1).map((i, a) => /* @__PURE__ */ f.createElement("div", { key: `${a}-${$e(i)}`, className: "insytful-search-message-content mt-[8px]" }, r ? r(i) : i)))
-  ));
+    t && !n && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 hidden md:block" }, t),
+    /* @__PURE__ */ f.createElement(
+      "div",
+      {
+        style: {
+          overflowWrap: "anywhere",
+          wordBreak: "break-word"
+        },
+        className: `insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${n ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]" : "text-[var(--insytful-text-default)]"}`
+      },
+      n ? e.content : /* @__PURE__ */ f.createElement(f.Fragment, null, /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0" }, t && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 md:hidden" }, t), /* @__PURE__ */ f.createElement("div", { className: "insytful-search-message-content" }, r ? r(o[0]) : o[0])), o.slice(1).map((i, a) => /* @__PURE__ */ f.createElement(
+        "div",
+        {
+          key: `${a}-${$e(i)}`,
+          className: "insytful-search-message-content mt-[8px]"
+        },
+        r ? r(i) : i
+      )))
+    )
+  );
 }
 function Tt({ logo: t }) {
   return /* @__PURE__ */ f.createElement("li", { className: "insytful-search-typing-indicator flex items-start gap-[12px] md:gap-[24px]" }, t && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-typing-indicator-logo flex-shrink-0" }, t), /* @__PURE__ */ f.createElement("div", { className: "insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-text-secondary)]" }, /* @__PURE__ */ f.createElement("span", null, "Searching", /* @__PURE__ */ f.createElement("span", { className: "after:animate-dot-animate" }))));
@@ -413,37 +431,53 @@ function Rt({
   renderMarkdown: o,
   onSwitchClassic: i
 }) {
-  const a = Y(null), [u, d] = X(!1), [m, p] = X(!1), b = Y(!1);
-  if (V(() => {
-    const x = a.current;
-    if (!x) return;
-    const N = () => d(x.scrollHeight > x.clientHeight);
-    return N(), window.addEventListener("resize", N), () => window.removeEventListener("resize", N);
-  }, [t]), V(() => {
-    const x = a.current;
-    if (!x) return;
-    const N = 40, F = () => {
-      const A = x.scrollTop + x.clientHeight >= x.scrollHeight - N;
-      p(A), !e && A && (b.current = !0);
+  const a = W(null), [u, d] = Y(!1), [m, p] = Y(!1), b = W(!1);
+  G(() => {
+    const y = a.current;
+    if (!y) return;
+    const P = () => d(y.scrollHeight > y.clientHeight);
+    return P(), window.addEventListener("resize", P), () => window.removeEventListener("resize", P);
+  }, [t]), G(() => {
+    const y = a.current;
+    if (!y) return;
+    const P = 40, A = () => {
+      const O = y.scrollTop + y.clientHeight >= y.scrollHeight - P;
+      p(O), !e && O && (b.current = !0);
     };
-    return x.addEventListener("scroll", F), F(), () => x.removeEventListener("scroll", F);
-  }, [t, e]), !t || t.length === 0) return null;
-  const T = u && !m, R = u && (e || !b.current) && !m;
-  return /* @__PURE__ */ f.createElement("div", { className: "flex-1 min-h-0 relative w-full max-w-full" }, /* @__PURE__ */ f.createElement(
+    return y.addEventListener("scroll", A), A(), () => y.removeEventListener("scroll", A);
+  }, [t, e]);
+  const N = u && !m, R = u && (e || !b.current) && !m, [T, F] = Y(!1);
+  return G(() => {
+    if (!t || t.length === 0) {
+      F(!1);
+      return;
+    }
+    const y = t[t.length - 1], P = y?.role === "user", A = e && (!y || y.role === "user");
+    F(P && A);
+  }, [t, e]), G(() => {
+    if (T) {
+      const y = a.current;
+      if (!y) return;
+      y.scrollTo({
+        top: y.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [T]), !t || t.length === 0 ? null : /* @__PURE__ */ f.createElement("div", { className: "flex-1 min-h-0 relative w-full max-w-full" }, /* @__PURE__ */ f.createElement(
     "div",
     {
       ref: a,
-      className: `overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${T ? "[mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)]" : ""}`
+      className: `overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${N ? "[mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)]" : ""}`
     },
-    /* @__PURE__ */ f.createElement("div", { className: "insytful-search-messages-outer w-full max-w-[784px] mx-auto" }, /* @__PURE__ */ f.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, t.map((x, N) => /* @__PURE__ */ f.createElement(
+    /* @__PURE__ */ f.createElement("div", { className: "insytful-search-messages-outer w-full max-w-[784px] mx-auto" }, /* @__PURE__ */ f.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, t.map((y, P) => /* @__PURE__ */ f.createElement(
       Nt,
       {
-        key: `${N}-${$e(x.content)}`,
+        key: `${P}-${$e(y.content)}`,
         renderContent: o,
         logo: r,
-        message: x
+        message: y
       }
-    )), e && t.length <= 1 && /* @__PURE__ */ f.createElement(Tt, { logo: r }), !e && !n && /* @__PURE__ */ f.createElement(Ct, { onSwitchClassic: i })))
+    )), T && /* @__PURE__ */ f.createElement(Tt, { logo: r }), !e && !n && /* @__PURE__ */ f.createElement(Ct, { onSwitchClassic: i })))
   ), R && /* @__PURE__ */ f.createElement("div", { className: "w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center" }, /* @__PURE__ */ f.createElement(
     "div",
     {
@@ -483,7 +517,7 @@ function Pt({
   onSend: r,
   disabled: n = !1
 }) {
-  const [o, i] = X(""), a = async () => {
+  const [o, i] = Y(""), a = async () => {
     const u = o.trim();
     u && (i(""), await r(u));
   };
@@ -644,15 +678,15 @@ const Qe = lt(
     isClassic: m,
     onSwitch: p,
     onSwitchClassic: b,
-    messages: T,
+    messages: N,
     loading: R,
-    error: x,
-    onSend: N,
-    renderSwitch: F,
-    styles: A
-  }, M) {
-    const { left: O = 0, right: P = 0 } = a || {}, [k, j] = X(0);
-    return V(() => {
+    error: T,
+    onSend: F,
+    renderSwitch: y,
+    styles: P
+  }, A) {
+    const { left: O = 0, right: I = 0 } = a || {}, [k, j] = Y(0);
+    return G(() => {
       if (typeof window > "u") return;
       const z = () => {
         const L = document.querySelectorAll("[data-insytful-modal-offset]");
@@ -660,9 +694,9 @@ const Qe = lt(
         L.forEach((_) => D += _.offsetHeight), j(D);
       };
       z();
-      const U = document.querySelectorAll("[data-insytful-modal-offset]"), q = new ResizeObserver(() => z());
-      return U.forEach((L) => q.observe(L)), () => q.disconnect();
-    }, []), V(() => {
+      const V = document.querySelectorAll("[data-insytful-modal-offset]"), q = new ResizeObserver(() => z());
+      return V.forEach((L) => q.observe(L)), () => q.disconnect();
+    }, []), G(() => {
       if (typeof window > "u") return;
       const z = window.scrollY;
       return document.body.style.position = "fixed", document.body.style.top = `-${z}px`, document.body.style.width = "100%", () => {
@@ -673,7 +707,7 @@ const Qe = lt(
       {
         tabIndex: -1,
         id: "insytful-search-dialog",
-        ref: M,
+        ref: A,
         role: "dialog",
         "aria-modal": "true",
         "aria-labelledby": "insytful-search-heading",
@@ -682,12 +716,12 @@ const Qe = lt(
           zIndex: 999,
           top: `${k}px`,
           left: O,
-          right: P,
+          right: I,
           bottom: 0,
-          ...A
+          ...P
         }
       },
-      /* @__PURE__ */ f.createElement("div", { className: "insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]" }, /* @__PURE__ */ f.createElement("h1", { id: "insytful-search-heading", className: "sr-only" }, "AI Search"), (T.length === 0 || m && T.length >= 1) && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]" }, /* @__PURE__ */ f.createElement(
+      /* @__PURE__ */ f.createElement("div", { className: "insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]" }, /* @__PURE__ */ f.createElement("h1", { id: "insytful-search-heading", className: "sr-only" }, "AI Search"), (N.length === 0 || m && N.length >= 1) && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]" }, /* @__PURE__ */ f.createElement(
         At,
         {
           title: m ? o?.title ?? "" : e,
@@ -697,33 +731,33 @@ const Qe = lt(
         Rt,
         {
           logo: u,
-          messages: T,
+          messages: N,
           loading: R,
-          error: x,
+          error: T,
           renderMarkdown: d,
           onSwitchClassic: b
         }
-      ), x && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto" }, /* @__PURE__ */ f.createElement(
+      ), T && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto" }, /* @__PURE__ */ f.createElement(
         Ft,
         {
           onSwitchClassic: b,
-          message: x
+          message: T
         }
       ))), /* @__PURE__ */ f.createElement(
         Pt,
         {
           isClassic: m,
-          onSend: N,
+          onSend: F,
           disabled: R,
-          hasMessages: T.length > 0
+          hasMessages: N.length > 0
         }
-      ), (T.length === 0 || m && T.length >= 1) && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]" }, /* @__PURE__ */ f.createElement(
+      ), (N.length === 0 || m && N.length >= 1) && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]" }, /* @__PURE__ */ f.createElement(
         It,
         {
-          onSend: N,
+          onSend: F,
           suggestions: m ? o?.suggestions ?? [] : i
         }
-      ), m && o?.renderSwitch ? o.renderSwitch(p) : !m && F ? F(p) : null), /* @__PURE__ */ f.createElement("div", { className: "insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]" }, n && !m && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-disclaimer-inner hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]" }, n)))
+      ), m && o?.renderSwitch ? o.renderSwitch(p) : !m && y ? y(p) : null), /* @__PURE__ */ f.createElement("div", { className: "insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]" }, n && !m && /* @__PURE__ */ f.createElement("div", { className: "insytful-search-disclaimer-inner hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]" }, n)))
     );
   }
 );
@@ -763,8 +797,8 @@ var et = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
         var p = ee.call(a, ge);
         p && n.filter(a) && (r || !e.includes(a)) && o.push(a);
         var b = a.shadowRoot || // check for an undisclosed shadow
-        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), T = !we(b, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
-        if (b && T) {
+        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), N = !we(b, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
+        if (b && N) {
           var R = xe(b === !0 ? a.children : b.children, !0, n);
           n.flatten ? o.push.apply(o, R) : o.push({
             scopeParent: a,
@@ -1051,31 +1085,31 @@ function it(t, e) {
     return r === "Object" && t.constructor && (r = t.constructor.name), r === "Map" || r === "Set" ? Array.from(t) : r === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r) ? Ae(t, e) : void 0;
   }
 }
-var W = {
+var X = {
   // Returns the trap from the top of the stack.
   getActiveTrap: function(e) {
     return e?.length > 0 ? e[e.length - 1] : null;
   },
   // Pauses the currently active trap, then adds a new trap to the stack.
   activateTrap: function(e, r) {
-    var n = W.getActiveTrap(e);
-    r !== n && W.pauseTrap(e);
+    var n = X.getActiveTrap(e);
+    r !== n && X.pauseTrap(e);
     var o = e.indexOf(r);
     o === -1 || e.splice(o, 1), e.push(r);
   },
   // Removes the trap from the top of the stack, then unpauses the next trap down.
   deactivateTrap: function(e, r) {
     var n = e.indexOf(r);
-    n !== -1 && e.splice(n, 1), W.unpauseTrap(e);
+    n !== -1 && e.splice(n, 1), X.unpauseTrap(e);
   },
   // Pauses the trap at the top of the stack.
   pauseTrap: function(e) {
-    var r = W.getActiveTrap(e);
+    var r = X.getActiveTrap(e);
     r?._setPausedState(!0);
   },
   // Unpauses the trap at the top of the stack.
   unpauseTrap: function(e) {
-    var r = W.getActiveTrap(e);
+    var r = X.getActiveTrap(e);
     r && !r._isManuallyPaused() && r._setPausedState(!1);
   }
 }, rr = function(e) {
@@ -1152,14 +1186,14 @@ var W = {
     return s && s[l] !== void 0 ? s[l] : i[h || l];
   }, m = function(s, l) {
     var h = typeof l?.composedPath == "function" ? l.composedPath() : void 0;
-    return a.containerGroups.findIndex(function(y) {
-      var g = y.container, E = y.tabbableNodes;
+    return a.containerGroups.findIndex(function(w) {
+      var g = w.container, E = w.tabbableNodes;
       return g.contains(s) || h?.includes(g) || E.find(function(v) {
         return v === s;
       });
     });
   }, p = function(s) {
-    var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, h = l.hasFallback, y = h === void 0 ? !1 : h, g = l.params, E = g === void 0 ? [] : g, v = i[s];
+    var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, h = l.hasFallback, w = h === void 0 ? !1 : h, g = l.params, E = g === void 0 ? [] : g, v = i[s];
     if (typeof v == "function" && (v = v.apply(void 0, Qt(E))), v === !0 && (v = void 0), !v) {
       if (v === void 0 || v === !1)
         return v;
@@ -1169,10 +1203,10 @@ var W = {
     if (typeof v == "string") {
       try {
         c = n.querySelector(v);
-      } catch (w) {
-        throw new Error("`".concat(s, '` appears to be an invalid selector; error="').concat(w.message, '"'));
+      } catch (x) {
+        throw new Error("`".concat(s, '` appears to be an invalid selector; error="').concat(x.message, '"'));
       }
-      if (!c && !y)
+      if (!c && !w)
         throw new Error("`".concat(s, "` as selector refers to no known node"));
     }
     return c;
@@ -1193,14 +1227,14 @@ var W = {
     if (!s)
       throw new Error("Your focus-trap needs to have at least one focusable element");
     return s;
-  }, T = function() {
+  }, N = function() {
     if (a.containerGroups = a.containers.map(function(s) {
-      var l = Ut(s, i.tabbableOptions), h = Vt(s, i.tabbableOptions), y = l.length > 0 ? l[0] : void 0, g = l.length > 0 ? l[l.length - 1] : void 0, E = h.find(function(w) {
-        return te(w);
-      }), v = h.slice().reverse().find(function(w) {
-        return te(w);
-      }), c = !!l.find(function(w) {
-        return Q(w) > 0;
+      var l = Ut(s, i.tabbableOptions), h = Vt(s, i.tabbableOptions), w = l.length > 0 ? l[0] : void 0, g = l.length > 0 ? l[l.length - 1] : void 0, E = h.find(function(x) {
+        return te(x);
+      }), v = h.slice().reverse().find(function(x) {
+        return te(x);
+      }), c = !!l.find(function(x) {
+        return Q(x) > 0;
       });
       return {
         container: s,
@@ -1209,7 +1243,7 @@ var W = {
         /** True if at least one node with positive `tabindex` was found in this container. */
         posTabIndexesFound: c,
         /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
-        firstTabbableNode: y,
+        firstTabbableNode: w,
         /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
         lastTabbableNode: g,
         // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
@@ -1231,13 +1265,13 @@ var W = {
          *  in reverse.
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
-        nextTabbableNode: function(I) {
-          var B = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, G = l.indexOf(I);
-          return G < 0 ? B ? h.slice(h.indexOf(I) + 1).find(function(J) {
+        nextTabbableNode: function(M) {
+          var B = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, U = l.indexOf(M);
+          return U < 0 ? B ? h.slice(h.indexOf(M) + 1).find(function(J) {
             return te(J);
-          }) : h.slice(0, h.indexOf(I)).reverse().find(function(J) {
+          }) : h.slice(0, h.indexOf(M)).reverse().find(function(J) {
             return te(J);
-          }) : l[G + (B ? 1 : -1)];
+          }) : l[U + (B ? 1 : -1)];
         }
       };
     }), a.tabbableGroups = a.containerGroups.filter(function(s) {
@@ -1252,52 +1286,52 @@ var W = {
     var l = s.activeElement;
     if (l)
       return l.shadowRoot && l.shadowRoot.activeElement !== null ? R(l.shadowRoot) : l;
-  }, x = function(s) {
+  }, T = function(s) {
     if (s !== !1 && s !== R(document)) {
       if (!s || !s.focus) {
-        x(b());
+        T(b());
         return;
       }
       s.focus({
         preventScroll: !!i.preventScroll
       }), a.mostRecentlyFocusedNode = s, rr(s) && s.select();
     }
-  }, N = function(s) {
+  }, F = function(s) {
     var l = p("setReturnFocus", {
       params: [s]
     });
     return l || (l === !1 ? !1 : s);
-  }, F = function(s) {
-    var l = s.target, h = s.event, y = s.isBackward, g = y === void 0 ? !1 : y;
-    l = l || se(h), T();
+  }, y = function(s) {
+    var l = s.target, h = s.event, w = s.isBackward, g = w === void 0 ? !1 : w;
+    l = l || se(h), N();
     var E = null;
     if (a.tabbableGroups.length > 0) {
       var v = m(l, h), c = v >= 0 ? a.containerGroups[v] : void 0;
       if (v < 0)
         g ? E = a.tabbableGroups[a.tabbableGroups.length - 1].lastTabbableNode : E = a.tabbableGroups[0].firstTabbableNode;
       else if (g) {
-        var w = a.tabbableGroups.findIndex(function(Ee) {
+        var x = a.tabbableGroups.findIndex(function(Ee) {
           var Se = Ee.firstTabbableNode;
           return l === Se;
         });
-        if (w < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l, !1)) && (w = v), w >= 0) {
-          var I = w === 0 ? a.tabbableGroups.length - 1 : w - 1, B = a.tabbableGroups[I];
+        if (x < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l, !1)) && (x = v), x >= 0) {
+          var M = x === 0 ? a.tabbableGroups.length - 1 : x - 1, B = a.tabbableGroups[M];
           E = Q(l) >= 0 ? B.lastTabbableNode : B.lastDomTabbableNode;
         } else ie(h) || (E = c.nextTabbableNode(l, !1));
       } else {
-        var G = a.tabbableGroups.findIndex(function(Ee) {
+        var U = a.tabbableGroups.findIndex(function(Ee) {
           var Se = Ee.lastTabbableNode;
           return l === Se;
         });
-        if (G < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l)) && (G = v), G >= 0) {
-          var J = G === a.tabbableGroups.length - 1 ? 0 : G + 1, Z = a.tabbableGroups[J];
+        if (U < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l)) && (U = v), U >= 0) {
+          var J = U === a.tabbableGroups.length - 1 ? 0 : U + 1, Z = a.tabbableGroups[J];
           E = Q(l) >= 0 ? Z.firstTabbableNode : Z.firstDomTabbableNode;
         } else ie(h) || (E = c.nextTabbableNode(l));
       }
     } else
       E = p("fallbackFocus");
     return E;
-  }, A = function(s) {
+  }, P = function(s) {
     var l = se(s);
     if (!(m(l, s) >= 0)) {
       if (ne(i.clickOutsideDeactivates, s)) {
@@ -1314,47 +1348,47 @@ var W = {
       }
       ne(i.allowOutsideClick, s) || s.preventDefault();
     }
-  }, M = function(s) {
+  }, A = function(s) {
     var l = se(s), h = m(l, s) >= 0;
     if (h || l instanceof Document)
       h && (a.mostRecentlyFocusedNode = l);
     else {
       s.stopImmediatePropagation();
-      var y, g = !0;
+      var w, g = !0;
       if (a.mostRecentlyFocusedNode)
         if (Q(a.mostRecentlyFocusedNode) > 0) {
           var E = m(a.mostRecentlyFocusedNode), v = a.containerGroups[E].tabbableNodes;
           if (v.length > 0) {
-            var c = v.findIndex(function(w) {
-              return w === a.mostRecentlyFocusedNode;
+            var c = v.findIndex(function(x) {
+              return x === a.mostRecentlyFocusedNode;
             });
-            c >= 0 && (i.isKeyForward(a.recentNavEvent) ? c + 1 < v.length && (y = v[c + 1], g = !1) : c - 1 >= 0 && (y = v[c - 1], g = !1));
+            c >= 0 && (i.isKeyForward(a.recentNavEvent) ? c + 1 < v.length && (w = v[c + 1], g = !1) : c - 1 >= 0 && (w = v[c - 1], g = !1));
           }
         } else
-          a.containerGroups.some(function(w) {
-            return w.tabbableNodes.some(function(I) {
-              return Q(I) > 0;
+          a.containerGroups.some(function(x) {
+            return x.tabbableNodes.some(function(M) {
+              return Q(M) > 0;
             });
           }) || (g = !1);
       else
         g = !1;
-      g && (y = F({
+      g && (w = y({
         // move FROM the MRU node, not event-related node (which will be the node that is
         //  outside the trap causing the focus escape we're trying to fix)
         target: a.mostRecentlyFocusedNode,
         isBackward: i.isKeyBackward(a.recentNavEvent)
-      })), x(y || a.mostRecentlyFocusedNode || b());
+      })), T(w || a.mostRecentlyFocusedNode || b());
     }
     a.recentNavEvent = void 0;
   }, O = function(s) {
     var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !1;
     a.recentNavEvent = s;
-    var h = F({
+    var h = y({
       event: s,
       isBackward: l
     });
-    h && (ie(s) && s.preventDefault(), x(h));
-  }, P = function(s) {
+    h && (ie(s) && s.preventDefault(), T(h));
+  }, I = function(s) {
     (i.isKeyForward(s) || i.isKeyBackward(s)) && O(s, i.isKeyBackward(s));
   }, k = function(s) {
     nr(s) && ne(i.escapeDeactivates, s) !== !1 && (s.preventDefault(), u.deactivate());
@@ -1363,36 +1397,36 @@ var W = {
     m(l, s) >= 0 || ne(i.clickOutsideDeactivates, s) || ne(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
   }, z = function() {
     if (a.active)
-      return W.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? Ge(function() {
-        x(b());
-      }) : x(b()), n.addEventListener("focusin", M, !0), n.addEventListener("mousedown", A, {
+      return X.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? Ge(function() {
+        T(b());
+      }) : T(b()), n.addEventListener("focusin", A, !0), n.addEventListener("mousedown", P, {
         capture: !0,
         passive: !1
-      }), n.addEventListener("touchstart", A, {
+      }), n.addEventListener("touchstart", P, {
         capture: !0,
         passive: !1
       }), n.addEventListener("click", j, {
         capture: !0,
         passive: !1
-      }), n.addEventListener("keydown", P, {
+      }), n.addEventListener("keydown", I, {
         capture: !0,
         passive: !1
       }), n.addEventListener("keydown", k), u;
-  }, U = function(s) {
+  }, V = function(s) {
     a.active && !a.paused && u._setSubtreeIsolation(!1), a.adjacentElements.clear(), a.alreadySilent.clear();
-    var l = /* @__PURE__ */ new Set(), h = /* @__PURE__ */ new Set(), y = He(s), g;
+    var l = /* @__PURE__ */ new Set(), h = /* @__PURE__ */ new Set(), w = He(s), g;
     try {
-      for (y.s(); !(g = y.n()).done; ) {
+      for (w.s(); !(g = w.n()).done; ) {
         var E = g.value;
         l.add(E);
         for (var v = typeof ShadowRoot < "u" && E.getRootNode() instanceof ShadowRoot, c = E; c; ) {
           l.add(c);
-          var w = c.parentElement, I = [];
-          w ? I = w.children : !w && v && (I = c.getRootNode().children, w = c.getRootNode().host, v = typeof ShadowRoot < "u" && w.getRootNode() instanceof ShadowRoot);
-          var B = He(I), G;
+          var x = c.parentElement, M = [];
+          x ? M = x.children : !x && v && (M = c.getRootNode().children, x = c.getRootNode().host, v = typeof ShadowRoot < "u" && x.getRootNode() instanceof ShadowRoot);
+          var B = He(M), U;
           try {
-            for (B.s(); !(G = B.n()).done; ) {
-              var J = G.value;
+            for (B.s(); !(U = B.n()).done; ) {
+              var J = U.value;
               h.add(J);
             }
           } catch (Z) {
@@ -1400,28 +1434,28 @@ var W = {
           } finally {
             B.f();
           }
-          c = w;
+          c = x;
         }
       }
     } catch (Z) {
-      y.e(Z);
+      w.e(Z);
     } finally {
-      y.f();
+      w.f();
     }
     l.forEach(function(Z) {
       h.delete(Z);
     }), a.adjacentElements = h;
   }, q = function() {
     if (a.active)
-      return n.removeEventListener("focusin", M, !0), n.removeEventListener("mousedown", A, !0), n.removeEventListener("touchstart", A, !0), n.removeEventListener("click", j, !0), n.removeEventListener("keydown", P, !0), n.removeEventListener("keydown", k), u;
+      return n.removeEventListener("focusin", A, !0), n.removeEventListener("mousedown", P, !0), n.removeEventListener("touchstart", P, !0), n.removeEventListener("click", j, !0), n.removeEventListener("keydown", I, !0), n.removeEventListener("keydown", k), u;
   }, L = function(s) {
     var l = s.some(function(h) {
-      var y = Array.from(h.removedNodes);
-      return y.some(function(g) {
+      var w = Array.from(h.removedNodes);
+      return w.some(function(g) {
         return g === a.mostRecentlyFocusedNode;
       });
     });
-    l && x(b());
+    l && T(b());
   }, D = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(L) : void 0, _ = function() {
     D && (D.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
       D.observe(s, {
@@ -1440,25 +1474,25 @@ var W = {
     activate: function(s) {
       if (a.active)
         return this;
-      var l = d(s, "onActivate"), h = d(s, "onPostActivate"), y = d(s, "checkCanFocusTrap"), g = W.getActiveTrap(o), E = !1;
+      var l = d(s, "onActivate"), h = d(s, "onPostActivate"), w = d(s, "checkCanFocusTrap"), g = X.getActiveTrap(o), E = !1;
       if (g && !g.paused) {
         var v;
         (v = g._setSubtreeIsolation) === null || v === void 0 || v.call(g, !1), E = !0;
       }
       try {
-        y || T(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = R(n), l?.();
+        w || N(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = R(n), l?.();
         var c = function() {
-          y && T(), z(), _(), i.isolateSubtrees && u._setSubtreeIsolation(!0), h?.();
+          w && N(), z(), _(), i.isolateSubtrees && u._setSubtreeIsolation(!0), h?.();
         };
-        if (y)
-          return y(a.containers.concat()).then(c, c), this;
+        if (w)
+          return w(a.containers.concat()).then(c, c), this;
         c();
-      } catch (I) {
-        if (g === W.getActiveTrap(o) && E) {
-          var w;
-          (w = g._setSubtreeIsolation) === null || w === void 0 || w.call(g, !0);
+      } catch (M) {
+        if (g === X.getActiveTrap(o) && E) {
+          var x;
+          (x = g._setSubtreeIsolation) === null || x === void 0 || x.call(g, !0);
         }
-        throw I;
+        throw M;
       }
       return this;
     },
@@ -1470,15 +1504,15 @@ var W = {
         onPostDeactivate: i.onPostDeactivate,
         checkCanReturnFocus: i.checkCanReturnFocus
       }, s);
-      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || u._setSubtreeIsolation(!1), a.alreadySilent.clear(), q(), a.active = !1, a.paused = !1, _(), W.deactivateTrap(o, u);
-      var h = d(l, "onDeactivate"), y = d(l, "onPostDeactivate"), g = d(l, "checkCanReturnFocus"), E = d(l, "returnFocus", "returnFocusOnDeactivate");
+      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || u._setSubtreeIsolation(!1), a.alreadySilent.clear(), q(), a.active = !1, a.paused = !1, _(), X.deactivateTrap(o, u);
+      var h = d(l, "onDeactivate"), w = d(l, "onPostDeactivate"), g = d(l, "checkCanReturnFocus"), E = d(l, "returnFocus", "returnFocusOnDeactivate");
       h?.();
       var v = function() {
         Ge(function() {
-          E && x(N(a.nodeFocusedBeforeActivation)), y?.();
+          E && T(F(a.nodeFocusedBeforeActivation)), w?.();
         });
       };
-      return E && g ? (g(N(a.nodeFocusedBeforeActivation)).then(v, v), this) : (v(), this);
+      return E && g ? (g(F(a.nodeFocusedBeforeActivation)).then(v, v), this) : (v(), this);
     },
     pause: function(s) {
       return a.active ? (a.manuallyPaused = !0, this._setPausedState(!0, s)) : this;
@@ -1490,7 +1524,7 @@ var W = {
       var l = [].concat(s).filter(Boolean);
       return a.containers = l.map(function(h) {
         return typeof h == "string" ? n.querySelector(h) : h;
-      }), i.isolateSubtrees && U(a.containers), a.active && (T(), i.isolateSubtrees && !a.paused && u._setSubtreeIsolation(!0)), _(), this;
+      }), i.isolateSubtrees && V(a.containers), a.active && (N(), i.isolateSubtrees && !a.paused && u._setSubtreeIsolation(!0)), _(), this;
     }
   }, Object.defineProperties(u, {
     _isManuallyPaused: {
@@ -1503,11 +1537,11 @@ var W = {
         if (a.paused === s)
           return this;
         if (a.paused = s, s) {
-          var h = d(l, "onPause"), y = d(l, "onPostPause");
-          h?.(), q(), _(), u._setSubtreeIsolation(!1), y?.();
+          var h = d(l, "onPause"), w = d(l, "onPostPause");
+          h?.(), q(), _(), u._setSubtreeIsolation(!1), w?.();
         } else {
           var g = d(l, "onUnpause"), E = d(l, "onPostUnpause");
-          g?.(), u._setSubtreeIsolation(!0), T(), z(), _(), E?.();
+          g?.(), u._setSubtreeIsolation(!0), N(), z(), _(), E?.();
         }
         return this;
       }
@@ -1537,12 +1571,12 @@ function lr({
   }, [t, e, r?.path, r?.onNavigate]);
 }
 function cr(t, e) {
-  const r = Y(null), n = Y(null), o = Y(null), i = Y(t), a = Y(e);
-  return V(() => {
+  const r = W(null), n = W(null), o = W(null), i = W(t), a = W(e);
+  return G(() => {
     i.current = t;
-  }, [t]), V(() => {
+  }, [t]), G(() => {
     a.current = e;
-  }, [e]), V(() => {
+  }, [e]), G(() => {
     if (!e || !r.current) return;
     n.current = document.activeElement;
     const u = sr(r.current, {
@@ -1721,7 +1755,7 @@ data: {}
     return e(r, n);
   }, () => window.fetch = e;
 }, dr = (t = !1, e) => {
-  V(() => {
+  G(() => {
     !t || !e || ur(e);
   }, [t, e]);
 };
@@ -1738,19 +1772,19 @@ function fr(t) {
     renderMarkdown: m,
     isOpen: p = !1,
     onOpenChange: b,
-    isDevMode: T = !1,
+    isDevMode: N = !1,
     options: R
   } = t;
-  dr(T, R?.baseUrl ?? "");
-  const { messages: x, loading: N, error: F, ask: A } = Je(), M = Y(p);
-  V(() => {
-    M.current = p;
+  dr(N, R?.baseUrl ?? "");
+  const { messages: T, loading: F, error: y, ask: P } = Je(), A = W(p);
+  G(() => {
+    A.current = p;
   }, [p]);
   const O = oe((D) => {
     b?.(D);
-  }, [b]), [P, k] = X(!1), j = oe(() => k((D) => !D), []), z = oe(() => {
+  }, [b]), [I, k] = Y(!1), j = oe(() => k((D) => !D), []), z = oe(() => {
     k(!0);
-  }, []), { elModalRef: U } = cr(O, p), q = lr({ isClassic: P, ask: A, classic: o, onClose: () => O(!1) });
+  }, []), { elModalRef: V } = cr(O, p), q = lr({ isClassic: I, ask: P, classic: o, onClose: () => O(!1) });
   return p && /* @__PURE__ */ f.createElement(
     Qe,
     {
@@ -1763,14 +1797,14 @@ function fr(t) {
       logo: u,
       renderMarkdown: m,
       renderSwitch: d,
-      isClassic: P,
+      isClassic: I,
       onSwitchClassic: z,
       onSwitch: j,
-      messages: x,
-      loading: N,
-      error: F,
+      messages: T,
+      loading: F,
+      error: y,
       onSend: q,
-      ref: U
+      ref: V
     }
   );
 }
