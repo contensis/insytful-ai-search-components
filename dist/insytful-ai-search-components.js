@@ -1,4 +1,4 @@
-import p, { createContext as Ve, useState as W, useRef as Y, useEffect as V, useCallback as oe, useMemo as We, useContext as Ye, forwardRef as ct } from "react";
+import p, { createContext as Ue, useState as G, useRef as Y, useEffect as q, useCallback as oe, useMemo as We, useContext as Ye, forwardRef as ct } from "react";
 import De from "react-dom";
 var Te = function() {
   return Te = Object.assign || function(t) {
@@ -18,15 +18,15 @@ var Te = function() {
     n && n.remove();
   })();
 }, ft = function(t) {
-  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, u = t.scriptProps, f = u === void 0 ? {} : u, m = f.nonce, d = m === void 0 ? "" : m, b = f.defer, F = b !== void 0 && b, N = f.async, R = N !== void 0 && N, P = f.id, y = P === void 0 ? "" : P, T = f.appendTo, A = y || "google-recaptcha-v3";
-  if ((function(k) {
-    return !!document.querySelector("#" + k);
+  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, u = t.scriptProps, f = u === void 0 ? {} : u, h = f.nonce, d = h === void 0 ? "" : h, b = f.defer, F = b !== void 0 && b, N = f.async, R = N !== void 0 && N, P = f.id, w = P === void 0 ? "" : P, T = f.appendTo, A = w || "google-recaptcha-v3";
+  if ((function(E) {
+    return !!document.querySelector("#" + E);
   })(A)) o();
   else {
-    var $ = (function(k) {
-      return "https://www." + (k.useRecaptchaNet ? "recaptcha.net" : "google.com") + "/recaptcha/" + (k.useEnterprise ? "enterprise.js" : "api.js");
+    var O = (function(E) {
+      return "https://www." + (E.useRecaptchaNet ? "recaptcha.net" : "google.com") + "/recaptcha/" + (E.useEnterprise ? "enterprise.js" : "api.js");
     })({ useEnterprise: a, useRecaptchaNet: i }), I = document.createElement("script");
-    I.id = A, I.src = $ + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), d && (I.nonce = d), I.defer = !!F, I.async = !!R, I.onload = o, (T === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(I);
+    I.id = A, I.src = O + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), d && (I.nonce = d), I.defer = !!F, I.async = !!R, I.onload = o, (T === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(I);
   }
 }, ze = function(t) {
   typeof process < "u" && process.env && process.env.NODE_ENV !== "production" || console.warn(t);
@@ -34,19 +34,19 @@ var Te = function() {
 (function(t) {
   t.SCRIPT_NOT_AVAILABLE = "Recaptcha script is not available";
 })(Ce || (Ce = {}));
-var $e = Ve({ executeRecaptcha: function() {
+var $e = Ue({ executeRecaptcha: function() {
   throw Error("GoogleReCaptcha Context has not yet been implemented, if you are using useGoogleReCaptcha hook, make sure the hook is called inside component wrapped by GoogleRecaptchaProvider");
 } });
 $e.Consumer;
 function pt(t) {
-  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, u = t.language, f = t.container, m = t.children, d = W(null), b = d[0], F = d[1], N = Y(e), R = JSON.stringify(a), P = JSON.stringify(f?.parameters);
-  V((function() {
+  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, u = t.language, f = t.container, h = t.children, d = G(null), b = d[0], F = d[1], N = Y(e), R = JSON.stringify(a), P = JSON.stringify(f?.parameters);
+  q((function() {
     if (e) {
-      var A = a?.id || "google-recaptcha-v3", $ = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
-      return window[$] = function() {
-        var I = n ? window.grecaptcha.enterprise : window.grecaptcha, k = Te({ badge: "inline", size: "invisible", sitekey: e }, f?.parameters || {});
-        N.current = I.render(f?.element, k);
-      }, ft({ render: f?.element ? "explicit" : e, onLoadCallbackName: $, useEnterprise: n, useRecaptchaNet: i, scriptProps: a, language: u, onLoad: function() {
+      var A = a?.id || "google-recaptcha-v3", O = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
+      return window[O] = function() {
+        var I = n ? window.grecaptcha.enterprise : window.grecaptcha, E = Te({ badge: "inline", size: "invisible", sitekey: e }, f?.parameters || {});
+        N.current = I.render(f?.element, E);
+      }, ft({ render: f?.element ? "explicit" : e, onLoadCallbackName: O, useEnterprise: n, useRecaptchaNet: i, scriptProps: a, language: u, onLoad: function() {
         if (window && window.grecaptcha) {
           var I = n ? window.grecaptcha.enterprise : window.grecaptcha;
           I.ready((function() {
@@ -59,13 +59,13 @@ function pt(t) {
     }
     ze("<GoogleReCaptchaProvider /> recaptcha key not provided");
   }), [n, i, R, P, u, e, f?.element]);
-  var y = oe((function(A) {
+  var w = oe((function(A) {
     if (!b || !b.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
     return b.execute(N.current, { action: A });
   }), [b, N]), T = We((function() {
-    return { executeRecaptcha: b ? y : void 0, container: f?.element };
-  }), [y, b, f?.element]);
-  return p.createElement($e.Provider, { value: T }, m);
+    return { executeRecaptcha: b ? w : void 0, container: f?.element };
+  }), [w, b, f?.element]);
+  return p.createElement($e.Provider, { value: T }, h);
 }
 var mt = function() {
   return Ye($e);
@@ -73,7 +73,7 @@ var mt = function() {
 function Xe(t, e) {
   return t(e = { exports: {} }, e.exports), e.exports;
 }
-var O = typeof Symbol == "function" && Symbol.for, Re = O ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = O ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, le = O ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, ce = O ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ue = O ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, de = O ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, fe = O ? /* @__PURE__ */ Symbol.for("react.context") : 60110, Fe = O ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, ve = O ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, pe = O ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, me = O ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, ht = O ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, he = O ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, be = O ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, bt = O ? /* @__PURE__ */ Symbol.for("react.block") : 60121, vt = O ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, gt = O ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, yt = O ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+var D = typeof Symbol == "function" && Symbol.for, Re = D ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = D ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, le = D ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, ce = D ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ue = D ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, de = D ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, fe = D ? /* @__PURE__ */ Symbol.for("react.context") : 60110, Fe = D ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, ve = D ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, pe = D ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, me = D ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, ht = D ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, he = D ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, be = D ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, bt = D ? /* @__PURE__ */ Symbol.for("react.block") : 60121, vt = D ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, gt = D ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, yt = D ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
 function H(t) {
   if (typeof t == "object" && t !== null) {
     var e = t.$$typeof;
@@ -135,8 +135,8 @@ var wt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
   return typeof t == "string" || typeof t == "function" || t === le || t === ve || t === ue || t === ce || t === me || t === ht || typeof t == "object" && t !== null && (t.$$typeof === be || t.$$typeof === he || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === pe || t.$$typeof === vt || t.$$typeof === gt || t.$$typeof === yt || t.$$typeof === bt);
 }, typeOf: H }, C = Xe((function(t, e) {
   process.env.NODE_ENV !== "production" && (function() {
-    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, u = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, f = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, d = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, b = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, F = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, N = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, R = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, P = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, y = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, T = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, A = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, $ = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, I = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
-    function k(c) {
+    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, u = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, f = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, h = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, d = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, b = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, F = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, N = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, R = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, P = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, w = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, T = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, A = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, O = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, I = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+    function E(c) {
       if (typeof c == "object" && c !== null) {
         var x = c.$$typeof;
         switch (x) {
@@ -153,9 +153,9 @@ var wt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
               default:
                 var _ = M && M.$$typeof;
                 switch (_) {
-                  case m:
+                  case h:
                   case F:
-                  case y:
+                  case w:
                   case P:
                   case f:
                     return _;
@@ -168,43 +168,43 @@ var wt = { AsyncMode: Fe, ConcurrentMode: ve, ContextConsumer: fe, ContextProvid
         }
       }
     }
-    var z = d, K = b, q = m, G = f, D = n, L = F, j = i, S = y, s = P, l = o, h = u, w = a, g = N, E = !1;
-    function v(c) {
-      return k(c) === b;
+    var j = d, V = b, $ = h, U = f, L = n, K = F, z = i, k = w, s = P, l = o, m = u, y = a, v = N, S = !1;
+    function g(c) {
+      return E(c) === b;
     }
-    e.AsyncMode = z, e.ConcurrentMode = K, e.ContextConsumer = q, e.ContextProvider = G, e.Element = D, e.ForwardRef = L, e.Fragment = j, e.Lazy = S, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = w, e.Suspense = g, e.isAsyncMode = function(c) {
-      return E || (E = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), v(c) || k(c) === d;
-    }, e.isConcurrentMode = v, e.isContextConsumer = function(c) {
-      return k(c) === m;
+    e.AsyncMode = j, e.ConcurrentMode = V, e.ContextConsumer = $, e.ContextProvider = U, e.Element = L, e.ForwardRef = K, e.Fragment = z, e.Lazy = k, e.Memo = s, e.Portal = l, e.Profiler = m, e.StrictMode = y, e.Suspense = v, e.isAsyncMode = function(c) {
+      return S || (S = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), g(c) || E(c) === d;
+    }, e.isConcurrentMode = g, e.isContextConsumer = function(c) {
+      return E(c) === h;
     }, e.isContextProvider = function(c) {
-      return k(c) === f;
+      return E(c) === f;
     }, e.isElement = function(c) {
       return typeof c == "object" && c !== null && c.$$typeof === n;
     }, e.isForwardRef = function(c) {
-      return k(c) === F;
+      return E(c) === F;
     }, e.isFragment = function(c) {
-      return k(c) === i;
+      return E(c) === i;
     }, e.isLazy = function(c) {
-      return k(c) === y;
+      return E(c) === w;
     }, e.isMemo = function(c) {
-      return k(c) === P;
+      return E(c) === P;
     }, e.isPortal = function(c) {
-      return k(c) === o;
+      return E(c) === o;
     }, e.isProfiler = function(c) {
-      return k(c) === u;
+      return E(c) === u;
     }, e.isStrictMode = function(c) {
-      return k(c) === a;
+      return E(c) === a;
     }, e.isSuspense = function(c) {
-      return k(c) === N;
+      return E(c) === N;
     }, e.isValidElementType = function(c) {
-      return typeof c == "string" || typeof c == "function" || c === i || c === b || c === u || c === a || c === N || c === R || typeof c == "object" && c !== null && (c.$$typeof === y || c.$$typeof === P || c.$$typeof === f || c.$$typeof === m || c.$$typeof === F || c.$$typeof === A || c.$$typeof === $ || c.$$typeof === I || c.$$typeof === T);
-    }, e.typeOf = k;
+      return typeof c == "string" || typeof c == "function" || c === i || c === b || c === u || c === a || c === N || c === R || typeof c == "object" && c !== null && (c.$$typeof === w || c.$$typeof === P || c.$$typeof === f || c.$$typeof === h || c.$$typeof === F || c.$$typeof === A || c.$$typeof === O || c.$$typeof === I || c.$$typeof === T);
+    }, e.typeOf = E;
   })();
 })), Le = (C.AsyncMode, C.ConcurrentMode, C.ContextConsumer, C.ContextProvider, C.Element, C.ForwardRef, C.Fragment, C.Lazy, C.Memo, C.Portal, C.Profiler, C.StrictMode, C.Suspense, C.isAsyncMode, C.isConcurrentMode, C.isContextConsumer, C.isContextProvider, C.isElement, C.isForwardRef, C.isFragment, C.isLazy, C.isMemo, C.isPortal, C.isProfiler, C.isStrictMode, C.isSuspense, C.isValidElementType, C.typeOf, Xe((function(t) {
   process.env.NODE_ENV === "production" ? t.exports = wt : t.exports = C;
 }))), xt = { $$typeof: !0, compare: !0, defaultProps: !0, displayName: !0, propTypes: !0, type: !0 }, _e = {};
 _e[Le.ForwardRef] = { $$typeof: !0, render: !0, defaultProps: !0, displayName: !0, propTypes: !0 }, _e[Le.Memo] = xt;
-var Ze = Ve(null), Je = function(t) {
+var Ze = Ue(null), Je = function(t) {
   var e = t.children, r = t.baseUrl, n = r === void 0 ? "http://rag-api.insytful.com/api/v1" : r, o = t.config, i = t.recaptchaSiteKey, a = p.createElement(Ze.Provider, { value: { config: o, baseUrl: n, recaptchaSiteKey: i } }, e);
   return i ? p.createElement(pt, { reCaptchaKey: i, scriptProps: { async: !0, defer: !0, appendTo: "head" } }, a) : a;
 }, kt = function() {
@@ -214,23 +214,23 @@ var Ze = Ve(null), Je = function(t) {
 };
 function Et(t, e, r, n) {
   return new (r || (r = Promise))(function(o, i) {
-    function a(m) {
+    function a(h) {
       try {
-        f(n.next(m));
+        f(n.next(h));
       } catch (d) {
         i(d);
       }
     }
-    function u(m) {
+    function u(h) {
       try {
-        f(n.throw(m));
+        f(n.throw(h));
       } catch (d) {
         i(d);
       }
     }
-    function f(m) {
+    function f(h) {
       var d;
-      m.done ? o(m.value) : (d = m.value, d instanceof r ? d : new r(function(b) {
+      h.done ? o(h.value) : (d = h.value, d instanceof r ? d : new r(function(b) {
         b(d);
       })).then(a, u);
     }
@@ -246,7 +246,7 @@ function St(t, e) {
     return this;
   }), a;
   function u(f) {
-    return function(m) {
+    return function(h) {
       return (function(d) {
         if (r) throw new TypeError("Generator is already executing.");
         for (; a && (a = 0, d[0] && (i = 0)), i; ) try {
@@ -292,7 +292,7 @@ function St(t, e) {
         }
         if (5 & d[0]) throw d[1];
         return { value: d[0] ? d[1] : void 0, done: !0 };
-      })([f, m]);
+      })([f, h]);
     };
   }
 }
@@ -301,16 +301,16 @@ function re(t, e, r) {
   return t.concat(n || Array.prototype.slice.call(e));
 }
 var Nt = function(t, e, r) {
-  var n = W([]), o = n[0], i = n[1], a = W(!1), u = a[0], f = a[1], m = W(null), d = m[0], b = m[1], F = oe(function(N, R) {
+  var n = G([]), o = n[0], i = n[1], a = G(!1), u = a[0], f = a[1], h = G(null), d = h[0], b = h[1], F = oe(function(N, R) {
     return Et(void 0, void 0, void 0, function() {
-      var P, y, T, A, $, I, k, z, K, q, G, D, L, j, S, s, l, h, w, g, E, v;
+      var P, w, T, A, O, I, E, j, V, $, U, L, K, z, k, s, l, m, y, v, S, g;
       return St(this, function(c) {
         switch (c.label) {
           case 0:
             if (P = null, !r) return [3, 5];
             c.label = 1;
           case 1:
-            return c.trys.push([1, 4, , 5]), (y = mt().executeRecaptcha) ? [4, y("rag_search")] : [3, 3];
+            return c.trys.push([1, 4, , 5]), (w = mt().executeRecaptcha) ? [4, w("rag_search")] : [3, 3];
           case 2:
             P = c.sent(), c.label = 3;
           case 3:
@@ -322,47 +322,47 @@ var Nt = function(t, e, r) {
               return re(re([], x, !0), [{ role: "user", content: N }], !1);
             }), f(!0), b(null), c.label = 6;
           case 6:
-            return c.trys.push([6, 17, , 18]), T = new URLSearchParams({ question: N, config: t, history: String(!0), stream: String(!0) }), R && R?.length >= 1 && T.set("sections", R.join(",")), A = T.toString(), $ = new Headers({ Accept: "text/event-stream" }), P && $.append("X-Recaptcha-Token", P), (I = localStorage.getItem("rag-session-id")) && $.append("X-Session-Id", I), [4, fetch("".concat(e, "/query-collection?").concat(A), { method: "GET", headers: $ })];
+            return c.trys.push([6, 17, , 18]), T = new URLSearchParams({ question: N, config: t, history: String(!0), stream: String(!0) }), R && R?.length >= 1 && T.set("sections", R.join(",")), A = T.toString(), O = new Headers({ Accept: "text/event-stream" }), P && O.append("X-Recaptcha-Token", P), (I = localStorage.getItem("rag-session-id")) && O.append("X-Session-Id", I), [4, fetch("".concat(e, "/query-collection?").concat(A), { method: "GET", headers: O })];
           case 7:
-            if ((k = c.sent()).ok) return [3, 13];
-            z = "Request failed (".concat(k.status, ")"), c.label = 8;
+            if ((E = c.sent()).ok) return [3, 13];
+            j = "Request failed (".concat(E.status, ")"), c.label = 8;
           case 8:
-            return c.trys.push([8, 10, , 12]), [4, k.json()];
+            return c.trys.push([8, 10, , 12]), [4, E.json()];
           case 9:
-            return g = c.sent(), z = (v = g?.message) !== null && v !== void 0 ? v : z, [3, 12];
+            return v = c.sent(), j = (g = v?.message) !== null && g !== void 0 ? g : j, [3, 12];
           case 10:
-            return c.sent(), [4, k.text()];
+            return c.sent(), [4, E.text()];
           case 11:
-            return (K = c.sent()) && (z = K), [3, 12];
+            return (V = c.sent()) && (j = V), [3, 12];
           case 12:
-            throw new Error(z);
+            throw new Error(j);
           case 13:
-            if (k.headers.has("X-Session-Id") && localStorage.setItem("rag-session-id", k.headers.get("X-Session-Id")), !k.body) throw new Error("No response body");
-            q = k.body.getReader(), G = new TextDecoder("utf-8"), D = "", L = "", i(function(x) {
+            if (E.headers.has("X-Session-Id") && localStorage.setItem("rag-session-id", E.headers.get("X-Session-Id")), !E.body) throw new Error("No response body");
+            $ = E.body.getReader(), U = new TextDecoder("utf-8"), L = "", K = "", i(function(x) {
               return re(re([], x, !0), [{ role: "assistant", content: "" }], !1);
             }), c.label = 14;
           case 14:
-            return [4, q.read()];
+            return [4, $.read()];
           case 15:
-            if (j = c.sent(), S = j.value, j.done) return [3, 16];
-            for (D += G.decode(S, { stream: !0 }), s = D.split(`
+            if (z = c.sent(), k = z.value, z.done) return [3, 16];
+            for (L += U.decode(k, { stream: !0 }), s = L.split(`
 
-`), D = s.pop() || "", l = 0, h = s; l < h.length; l++) {
-              if ((w = h[l]).startsWith("event: done")) return f(!1), [2];
-              if (w.startsWith("data:")) try {
-                (g = JSON.parse(w.replace("data: ", ""))) != null && g.content && (L += g.content, i(function(x) {
+`), L = s.pop() || "", l = 0, m = s; l < m.length; l++) {
+              if ((y = m[l]).startsWith("event: done")) return f(!1), [2];
+              if (y.startsWith("data:")) try {
+                (v = JSON.parse(y.replace("data: ", ""))) != null && v.content && (K += v.content, i(function(x) {
                   var M = re([], x, !0);
-                  return M[M.length - 1] = { role: "assistant", content: L }, M;
+                  return M[M.length - 1] = { role: "assistant", content: K }, M;
                 }));
               } catch (x) {
-                console.error("Failed to parse SSE chunk", x, w);
+                console.error("Failed to parse SSE chunk", x, y);
               }
             }
             return [3, 14];
           case 16:
             return f(!1), [3, 18];
           case 17:
-            return E = c.sent(), console.error(E), b(E.message || "Something went wrong"), f(!1), [3, 18];
+            return S = c.sent(), console.error(S), b(S.message || "Something went wrong"), f(!1), [3, 18];
           case 18:
             return [2];
         }
@@ -434,35 +434,35 @@ function Pt({
   renderMarkdown: o,
   onSwitchClassic: i
 }) {
-  const a = Y(null), [u, f] = W(!1), [m, d] = W(!1), b = Y(!1);
-  V(() => {
-    const y = a.current;
-    if (!y) return;
-    const T = () => f(y.scrollHeight > y.clientHeight);
+  const a = Y(null), [u, f] = G(!1), [h, d] = G(!1), b = Y(!1);
+  q(() => {
+    const w = a.current;
+    if (!w) return;
+    const T = () => f(w.scrollHeight > w.clientHeight);
     return T(), window.addEventListener("resize", T), () => window.removeEventListener("resize", T);
-  }, [t]), V(() => {
-    const y = a.current;
-    if (!y) return;
+  }, [t]), q(() => {
+    const w = a.current;
+    if (!w) return;
     const T = 40, A = () => {
-      const $ = y.scrollTop + y.clientHeight >= y.scrollHeight - T;
-      d($), !e && $ && (b.current = !0);
+      const O = w.scrollTop + w.clientHeight >= w.scrollHeight - T;
+      d(O), !e && O && (b.current = !0);
     };
-    return y.addEventListener("scroll", A), A(), () => y.removeEventListener("scroll", A);
+    return w.addEventListener("scroll", A), A(), () => w.removeEventListener("scroll", A);
   }, [t, e]);
-  const F = u && !m, N = u && (e || !b.current) && !m, [R, P] = W(!1);
-  return V(() => {
+  const F = u && !h, N = u && (e || !b.current) && !h, [R, P] = G(!1);
+  return q(() => {
     if (!t || t.length === 0) {
       P(!1);
       return;
     }
-    const y = t[t.length - 1], T = y?.role === "user", A = e && (!y || y.role === "user");
+    const w = t[t.length - 1], T = w?.role === "user", A = e && (!w || w.role === "user");
     P(T && A);
-  }, [t, e]), V(() => {
+  }, [t, e]), q(() => {
     if (R) {
-      const y = a.current;
-      if (!y) return;
-      y.scrollTo({
-        top: y.scrollHeight,
+      const w = a.current;
+      if (!w) return;
+      w.scrollTo({
+        top: w.scrollHeight,
         behavior: "smooth"
       });
     }
@@ -472,13 +472,13 @@ function Pt({
       ref: a,
       className: `overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${F ? "[mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)]" : ""}`
     },
-    /* @__PURE__ */ p.createElement("div", { className: "insytful-search-messages-outer w-full max-w-[784px] mx-auto" }, /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, t.map((y, T) => /* @__PURE__ */ p.createElement(
+    /* @__PURE__ */ p.createElement("div", { className: "insytful-search-messages-outer w-full max-w-[784px] mx-auto" }, /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, t.map((w, T) => /* @__PURE__ */ p.createElement(
       Tt,
       {
-        key: `${T}-${Oe(y.content)}`,
+        key: `${T}-${Oe(w.content)}`,
         renderContent: o,
         logo: r,
-        message: y
+        message: w
       }
     )), R && /* @__PURE__ */ p.createElement(Ct, { logo: r }), !e && !n && /* @__PURE__ */ p.createElement(Rt, { onSwitchClassic: i })))
   ), N && /* @__PURE__ */ p.createElement("div", { className: "w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center" }, /* @__PURE__ */ p.createElement(
@@ -520,7 +520,7 @@ function Ft({
   onSend: r,
   disabled: n = !1
 }) {
-  const [o, i] = W(""), a = async () => {
+  const [o, i] = G(""), a = async () => {
     const u = o.trim();
     u && (i(""), await r(u));
   };
@@ -678,34 +678,46 @@ const et = ct(
     offsets: a,
     logo: u,
     renderMarkdown: f,
-    isClassic: m,
+    isClassic: h,
     isOpen: d,
     onSwitch: b,
     onSwitchClassic: F,
     messages: N,
     loading: R,
     error: P,
-    onSend: y,
+    onSend: w,
     renderSwitch: T,
     styles: A
-  }, $) {
-    const { left: I = 0, right: k = 0 } = a || {}, [z, K] = W(0);
-    return V(() => {
+  }, O) {
+    const { left: I = 0, right: E = 0 } = a || {}, [j, V] = G(0), [$, U] = G(h), [L, K] = G(!0), z = Y(null);
+    return q(() => {
+      if ($ === h) return;
+      K(!1);
+      let k = 200;
+      if (z.current) {
+        const l = getComputedStyle(z.current).getPropertyValue("--insytful-search-transition-duration").trim(), m = parseFloat(l);
+        isNaN(m) || (k = m);
+      }
+      const s = setTimeout(() => {
+        U(h), K(!0);
+      }, k);
+      return () => clearTimeout(s);
+    }, [h, $]), q(() => {
       if (typeof window > "u" || !d) return;
-      const q = () => {
-        const L = document.querySelectorAll("[data-insytful-modal-offset]");
-        let j = 0;
-        L.forEach((S) => j += S.offsetHeight), K(j);
+      const k = () => {
+        const m = document.querySelectorAll("[data-insytful-modal-offset]");
+        let y = 0;
+        m.forEach((v) => y += v.offsetHeight), V(y);
       };
-      q();
-      const G = document.querySelectorAll("[data-insytful-modal-offset]"), D = new ResizeObserver(() => q());
-      return G.forEach((L) => D.observe(L)), () => D.disconnect();
+      k();
+      const s = document.querySelectorAll("[data-insytful-modal-offset]"), l = new ResizeObserver(() => k());
+      return s.forEach((m) => l.observe(m)), () => l.disconnect();
     }, [d]), /* @__PURE__ */ p.createElement(
       "div",
       {
         tabIndex: -1,
         id: "insytful-search-dialog",
-        ref: $,
+        ref: O,
         role: "dialog",
         "aria-modal": d,
         "aria-labelledby": "insytful-search-heading",
@@ -713,9 +725,9 @@ const et = ct(
         className: `insytful-search-dialog-outer fixed flex flex-col bg-white overflow-y-auto pb-0 ${d ? "insytful-search-dialog-open" : "insytful-search-dialog-closed"}`,
         style: {
           zIndex: 999,
-          top: `${z}px`,
+          top: `${j}px`,
           left: I,
-          right: k,
+          right: E,
           bottom: 0,
           opacity: d ? 1 : 0,
           pointerEvents: d ? "auto" : "none",
@@ -723,43 +735,60 @@ const et = ct(
           ...A
         }
       },
-      /* @__PURE__ */ p.createElement("div", { className: "insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]" }, N.length !== 0 && !o?.title && /* @__PURE__ */ p.createElement("h1", { id: "insytful-search-heading", className: "sr-only" }, m ? "Search" : e || "AI Search"), (N.length === 0 || m && N.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]" }, /* @__PURE__ */ p.createElement(
-        Mt,
+      /* @__PURE__ */ p.createElement(
+        "div",
         {
-          title: m ? o?.title ?? "" : e,
-          text: m ? o?.text ?? "" : r
-        }
-      )), !m && /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement(
-        Pt,
-        {
-          logo: u,
-          messages: N,
-          loading: R,
-          error: P,
-          renderMarkdown: f,
-          onSwitchClassic: F
-        }
-      ), P && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto" }, /* @__PURE__ */ p.createElement(
-        It,
-        {
-          onSwitchClassic: F,
-          message: P
-        }
-      ))), /* @__PURE__ */ p.createElement(
-        Ft,
-        {
-          isClassic: m,
-          onSend: y,
-          disabled: R,
-          hasMessages: N.length > 0
-        }
-      ), (N.length === 0 || m && N.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]" }, /* @__PURE__ */ p.createElement(
-        At,
-        {
-          onSend: y,
-          suggestions: m ? o?.suggestions ?? [] : i
-        }
-      ), m && o?.renderSwitch ? o.renderSwitch(b) : !m && T ? T(b) : null), /* @__PURE__ */ p.createElement("div", { className: "insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]" }, n && !m && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]" }, n)))
+          ref: z,
+          "aria-live": "polite",
+          className: "insytful-search-mode-transition insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]",
+          style: {
+            opacity: L ? 1 : 0,
+            transition: "opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)"
+          }
+        },
+        N.length !== 0 && !o?.title && /* @__PURE__ */ p.createElement("h1", { id: "insytful-search-heading", className: "sr-only" }, $ ? "Search" : e || "AI Search"),
+        (N.length === 0 || $ && N.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]" }, /* @__PURE__ */ p.createElement(
+          Mt,
+          {
+            title: $ ? o?.title ?? "" : e,
+            text: $ ? o?.text ?? "" : r
+          }
+        )),
+        !$ && /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement(
+          Pt,
+          {
+            logo: u,
+            messages: N,
+            loading: R,
+            error: P,
+            renderMarkdown: f,
+            onSwitchClassic: F
+          }
+        ), P && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto" }, /* @__PURE__ */ p.createElement(
+          It,
+          {
+            onSwitchClassic: F,
+            message: P
+          }
+        ))),
+        /* @__PURE__ */ p.createElement(
+          Ft,
+          {
+            isClassic: $,
+            onSend: w,
+            disabled: R,
+            hasMessages: N.length > 0
+          }
+        ),
+        (N.length === 0 || $ && N.length >= 1) && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]" }, /* @__PURE__ */ p.createElement(
+          At,
+          {
+            onSend: w,
+            suggestions: $ ? o?.suggestions ?? [] : i
+          }
+        ), $ && o?.renderSwitch ? o.renderSwitch(b) : !$ && T ? T(b) : null),
+        /* @__PURE__ */ p.createElement("div", { className: "insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]" }, n && !$ && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]" }, n))
+      )
     );
   }
 );
@@ -790,10 +819,10 @@ var tt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
     var a = i.shift();
     if (!we(a, !1))
       if (a.tagName === "SLOT") {
-        var u = a.assignedElements(), f = u.length ? u : a.children, m = xe(f, !0, n);
-        n.flatten ? o.push.apply(o, m) : o.push({
+        var u = a.assignedElements(), f = u.length ? u : a.children, h = xe(f, !0, n);
+        n.flatten ? o.push.apply(o, h) : o.push({
           scopeParent: a,
-          candidates: m
+          candidates: h
         });
       } else {
         var d = ee.call(a, ge);
@@ -860,8 +889,8 @@ var tt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   if (n && n !== e) {
     var a, u, f;
     for (i = !!((a = o) !== null && a !== void 0 && (u = a.ownerDocument) !== null && u !== void 0 && u.contains(o) || e != null && (f = e.ownerDocument) !== null && f !== void 0 && f.contains(e)); !i && o; ) {
-      var m, d, b;
-      n = ye(o), o = (m = n) === null || m === void 0 ? void 0 : m.host, i = !!((d = o) !== null && d !== void 0 && (b = d.ownerDocument) !== null && b !== void 0 && b.contains(o));
+      var h, d, b;
+      n = ye(o), o = (h = n) === null || h === void 0 ? void 0 : h.host, i = !!((d = o) !== null && d !== void 0 && (b = d.ownerDocument) !== null && b !== void 0 && b.contains(o));
     }
   }
   return i;
@@ -896,10 +925,10 @@ var tt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   n === "full-native" || n === "legacy-full") {
     if (typeof o == "function") {
       for (var f = e; e; ) {
-        var m = e.parentElement, d = ye(e);
-        if (m && !m.shadowRoot && o(m) === !0)
+        var h = e.parentElement, d = ye(e);
+        if (h && !h.shadowRoot && o(h) === !0)
           return He(e);
-        e.assignedSlot ? e = e.assignedSlot : !m && d !== e.ownerDocument ? e = d.host : e = m;
+        e.assignedSlot ? e = e.assignedSlot : !h && d !== e.ownerDocument ? e = d.host : e = h;
       }
       e = f;
     }
@@ -929,31 +958,31 @@ var tt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   jt(r) || Gt(r));
 }, Ie = function(e, r) {
   return !(Ht(r) || Q(r) < 0 || !ke(e, r));
-}, Ut = function(e) {
+}, Vt = function(e) {
   var r = parseInt(e.getAttribute("tabindex"), 10);
   return !!(isNaN(r) || r >= 0);
 }, it = function(e) {
   var r = [], n = [];
   return e.forEach(function(o, i) {
-    var a = !!o.scopeParent, u = a ? o.scopeParent : o, f = Ot(u, a), m = a ? it(o.candidates) : u;
-    f === 0 ? a ? r.push.apply(r, m) : r.push(u) : n.push({
+    var a = !!o.scopeParent, u = a ? o.scopeParent : o, f = Ot(u, a), h = a ? it(o.candidates) : u;
+    f === 0 ? a ? r.push.apply(r, h) : r.push(u) : n.push({
       documentOrder: i,
       tabIndex: f,
       item: o,
       isScope: a,
-      content: m
+      content: h
     });
   }), n.sort(Dt).reduce(function(o, i) {
     return i.isScope ? o.push.apply(o, i.content) : o.push(i.content), o;
   }, []).concat(r);
-}, Vt = function(e, r) {
+}, Ut = function(e, r) {
   r = r || {};
   var n;
   return r.getShadowRoot ? n = xe([e], r.includeContainer, {
     filter: Ie.bind(null, r),
     flatten: !1,
     getShadowRoot: r.getShadowRoot,
-    shadowRootFilter: Ut
+    shadowRootFilter: Vt
   }) : n = nt(e, r.includeContainer, Ie.bind(null, r)), it(n);
 }, Wt = function(e, r) {
   r = r || {};
@@ -1124,7 +1153,7 @@ var X = {
   return ie(e) && !e.shiftKey;
 }, ir = function(e) {
   return ie(e) && e.shiftKey;
-}, Ue = function(e) {
+}, Ve = function(e) {
   return setTimeout(e, 0);
 }, ne = function(e) {
   for (var r = arguments.length, n = new Array(r > 1 ? r - 1 : 0), o = 1; o < r; o++)
@@ -1184,31 +1213,31 @@ var X = {
     delayInitialFocusTimer: void 0,
     // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
     recentNavEvent: void 0
-  }, u, f = function(s, l, h) {
-    return s && s[l] !== void 0 ? s[l] : i[h || l];
-  }, m = function(s, l) {
-    var h = typeof l?.composedPath == "function" ? l.composedPath() : void 0;
-    return a.containerGroups.findIndex(function(w) {
-      var g = w.container, E = w.tabbableNodes;
-      return g.contains(s) || h?.includes(g) || E.find(function(v) {
-        return v === s;
+  }, u, f = function(s, l, m) {
+    return s && s[l] !== void 0 ? s[l] : i[m || l];
+  }, h = function(s, l) {
+    var m = typeof l?.composedPath == "function" ? l.composedPath() : void 0;
+    return a.containerGroups.findIndex(function(y) {
+      var v = y.container, S = y.tabbableNodes;
+      return v.contains(s) || m?.includes(v) || S.find(function(g) {
+        return g === s;
       });
     });
   }, d = function(s) {
-    var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, h = l.hasFallback, w = h === void 0 ? !1 : h, g = l.params, E = g === void 0 ? [] : g, v = i[s];
-    if (typeof v == "function" && (v = v.apply(void 0, er(E))), v === !0 && (v = void 0), !v) {
-      if (v === void 0 || v === !1)
-        return v;
+    var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, m = l.hasFallback, y = m === void 0 ? !1 : m, v = l.params, S = v === void 0 ? [] : v, g = i[s];
+    if (typeof g == "function" && (g = g.apply(void 0, er(S))), g === !0 && (g = void 0), !g) {
+      if (g === void 0 || g === !1)
+        return g;
       throw new Error("`".concat(s, "` was specified but was not a node, or did not return a node"));
     }
-    var c = v;
-    if (typeof v == "string") {
+    var c = g;
+    if (typeof g == "string") {
       try {
-        c = n.querySelector(v);
+        c = n.querySelector(g);
       } catch (x) {
         throw new Error("`".concat(s, '` appears to be an invalid selector; error="').concat(x.message, '"'));
       }
-      if (!c && !w)
+      if (!c && !y)
         throw new Error("`".concat(s, "` as selector refers to no known node"));
     }
     return c;
@@ -1219,11 +1248,11 @@ var X = {
     if (s === !1)
       return !1;
     if (s === void 0 || s && !Ne(s, i.tabbableOptions))
-      if (m(n.activeElement) >= 0)
+      if (h(n.activeElement) >= 0)
         s = n.activeElement;
       else {
-        var l = a.tabbableGroups[0], h = l && l.firstTabbableNode;
-        s = h || d("fallbackFocus");
+        var l = a.tabbableGroups[0], m = l && l.firstTabbableNode;
+        s = m || d("fallbackFocus");
       }
     else s === null && (s = d("fallbackFocus"));
     if (!s)
@@ -1231,9 +1260,9 @@ var X = {
     return s;
   }, F = function() {
     if (a.containerGroups = a.containers.map(function(s) {
-      var l = Vt(s, i.tabbableOptions), h = Wt(s, i.tabbableOptions), w = l.length > 0 ? l[0] : void 0, g = l.length > 0 ? l[l.length - 1] : void 0, E = h.find(function(x) {
+      var l = Ut(s, i.tabbableOptions), m = Wt(s, i.tabbableOptions), y = l.length > 0 ? l[0] : void 0, v = l.length > 0 ? l[l.length - 1] : void 0, S = m.find(function(x) {
         return te(x);
-      }), v = h.slice().reverse().find(function(x) {
+      }), g = m.slice().reverse().find(function(x) {
         return te(x);
       }), c = !!l.find(function(x) {
         return Q(x) > 0;
@@ -1241,13 +1270,13 @@ var X = {
       return {
         container: s,
         tabbableNodes: l,
-        focusableNodes: h,
+        focusableNodes: m,
         /** True if at least one node with positive `tabindex` was found in this container. */
         posTabIndexesFound: c,
         /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
-        firstTabbableNode: w,
+        firstTabbableNode: y,
         /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
-        lastTabbableNode: g,
+        lastTabbableNode: v,
         // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
         //  would require more than just https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
         //  because that API doesn't work with Shadow DOM as well as it should (@see
@@ -1256,9 +1285,9 @@ var X = {
         //  "close enough most of the time" alternative for positive tabindexes which should generally
         //  be avoided anyway...
         /** First tabbable node in container, __DOM__ order; `undefined` if none. */
-        firstDomTabbableNode: E,
+        firstDomTabbableNode: S,
         /** Last tabbable node in container, __DOM__ order; `undefined` if none. */
-        lastDomTabbableNode: v,
+        lastDomTabbableNode: g,
         /**
          * Finds the __tabbable__ node that follows the given node in the specified direction,
          *  in this container, if any.
@@ -1268,12 +1297,12 @@ var X = {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode: function(M) {
-          var _ = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, U = l.indexOf(M);
-          return U < 0 ? _ ? h.slice(h.indexOf(M) + 1).find(function(J) {
+          var _ = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, W = l.indexOf(M);
+          return W < 0 ? _ ? m.slice(m.indexOf(M) + 1).find(function(J) {
             return te(J);
-          }) : h.slice(0, h.indexOf(M)).reverse().find(function(J) {
+          }) : m.slice(0, m.indexOf(M)).reverse().find(function(J) {
             return te(J);
-          }) : l[U + (_ ? 1 : -1)];
+          }) : l[W + (_ ? 1 : -1)];
         }
       };
     }), a.tabbableGroups = a.containerGroups.filter(function(s) {
@@ -1303,39 +1332,39 @@ var X = {
       params: [s]
     });
     return l || (l === !1 ? !1 : s);
-  }, y = function(s) {
-    var l = s.target, h = s.event, w = s.isBackward, g = w === void 0 ? !1 : w;
-    l = l || se(h), F();
-    var E = null;
+  }, w = function(s) {
+    var l = s.target, m = s.event, y = s.isBackward, v = y === void 0 ? !1 : y;
+    l = l || se(m), F();
+    var S = null;
     if (a.tabbableGroups.length > 0) {
-      var v = m(l, h), c = v >= 0 ? a.containerGroups[v] : void 0;
-      if (v < 0)
-        g ? E = a.tabbableGroups[a.tabbableGroups.length - 1].lastTabbableNode : E = a.tabbableGroups[0].firstTabbableNode;
-      else if (g) {
+      var g = h(l, m), c = g >= 0 ? a.containerGroups[g] : void 0;
+      if (g < 0)
+        v ? S = a.tabbableGroups[a.tabbableGroups.length - 1].lastTabbableNode : S = a.tabbableGroups[0].firstTabbableNode;
+      else if (v) {
         var x = a.tabbableGroups.findIndex(function(Ee) {
           var Se = Ee.firstTabbableNode;
           return l === Se;
         });
-        if (x < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l, !1)) && (x = v), x >= 0) {
+        if (x < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l, !1)) && (x = g), x >= 0) {
           var M = x === 0 ? a.tabbableGroups.length - 1 : x - 1, _ = a.tabbableGroups[M];
-          E = Q(l) >= 0 ? _.lastTabbableNode : _.lastDomTabbableNode;
-        } else ie(h) || (E = c.nextTabbableNode(l, !1));
+          S = Q(l) >= 0 ? _.lastTabbableNode : _.lastDomTabbableNode;
+        } else ie(m) || (S = c.nextTabbableNode(l, !1));
       } else {
-        var U = a.tabbableGroups.findIndex(function(Ee) {
+        var W = a.tabbableGroups.findIndex(function(Ee) {
           var Se = Ee.lastTabbableNode;
           return l === Se;
         });
-        if (U < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l)) && (U = v), U >= 0) {
-          var J = U === a.tabbableGroups.length - 1 ? 0 : U + 1, Z = a.tabbableGroups[J];
-          E = Q(l) >= 0 ? Z.firstTabbableNode : Z.firstDomTabbableNode;
-        } else ie(h) || (E = c.nextTabbableNode(l));
+        if (W < 0 && (c.container === l || Ne(l, i.tabbableOptions) && !te(l, i.tabbableOptions) && !c.nextTabbableNode(l)) && (W = g), W >= 0) {
+          var J = W === a.tabbableGroups.length - 1 ? 0 : W + 1, Z = a.tabbableGroups[J];
+          S = Q(l) >= 0 ? Z.firstTabbableNode : Z.firstDomTabbableNode;
+        } else ie(m) || (S = c.nextTabbableNode(l));
       }
     } else
-      E = d("fallbackFocus");
-    return E;
+      S = d("fallbackFocus");
+    return S;
   }, T = function(s) {
     var l = se(s);
-    if (!(m(l, s) >= 0)) {
+    if (!(h(l, s) >= 0)) {
       if (ne(i.clickOutsideDeactivates, s)) {
         u.deactivate({
           // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
@@ -1351,55 +1380,55 @@ var X = {
       ne(i.allowOutsideClick, s) || s.preventDefault();
     }
   }, A = function(s) {
-    var l = se(s), h = m(l, s) >= 0;
-    if (h || l instanceof Document)
-      h && (a.mostRecentlyFocusedNode = l);
+    var l = se(s), m = h(l, s) >= 0;
+    if (m || l instanceof Document)
+      m && (a.mostRecentlyFocusedNode = l);
     else {
       s.stopImmediatePropagation();
-      var w, g = !0;
+      var y, v = !0;
       if (a.mostRecentlyFocusedNode)
         if (Q(a.mostRecentlyFocusedNode) > 0) {
-          var E = m(a.mostRecentlyFocusedNode), v = a.containerGroups[E].tabbableNodes;
-          if (v.length > 0) {
-            var c = v.findIndex(function(x) {
+          var S = h(a.mostRecentlyFocusedNode), g = a.containerGroups[S].tabbableNodes;
+          if (g.length > 0) {
+            var c = g.findIndex(function(x) {
               return x === a.mostRecentlyFocusedNode;
             });
-            c >= 0 && (i.isKeyForward(a.recentNavEvent) ? c + 1 < v.length && (w = v[c + 1], g = !1) : c - 1 >= 0 && (w = v[c - 1], g = !1));
+            c >= 0 && (i.isKeyForward(a.recentNavEvent) ? c + 1 < g.length && (y = g[c + 1], v = !1) : c - 1 >= 0 && (y = g[c - 1], v = !1));
           }
         } else
           a.containerGroups.some(function(x) {
             return x.tabbableNodes.some(function(M) {
               return Q(M) > 0;
             });
-          }) || (g = !1);
+          }) || (v = !1);
       else
-        g = !1;
-      g && (w = y({
+        v = !1;
+      v && (y = w({
         // move FROM the MRU node, not event-related node (which will be the node that is
         //  outside the trap causing the focus escape we're trying to fix)
         target: a.mostRecentlyFocusedNode,
         isBackward: i.isKeyBackward(a.recentNavEvent)
-      })), R(w || a.mostRecentlyFocusedNode || b());
+      })), R(y || a.mostRecentlyFocusedNode || b());
     }
     a.recentNavEvent = void 0;
-  }, $ = function(s) {
+  }, O = function(s) {
     var l = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !1;
     a.recentNavEvent = s;
-    var h = y({
+    var m = w({
       event: s,
       isBackward: l
     });
-    h && (ie(s) && s.preventDefault(), R(h));
+    m && (ie(s) && s.preventDefault(), R(m));
   }, I = function(s) {
-    (i.isKeyForward(s) || i.isKeyBackward(s)) && $(s, i.isKeyBackward(s));
-  }, k = function(s) {
+    (i.isKeyForward(s) || i.isKeyBackward(s)) && O(s, i.isKeyBackward(s));
+  }, E = function(s) {
     ar(s) && ne(i.escapeDeactivates, s) !== !1 && (s.preventDefault(), u.deactivate());
-  }, z = function(s) {
+  }, j = function(s) {
     var l = se(s);
-    m(l, s) >= 0 || ne(i.clickOutsideDeactivates, s) || ne(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
-  }, K = function() {
+    h(l, s) >= 0 || ne(i.clickOutsideDeactivates, s) || ne(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
+  }, V = function() {
     if (a.active)
-      return X.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? Ue(function() {
+      return X.activateTrap(o, u), a.delayInitialFocusTimer = i.delayInitialFocus ? Ve(function() {
         R(b());
       }) : R(b()), n.addEventListener("focusin", A, !0), n.addEventListener("mousedown", T, {
         capture: !0,
@@ -1407,29 +1436,29 @@ var X = {
       }), n.addEventListener("touchstart", T, {
         capture: !0,
         passive: !1
-      }), n.addEventListener("click", z, {
+      }), n.addEventListener("click", j, {
         capture: !0,
         passive: !1
       }), n.addEventListener("keydown", I, {
         capture: !0,
         passive: !1
-      }), n.addEventListener("keydown", k), u;
-  }, q = function(s) {
+      }), n.addEventListener("keydown", E), u;
+  }, $ = function(s) {
     a.active && !a.paused && u._setSubtreeIsolation(!1), a.adjacentElements.clear(), a.alreadySilent.clear();
-    var l = /* @__PURE__ */ new Set(), h = /* @__PURE__ */ new Set(), w = Ke(s), g;
+    var l = /* @__PURE__ */ new Set(), m = /* @__PURE__ */ new Set(), y = Ke(s), v;
     try {
-      for (w.s(); !(g = w.n()).done; ) {
-        var E = g.value;
-        l.add(E);
-        for (var v = typeof ShadowRoot < "u" && E.getRootNode() instanceof ShadowRoot, c = E; c; ) {
+      for (y.s(); !(v = y.n()).done; ) {
+        var S = v.value;
+        l.add(S);
+        for (var g = typeof ShadowRoot < "u" && S.getRootNode() instanceof ShadowRoot, c = S; c; ) {
           l.add(c);
           var x = c.parentElement, M = [];
-          x ? M = x.children : !x && v && (M = c.getRootNode().children, x = c.getRootNode().host, v = typeof ShadowRoot < "u" && x.getRootNode() instanceof ShadowRoot);
-          var _ = Ke(M), U;
+          x ? M = x.children : !x && g && (M = c.getRootNode().children, x = c.getRootNode().host, g = typeof ShadowRoot < "u" && x.getRootNode() instanceof ShadowRoot);
+          var _ = Ke(M), W;
           try {
-            for (_.s(); !(U = _.n()).done; ) {
-              var J = U.value;
-              h.add(J);
+            for (_.s(); !(W = _.n()).done; ) {
+              var J = W.value;
+              m.add(J);
             }
           } catch (Z) {
             _.e(Z);
@@ -1440,27 +1469,27 @@ var X = {
         }
       }
     } catch (Z) {
-      w.e(Z);
+      y.e(Z);
     } finally {
-      w.f();
+      y.f();
     }
     l.forEach(function(Z) {
-      h.delete(Z);
-    }), a.adjacentElements = h;
-  }, G = function() {
+      m.delete(Z);
+    }), a.adjacentElements = m;
+  }, U = function() {
     if (a.active)
-      return n.removeEventListener("focusin", A, !0), n.removeEventListener("mousedown", T, !0), n.removeEventListener("touchstart", T, !0), n.removeEventListener("click", z, !0), n.removeEventListener("keydown", I, !0), n.removeEventListener("keydown", k), u;
-  }, D = function(s) {
-    var l = s.some(function(h) {
-      var w = Array.from(h.removedNodes);
-      return w.some(function(g) {
-        return g === a.mostRecentlyFocusedNode;
+      return n.removeEventListener("focusin", A, !0), n.removeEventListener("mousedown", T, !0), n.removeEventListener("touchstart", T, !0), n.removeEventListener("click", j, !0), n.removeEventListener("keydown", I, !0), n.removeEventListener("keydown", E), u;
+  }, L = function(s) {
+    var l = s.some(function(m) {
+      var y = Array.from(m.removedNodes);
+      return y.some(function(v) {
+        return v === a.mostRecentlyFocusedNode;
       });
     });
     l && R(b());
-  }, L = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(D) : void 0, j = function() {
-    L && (L.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
-      L.observe(s, {
+  }, K = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(L) : void 0, z = function() {
+    K && (K.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
+      K.observe(s, {
         subtree: !0,
         childList: !0
       });
@@ -1476,23 +1505,23 @@ var X = {
     activate: function(s) {
       if (a.active)
         return this;
-      var l = f(s, "onActivate"), h = f(s, "onPostActivate"), w = f(s, "checkCanFocusTrap"), g = X.getActiveTrap(o), E = !1;
-      if (g && !g.paused) {
-        var v;
-        (v = g._setSubtreeIsolation) === null || v === void 0 || v.call(g, !1), E = !0;
+      var l = f(s, "onActivate"), m = f(s, "onPostActivate"), y = f(s, "checkCanFocusTrap"), v = X.getActiveTrap(o), S = !1;
+      if (v && !v.paused) {
+        var g;
+        (g = v._setSubtreeIsolation) === null || g === void 0 || g.call(v, !1), S = !0;
       }
       try {
-        w || F(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = N(n), l?.();
+        y || F(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = N(n), l?.();
         var c = function() {
-          w && F(), K(), j(), i.isolateSubtrees && u._setSubtreeIsolation(!0), h?.();
+          y && F(), V(), z(), i.isolateSubtrees && u._setSubtreeIsolation(!0), m?.();
         };
-        if (w)
-          return w(a.containers.concat()).then(c, c), this;
+        if (y)
+          return y(a.containers.concat()).then(c, c), this;
         c();
       } catch (M) {
-        if (g === X.getActiveTrap(o) && E) {
+        if (v === X.getActiveTrap(o) && S) {
           var x;
-          (x = g._setSubtreeIsolation) === null || x === void 0 || x.call(g, !0);
+          (x = v._setSubtreeIsolation) === null || x === void 0 || x.call(v, !0);
         }
         throw M;
       }
@@ -1506,15 +1535,15 @@ var X = {
         onPostDeactivate: i.onPostDeactivate,
         checkCanReturnFocus: i.checkCanReturnFocus
       }, s);
-      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || u._setSubtreeIsolation(!1), a.alreadySilent.clear(), G(), a.active = !1, a.paused = !1, j(), X.deactivateTrap(o, u);
-      var h = f(l, "onDeactivate"), w = f(l, "onPostDeactivate"), g = f(l, "checkCanReturnFocus"), E = f(l, "returnFocus", "returnFocusOnDeactivate");
-      h?.();
-      var v = function() {
-        Ue(function() {
-          E && R(P(a.nodeFocusedBeforeActivation)), w?.();
+      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || u._setSubtreeIsolation(!1), a.alreadySilent.clear(), U(), a.active = !1, a.paused = !1, z(), X.deactivateTrap(o, u);
+      var m = f(l, "onDeactivate"), y = f(l, "onPostDeactivate"), v = f(l, "checkCanReturnFocus"), S = f(l, "returnFocus", "returnFocusOnDeactivate");
+      m?.();
+      var g = function() {
+        Ve(function() {
+          S && R(P(a.nodeFocusedBeforeActivation)), y?.();
         });
       };
-      return E && g ? (g(P(a.nodeFocusedBeforeActivation)).then(v, v), this) : (v(), this);
+      return S && v ? (v(P(a.nodeFocusedBeforeActivation)).then(g, g), this) : (g(), this);
     },
     pause: function(s) {
       return a.active ? (a.manuallyPaused = !0, this._setPausedState(!0, s)) : this;
@@ -1524,9 +1553,9 @@ var X = {
     },
     updateContainerElements: function(s) {
       var l = [].concat(s).filter(Boolean);
-      return a.containers = l.map(function(h) {
-        return typeof h == "string" ? n.querySelector(h) : h;
-      }), i.isolateSubtrees && q(a.containers), a.active && (F(), i.isolateSubtrees && !a.paused && u._setSubtreeIsolation(!0)), j(), this;
+      return a.containers = l.map(function(m) {
+        return typeof m == "string" ? n.querySelector(m) : m;
+      }), i.isolateSubtrees && $(a.containers), a.active && (F(), i.isolateSubtrees && !a.paused && u._setSubtreeIsolation(!0)), z(), this;
     }
   }, Object.defineProperties(u, {
     _isManuallyPaused: {
@@ -1539,11 +1568,11 @@ var X = {
         if (a.paused === s)
           return this;
         if (a.paused = s, s) {
-          var h = f(l, "onPause"), w = f(l, "onPostPause");
-          h?.(), G(), j(), u._setSubtreeIsolation(!1), w?.();
+          var m = f(l, "onPause"), y = f(l, "onPostPause");
+          m?.(), U(), z(), u._setSubtreeIsolation(!1), y?.();
         } else {
-          var g = f(l, "onUnpause"), E = f(l, "onPostUnpause");
-          g?.(), u._setSubtreeIsolation(!0), F(), K(), j(), E?.();
+          var v = f(l, "onUnpause"), S = f(l, "onPostUnpause");
+          v?.(), u._setSubtreeIsolation(!0), F(), V(), z(), S?.();
         }
         return this;
       }
@@ -1551,8 +1580,8 @@ var X = {
     _setSubtreeIsolation: {
       value: function(s) {
         i.isolateSubtrees && a.adjacentElements.forEach(function(l) {
-          var h;
-          s ? i.isolateSubtrees === "aria-hidden" ? ((l.ariaHidden === "true" || ((h = l.getAttribute("aria-hidden")) === null || h === void 0 ? void 0 : h.toLowerCase()) === "true") && a.alreadySilent.add(l), l.setAttribute("aria-hidden", "true")) : ((l.inert || l.hasAttribute("inert")) && a.alreadySilent.add(l), l.setAttribute("inert", !0)) : a.alreadySilent.has(l) || (i.isolateSubtrees === "aria-hidden" ? l.removeAttribute("aria-hidden") : l.removeAttribute("inert"));
+          var m;
+          s ? i.isolateSubtrees === "aria-hidden" ? ((l.ariaHidden === "true" || ((m = l.getAttribute("aria-hidden")) === null || m === void 0 ? void 0 : m.toLowerCase()) === "true") && a.alreadySilent.add(l), l.setAttribute("aria-hidden", "true")) : ((l.inert || l.hasAttribute("inert")) && a.alreadySilent.add(l), l.setAttribute("inert", !0)) : a.alreadySilent.has(l) || (i.isolateSubtrees === "aria-hidden" ? l.removeAttribute("aria-hidden") : l.removeAttribute("inert"));
         });
       }
     }
@@ -1574,11 +1603,11 @@ function cr({
 }
 function ur(t, e) {
   const r = Y(null), n = Y(null), o = Y(null), i = Y(t), a = Y(e);
-  return V(() => {
+  return q(() => {
     i.current = t;
-  }, [t]), V(() => {
+  }, [t]), q(() => {
     a.current = e;
-  }, [e]), V(() => {
+  }, [e]), q(() => {
     if (!e || !r.current) return;
     n.current = document.activeElement;
     const u = lr(r.current, {
@@ -1587,8 +1616,8 @@ function ur(t, e) {
       escapeDeactivates: !0,
       allowOutsideClick: !0,
       clickOutsideDeactivates: (f) => {
-        const m = f.target;
-        return !(m.closest("button")?.textContent?.includes("Open") || m.closest("button")?.textContent?.includes("Close"));
+        const h = f.target;
+        return !(h.closest("button")?.textContent?.includes("Open") || h.closest("button")?.textContent?.includes("Close"));
       },
       onDeactivate: () => {
         a.current && i.current(!1);
@@ -1725,8 +1754,8 @@ const dr = (t) => {
       ], a = new ReadableStream({
         async start(u) {
           const f = new TextEncoder();
-          for (const m of i) {
-            const d = `data: ${JSON.stringify({ content: m })}
+          for (const h of i) {
+            const d = `data: ${JSON.stringify({ content: h })}
 
 `;
             u.enqueue(f.encode(d)), await new Promise((b) => setTimeout(b, 30));
@@ -1745,7 +1774,7 @@ data: {}
     return e(r, n);
   }, () => window.fetch = e;
 }, fr = (t = !1, e) => {
-  V(() => {
+  q(() => {
     !t || !e || dr(e);
   }, [t, e]);
 };
@@ -1759,22 +1788,22 @@ function pr(t) {
     offsets: a,
     logo: u,
     renderSwitch: f,
-    renderMarkdown: m,
+    renderMarkdown: h,
     isOpen: d = !1,
     onOpenChange: b,
     isDevMode: F = !1,
     options: N
   } = t;
   fr(F, N?.baseUrl ?? "");
-  const { messages: R, loading: P, error: y, ask: T } = Qe(), A = Y(d);
-  V(() => {
+  const { messages: R, loading: P, error: w, ask: T } = Qe(), A = Y(d);
+  q(() => {
     A.current = d;
   }, [d]);
-  const $ = oe((D) => {
-    b?.(D);
-  }, [b]), [I, k] = W(!1), z = oe(() => k((D) => !D), []), K = oe(() => {
-    k(!0);
-  }, []), { elModalRef: q } = ur($, d), G = cr({ isClassic: I, ask: T, classic: o, onClose: () => $(!1) });
+  const O = oe((L) => {
+    b?.(L);
+  }, [b]), [I, E] = G(!1), j = oe(() => E((L) => !L), []), V = oe(() => {
+    E(!0);
+  }, []), { elModalRef: $ } = ur(O, d), U = cr({ isClassic: I, ask: T, classic: o, onClose: () => O(!1) });
   return /* @__PURE__ */ p.createElement(
     et,
     {
@@ -1785,21 +1814,21 @@ function pr(t) {
       suggestions: i,
       offsets: a,
       logo: u,
-      renderMarkdown: m,
+      renderMarkdown: h,
       renderSwitch: f,
       isClassic: I,
       isOpen: d,
-      onSwitchClassic: K,
-      onSwitch: z,
+      onSwitchClassic: V,
+      onSwitch: j,
       messages: R,
       loading: P,
-      error: y,
-      onSend: G,
-      ref: q
+      error: w,
+      onSend: U,
+      ref: $
     }
   );
 }
-const mr = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\\!container{width:100%!important}.container{width:100%}@media(min-width:640px){.\\!container{max-width:640px!important}.container{max-width:640px}}@media(min-width:768px){.\\!container{max-width:768px!important}.container{max-width:768px}}@media(min-width:1024px){.\\!container{max-width:1024px!important}.container{max-width:1024px}}@media(min-width:1280px){.\\!container{max-width:1280px!important}.container{max-width:1280px}}@media(min-width:1536px){.\\!container{max-width:1536px!important}.container{max-width:1536px}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.pointer-events-none{pointer-events:none}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-4px\\]{inset:-4px}.bottom-0{bottom:0}.left-1\\/2{left:50%}.left-\\[16px\\]{left:16px}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.inline{display:inline}.flex{display:flex}.hidden{display:none}.h-\\[42px\\]{height:42px}.h-\\[48px\\]{height:48px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[500px\\]{min-height:500px}.min-h-\\[62px\\]{min-height:62px}.min-h-screen{min-height:100vh}.w-\\[42px\\]{width:42px}.w-\\[48px\\]{width:48px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[24px\\]{min-width:24px}.min-w-\\[42px\\]{min-width:42px}.max-w-\\[1000px\\]{max-width:1000px}.max-w-\\[1520px\\]{max-width:1520px}.max-w-\\[1524px\\]{max-width:1524px}.max-w-\\[740px\\]{max-width:740px}.max-w-\\[784px\\]{max-width:784px}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\\/2{--tw-translate-x: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes slide-to-bounce-animate{0%{transform:translateY(40px);opacity:0}60%{transform:translateY(-10px);opacity:1}80%{transform:translateY(5px)}to{transform:translateY(0)}}.animate-slide-to-bounce-animate{animation:slide-to-bounce-animate .8s ease-out forwards}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.self-stretch{align-self:stretch}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-\\[12px\\]{border-radius:12px}.rounded-\\[16px\\]{border-radius:16px}.rounded-full{border-radius:9999px}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-semantic-search-field-stroke\\)\\]{border-color:var(--insytful-semantic-search-field-stroke)}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.bg-\\[\\#2E3339\\]{--tw-bg-opacity: 1;background-color:rgb(46 51 57 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity: 1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-3{padding:.75rem}.p-\\[16px\\]{padding:16px}.p-\\[8px\\]{padding:8px}.px-1{padding-left:.25rem;padding-right:.25rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[1rem\\]{padding-left:1rem;padding-right:1rem}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-0\\.5{padding-top:.125rem;padding-bottom:.125rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[1rem\\]{padding-top:1rem;padding-bottom:1rem}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pb-0{padding-bottom:0}.pb-\\[24px\\]{padding-bottom:24px}.pl-6{padding-left:1.5rem}.pl-\\[48px\\]{padding-left:48px}.pr-\\[64px\\]{padding-right:64px}.pt-\\[32px\\]{padding-top:32px}.text-left{text-align:left}.text-center{text-align:center}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[24px\\]{font-size:24px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.text-\\[\\#1D70B8\\]{--tw-text-opacity: 1;color:rgb(29 112 184 / var(--tw-text-opacity, 1))}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[\\#505A5F\\]{--tw-text-opacity: 1;color:rgb(80 90 95 / var(--tw-text-opacity, 1))}.text-\\[\\#6B6B6B\\]{--tw-text-opacity: 1;color:rgb(107 107 107 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-text-link-default\\)\\]{color:var(--insytful-text-link-default)}.text-\\[var\\(--insytful-text-muted\\)\\]{color:var(--insytful-text-muted)}.text-\\[var\\(--insytful-text-secondary\\)\\]{color:var(--insytful-text-secondary)}.text-\\[var\\(--lib-color-text-secondary\\)\\]{color:var(--lib-color-text-secondary)}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.opacity-60{opacity:.6}.shadow-\\[0_2px_8px_0_rgba\\(0\\,0\\,0\\,0\\.15\\)\\]{--tw-shadow: 0 2px 8px 0 rgba(0,0,0,.15);--tw-shadow-colored: 0 2px 8px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.blur-\\[14px\\]{--tw-blur: blur(14px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.\\[-webkit-mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_85\\%\\,transparent_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%)}.\\[mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_85\\%\\,transparent_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%);mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%)}:host,:root,.insytful-root{--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5;--insytful-search-transition-duration: .2s;--insytful-search-transition-easing: ease}@media(prefers-reduced-motion:reduce){.insytful-search-dialog-outer{transition-duration:0ms!important}}@keyframes dot-animate{0%{content:"."}25%{content:".."}50%{content:"..."}75%{content:"."}to{content:".."}}.after\\:animate-dot-animate:after{content:var(--tw-content);animation:dot-animate 1.5s steps(1,end) infinite}.hover\\:bg-\\[\\#\\#2E3339\\]:hover{background-color:##2E3339}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#1D70B8\\]\\/80:hover{color:#1d70b8cc}.hover\\:text-\\[var\\(--insytful-text-link-hover\\)\\]:hover{color:var(--insytful-text-link-hover)}.hover\\:text-blue-900:hover{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\\:ring-2:focus{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus\\:ring-inset:focus{--tw-ring-inset: inset}.focus\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus\\:ring-offset-2:focus{--tw-ring-offset-width: 2px}.focus\\:ring-offset-white:focus{--tw-ring-offset-color: #fff}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:inline{display:inline}.md\\:hidden{display:none}.md\\:items-center{align-items:center}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[24px\\]{gap:24px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:gap-\\[40px\\]{gap:40px}.md\\:px-\\[0\\.875rem\\]{padding-left:.875rem;padding-right:.875rem}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[1\\.75rem\\]{padding-top:1.75rem;padding-bottom:1.75rem}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}';
+const mr = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\\!container{width:100%!important}.container{width:100%}@media(min-width:640px){.\\!container{max-width:640px!important}.container{max-width:640px}}@media(min-width:768px){.\\!container{max-width:768px!important}.container{max-width:768px}}@media(min-width:1024px){.\\!container{max-width:1024px!important}.container{max-width:1024px}}@media(min-width:1280px){.\\!container{max-width:1280px!important}.container{max-width:1280px}}@media(min-width:1536px){.\\!container{max-width:1536px!important}.container{max-width:1536px}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.pointer-events-none{pointer-events:none}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-4px\\]{inset:-4px}.bottom-0{bottom:0}.left-1\\/2{left:50%}.left-\\[16px\\]{left:16px}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.inline{display:inline}.flex{display:flex}.hidden{display:none}.h-\\[42px\\]{height:42px}.h-\\[48px\\]{height:48px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[500px\\]{min-height:500px}.min-h-\\[62px\\]{min-height:62px}.min-h-screen{min-height:100vh}.w-\\[42px\\]{width:42px}.w-\\[48px\\]{width:48px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[24px\\]{min-width:24px}.min-w-\\[42px\\]{min-width:42px}.max-w-\\[1000px\\]{max-width:1000px}.max-w-\\[1520px\\]{max-width:1520px}.max-w-\\[1524px\\]{max-width:1524px}.max-w-\\[740px\\]{max-width:740px}.max-w-\\[784px\\]{max-width:784px}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\\/2{--tw-translate-x: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes slide-to-bounce-animate{0%{transform:translateY(40px);opacity:0}60%{transform:translateY(-10px);opacity:1}80%{transform:translateY(5px)}to{transform:translateY(0)}}.animate-slide-to-bounce-animate{animation:slide-to-bounce-animate .8s ease-out forwards}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.self-stretch{align-self:stretch}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-\\[12px\\]{border-radius:12px}.rounded-\\[16px\\]{border-radius:16px}.rounded-full{border-radius:9999px}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-semantic-search-field-stroke\\)\\]{border-color:var(--insytful-semantic-search-field-stroke)}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.bg-\\[\\#2E3339\\]{--tw-bg-opacity: 1;background-color:rgb(46 51 57 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity: 1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-3{padding:.75rem}.p-\\[16px\\]{padding:16px}.p-\\[8px\\]{padding:8px}.px-1{padding-left:.25rem;padding-right:.25rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[1rem\\]{padding-left:1rem;padding-right:1rem}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-0\\.5{padding-top:.125rem;padding-bottom:.125rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[1rem\\]{padding-top:1rem;padding-bottom:1rem}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pb-0{padding-bottom:0}.pb-\\[24px\\]{padding-bottom:24px}.pl-6{padding-left:1.5rem}.pl-\\[48px\\]{padding-left:48px}.pr-\\[64px\\]{padding-right:64px}.pt-\\[32px\\]{padding-top:32px}.text-left{text-align:left}.text-center{text-align:center}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[24px\\]{font-size:24px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.text-\\[\\#1D70B8\\]{--tw-text-opacity: 1;color:rgb(29 112 184 / var(--tw-text-opacity, 1))}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[\\#505A5F\\]{--tw-text-opacity: 1;color:rgb(80 90 95 / var(--tw-text-opacity, 1))}.text-\\[\\#6B6B6B\\]{--tw-text-opacity: 1;color:rgb(107 107 107 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-text-link-default\\)\\]{color:var(--insytful-text-link-default)}.text-\\[var\\(--insytful-text-muted\\)\\]{color:var(--insytful-text-muted)}.text-\\[var\\(--insytful-text-secondary\\)\\]{color:var(--insytful-text-secondary)}.text-\\[var\\(--lib-color-text-secondary\\)\\]{color:var(--lib-color-text-secondary)}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.opacity-60{opacity:.6}.shadow-\\[0_2px_8px_0_rgba\\(0\\,0\\,0\\,0\\.15\\)\\]{--tw-shadow: 0 2px 8px 0 rgba(0,0,0,.15);--tw-shadow-colored: 0 2px 8px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.blur-\\[14px\\]{--tw-blur: blur(14px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.\\[-webkit-mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_85\\%\\,transparent_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%)}.\\[mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_85\\%\\,transparent_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%);mask-image:linear-gradient(to bottom,black 0%,black 85%,transparent 100%)}:host,:root,.insytful-root{--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5;--insytful-search-transition-duration: .2s;--insytful-search-transition-easing: ease}@media(prefers-reduced-motion:reduce){.insytful-search-dialog-outer,.insytful-search-mode-transition{transition-duration:0ms!important}}@keyframes dot-animate{0%{content:"."}25%{content:".."}50%{content:"..."}75%{content:"."}to{content:".."}}.after\\:animate-dot-animate:after{content:var(--tw-content);animation:dot-animate 1.5s steps(1,end) infinite}.hover\\:bg-\\[\\#\\#2E3339\\]:hover{background-color:##2E3339}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#1D70B8\\]\\/80:hover{color:#1d70b8cc}.hover\\:text-\\[var\\(--insytful-text-link-hover\\)\\]:hover{color:var(--insytful-text-link-hover)}.hover\\:text-blue-900:hover{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\\:ring-2:focus{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus\\:ring-inset:focus{--tw-ring-inset: inset}.focus\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus\\:ring-offset-2:focus{--tw-ring-offset-width: 2px}.focus\\:ring-offset-white:focus{--tw-ring-offset-color: #fff}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:inline{display:inline}.md\\:hidden{display:none}.md\\:items-center{align-items:center}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[24px\\]{gap:24px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:gap-\\[40px\\]{gap:40px}.md\\:px-\\[0\\.875rem\\]{padding-left:.875rem;padding-right:.875rem}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[1\\.75rem\\]{padding-top:1.75rem;padding-bottom:1.75rem}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}';
 let B = { props: {}, isOpen: !1 }, Me = /* @__PURE__ */ new Set(), ae = null, hr = 0;
 const br = typeof HTMLElement < "u" ? HTMLElement : class {
 };

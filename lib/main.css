@@ -43,7 +43,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .insytful-search-dialog-outer {
+  .insytful-search-dialog-outer,
+  .insytful-search-mode-transition {
     transition-duration: 0ms !important;
   }
 }

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { Messages } from "../ui-components/messages";
 import { MessageInput } from "../ui-components/message-input";
 import { ErrorCallout } from "../ui-components/error-callout";
@@ -58,6 +58,33 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
     const { left = 0, right = 0 } = offsets || {};
     const [height, setHeight] = useState(0);
 
+    // Fade-out / swap / fade-in when switching between AI and Classic modes
+    const [isActiveMode, setActiveMode] = useState(isClassic);
+    const [contentVisible, setContentVisible] = useState(true);
+    const transitionRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      if (isActiveMode === isClassic) return;
+
+      // Fade out
+      setContentVisible(false);
+
+      // Read the CSS custom property for duration, fallback to 200ms
+      let duration = 200;
+      if (transitionRef.current) {
+        const raw = getComputedStyle(transitionRef.current).getPropertyValue("--insytful-search-transition-duration").trim();
+        const parsed = parseFloat(raw);
+        if (!isNaN(parsed)) duration = parsed;
+      }
+
+      const timer = setTimeout(() => {
+        setActiveMode(isClassic);
+        setContentVisible(true);
+      }, duration);
+
+      return () => clearTimeout(timer);
+    }, [isClassic, isActiveMode]);
+
     // Only measure header offsets when the dialog is open
     useEffect(() => {
       if (typeof window === "undefined" || !isOpen) return;
@@ -104,22 +131,30 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
           } as React.CSSProperties
         }
       >
-        <div className="insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]">
+        <div
+          ref={transitionRef}
+          aria-live="polite"
+          className="insytful-search-mode-transition insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]"
+          style={{
+            opacity: contentVisible ? 1 : 0,
+            transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)`,
+          }}
+        >
           {messages.length !== 0  && !classic?.title && (
             <h1 id="insytful-search-heading" className="sr-only">
-              {isClassic ? "Search" : (title || "AI Search")} 
+              {isActiveMode ? "Search" : (title || "AI Search")}
             </h1>
           )}
-          {(messages.length === 0 || (isClassic && messages.length >= 1)) && (
+          {(messages.length === 0 || (isActiveMode && messages.length >= 1)) && (
             <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
               <EmptyState
-                title={isClassic ? (classic?.title ?? "") : title}
-                text={isClassic ? (classic?.text ?? "") : text}
+                title={isActiveMode ? (classic?.title ?? "") : title}
+                text={isActiveMode ? (classic?.text ?? "") : text}
               />
             </div>
           )}
 
-          {!isClassic && (
+          {!isActiveMode && (
             <>
               <Messages
                 logo={logo}
@@ -141,30 +176,30 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
           )}
 
           <MessageInput
-            isClassic={isClassic}
+            isClassic={isActiveMode}
             onSend={onSend}
             disabled={loading}
             hasMessages={messages.length > 0}
           />
 
-          {(messages.length === 0 || (isClassic && messages.length >= 1)) && (
+          {(messages.length === 0 || (isActiveMode && messages.length >= 1)) && (
             <div className="insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]">
               <Suggestions
                 onSend={onSend}
                 suggestions={
-                  isClassic ? (classic?.suggestions ?? []) : suggestions
+                  isActiveMode ? (classic?.suggestions ?? []) : suggestions
                 }
               />
-              {isClassic && classic?.renderSwitch
+              {isActiveMode && classic?.renderSwitch
                 ? classic.renderSwitch(onSwitch)
-                : !isClassic && renderSwitch
+                : !isActiveMode && renderSwitch
                   ? renderSwitch(onSwitch)
                   : null}
             </div>
           )}
 
           <div className="insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]">
-            {disclaimer && !isClassic && (
+            {disclaimer && !isActiveMode && (
               <div className="insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
                 {disclaimer}
               </div>
