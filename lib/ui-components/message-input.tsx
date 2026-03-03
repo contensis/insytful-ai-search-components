@@ -69,7 +69,7 @@ export function MessageInput({
       {!isClassic && (
         <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[784px] rounded-[16px] group-focus-within:opacity-60">
           <div
-            className={`pointer-events-none absolute inset-[-4px] rounded-[16px] opacity-60 blur-[14px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
+            className={`pointer-events-none absolute inset-[-2px] rounded-[16px] opacity-30 blur-[7px] transition-opacity z-0 ${!hasMessages ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]" : ""}`}
             aria-hidden="true"
           />
         </div>
