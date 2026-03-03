@@ -11,6 +11,7 @@ export type ChatModalDialogProps = {
     renderMarkdown?: ChatModalProps["renderMarkdown"];
     renderSwitch?: ChatModalProps["renderSwitch"];
     isClassic: boolean;
+    isOpen: boolean;
     onSwitchClassic: () => void;
     onSwitch: () => void;
     messages: {

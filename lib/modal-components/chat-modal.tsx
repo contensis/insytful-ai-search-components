@@ -48,7 +48,7 @@ export function ChatModal(props: ChatModalProps) {
 
   const onSend = useChatSend({ isClassic, ask, classic, onClose: () => setOpen(false) });
 
-  const modal = isOpen && (
+  return (
     <ChatModalDialog
       title={title}
       text={text}
@@ -60,6 +60,7 @@ export function ChatModal(props: ChatModalProps) {
       renderMarkdown={renderMarkdown}
       renderSwitch={renderSwitch}
       isClassic={isClassic}
+      isOpen={isOpen}
       onSwitchClassic={onSwitchClassic}
       onSwitch={onSwitch}
       messages={messages}
@@ -69,6 +70,4 @@ export function ChatModal(props: ChatModalProps) {
       ref={elModalRef}
     />
   );
-
-  return modal;
 }

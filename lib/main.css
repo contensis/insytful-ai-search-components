@@ -36,4 +36,14 @@
   --insytful-semantic-search-field-ai-gradient-start: #35d2c5;
   --insytful-semantic-search-field-ai-gradient-end: #1d70b8;
   --insytful-semantic-search-field-focus: #35d2c5;
+
+  /* Transition */
+  --insytful-search-transition-duration: 200ms;
+  --insytful-search-transition-easing: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insytful-search-dialog-outer {
+    transition-duration: 0ms !important;
+  }
 }

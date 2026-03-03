@@ -127,6 +127,7 @@ class ChatModalWidget extends BaseElement {
     // Close modal and restore overflow
     globalWidgetState.isOpen = false;
     document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
   }
 
   // Simplified props setter - just updates global state
@@ -160,7 +161,15 @@ class ChatModalWidget extends BaseElement {
     if (nextOpen === globalWidgetState.isOpen) return;
 
     globalWidgetState.isOpen = nextOpen;
-    document.body.style.overflow = nextOpen ? "hidden" : "";
+
+    if (nextOpen) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
 
     globalWidgetStateListeners.forEach(listener => listener(nextOpen));
     

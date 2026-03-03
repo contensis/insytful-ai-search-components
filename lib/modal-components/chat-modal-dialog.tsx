@@ -18,6 +18,7 @@ export type ChatModalDialogProps = {
   renderSwitch?: ChatModalProps["renderSwitch"];
 
   isClassic: boolean;
+  isOpen: boolean;
   onSwitchClassic: () => void;
   onSwitch: () => void;
 
@@ -42,6 +43,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
       logo,
       renderMarkdown,
       isClassic,
+      isOpen,
       onSwitch,
       onSwitchClassic,
       messages,
@@ -56,8 +58,9 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
     const { left = 0, right = 0 } = offsets || {};
     const [height, setHeight] = useState(0);
 
+    // Only measure header offsets when the dialog is open
     useEffect(() => {
-      if (typeof window === "undefined") return;
+      if (typeof window === "undefined" || !isOpen) return;
 
       const calculateHeight = () => {
         const elements = document.querySelectorAll("[data-insytful-modal-offset]");
@@ -74,24 +77,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
       elements.forEach((el) => resizeObserver.observe(el));
 
       return () => resizeObserver.disconnect();
-    }, []);
-
-    useEffect(() => {
-      if (typeof window === "undefined") return;
-
-      const scrollY = window.scrollY;
-
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-
-      return () => {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        window.scrollTo(0, scrollY);
-      };
-    }, []);
+    }, [isOpen]);
 
     return (
       <div
@@ -99,9 +85,11 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         id="insytful-search-dialog"
         ref={ref}
         role="dialog"
-        aria-modal="true"
+        aria-modal={isOpen}
         aria-labelledby="insytful-search-heading"
-        className="insytful-search-dialog-outer fixed flex flex-col bg-white overflow-y-auto pb-0"
+        // @ts-expect-error -- React doesn't have types for the inert attribute yet
+        inert={isOpen ? undefined : ""}
+        className={`insytful-search-dialog-outer fixed flex flex-col bg-white overflow-y-auto pb-0 ${isOpen ? "insytful-search-dialog-open" : "insytful-search-dialog-closed"}`}
         style={
           {
             zIndex: 999,
@@ -109,6 +97,9 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
             left,
             right,
             bottom: 0,
+            opacity: isOpen ? 1 : 0,
+            pointerEvents: isOpen ? "auto" : "none",
+            transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)`,
             ...styles,
           } as React.CSSProperties
         }
