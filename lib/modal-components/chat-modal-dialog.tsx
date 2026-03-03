@@ -141,14 +141,14 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
             const hasVisibleHeading = showEmptyState && !!emptyStateTitle;
 
             return (
-              <div aria-live="polite">
+              <div aria-live="polite" className="flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
                 {!hasVisibleHeading && (
                   <h1 id="insytful-search-heading" className="sr-only">
                     {isClassicDisplayed ? "Search" : (title || "AI Search")}
                   </h1>
                 )}
                 {showEmptyState && (
-                  <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
+                  <div className="insytful-search-empty-state-outer">
                     <EmptyState
                       title={emptyStateTitle}
                       text={emptyStateText}
