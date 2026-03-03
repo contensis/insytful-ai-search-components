@@ -8,14 +8,14 @@ const setupMockFetch = (baseUrl: string) => {
 
     if (url.includes(baseUrl)) {
       const chunks = [
-        '## Heading 2\n\n',
+        '# Heading 2\n\n',
         'Second-level',
         ' heading',
         ' paragraph',
         ' text.',
         '\n\n',
 
-        '### Heading 3\n\n',
+        '## Heading 3\n\n',
         'Some',
         ' more',
         ' paragraph',
@@ -24,21 +24,21 @@ const setupMockFetch = (baseUrl: string) => {
         ' H3.',
         '\n\n',
 
-        '#### Heading 4\n\n',
+        '### Heading 4\n\n',
         'Example',
         ' paragraph',
         ' for',
         ' H4.',
         '\n\n',
 
-        '##### Heading 5\n\n',
+        '#### Heading 5\n\n',
         'Example',
         ' paragraph',
         ' for',
         ' H5.',
         '\n\n',
 
-        '###### Heading 6\n\n',
+        '##### Heading 6\n\n',
         'Example',
         ' paragraph',
         ' for',
