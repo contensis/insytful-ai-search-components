@@ -11,11 +11,11 @@ export function Suggestions({ suggestions, onSend }: SuggestionsProps) {
 
   return (
     <div className="insytful-search-suggestions-outer w-full overflow-hidden self-stretch">
-      <ul className="insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center p-0 m-0 list-none">
+      <ul className="insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 flex-wrap justify-center p-0 m-0 list-none">
         {suggestions?.map((suggestion, i) => (
           <li
             key={`${i}-${hash(suggestion)}`}
-            className="insytful-search-suggestions-item flex-shrink-0"
+            className="insytful-search-suggestions-item"
           >
             <button
               type="button"

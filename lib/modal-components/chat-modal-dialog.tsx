@@ -164,7 +164,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
 
           <div className="insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]">
             {disclaimer && !isClassic && (
-              <div className="insytful-search-disclaimer-inner hidden md:block text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
+              <div className="insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
                 {disclaimer}
               </div>
             )}
