@@ -105,10 +105,11 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         }
       >
         <div className="insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]">
-          <h1 id="insytful-search-heading" className="sr-only">
-            AI Search
-          </h1>
-
+          {messages.length !== 0  && !classic?.title && (
+            <h1 id="insytful-search-heading" className="sr-only">
+              {isClassic ? "Search" : (title || "AI Search")} 
+            </h1>
+          )}
           {(messages.length === 0 || (isClassic && messages.length >= 1)) && (
             <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
               <EmptyState

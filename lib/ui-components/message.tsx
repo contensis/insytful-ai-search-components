@@ -1,6 +1,13 @@
 import React from "react";
 import { hash } from "../utilities/hash.util";
 
+/** Shift markdown heading levels down by 1 so they sit under the modal's h1. */
+function shiftHeadings(markdown: string): string {
+  return markdown.replace(/^(#{1,5})\s/gm, (_match, hashes: string) => {
+    return `${hashes}# `;
+  });
+}
+
 export interface MessageProps {
   logo?: React.ReactNode;
   message: {
@@ -46,7 +53,7 @@ export function Message({ logo, message, renderContent }: MessageProps) {
                 </div>
               )}
               <div className="insytful-search-message-content">
-                {renderContent ? renderContent(paragraphs[0]) : paragraphs[0]}
+                {renderContent ? renderContent(shiftHeadings(paragraphs[0])) : paragraphs[0]}
               </div>
             </div>
             {paragraphs.slice(1).map((p, i) => (
@@ -54,7 +61,7 @@ export function Message({ logo, message, renderContent }: MessageProps) {
                 key={`${i}-${hash(p)}`}
                 className="insytful-search-message-content mt-[8px]"
               >
-                {renderContent ? renderContent(p) : p}
+                {renderContent ? renderContent(shiftHeadings(p)) : p}
               </div>
             ))}
           </>
