@@ -59,31 +59,26 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
     const [height, setHeight] = useState(0);
 
     // Fade-out / swap / fade-in when switching between AI and Classic modes
-    const [isActiveMode, setActiveMode] = useState(isClassic);
-    const [contentVisible, setContentVisible] = useState(true);
-    const transitionRef = useRef<HTMLDivElement>(null);
+    const TRANSITION_DURATION = 200; // Matches --insytful-search-transition-duration in main.css
+    const [isClassicDisplayed, setClassicDisplayed] = useState(isClassic);
+    const [isContentVisible, setContentVisible] = useState(true);
+    const elTransitionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      if (isActiveMode === isClassic) return;
+      if (isClassicDisplayed === isClassic) return;
 
-      // Fade out
       setContentVisible(false);
 
-      // Read the CSS custom property for duration, fallback to 200ms
-      let duration = 200;
-      if (transitionRef.current) {
-        const raw = getComputedStyle(transitionRef.current).getPropertyValue("--insytful-search-transition-duration").trim();
-        const parsed = parseFloat(raw);
-        if (!isNaN(parsed)) duration = parsed;
-      }
-
       const timer = setTimeout(() => {
-        setActiveMode(isClassic);
+        setClassicDisplayed(isClassic);
         setContentVisible(true);
-      }, duration);
+      }, TRANSITION_DURATION);
 
-      return () => clearTimeout(timer);
-    }, [isClassic, isActiveMode]);
+      return () => {
+        clearTimeout(timer);
+        setContentVisible(true);
+      };
+    }, [isClassic, isClassicDisplayed]);
 
     // Only measure header offsets when the dialog is open
     useEffect(() => {
@@ -112,7 +107,7 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         id="insytful-search-dialog"
         ref={ref}
         role="dialog"
-        aria-modal={isOpen}
+        aria-modal={isOpen || undefined}
         aria-labelledby="insytful-search-heading"
         // @ts-expect-error -- React doesn't have types for the inert attribute yet
         inert={isOpen ? undefined : ""}
@@ -132,29 +127,39 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
         }
       >
         <div
-          ref={transitionRef}
-          aria-live="polite"
+          ref={elTransitionRef}
           className="insytful-search-mode-transition insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]"
           style={{
-            opacity: contentVisible ? 1 : 0,
+            opacity: isContentVisible ? 1 : 0,
             transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)`,
           }}
         >
-          {messages.length !== 0  && !classic?.title && (
-            <h1 id="insytful-search-heading" className="sr-only">
-              {isActiveMode ? "Search" : (title || "AI Search")}
-            </h1>
-          )}
-          {(messages.length === 0 || (isActiveMode && messages.length >= 1)) && (
-            <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
-              <EmptyState
-                title={isActiveMode ? (classic?.title ?? "") : title}
-                text={isActiveMode ? (classic?.text ?? "") : text}
-              />
-            </div>
-          )}
+          {(() => {
+            const emptyStateTitle = isClassicDisplayed ? (classic?.title ?? "") : title;
+            const emptyStateText = isClassicDisplayed ? (classic?.text ?? "") : text;
+            const showEmptyState = messages.length === 0 || (isClassicDisplayed && messages.length >= 1);
+            const hasVisibleHeading = showEmptyState && !!emptyStateTitle;
 
-          {!isActiveMode && (
+            return (
+              <div aria-live="polite">
+                {!hasVisibleHeading && (
+                  <h1 id="insytful-search-heading" className="sr-only">
+                    {isClassicDisplayed ? "Search" : (title || "AI Search")}
+                  </h1>
+                )}
+                {showEmptyState && (
+                  <div className="insytful-search-empty-state-outer flex flex-col md:mt-auto items-stretch gap-[24px] md:items-center md:gap-[32px]">
+                    <EmptyState
+                      title={emptyStateTitle}
+                      text={emptyStateText}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {!isClassicDisplayed && (
             <>
               <Messages
                 logo={logo}
@@ -176,30 +181,30 @@ export const ChatModalDialog = forwardRef<HTMLDivElement, ChatModalDialogProps>(
           )}
 
           <MessageInput
-            isClassic={isActiveMode}
+            isClassic={isClassicDisplayed}
             onSend={onSend}
             disabled={loading}
             hasMessages={messages.length > 0}
           />
 
-          {(messages.length === 0 || (isActiveMode && messages.length >= 1)) && (
+          {(messages.length === 0 || (isClassicDisplayed && messages.length >= 1)) && (
             <div className="insytful-search-suggestions-container flex flex-col gap-[16px] md:gap-[40px]">
               <Suggestions
                 onSend={onSend}
                 suggestions={
-                  isActiveMode ? (classic?.suggestions ?? []) : suggestions
+                  isClassicDisplayed ? (classic?.suggestions ?? []) : suggestions
                 }
               />
-              {isActiveMode && classic?.renderSwitch
+              {isClassicDisplayed && classic?.renderSwitch
                 ? classic.renderSwitch(onSwitch)
-                : !isActiveMode && renderSwitch
+                : !isClassicDisplayed && renderSwitch
                   ? renderSwitch(onSwitch)
                   : null}
             </div>
           )}
 
           <div className="insytful-search-disclaimer-outer flex flex-col gap-4 mt-auto pb-[24px]">
-            {disclaimer && !isActiveMode && (
+            {disclaimer && !isClassicDisplayed && (
               <div className="insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--lib-color-text-secondary)]">
                 {disclaimer}
               </div>

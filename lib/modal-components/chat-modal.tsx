@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useRAGConversationContext } from "contensis-rag-react";
 
 import { ChatModalDialog } from "./chat-modal-dialog";
@@ -30,9 +30,6 @@ export function ChatModal(props: ChatModalProps) {
   const { messages, loading, error, ask } = useRAGConversationContext();
 
   // useCallback here so setOpen isn't recreated on every render, which would break the focus trap
-  const isOpenRef = useRef(isOpen);
-  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
-  
   const setOpen = useCallback((nextValue: boolean) => {
     onOpenChange?.(nextValue);
   }, [onOpenChange]);

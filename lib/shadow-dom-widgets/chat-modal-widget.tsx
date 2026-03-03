@@ -45,6 +45,9 @@ class ChatModalWidget extends BaseElement {
   private isReact18 = false;
   private createRootFn?: (container: Element | DocumentFragment) => Root;
   private instanceId: number;
+  private handleOpenChange = (open: boolean) => this.onToggle(open);
+  private previousBodyOverflow = "";
+  private previousBodyPaddingRight = "";
 
   constructor() {
     super();
@@ -126,8 +129,8 @@ class ChatModalWidget extends BaseElement {
     
     // Close modal and restore overflow
     globalWidgetState.isOpen = false;
-    document.body.style.overflow = "";
-    document.body.style.paddingRight = "";
+    document.body.style.overflow = this.previousBodyOverflow;
+    document.body.style.paddingRight = this.previousBodyPaddingRight;
   }
 
   // Simplified props setter - just updates global state
@@ -163,12 +166,14 @@ class ChatModalWidget extends BaseElement {
     globalWidgetState.isOpen = nextOpen;
 
     if (nextOpen) {
+      this.previousBodyOverflow = document.body.style.overflow;
+      this.previousBodyPaddingRight = document.body.style.paddingRight;
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
+      document.body.style.overflow = this.previousBodyOverflow;
+      document.body.style.paddingRight = this.previousBodyPaddingRight;
     }
 
     globalWidgetStateListeners.forEach(listener => listener(nextOpen));
@@ -195,18 +200,13 @@ class ChatModalWidget extends BaseElement {
       return;
     }
 
-    // Use a stable callback reference to prevent re-renders causing issues
-    const handleOpenChange = (open: boolean) => {
-      this.onToggle(open);
-    };
-
     const modal = (
       <ChatModal
         options={options || { config: "" }}
         title={p.title ?? ""}
         text={p.text ?? ""}
         isOpen={globalWidgetState.isOpen}
-        onOpenChange={handleOpenChange}
+        onOpenChange={this.handleOpenChange}
         suggestions={p.suggestions}
         isDevMode={p.isDevMode}
         renderMarkdown={p.renderMarkdown}

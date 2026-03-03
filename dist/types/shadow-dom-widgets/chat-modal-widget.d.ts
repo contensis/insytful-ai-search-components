@@ -16,6 +16,9 @@ declare class ChatModalWidget extends BaseElement {
     private isReact18;
     private createRootFn?;
     private instanceId;
+    private handleOpenChange;
+    private previousBodyOverflow;
+    private previousBodyPaddingRight;
     constructor();
     connectedCallback(): void;
     disconnectedCallback(): void;
