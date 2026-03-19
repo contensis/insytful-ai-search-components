@@ -1,61 +1,46 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { onToggleModal } from "../../lib/main";
+import { InsytfulSearch } from "../../lib/main";
 import { Logo } from "./logo";
 
 export const Header = () => {
   return (
-    <header className="bg-gray-800 text-white" data-insytful-modal-offset>
-      <div className="max-w-[1524px] m-full mx-auto pl-6 flex items-center justify-between gap-4">
-      <div className="flex-shrink-0">
-        <Logo />
+    <header data-insytful-modal-offset>
+      {/* Main header bar */}
+      <div className="bg-[#2E3339] text-white py-2">
+        <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between h-[56px] md:h-[64px]">
+          <div className="flex-shrink-0">
+            <Logo />
+          </div>
+
+          <div className="flex items-center gap-0">
+            {/* Menu button */}
+            <button
+              type="button"
+              className="flex items-center gap-2 px-4 h-[56px] md:h-[64px] text-white hover:bg-white/10 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path fill="#fff" d="M8 10.5 3 5.5h10L8 10.5Z" />
+              </svg>
+              <span className="text-[16px] font-semibold">Menu</span>
+            </button>
+
+            {/* Divider */}
+            <div className="w-[1px] h-[24px] bg-white/30" />
+
+            {/* Search toggle */}
+            <InsytfulSearch.Trigger className="flex items-center justify-center w-[56px] md:w-[64px] h-[56px] md:h-[64px] text-white hover:bg-white/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  fill="#fff"
+                  d="M11.27 18.54c1.613-.001 3.18-.541 4.45-1.535L19.715 21 21 19.715l-3.995-3.995a7.225 7.225 0 0 0 1.535-4.45C18.54 7.26 15.279 4 11.27 4 7.262 4 4 7.261 4 11.27c0 4.008 3.262 7.27 7.27 7.27Zm0-12.723a5.458 5.458 0 0 1 5.453 5.453 5.458 5.458 0 0 1-5.453 5.452 5.458 5.458 0 0 1-5.452-5.452 5.458 5.458 0 0 1 5.452-5.453Z"
+                />
+              </svg>
+            </InsytfulSearch.Trigger>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-stretch">
-        <button
-          onClick={() => onToggleModal()}
-          className="flex items-center gap-2 py-[1rem] md:py-[1.75rem] px-[1rem] bg-white"
-        >
-          <span className="hidden md:inline text-xl font-semibold text-[#333]">
-            <span className="sr-only">Open/Close</span>
-            Search
-          </span>
-          <svg
-            className="min-w-[24px]"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 16 16"
-            fill="none"
-          >
-            <path
-              fill="#333"
-              d="M7.513 12.36c1.076 0 2.12-.36 2.967-1.023L13.143 14l.857-.857-2.663-2.663a4.817 4.817 0 0 0 1.023-2.967 4.852 4.852 0 0 0-4.847-4.846 4.852 4.852 0 0 0-4.846 4.846 4.852 4.852 0 0 0 4.846 4.847Zm0-8.482a3.639 3.639 0 0 1 3.635 3.635 3.639 3.639 0 0 1-3.635 3.635 3.639 3.639 0 0 1-3.635-3.635 3.639 3.639 0 0 1 3.635-3.635Z"
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className="flex items-center gap-2 py-[1rem] md:py-[1.75rem] px-[1rem] md:px-[0.875rem] bg-[#2E3339] hover:bg-[##2E3339] rounded transition-colors"
-        >
-          <span className="text-xl font-semibold hidden md:inline">Menu</span>
-
-          <svg
-            className="min-w-[24px]"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 16 16"
-            fill="none"
-          >
-            <path
-              fill="#fff"
-              d="M13.478 3.043H2.522A.522.522 0 0 0 2 3.565v.522c0 .288.234.522.522.522h10.956A.522.522 0 0 0 14 4.087v-.522a.522.522 0 0 0-.522-.522ZM13.478 7.217H2.522A.522.522 0 0 0 2 7.74v.522c0 .288.234.522.522.522h10.956A.522.522 0 0 0 14 8.26v-.522a.522.522 0 0 0-.522-.522ZM13.478 11.391H2.522a.522.522 0 0 0-.522.522v.522c0 .288.234.521.522.521h10.956a.522.522 0 0 0 .522-.521v-.522a.522.522 0 0 0-.522-.522Z"
-            />
-          </svg>
-        </button>
-      </div>
-      </div>
+    
     </header>
   );
 };

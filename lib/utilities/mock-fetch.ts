@@ -1,18 +1,29 @@
 import { useEffect } from 'react';
 
-const setupMockFetch = (baseUrl: string) => {
+const setupMockFetch = (baseUrl: string): (() => void) => {
   const originalFetch = window.fetch;
 
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input.toString();
 
-    if (url.includes(baseUrl)) {
+    if (url.startsWith(baseUrl)) {
       const chunks = [
-        '# Heading 2\n\n',
+        '# Heading 1\n\n',
         'Second-level',
         ' heading',
         ' paragraph',
-        ' text.',
+        ' text',
+        ' under',
+        ' H1.',
+        '\n\n',
+
+        '# Heading 2\n\n',
+        'Second-level',
+        ' heading',
+          ' paragraph',
+        ' text',
+        ' under',
+        ' H2.',
         '\n\n',
 
         '## Heading 3\n\n',
@@ -125,13 +136,12 @@ const setupMockFetch = (baseUrl: string) => {
     return originalFetch(input, init);
   };
 
-  return () => window.fetch = originalFetch;
+  return () => { window.fetch = originalFetch; };
 };
 
 export const useMockFetch = (isDevMode = false, base: string) => {
   useEffect(() => {
     if (!isDevMode || !base) return;
-    setupMockFetch(base);
-    
+    return setupMockFetch(base);
   }, [isDevMode, base]);
 };

@@ -1,7 +1,7 @@
 {
   "name": "insytful-ai-search-components",
   "description": "An accessible, AI-powered search modal component library built with React, TypeScript, and Tailwind CSS",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "author": "Zengenti",
   "license": "MIT",
   "keywords": [
@@ -10,8 +10,7 @@
     "ai",
     "search",
     "modal",
-    "web-components",
-    "shadow-dom",
+    "compound-components",
     "tailwind",
     "typescript",
     "accessibility"
@@ -29,13 +28,10 @@
     ".": {
       "types": "./dist/types/main.d.ts",
       "import": "./dist/insytful-ai-search-components.js",
-      "require": "./dist/insytful-ai-search-components.js",
       "default": "./dist/insytful-ai-search-components.js"
     }
   },
-  "sideEffects": [
-    "./dist/insytful-ai-search-components.js"
-  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite --host",
     "prebuild": "rimraf dist",
@@ -46,7 +42,6 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "contensis-rag-react": "^0.3.4",
     "focus-trap": "^7.8.0"
   },
   "peerDependencies": {
@@ -65,6 +60,7 @@
     "@types/react": "^18.3.25",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.1.1",
+    "contensis-rag-react": "^0.3.4",
     "autoprefixer": "^10.4.24",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",

@@ -6,6 +6,11 @@
 :host,
 :root,
 .insytful-root {
+  /* Font baseline — protects against client overriding html font-size */
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: system-ui, -apple-system, sans-serif;
+
   /* Text Colors */
   --insytful-text-default: #333333;
   --insytful-text-muted: #6c6c6c;

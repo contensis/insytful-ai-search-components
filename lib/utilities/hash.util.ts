@@ -1,9 +1,9 @@
 export function hash(str: string): string {
-  let hash = 0;
+  let h = 0;
 
   for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
+    h = (h << 5) - h + str.charCodeAt(i);
+    h |= 0;
   }
-  return hash.toString();
+  return h.toString();
 }

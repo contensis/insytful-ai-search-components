@@ -1,0 +1,39 @@
+import React from "react";
+import { useSearchContext } from "./context";
+import { hash } from "../utilities/hash.util";
+
+export type SearchSuggestionsProps = {
+  items?: string[];
+  className?: string;
+};
+
+export function SearchSuggestions({ items, className }: SearchSuggestionsProps) {
+  const { onSend } = useSearchContext("Search.Suggestions");
+
+  if (!items || items.length <= 0) return null;
+
+  return (
+    <div
+      className={`insytful-search-suggestions-outer w-full overflow-hidden self-stretch ${className ?? ""}`}
+    >
+      <ul className="insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 flex-wrap justify-center p-0 m-0 list-none">
+        {items.map((suggestion, i) => (
+          <li
+            key={`${i}-${hash(suggestion)}`}
+            className="insytful-search-suggestions-item"
+          >
+            <button
+              type="button"
+              onClick={() => onSend(suggestion)}
+              className="insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] whitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[12px] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--insytful-semantic-search-field-focus)]"
+            >
+              {suggestion}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+SearchSuggestions.displayName = "Search.Suggestions";
