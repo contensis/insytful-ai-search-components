@@ -19,7 +19,7 @@ function App() {
       open={isOpen}
       onOpenChange={setOpen}
       theme={theme}
-      // isDevMode={true}
+      isDevMode={true}
       renderMarkdown={(text) => <Markdown content={text} />}
       logo={<SearchLogo />}
     >

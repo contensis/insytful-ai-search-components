@@ -6,10 +6,8 @@ import { hash } from "../utilities/hash.util";
 /* Single Message                                                       */
 /* ------------------------------------------------------------------ */
 
-function shiftHeadings(markdown: string): string {
-  return markdown.replace(/^(#{1,5})\s/gm, (_match, hashes: string) => {
-    return `${hashes}# `;
-  });
+function doShiftHeadings(markdown: string): string {
+  return markdown.replace(/^(#{1,5})\s/gm, (_match, hashes: string) => `${hashes}# `);
 }
 
 function Message({
@@ -59,7 +57,7 @@ function Message({
               )}
               <div className="insytful-search-message-content">
                 {renderContent
-                  ? renderContent(shiftHeadings(paragraphs[0]))
+                  ? renderContent(doShiftHeadings(paragraphs[0]))
                   : paragraphs[0]}
               </div>
             </div>
@@ -68,7 +66,7 @@ function Message({
                 key={`${i}-${hash(p)}`}
                 className="insytful-search-message-content mt-[8px]"
               >
-                {renderContent ? renderContent(shiftHeadings(p)) : p}
+                {renderContent ? renderContent(doShiftHeadings(p)) : p}
               </div>
             ))}
           </>
@@ -104,6 +102,41 @@ function TypingIndicator({
       </div>
     </li>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll helper                                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Scroll a message element to the top of the chat viewport.
+ *
+ * Uses scrollTo on the container ref (not scrollIntoView) to avoid
+ * scrolling parent containers in the Shadow DOM portal.
+ *
+ * Temporarily expands a spacer div via direct DOM manipulation so the
+ * browser has enough scrollHeight to position the message at the top.
+ * The spacer is collapsed later when the response finishes loading.
+ */
+function scrollMessageToTop(
+  scroller: HTMLDivElement,
+  messageEl: HTMLElement,
+  spacer: HTMLDivElement,
+) {
+  // Expand spacer instantly (no transition) so the browser has room to
+  // scroll the message to the top. Direct DOM manipulation — immediate.
+  spacer.style.transition = "none";
+  spacer.style.height = `${scroller.clientHeight}px`;
+
+  // Wait one frame for layout to recalculate with the new spacer height.
+  requestAnimationFrame(() => {
+    const msgRect = messageEl.getBoundingClientRect();
+    const scrollerRect = scroller.getBoundingClientRect();
+    scroller.scrollTo({
+      top: scroller.scrollTop + (msgRect.top - scrollerRect.top),
+      behavior: "smooth",
+    });
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -148,13 +181,14 @@ export function SearchMessages({
   searchingText,
   children,
 }: SearchMessagesProps) {
-  const { messages, loading, renderMarkdown, logo } =
+  const { messages, loading, error, renderMarkdown, logo } =
     useSearchContext("Search.Messages");
 
   const elContainerRef = useRef<HTMLDivElement>(null);
+  const elSpacerRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setOverflowing] = useState(false);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
-  const lastProgrammaticScrollRef = useRef(0);
+  const efLastProgrammaticScrollRef = useRef(0);
 
   // Overflow detection + "reached bottom" tracking
   useEffect(() => {
@@ -173,7 +207,7 @@ export function SearchMessages({
         scroller.scrollHeight - 40;
       // Only count as "reached bottom" from genuine user scroll,
       // not from our programmatic scroll-to-user-message
-      const isProgrammatic = Date.now() - lastProgrammaticScrollRef.current < 800;
+      const isProgrammatic = Date.now() - efLastProgrammaticScrollRef.current < 800;
       if (atBottom && !isProgrammatic && scroller.scrollHeight > scroller.clientHeight) {
         setHasReachedBottom(true);
       }
@@ -223,9 +257,8 @@ export function SearchMessages({
         // Reset overflow styles for new question
         setHasReachedBottom(false);
 
-        // 2nd+ user message: scroll to the user's message so they
-        // see their question and the typing/loading indicator below
-        if (messages.length > 2 && scroller) {
+        // Follow-up question: scroll the user's message to the top of the container
+        if (prevMessageCountRef.current > 0 && scroller && elSpacerRef.current) {
           const allMessages = scroller.querySelectorAll(
             ".insytful-search-message",
           );
@@ -234,19 +267,25 @@ export function SearchMessages({
           ] as HTMLElement | null;
 
           if (userMsgEl) {
-            lastProgrammaticScrollRef.current = Date.now();
-            const rect = userMsgEl.getBoundingClientRect();
-            const scrollerRect = scroller.getBoundingClientRect();
-            scroller.scrollTo({
-              top: scroller.scrollTop + rect.top - scrollerRect.top - 16,
-              behavior: "smooth",
-            });
+            efLastProgrammaticScrollRef.current = Date.now();
+            scrollMessageToTop(scroller, userMsgEl, elSpacerRef.current);
           }
         }
       }
     }
     prevMessageCountRef.current = messages.length;
   }, [messages.length]);
+
+  // Collapse the scroll spacer smoothly once the response has finished
+  // loading, or immediately if there was an error
+  useEffect(() => {
+    if ((!loading || error) && elSpacerRef.current) {
+      elSpacerRef.current.style.transition = error
+        ? "none"
+        : "height 500ms ease-out";
+      elSpacerRef.current.style.height = "0px";
+    }
+  }, [loading, error]);
 
   // Show arrow when content overflows and user hasn't reached the bottom yet.
   // Once the user scrolls to the bottom, arrow hides and stays hidden.
@@ -282,6 +321,9 @@ export function SearchMessages({
             )}
           </ul>
           {children}
+          {/* Scroll spacer: expanded via ref when user sends a follow-up so
+              their message can scroll to the top, collapses when response loads */}
+          <div ref={elSpacerRef} className="insytful-search-scroll-spacer" aria-hidden="true" />
         </div>
       </div>
 
