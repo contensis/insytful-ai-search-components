@@ -58,4 +58,8 @@
   .insytful-search-mode-transition {
     transition-duration: 0ms !important;
   }
+
+  .insytful-search-messages-icon {
+    animation: none !important;
+  }
 }

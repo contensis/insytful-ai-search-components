@@ -3,8 +3,6 @@ import { useState } from "react";
 import { InsytfulSearch } from "../lib/main";
 import { Header } from "./components/header";
 import { Markdown } from "./components/markdown";
-import { useMockFetch } from "../lib/utilities/mock-fetch";
-
 import theme from "./components/modal-theme.css?inline";
 
 const config = {
@@ -14,7 +12,6 @@ const config = {
 
 function App() {
   const [isOpen, setOpen] = useState(false);
-  useMockFetch(true, config.baseUrl);
 
   return (
     <InsytfulSearch.Root
@@ -22,7 +19,7 @@ function App() {
       open={isOpen}
       onOpenChange={setOpen}
       theme={theme}
-      isDevMode={true}
+      // isDevMode={true}
       renderMarkdown={(text) => <Markdown content={text} />}
       logo={<SearchLogo />}
     >
@@ -48,7 +45,6 @@ function App() {
                 <p className="text-white text-[18px] md:text-[20px] mb-4">
                   How can we help you?
                 </p>
-                {/* Hero search — same InsytfulSearch.Input component, opens modal on submit */}
                 <HeroSearchCard onOpenModal={() => setOpen(true)} />
               </div>
             </div>
@@ -96,7 +92,8 @@ function App() {
  * Modal content — switches between empty state and conversation view.
  */
 function ModalContent() {
-  const { messages } = InsytfulSearch.useSearchContext("ModalContent");
+  const { messages, error } = InsytfulSearch.useSearchContext("ModalContent");
+  const modeCtx = InsytfulSearch.useModeContextSafe();
   const hasMessages = messages.length > 0;
 
   return (
@@ -155,6 +152,13 @@ function ModalContent() {
       {hasMessages ? (
         <div className="mt-auto">
           <InsytfulSearch.Mode name="ai">
+            {error && (
+              <div className="pb-3 w-full max-w-[784px] mx-auto">
+                <InsytfulSearch.ErrorCallout
+                  onSwitchClassic={modeCtx?.onSwitchMode ? () => modeCtx.onSwitchMode("classic") : undefined}
+                />
+              </div>
+            )}
             <div className="px-4">
               <InsytfulSearch.Input />
             </div>
@@ -184,16 +188,14 @@ function ModalContent() {
 function ModalInputCard() {
   return (
     <div className="px-4">
-      <div className="insytful-search-input-card w-full max-w-[784px] mx-auto rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white">
+      <div className="insytful-search-input-card w-full max-w-[784px] mx-auto rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white px-[12px] pb-[12px] pt-[12px]">
         <InsytfulSearch.Mode name="ai">
           <InsytfulSearch.Input embedded />
         </InsytfulSearch.Mode>
         <InsytfulSearch.Mode name="classic" path="/search?term=">
           <InsytfulSearch.Input embedded />
         </InsytfulSearch.Mode>
-        <div className="px-[12px] pb-[12px]">
           <SwitchModeTabs />
-        </div>
       </div>
     </div>
   );
@@ -239,15 +241,13 @@ function HeroSearchCard({ onOpenModal }: { onOpenModal: () => void }) {
   };
 
   return (
-    <div className="max-w-[600px] bg-white rounded-[16px] shadow-lg overflow-hidden">
+    <div className="max-w-[600px] bg-white rounded-[16px] shadow-lg overflow-hidden px-4 pb-3 pt-[12px]">
       <InsytfulSearch.Input
         embedded
         placeholder={isClassic ? "Search" : "Ask a question"}
         onSubmit={handleSubmit}
       />
-      <div className="px-4 pb-3">
-        <SwitchModeTabs />
-      </div>
+      <SwitchModeTabs />
     </div>
   );
 }

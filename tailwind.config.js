@@ -4,10 +4,10 @@ export default {
     extend: {
       keyframes: {
         'slide-to-bounce-animate': {
-          '0%': { transform: 'translateY(40px)', opacity: '0' },
-          '60%': { transform: 'translateY(-10px)', opacity: '1' },
-          '80%': { transform: 'translateY(5px)' },
-          '100%': { transform: 'translateY(0)' },
+          '0%, 40%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(8px)' },
+          '60%': { transform: 'translateY(-2px)' },
+          '70%, 100%': { transform: 'translateY(0)' },
         },
         'dot-animate': {
           '0%':   { content: '"."' },
@@ -19,7 +19,7 @@ export default {
       },
       animation: {
         'dot-animate': 'dot-animate 1.5s steps(1,end) infinite',
-        'slide-to-bounce-animate': 'slide-to-bounce-animate 0.8s ease-out forwards',
+        'slide-to-bounce-animate': 'slide-to-bounce-animate 2s ease-in-out infinite',
       },
     },
   },

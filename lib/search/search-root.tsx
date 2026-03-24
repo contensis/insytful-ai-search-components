@@ -5,6 +5,7 @@ import { RAGProvider, useRAGConversationContext } from "contensis-rag-react";
 import { SearchProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
 import { useModalFocusTrap } from "../utilities/hooks.util";
+import { useMockFetch } from "../utilities/mock-fetch";
 
 import css from "../main.css?inline";
 
@@ -94,6 +95,9 @@ function SearchRootInner({
   offsets?: SearchRootProps["offsets"];
 }) {
   const { messages, loading, error, ask } = useRAGConversationContext();
+
+  // Auto-enable mock fetch when isDevMode is true
+  useMockFetch(isDevMode, options.baseUrl ?? "");
 
   // Body scroll lock + scroll position save/restore
   const prevOverflow = useRef("");

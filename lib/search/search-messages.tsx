@@ -24,7 +24,7 @@ function Message({
   const isUser = message.role === "user";
   const paragraphs = useMemo(
     () => message.content.split("\n\n"),
-    [message.content]
+    [message.content],
   );
 
   return (
@@ -82,7 +82,13 @@ function Message({
 /* Typing Indicator                                                     */
 /* ------------------------------------------------------------------ */
 
-function TypingIndicator({ logo }: { logo?: React.ReactNode }) {
+function TypingIndicator({
+  logo,
+  text = "Searching",
+}: {
+  logo?: React.ReactNode;
+  text?: string;
+}) {
   return (
     <li className="insytful-search-typing-indicator flex items-start gap-[12px] md:gap-[24px]">
       {logo && (
@@ -92,7 +98,8 @@ function TypingIndicator({ logo }: { logo?: React.ReactNode }) {
       )}
       <div className="insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-text-secondary)]">
         <span>
-          Searching<span className="after:animate-dot-animate"></span>
+          {text}
+          <span className="after:animate-dot-animate"></span>
         </span>
       </div>
     </li>
@@ -103,7 +110,7 @@ function TypingIndicator({ logo }: { logo?: React.ReactNode }) {
 /* Error Callout                                                        */
 /* ------------------------------------------------------------------ */
 
-function ErrorCallout({ message }: { message: string }) {
+export function SearchErrorCallout({ onSwitchClassic }: { onSwitchClassic?: () => void }) {
   return (
     <div className="insytful-search-error-callout-inner flex items-start flex-col gap-[12px] p-[16px] border-l-[4px] border-[var(--insytful-callout-error-border)] bg-[var(--insytful-callout-error-bg)] rounded-r-lg max-w-full w-full">
       <div className="insytful-search-error-callout-content flex-1 gap-[8px] flex flex-col">
@@ -111,9 +118,17 @@ function ErrorCallout({ message }: { message: string }) {
           Something went wrong
         </p>
         <p className="insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0">
-          {message}
+          Failed to fetch
         </p>
       </div>
+      {onSwitchClassic && (
+        <button
+          onClick={onSwitchClassic}
+          className="insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"
+        >
+          Try classic?
+        </button>
+      )}
     </div>
   );
 }
@@ -124,94 +139,131 @@ function ErrorCallout({ message }: { message: string }) {
 
 export type SearchMessagesProps = {
   className?: string;
+  searchingText?: string;
+  children?: React.ReactNode;
 };
 
-export function SearchMessages({ className }: SearchMessagesProps) {
-  const { messages, loading, error, renderMarkdown, logo } =
+export function SearchMessages({
+  className,
+  searchingText,
+  children,
+}: SearchMessagesProps) {
+  const { messages, loading, renderMarkdown, logo } =
     useSearchContext("Search.Messages");
 
   const elContainerRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setOverflowing] = useState(false);
-  const [atBottom, setBottom] = useState(false);
-  const atBottomRef = useRef(false);
-  const hasHitBottomAfterLoadRef = useRef(false);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  const lastProgrammaticScrollRef = useRef(0);
 
-  // Overflow detection
+  // Overflow detection + "reached bottom" tracking
   useEffect(() => {
-    const container = elContainerRef.current;
-    if (!container) return;
+    const scroller = elContainerRef.current;
+    if (!scroller) return;
 
-    const doCheckOverflow = () => {
-      const overflowing = container.scrollHeight > container.clientHeight;
+    const checkOverflow = () => {
+      const overflowing = scroller.scrollHeight > scroller.clientHeight;
       setOverflowing((prev) => (prev === overflowing ? prev : overflowing));
     };
 
-    doCheckOverflow();
-    window.addEventListener("resize", doCheckOverflow);
-    return () => window.removeEventListener("resize", doCheckOverflow);
-  }, [messages.length]);
-
-  // Scroll tracking
-  useEffect(() => {
-    const container = elContainerRef.current;
-    if (!container) return;
-
-    const buffer = 40;
     const onScroll = () => {
-      const atBottomNow =
-        container.scrollTop + container.clientHeight >=
-        container.scrollHeight - buffer;
-
-      if (atBottomNow !== atBottomRef.current) {
-        atBottomRef.current = atBottomNow;
-        setBottom(atBottomNow);
+      checkOverflow();
+      const atBottom =
+        scroller.scrollTop + scroller.clientHeight >=
+        scroller.scrollHeight - 40;
+      // Only count as "reached bottom" from genuine user scroll,
+      // not from our programmatic scroll-to-user-message
+      const isProgrammatic = Date.now() - lastProgrammaticScrollRef.current < 800;
+      if (atBottom && !isProgrammatic && scroller.scrollHeight > scroller.clientHeight) {
+        setHasReachedBottom(true);
       }
-
-      if (!loading && atBottomNow) hasHitBottomAfterLoadRef.current = true;
     };
 
-    container.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => container.removeEventListener("scroll", onScroll);
-  }, [messages.length, loading]);
+    checkOverflow();
+    scroller.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", checkOverflow);
+
+    // Watch for content size changes (streaming responses growing)
+    const messagesList = scroller.querySelector(
+      ".insytful-search-messages-inner",
+    );
+    let rafId = 0;
+    const ro = messagesList
+      ? new ResizeObserver(() => {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(checkOverflow);
+        })
+      : null;
+    if (ro && messagesList) ro.observe(messagesList);
+
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", checkOverflow);
+      if (ro) ro.disconnect();
+      cancelAnimationFrame(rafId);
+    };
+  }, [messages.length]);
 
   // Searching state — derived, not stateful
-  const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+  const lastMessage =
+    messages.length > 0 ? messages[messages.length - 1] : null;
   const isSearching = loading && !!lastMessage && lastMessage.role === "user";
 
-  // Scroll to bottom when new messages are added (handles reopen + new searches)
+  // Handle new messages
   const prevMessageCountRef = useRef(0);
 
   useEffect(() => {
-    const container = elContainerRef.current;
-    if (!container || messages.length === 0) return;
+    if (messages.length === 0) return;
+    const scroller = elContainerRef.current;
 
     if (messages.length > prevMessageCountRef.current) {
-      const isFirstLoad = prevMessageCountRef.current === 0;
-      container.scrollTo({
-        top: container.scrollHeight,
-        behavior: isFirstLoad ? "auto" : "smooth",
-      });
+      const lastMessage = messages[messages.length - 1];
+
+      if (lastMessage.role === "user") {
+        // Reset overflow styles for new question
+        setHasReachedBottom(false);
+
+        // 2nd+ user message: scroll to the user's message so they
+        // see their question and the typing/loading indicator below
+        if (messages.length > 2 && scroller) {
+          const allMessages = scroller.querySelectorAll(
+            ".insytful-search-message",
+          );
+          const userMsgEl = allMessages[
+            allMessages.length - 1
+          ] as HTMLElement | null;
+
+          if (userMsgEl) {
+            lastProgrammaticScrollRef.current = Date.now();
+            const rect = userMsgEl.getBoundingClientRect();
+            const scrollerRect = scroller.getBoundingClientRect();
+            scroller.scrollTo({
+              top: scroller.scrollTop + rect.top - scrollerRect.top - 16,
+              behavior: "smooth",
+            });
+          }
+        }
+      }
     }
     prevMessageCountRef.current = messages.length;
   }, [messages.length]);
 
-  const doShowMask = isOverflowing && !atBottom;
-  const doShowIcon =
-    isOverflowing &&
-    (loading
-      ? !atBottom
-      : !hasHitBottomAfterLoadRef.current && !atBottom);
+  // Show arrow when content overflows and user hasn't reached the bottom yet.
+  // Once the user scrolls to the bottom, arrow hides and stays hidden.
+  // Resets when a new user message is sent (setHasReachedBottom(false) on line 212).
+  const showScrollHint = isOverflowing && !hasReachedBottom;
 
   if (!messages || messages.length === 0) return null;
 
   return (
-    <div className={`flex-1 min-h-0 relative w-full max-w-full ${className ?? ""}`}>
+    <div
+      className={`flex-1 min-h-0 relative w-full max-w-full ${className ?? ""}`}
+    >
       <div
         ref={elContainerRef}
         className={`overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${
-          doShowMask
-            ? "[mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_85%,transparent_100%)]"
+          showScrollHint
+            ? "[mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)]"
             : ""
         }`}
       >
@@ -225,18 +277,15 @@ export function SearchMessages({ className }: SearchMessagesProps) {
                 message={message}
               />
             ))}
-            {isSearching && <TypingIndicator logo={logo} />}
+            {isSearching && (
+              <TypingIndicator logo={logo} text={searchingText} />
+            )}
           </ul>
+          {children}
         </div>
       </div>
 
-      {error && (
-        <div className="insytful-search-error-callout-outer flex items-center justify-start max-w-[740px] w-full mx-auto mt-[16px]">
-          <ErrorCallout message={error} />
-        </div>
-      )}
-
-      {doShowIcon && (
+      {showScrollHint && (
         <div className="w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center">
           <div
             key={`slide-icon-${messages.length}`}
