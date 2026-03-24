@@ -18,7 +18,7 @@ var Ce = function() {
     n && n.remove();
   })();
 }, Et = function(t) {
-  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, f = t.scriptProps, d = f === void 0 ? {} : f, m = d.nonce, u = m === void 0 ? "" : m, g = d.defer, C = g !== void 0 && g, v = d.async, R = v !== void 0 && v, P = d.id, $ = P === void 0 ? "" : P, x = d.appendTo, I = $ || "google-recaptcha-v3";
+  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, f = t.scriptProps, d = f === void 0 ? {} : f, m = d.nonce, u = m === void 0 ? "" : m, g = d.defer, R = g !== void 0 && g, v = d.async, T = v !== void 0 && v, P = d.id, $ = P === void 0 ? "" : P, x = d.appendTo, I = $ || "google-recaptcha-v3";
   if ((function(b) {
     return !!document.querySelector("#" + b);
   })(I)) o();
@@ -26,7 +26,7 @@ var Ce = function() {
     var A = (function(b) {
       return "https://www." + (b.useRecaptchaNet ? "recaptcha.net" : "google.com") + "/recaptcha/" + (b.useEnterprise ? "enterprise.js" : "api.js");
     })({ useEnterprise: a, useRecaptchaNet: i }), N = document.createElement("script");
-    N.id = I, N.src = A + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), u && (N.nonce = u), N.defer = !!C, N.async = !!R, N.onload = o, (x === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(N);
+    N.id = I, N.src = A + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), u && (N.nonce = u), N.defer = !!R, N.async = !!T, N.onload = o, (x === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(N);
   }
 }, Le = function(t) {
   typeof process < "u" && process.env && process.env.NODE_ENV !== "production" || console.warn(t);
@@ -39,7 +39,7 @@ var ze = Oe({ executeRecaptcha: function() {
 } });
 ze.Consumer;
 function Nt(t) {
-  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, f = t.language, d = t.container, m = t.children, u = V(null), g = u[0], C = u[1], v = D(e), R = JSON.stringify(a), P = JSON.stringify(d?.parameters);
+  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, f = t.language, d = t.container, m = t.children, u = V(null), g = u[0], R = u[1], v = D(e), T = JSON.stringify(a), P = JSON.stringify(d?.parameters);
   H((function() {
     if (e) {
       var I = a?.id || "google-recaptcha-v3", A = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
@@ -50,7 +50,7 @@ function Nt(t) {
         if (window && window.grecaptcha) {
           var N = n ? window.grecaptcha.enterprise : window.grecaptcha;
           N.ready((function() {
-            C(N);
+            R(N);
           }));
         } else Le("<GoogleRecaptchaProvider /> " + Re.SCRIPT_NOT_AVAILABLE);
       } }), function() {
@@ -58,7 +58,7 @@ function Nt(t) {
       };
     }
     Le("<GoogleReCaptchaProvider /> recaptcha key not provided");
-  }), [n, i, R, P, f, e, d?.element]);
+  }), [n, i, T, P, f, e, d?.element]);
   var $ = ke((function(I) {
     if (!g || !g.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
     return g.execute(v.current, { action: I });
@@ -135,7 +135,7 @@ var $t = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvid
   return typeof t == "string" || typeof t == "function" || t === se || t === be || t === ce || t === le || t === pe || t === Ct || typeof t == "object" && t !== null && (t.$$typeof === he || t.$$typeof === me || t.$$typeof === ue || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === Ft || t.$$typeof === Pt || t.$$typeof === It || t.$$typeof === Rt);
 }, typeOf: B }, F = We((function(t, e) {
   process.env.NODE_ENV !== "production" && (function() {
-    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, f = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, u = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, g = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, C = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, v = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, R = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, P = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, $ = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, x = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, I = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, A = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, N = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, f = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, u = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, g = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, R = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, v = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, T = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, P = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, $ = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, x = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, I = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, A = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, N = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
     function b(c) {
       if (typeof c == "object" && c !== null) {
         var k = c.$$typeof;
@@ -154,7 +154,7 @@ var $t = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvid
                 var _ = M && M.$$typeof;
                 switch (_) {
                   case m:
-                  case C:
+                  case R:
                   case $:
                   case P:
                   case d:
@@ -168,11 +168,11 @@ var $t = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvid
         }
       }
     }
-    var O = u, L = g, j = m, U = d, X = n, Y = C, K = i, T = $, s = P, l = o, h = f, S = a, y = v, E = !1;
+    var O = u, L = g, j = m, U = d, X = n, Y = R, K = i, C = $, s = P, l = o, h = f, S = a, y = v, E = !1;
     function w(c) {
       return b(c) === g;
     }
-    e.AsyncMode = O, e.ConcurrentMode = L, e.ContextConsumer = j, e.ContextProvider = U, e.Element = X, e.ForwardRef = Y, e.Fragment = K, e.Lazy = T, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = S, e.Suspense = y, e.isAsyncMode = function(c) {
+    e.AsyncMode = O, e.ConcurrentMode = L, e.ContextConsumer = j, e.ContextProvider = U, e.Element = X, e.ForwardRef = Y, e.Fragment = K, e.Lazy = C, e.Memo = s, e.Portal = l, e.Profiler = h, e.StrictMode = S, e.Suspense = y, e.isAsyncMode = function(c) {
       return E || (E = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), w(c) || b(c) === u;
     }, e.isConcurrentMode = w, e.isContextConsumer = function(c) {
       return b(c) === m;
@@ -181,7 +181,7 @@ var $t = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvid
     }, e.isElement = function(c) {
       return typeof c == "object" && c !== null && c.$$typeof === n;
     }, e.isForwardRef = function(c) {
-      return b(c) === C;
+      return b(c) === R;
     }, e.isFragment = function(c) {
       return b(c) === i;
     }, e.isLazy = function(c) {
@@ -197,7 +197,7 @@ var $t = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvid
     }, e.isSuspense = function(c) {
       return b(c) === v;
     }, e.isValidElementType = function(c) {
-      return typeof c == "string" || typeof c == "function" || c === i || c === g || c === f || c === a || c === v || c === R || typeof c == "object" && c !== null && (c.$$typeof === $ || c.$$typeof === P || c.$$typeof === d || c.$$typeof === m || c.$$typeof === C || c.$$typeof === I || c.$$typeof === A || c.$$typeof === N || c.$$typeof === x);
+      return typeof c == "string" || typeof c == "function" || c === i || c === g || c === f || c === a || c === v || c === T || typeof c == "object" && c !== null && (c.$$typeof === $ || c.$$typeof === P || c.$$typeof === d || c.$$typeof === m || c.$$typeof === R || c.$$typeof === I || c.$$typeof === A || c.$$typeof === N || c.$$typeof === x);
     }, e.typeOf = b;
   })();
 })), Be = (F.AsyncMode, F.ConcurrentMode, F.ContextConsumer, F.ContextProvider, F.Element, F.ForwardRef, F.Fragment, F.Lazy, F.Memo, F.Portal, F.Profiler, F.StrictMode, F.Suspense, F.isAsyncMode, F.isConcurrentMode, F.isContextConsumer, F.isContextProvider, F.isElement, F.isForwardRef, F.isFragment, F.isLazy, F.isMemo, F.isPortal, F.isProfiler, F.isStrictMode, F.isSuspense, F.isValidElementType, F.typeOf, We((function(t) {
@@ -301,9 +301,9 @@ function ne(t, e, r) {
   return t.concat(n || Array.prototype.slice.call(e));
 }
 var Dt = function(t, e, r) {
-  var n = V([]), o = n[0], i = n[1], a = V(!1), f = a[0], d = a[1], m = V(null), u = m[0], g = m[1], C = ke(function(v, R) {
+  var n = V([]), o = n[0], i = n[1], a = V(!1), f = a[0], d = a[1], m = V(null), u = m[0], g = m[1], R = ke(function(v, T) {
     return zt(void 0, void 0, void 0, function() {
-      var P, $, x, I, A, N, b, O, L, j, U, X, Y, K, T, s, l, h, S, y, E, w;
+      var P, $, x, I, A, N, b, O, L, j, U, X, Y, K, C, s, l, h, S, y, E, w;
       return jt(this, function(c) {
         switch (c.label) {
           case 0:
@@ -322,7 +322,7 @@ var Dt = function(t, e, r) {
               return ne(ne([], k, !0), [{ role: "user", content: v }], !1);
             }), d(!0), g(null), c.label = 6;
           case 6:
-            return c.trys.push([6, 17, , 18]), x = new URLSearchParams({ question: v, config: t, history: String(!0), stream: String(!0) }), R && R?.length >= 1 && x.set("sections", R.join(",")), I = x.toString(), A = new Headers({ Accept: "text/event-stream" }), P && A.append("X-Recaptcha-Token", P), (N = localStorage.getItem("rag-session-id")) && A.append("X-Session-Id", N), [4, fetch("".concat(e, "/query-collection?").concat(I), { method: "GET", headers: A })];
+            return c.trys.push([6, 17, , 18]), x = new URLSearchParams({ question: v, config: t, history: String(!0), stream: String(!0) }), T && T?.length >= 1 && x.set("sections", T.join(",")), I = x.toString(), A = new Headers({ Accept: "text/event-stream" }), P && A.append("X-Recaptcha-Token", P), (N = localStorage.getItem("rag-session-id")) && A.append("X-Session-Id", N), [4, fetch("".concat(e, "/query-collection?").concat(I), { method: "GET", headers: A })];
           case 7:
             if ((b = c.sent()).ok) return [3, 13];
             O = "Request failed (".concat(b.status, ")"), c.label = 8;
@@ -344,8 +344,8 @@ var Dt = function(t, e, r) {
           case 14:
             return [4, j.read()];
           case 15:
-            if (K = c.sent(), T = K.value, K.done) return [3, 16];
-            for (X += U.decode(T, { stream: !0 }), s = X.split(`
+            if (K = c.sent(), C = K.value, K.done) return [3, 16];
+            for (X += U.decode(C, { stream: !0 }), s = X.split(`
 
 `), X = s.pop() || "", l = 0, h = s; l < h.length; l++) {
               if ((S = h[l]).startsWith("event: done")) return d(!1), [2];
@@ -369,7 +369,7 @@ var Dt = function(t, e, r) {
       });
     });
   }, [t, e]);
-  return { messages: o, loading: f, error: u, ask: C };
+  return { messages: o, loading: f, error: u, ask: R };
 }, Lt = function() {
   var t = Ot(), e = t.config, r = t.baseUrl, n = t.recaptchaSiteKey;
   return Dt(e, r, n);
@@ -447,8 +447,8 @@ var tt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
         var u = te.call(a, ve);
         u && n.filter(a) && (r || !e.includes(a)) && o.push(a);
         var g = a.shadowRoot || // check for an undisclosed shadow
-        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), C = !ye(g, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
-        if (g && C) {
+        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), R = !ye(g, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
+        if (g && R) {
           var v = xe(g === !0 ? a.children : g.children, !0, n);
           n.flatten ? o.push.apply(o, v) : o.push({
             scopeParent: a,
@@ -877,7 +877,7 @@ var W = {
     if (!s)
       throw new Error("Your focus-trap needs to have at least one focusable element");
     return s;
-  }, C = function() {
+  }, R = function() {
     if (a.containerGroups = a.containers.map(function(s) {
       var l = er(s, i.tabbableOptions), h = tr(s, i.tabbableOptions), S = l.length > 0 ? l[0] : void 0, y = l.length > 0 ? l[l.length - 1] : void 0, E = h.find(function(k) {
         return re(k);
@@ -936,10 +936,10 @@ var W = {
     var l = s.activeElement;
     if (l)
       return l.shadowRoot && l.shadowRoot.activeElement !== null ? v(l.shadowRoot) : l;
-  }, R = function(s) {
+  }, T = function(s) {
     if (s !== !1 && s !== v(document)) {
       if (!s || !s.focus) {
-        R(g());
+        T(g());
         return;
       }
       s.focus({
@@ -953,7 +953,7 @@ var W = {
     return l || (l === !1 ? !1 : s);
   }, $ = function(s) {
     var l = s.target, h = s.event, S = s.isBackward, y = S === void 0 ? !1 : S;
-    l = l || ie(h), C();
+    l = l || ie(h), R();
     var E = null;
     if (a.tabbableGroups.length > 0) {
       var w = m(l, h), c = w >= 0 ? a.containerGroups[w] : void 0;
@@ -1027,7 +1027,7 @@ var W = {
         //  outside the trap causing the focus escape we're trying to fix)
         target: a.mostRecentlyFocusedNode,
         isBackward: i.isKeyBackward(a.recentNavEvent)
-      })), R(S || a.mostRecentlyFocusedNode || g());
+      })), T(S || a.mostRecentlyFocusedNode || g());
     }
     a.recentNavEvent = void 0;
   }, A = function(s) {
@@ -1037,7 +1037,7 @@ var W = {
       event: s,
       isBackward: l
     });
-    h && (oe(s) && s.preventDefault(), R(h));
+    h && (oe(s) && s.preventDefault(), T(h));
   }, N = function(s) {
     (i.isKeyForward(s) || i.isKeyBackward(s)) && A(s, i.isKeyBackward(s));
   }, b = function(s) {
@@ -1048,8 +1048,8 @@ var W = {
   }, L = function() {
     if (a.active)
       return W.activateTrap(o, f), a.delayInitialFocusTimer = i.delayInitialFocus ? Ue(function() {
-        R(g());
-      }) : R(g()), n.addEventListener("focusin", I, !0), n.addEventListener("mousedown", x, {
+        T(g());
+      }) : T(g()), n.addEventListener("focusin", I, !0), n.addEventListener("mousedown", x, {
         capture: !0,
         passive: !1
       }), n.addEventListener("touchstart", x, {
@@ -1105,7 +1105,7 @@ var W = {
         return y === a.mostRecentlyFocusedNode;
       });
     });
-    l && R(g());
+    l && T(g());
   }, Y = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(X) : void 0, K = function() {
     Y && (Y.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
       Y.observe(s, {
@@ -1130,9 +1130,9 @@ var W = {
         (w = y._setSubtreeIsolation) === null || w === void 0 || w.call(y, !1), E = !0;
       }
       try {
-        S || C(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = v(n), l?.();
+        S || R(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = v(n), l?.();
         var c = function() {
-          S && C(), L(), K(), i.isolateSubtrees && f._setSubtreeIsolation(!0), h?.();
+          S && R(), L(), K(), i.isolateSubtrees && f._setSubtreeIsolation(!0), h?.();
         };
         if (S)
           return S(a.containers.concat()).then(c, c), this;
@@ -1159,7 +1159,7 @@ var W = {
       h?.();
       var w = function() {
         Ue(function() {
-          E && R(P(a.nodeFocusedBeforeActivation)), S?.();
+          E && T(P(a.nodeFocusedBeforeActivation)), S?.();
         });
       };
       return E && y ? (y(P(a.nodeFocusedBeforeActivation)).then(w, w), this) : (w(), this);
@@ -1174,7 +1174,7 @@ var W = {
       var l = [].concat(s).filter(Boolean);
       return a.containers = l.map(function(h) {
         return typeof h == "string" ? n.querySelector(h) : h;
-      }), i.isolateSubtrees && j(a.containers), a.active && (C(), i.isolateSubtrees && !a.paused && f._setSubtreeIsolation(!0)), K(), this;
+      }), i.isolateSubtrees && j(a.containers), a.active && (R(), i.isolateSubtrees && !a.paused && f._setSubtreeIsolation(!0)), K(), this;
     }
   }, Object.defineProperties(f, {
     _isManuallyPaused: {
@@ -1191,7 +1191,7 @@ var W = {
           h?.(), U(), K(), f._setSubtreeIsolation(!1), S?.();
         } else {
           var y = d(l, "onUnpause"), E = d(l, "onPostUnpause");
-          y?.(), f._setSubtreeIsolation(!0), C(), L(), K(), E?.();
+          y?.(), f._setSubtreeIsolation(!0), R(), L(), K(), E?.();
         }
         return this;
       }
@@ -1416,22 +1416,22 @@ function lt({
     prop: r,
     defaultProp: n,
     onChange: o
-  }), C = Me("insytful-search-heading"), v = Me("insytful-search-description"), R = ee(() => e, [e.config, e.baseUrl]), P = ee(() => m, [m?.top, m?.left, m?.right]);
+  }), R = Me("insytful-search-heading"), v = Me("insytful-search-description"), T = ee(() => e, [e.config, e.baseUrl]), P = ee(() => m, [m?.top, m?.left, m?.right]);
   return /* @__PURE__ */ p.createElement(
     Mt,
     {
-      key: R.config || "default",
-      config: R.config || "",
-      baseUrl: R.baseUrl
+      key: T.config || "default",
+      config: T.config || "",
+      baseUrl: T.baseUrl
     },
     /* @__PURE__ */ p.createElement(
       xr,
       {
         open: u,
         setOpen: g,
-        titleId: C,
+        titleId: R,
         descriptionId: v,
-        options: R,
+        options: T,
         theme: i,
         renderMarkdown: a,
         logo: f,
@@ -1456,7 +1456,7 @@ function xr({
   isDevMode: m,
   offsets: u
 }) {
-  const { messages: g, loading: C, error: v, ask: R } = Lt();
+  const { messages: g, loading: R, error: v, ask: T } = Lt();
   vr(m, i.baseUrl ?? "");
   const P = D(""), $ = D(""), x = D(0);
   H(() => {
@@ -1490,9 +1490,9 @@ function xr({
     descriptionId: o,
     options: i,
     messages: g,
-    loading: C,
+    loading: R,
     error: v,
-    onSend: R,
+    onSend: T,
     renderMarkdown: f,
     logo: d,
     isDevMode: m,
@@ -1506,9 +1506,9 @@ function xr({
     o,
     i,
     g,
-    C,
-    v,
     R,
+    v,
+    T,
     f,
     d,
     m,
@@ -1519,7 +1519,7 @@ function xr({
   return /* @__PURE__ */ p.createElement(Je, { value: N }, t);
 }
 function ct({ children: t }) {
-  const e = G("Search.Portal"), { open: r, titleId: n, descriptionId: o, theme: i, offsets: a, computedOffsetHeight: f } = e, { elModalRef: d } = gr(e.onOpenChange, r), m = Me("insytful-ai-modal-portal"), u = D(null), g = D(null), [C, v] = V(!1);
+  const e = G("Search.Portal"), { open: r, titleId: n, descriptionId: o, theme: i, offsets: a, computedOffsetHeight: f } = e, { elModalRef: d } = gr(e.onOpenChange, r), m = Me("insytful-ai-modal-portal"), u = D(null), g = D(null), [R, v] = V(!1);
   H(() => {
     if (typeof window > "u") return;
     const x = document.createElement("div");
@@ -1535,8 +1535,8 @@ function ct({ children: t }) {
   }, []), H(() => {
     g.current && (g.current.textContent = i ?? "");
   }, [i]);
-  const { left: R = 0, right: P = 0 } = a || {}, $ = a?.top ?? f;
-  return !C || !u.current ? null : xt.createPortal(
+  const { left: T = 0, right: P = 0 } = a || {}, $ = a?.top ?? f;
+  return !R || !u.current ? null : xt.createPortal(
     /* @__PURE__ */ p.createElement(
       "div",
       {
@@ -1552,7 +1552,7 @@ function ct({ children: t }) {
         style: {
           zIndex: "var(--insytful-z-index, 999)",
           top: typeof $ == "number" ? `${$}px` : $,
-          left: R,
+          left: T,
           right: P,
           bottom: 0,
           opacity: r ? 1 : 0,
@@ -1622,7 +1622,7 @@ function ft({
 }
 ft.displayName = "Search.Description";
 function pt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
-  const { onSend: o, loading: i, messages: a } = G("Search.Input"), f = Qe(), d = f ? f.mode !== "ai" : !1, [m, u] = V(""), g = a.length > 0, C = async () => {
+  const { onSend: o, loading: i, messages: a } = G("Search.Input"), f = Qe(), d = f ? f.mode !== "ai" : !1, [m, u] = V(""), g = a.length > 0, R = async () => {
     const v = m.trim();
     if (v) {
       if (u(""), n) {
@@ -1640,7 +1640,7 @@ function pt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
     "form",
     {
       onSubmit: (v) => {
-        v.stopPropagation(), v.preventDefault(), C();
+        v.stopPropagation(), v.preventDefault(), R();
       },
       className: `insytful-search-message-input w-full relative flex ${e ? "" : "max-w-[784px] mx-auto"} ${t ?? ""}`
     },
@@ -1700,7 +1700,7 @@ function pt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
         "aria-label": d ? "Search" : "Ask a question",
         onChange: (v) => u(v.target.value),
         onKeyDown: (v) => {
-          v.key === "Enter" && !v.shiftKey && (v.preventDefault(), v.stopPropagation(), C());
+          v.key === "Enter" && !v.shiftKey && (v.preventDefault(), v.stopPropagation(), R());
         },
         className: `insytful-search-message-input-textarea relative z-10 w-full resize-none bg-white max-h-[240px] overflow-y-auto outline-none focus:outline-none ${e ? "py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]" : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"}`
       }
@@ -1805,7 +1805,7 @@ function mt({
   searchingText: e,
   children: r
 }) {
-  const { messages: n, loading: o, renderMarkdown: i, logo: a } = G("Search.Messages"), f = D(null), [d, m] = V(!1), [u, g] = V(!1), C = D(0);
+  const { messages: n, loading: o, renderMarkdown: i, logo: a } = G("Search.Messages"), f = D(null), [d, m] = V(!1), [u, g] = V(!1), R = D(0);
   H(() => {
     const x = f.current;
     if (!x) return;
@@ -1814,7 +1814,7 @@ function mt({
       m((j) => j === L ? j : L);
     }, A = () => {
       I();
-      const L = x.scrollTop + x.clientHeight >= x.scrollHeight - 40, j = Date.now() - C.current < 800;
+      const L = x.scrollTop + x.clientHeight >= x.scrollHeight - 40, j = Date.now() - R.current < 800;
       L && !j && x.scrollHeight > x.clientHeight && g(!0);
     };
     I(), x.addEventListener("scroll", A), window.addEventListener("resize", I);
@@ -1829,7 +1829,7 @@ function mt({
       x.removeEventListener("scroll", A), window.removeEventListener("resize", I), O && O.disconnect(), cancelAnimationFrame(b);
     };
   }, [n.length]);
-  const v = n.length > 0 ? n[n.length - 1] : null, R = o && !!v && v.role === "user", P = D(0);
+  const v = n.length > 0 ? n[n.length - 1] : null, T = o && !!v && v.role === "user", P = D(0);
   H(() => {
     if (n.length === 0) return;
     const x = f.current;
@@ -1838,7 +1838,7 @@ function mt({
         ".insytful-search-message"
       ), N = A[A.length - 1];
       if (N) {
-        C.current = Date.now();
+        R.current = Date.now();
         const b = N.getBoundingClientRect(), O = x.getBoundingClientRect();
         x.scrollTo({
           top: x.scrollTop + b.top - O.top - 16,
@@ -1848,7 +1848,7 @@ function mt({
     }
     P.current = n.length;
   }, [n.length]);
-  const $ = d && !u;
+  const $ = d && !u && !T;
   return !n || n.length === 0 ? null : /* @__PURE__ */ p.createElement(
     "div",
     {
@@ -1868,7 +1868,7 @@ function mt({
           logo: a,
           message: x
         }
-      )), R && /* @__PURE__ */ p.createElement(kr, { logo: a, text: e })), r)
+      )), T && /* @__PURE__ */ p.createElement(kr, { logo: a, text: e })), r)
     ),
     $ && /* @__PURE__ */ p.createElement("div", { className: "w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center" }, /* @__PURE__ */ p.createElement(
       "div",

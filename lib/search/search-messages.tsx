@@ -251,7 +251,7 @@ export function SearchMessages({
   // Show arrow when content overflows and user hasn't reached the bottom yet.
   // Once the user scrolls to the bottom, arrow hides and stays hidden.
   // Resets when a new user message is sent (setHasReachedBottom(false) on line 212).
-  const showScrollHint = isOverflowing && !hasReachedBottom;
+  const showScrollHint = isOverflowing && !hasReachedBottom && !isSearching;
 
   if (!messages || messages.length === 0) return null;
 
