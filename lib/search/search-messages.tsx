@@ -128,13 +128,19 @@ function scrollMessageToTop(
   spacer.style.transition = "none";
   spacer.style.height = `${scroller.clientHeight}px`;
 
-  // Wait one frame for layout to recalculate with the new spacer height.
+  // Double-rAF: the first frame lets the browser process any pending
+  // attribute changes (e.g. `inert` removal) and layout shifts (e.g.
+  // dialog top-offset re-render). The second frame guarantees the
+  // layout is fully settled before we measure positions and scroll.
   requestAnimationFrame(() => {
-    const msgRect = messageEl.getBoundingClientRect();
-    const scrollerRect = scroller.getBoundingClientRect();
-    scroller.scrollTo({
-      top: scroller.scrollTop + (msgRect.top - scrollerRect.top),
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      const msgRect = messageEl.getBoundingClientRect();
+      const scrollerRect = scroller.getBoundingClientRect();
+      const targetTop = scroller.scrollTop + (msgRect.top - scrollerRect.top);
+      scroller.scrollTo({
+        top: targetTop,
+        behavior: "smooth",
+      });
     });
   });
 }
@@ -181,7 +187,7 @@ export function SearchMessages({
   searchingText,
   children,
 }: SearchMessagesProps) {
-  const { messages, loading, error, renderMarkdown, logo } =
+  const { messages, loading, error, renderMarkdown, logo, open } =
     useSearchContext("Search.Messages");
 
   const elContainerRef = useRef<HTMLDivElement>(null);
@@ -243,16 +249,21 @@ export function SearchMessages({
     messages.length > 0 ? messages[messages.length - 1] : null;
   const isSearching = loading && !!lastMessage && lastMessage.role === "user";
 
-  // Handle new messages
+  // Handle new messages — scroll the latest user message to the top.
+  //
+  // Depends on BOTH messages.length AND open so that a message added
+  // while the dialog was closed will trigger scroll when the dialog
+  // opens.  prevMessageCountRef is only updated when the dialog is
+  // visible; this keeps the count "stale" while closed so the scroll
+  // re-fires on open.
   const prevMessageCountRef = useRef(0);
 
   useEffect(() => {
-    if (messages.length === 0) return;
+    if (messages.length === 0 || !open) return;
     const scroller = elContainerRef.current;
 
     if (messages.length > prevMessageCountRef.current) {
       const lastMessage = messages[messages.length - 1];
-
       if (lastMessage.role === "user") {
         // Reset overflow styles for new question
         setHasReachedBottom(false);
@@ -274,7 +285,7 @@ export function SearchMessages({
       }
     }
     prevMessageCountRef.current = messages.length;
-  }, [messages.length]);
+  }, [messages.length, open]);
 
   // Collapse the scroll spacer smoothly once the response has finished
   // loading, or immediately if there was an error
