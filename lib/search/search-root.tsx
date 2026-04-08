@@ -26,6 +26,13 @@ export type SearchRootProps = {
   };
 };
 
+// Clear any stale RAG session so each page load starts a fresh conversation.
+// The session ID is read lazily by contensis-rag-react only when ask() is called,
+// so this always runs before any session ID is consumed.
+if (typeof window !== "undefined") {
+  try { localStorage.removeItem("rag-session-id"); } catch { /* restricted env */ }
+}
+
 let idCounter = 0;
 const useStableId = typeof React.useId === "function"
   ? (prefix: string) => `${prefix}-${React.useId()}`
