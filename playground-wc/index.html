@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insytful Search — Web Component Playground</title>
+  <style>
+    /* Prevent FOUC before the custom element is defined */
+    insytful-search:not(:defined) {
+      display: none;
+    }
+
+    /* Basic page styling */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #195491;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 18px; font-weight: 600; }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    main h2 { font-size: 24px; margin-bottom: 16px; }
+    main p { margin-bottom: 12px; line-height: 1.6; }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .search-trigger {
+      background: #195491;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-trigger:hover { background: #134070; }
+  </style>
+</head>
+<body>
+  <!-- Sticky header with offset measurement -->
+  <header data-insytful-modal-offset>
+    <h1>Insytful Search — Web Component Playground</h1>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Test the Web Component</h2>
+      <p>
+        This page loads the standalone <code>&lt;insytful-search&gt;</code> Web Component
+        via a script tag. No React, no build step — just plain HTML.
+      </p>
+      <p>
+        Click the button below to open the AI search dialog.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Usage Example</h2>
+      <p>The component below is configured with dev mode enabled for mock API responses.</p>
+    </div>
+  </main>
+
+  <!--
+    Insytful Search Web Component
+    - api-uri and project-id would be set to real values in production
+    - dev-mode enables mock responses without a backend
+  -->
+  <insytful-search
+    api-uri="http://rag-api.insytful.com/api/v1"
+    project-id="demo"
+    dev-mode
+  >
+    <!-- Trigger button (lives in light DOM) -->
+    <button slot="trigger" class="search-trigger">
+      🔍 Search this site
+    </button>
+
+    <!-- Content slots -->
+    <span slot="title">Ask our AI</span>
+    <span slot="description">Get instant answers about our products and services</span>
+    <span slot="disclaimer">AI responses may not always be accurate. Please verify important information.</span>
+
+    <!-- Suggestion chips -->
+    <insytful-suggestion>How do I get started?</insytful-suggestion>
+    <insytful-suggestion>What products do you offer?</insytful-suggestion>
+    <insytful-suggestion>Contact support</insytful-suggestion>
+
+    <!-- Mode configuration -->
+    <insytful-mode name="ai">AI Search</insytful-mode>
+    <insytful-mode name="classic" path="/search?term=">Classic Search</insytful-mode>
+  </insytful-search>
+
+  <!--
+    In dev mode (npm run dev:wc), Vite serves the source directly with HMR.
+    In production, replace with the built bundle:
+    <script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
+  -->
+  <script type="module" src="../lib/web-component.ts"></script>
+
+  <!-- Verification script -->
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const el = document.querySelector("insytful-search");
+      const defined = customElements.get("insytful-search");
+      console.log("[WC Playground] Element found:", !!el);
+      console.log("[WC Playground] Custom element defined:", !!defined);
+      if (el && el.shadowRoot) {
+        console.log("[WC Playground] Shadow root attached:", true);
+      }
+    });
+
+    // Listen for custom events
+    document.addEventListener("insytful-open", () => console.log("[WC Event] Dialog opened"));
+    document.addEventListener("insytful-close", () => console.log("[WC Event] Dialog closed"));
+    document.addEventListener("insytful-search", (e) => console.log("[WC Event] Search:", e.detail));
+    document.addEventListener("insytful-message", (e) => console.log("[WC Event] Message:", e.detail));
+    document.addEventListener("insytful-mode-change", (e) => console.log("[WC Event] Mode:", e.detail));
+    document.addEventListener("insytful-error", (e) => console.log("[WC Event] Error:", e.detail));
+  </script>
+</body>
+</html>

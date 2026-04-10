@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define CSS variables for Shadow DOM and regular DOM contexts */
+:host,
+:root,
+.insytful-root {
+  /* Font baseline — protects against client overriding html font-size */
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: system-ui, -apple-system, sans-serif;
+
+  /* Text Colors */
+  --insytful-text-default: #333333;
+  --insytful-text-muted: #6c6c6c;
+  --insytful-text-link-default: #1d70b8;
+  --insytful-text-link-hover: #184b76;
+
+  /* Brand Colors */
+  --insytful-brand-primary: #195491;
+
+  /* Button - Prompt */
+  --insytful-btn-prompt-bg-default: #e2eefa;
+  --insytful-btn-prompt-bg-hover: #c8daec;
+  --insytful-btn-prompt-text: #333333;
+
+  /* Button - Icon Search */
+  --insytful-btn-icon-search-bg-default: #2e3339;
+  --insytful-btn-icon-search-bg-hover: #3c444d;
+  --insytful-btn-icon-search-bg-disabled: #e7e7e7;
+  --insytful-btn-icon-search-icon: #ffffff;
+
+  /* Callout Error  */
+  --insytful-callout-error-border: #d93025;
+  --insytful-callout-error-bg: #fce8e6;
+  --insytful-callout-error-text: #333333;
+
+  /* Semantic - Search Field */
+  --insytful-semantic-search-field-stroke: #333333;
+  --insytful-semantic-search-field-ai-gradient-start: #35d2c5;
+  --insytful-semantic-search-field-ai-gradient-end: #1d70b8;
+  --insytful-semantic-search-field-focus: #35d2c5;
+
+  /* Transition */
+  --insytful-search-transition-duration: 200ms;
+  --insytful-search-transition-easing: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  :root,
+  .insytful-root {
+    --insytful-search-transition-duration: 0ms;
+  }
+
+  .insytful-search-dialog-outer,
+  .insytful-search-mode-transition {
+    transition-duration: 0ms !important;
+  }
+
+  .insytful-search-messages-icon {
+    animation: none !important;
+  }
+}
