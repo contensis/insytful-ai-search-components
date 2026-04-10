@@ -125,6 +125,11 @@ export class InsytfulSearchElement extends HTMLElement {
     // Inject ::slotted() rules for projected content
     const slottedStyle = document.createElement('style');
     slottedStyle.textContent = `
+      /* Ensure the custom element takes up space in the layout */
+      :host {
+        display: block;
+      }
+
       /* Style projected slot content to match React component defaults */
       ::slotted([slot="title"]) {
         color: var(--insytful-text-default);
