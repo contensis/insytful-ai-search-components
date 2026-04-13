@@ -19,6 +19,7 @@ import {
   renderErrorMessage,
   renderSuggestionChip,
   renderModeSwitchTabs,
+  renderCloseButton,
   type DialogElements,
 } from './dialog-renderer';
 import { RAGClient } from './rag-client';
@@ -41,7 +42,7 @@ function uniqueId(prefix: string): string {
 /* ------------------------------------------------------------------ */
 
 export class InsytfulSearchElement extends HTMLElement {
-  static observedAttributes = ['api-uri', 'project-id', 'sections', 'dev-mode', 'theme'];
+  static observedAttributes = ['api-uri', 'project-id', 'sections', 'dev-mode', 'theme', 'suggestions-position'];
 
   /* Internal state */
   private _isOpen = false;
@@ -164,7 +165,7 @@ export class InsytfulSearchElement extends HTMLElement {
         line-height: 24px;
         font-weight: normal;
         text-align: center;
-        color: var(--insytful-text-muted);
+        color: var(--insytful-disclaimer-text);
       }
     `;
     this._shadow.appendChild(slottedStyle);
@@ -193,6 +194,12 @@ export class InsytfulSearchElement extends HTMLElement {
 
     // --- Parse mode children from light DOM ---
     this._parseModes();
+
+    // --- Parse close-button children from light DOM ---
+    this._parseCloseButton();
+
+    // --- Apply initial suggestions-position (if set at mount time) ---
+    this._applySuggestionsPosition();
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
@@ -213,6 +220,9 @@ export class InsytfulSearchElement extends HTMLElement {
       case 'dev-mode':
         // Rebuild RAG client to inject/remove mock fetch
         this._buildRAGClient();
+        break;
+      case 'suggestions-position':
+        this._applySuggestionsPosition();
         break;
     }
   }
@@ -924,6 +934,68 @@ export class InsytfulSearchElement extends HTMLElement {
       composed: true,
       detail: { mode },
     }));
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Private — close button                                             */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * One-time parse of `<insytful-close>` child elements.
+   * If present, renders a close button into `closeButtonContainer` that
+   * lives inside `dialogOuter` — so the focus trap picks it up automatically.
+   *
+   * The child's innerHTML (sanitised via DOMPurify) becomes the button's
+   * content; an empty `<insytful-close></insytful-close>` renders a default
+   * ✕ icon. Light-DOM children are hidden (`display: none`) since the render
+   * happens in the shadow DOM.
+   */
+  private _parseCloseButton(): void {
+    const container = this._elements?.closeButtonContainer;
+    if (!container) return;
+
+    const closeEls = this.querySelectorAll('insytful-close');
+    if (closeEls.length === 0) return;
+
+    // Use the first <insytful-close>; additional ones are ignored.
+    const source = closeEls[0] as HTMLElement;
+    source.style.display = 'none';
+
+    const rawHTML = source.innerHTML?.trim() || '';
+    const sanitised = rawHTML ? DOMPurify.sanitize(rawHTML) : '';
+    const ariaLabel = source.getAttribute('aria-label') || 'Close search';
+
+    const btn = renderCloseButton(sanitised, () => this.close(), ariaLabel);
+    container.appendChild(btn);
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Private — suggestions position                                     */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * Apply `order:` CSS to the suggestions container and input-card wrapper
+   * based on the `suggestions-position` attribute. Uses inline styles directly
+   * rather than CSS sibling rules so the behaviour is independent of where the
+   * elements sit in `dialogInner`'s flex children.
+   */
+  private _applySuggestionsPosition(): void {
+    const suggestions = this._elements?.suggestionsContainer;
+    const inputCardOuter = this._elements?.inputCardOuter;
+    const disclaimer = this._elements?.disclaimerWrapper;
+    if (!suggestions || !inputCardOuter || !disclaimer) return;
+
+    const position = this.getAttribute('suggestions-position');
+    if (position === 'below') {
+      // Keep disclaimer visually last — bump it past the reordered input/suggestions
+      inputCardOuter.style.order = '1';
+      suggestions.style.order = '2';
+      disclaimer.style.order = '3';
+    } else {
+      inputCardOuter.style.order = '';
+      suggestions.style.order = '';
+      disclaimer.style.order = '';
+    }
   }
 
   /**

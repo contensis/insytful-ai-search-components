@@ -235,7 +235,7 @@ export function SearchPortal({ children }: SearchPortalProps) {
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       {...(!open ? { inert: "" } : {})}
-      className={`insytful-search-dialog-outer fixed flex flex-col bg-white overflow-hidden pb-0 ${
+      className={`insytful-search-dialog-outer fixed flex flex-col bg-[var(--insytful-modal-bg)] overflow-hidden pb-0 ${
         open ? "insytful-search-dialog-open" : "insytful-search-dialog-closed"
       }`}
       style={{

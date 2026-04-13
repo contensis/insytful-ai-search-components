@@ -45,7 +45,7 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
         e.preventDefault();
         handleSend();
       }}
-      className={`insytful-search-message-input w-full relative flex ${embedded ? "" : "max-w-[784px] mx-auto"} ${className ?? ""}`}
+      className={`insytful-search-message-input w-full relative flex ${embedded ? "" : "max-w-[var(--insytful-modal-max-width)] mx-auto"} ${className ?? ""}`}
     >
       {isClassic ? (
         <div className={`insytful-search-message-input-icon absolute ${embedded ? "top-[14px] left-0" : "top-[18px] left-[16px]"} z-20`}>
@@ -86,9 +86,9 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
       )}
 
       {!isClassic && !embedded && (
-        <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[784px] rounded-[16px] group-focus-within:opacity-60">
+        <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-60">
           <div
-            className={`pointer-events-none absolute inset-[-2px] rounded-[16px] opacity-30 blur-[7px] transition-opacity z-0 ${
+            className={`pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 ${
               !hasMessages
                 ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]"
                 : ""
@@ -112,10 +112,10 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
             handleSend();
           }
         }}
-        className={`insytful-search-message-input-textarea relative z-10 w-full resize-none bg-white max-h-[240px] overflow-y-auto outline-none focus:outline-none ${
+        className={`insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto outline-none focus:outline-none ${
           embedded
             ? "py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]"
-            : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"
+            : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"
         }`}
       />
 

@@ -94,7 +94,7 @@ function TypingIndicator({
           {logo}
         </div>
       )}
-      <div className="insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-text-secondary)]">
+      <div className="insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-typing-indicator-text)]">
         <span>
           {text}
           <span className="after:animate-dot-animate"></span>
@@ -317,7 +317,7 @@ export function SearchMessages({
             : ""
         }`}
       >
-        <div className="insytful-search-messages-outer w-full max-w-[784px] mx-auto">
+        <div className="insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto">
           <ul className="insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
             {messages.map((message, i) => (
               <Message
@@ -339,7 +339,7 @@ export function SearchMessages({
       </div>
 
       {showScrollHint && (
-        <div className="w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center">
+        <div className="w-full max-w-[var(--insytful-modal-max-width)] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center">
           <div
             key={`slide-icon-${messages.length}`}
             className="insytful-search-messages-icon min-w-[42px] h-[42px] w-[42px] rounded-full border border-gray-200 flex items-center justify-center p-[8px] shadow-[0_2px_8px_0_rgba(0,0,0,0.15)] animate-slide-to-bounce-animate bg-white z-20"

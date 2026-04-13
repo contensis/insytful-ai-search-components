@@ -9,7 +9,10 @@
   /* Font baseline — protects against client overriding html font-size */
   font-size: 16px;
   line-height: 1.5;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--insytful-font-family);
+
+  /* Typography */
+  --insytful-font-family: system-ui, -apple-system, sans-serif;
 
   /* Text Colors */
   --insytful-text-default: #333333;
@@ -20,16 +23,39 @@
   /* Brand Colors */
   --insytful-brand-primary: #195491;
 
-  /* Button - Prompt */
+  /* Modal surface */
+  --insytful-modal-bg: #ffffff;
+  --insytful-modal-max-width: 784px;
+  --insytful-modal-radius: 0px;
+
+  /* Button - Prompt (suggestion chips) */
   --insytful-btn-prompt-bg-default: #e2eefa;
   --insytful-btn-prompt-bg-hover: #c8daec;
   --insytful-btn-prompt-text: #333333;
+  --insytful-btn-prompt-radius: 12px;
+  --insytful-btn-prompt-focus: var(--insytful-semantic-search-field-focus);
+
+  /* Input card */
+  --insytful-input-card-bg: #ffffff;
+  --insytful-input-card-radius: 16px;
+  --insytful-input-card-border: var(--insytful-semantic-search-field-stroke);
+  --insytful-input-card-border-width: 1px;
 
   /* Button - Icon Search */
   --insytful-btn-icon-search-bg-default: #2e3339;
   --insytful-btn-icon-search-bg-hover: #3c444d;
   --insytful-btn-icon-search-bg-disabled: #e7e7e7;
   --insytful-btn-icon-search-icon: #ffffff;
+
+  /* Button - Close */
+  --insytful-btn-close-bg: transparent;
+  --insytful-btn-close-bg-hover: #f2f2f2;
+  --insytful-btn-close-icon: var(--insytful-text-default);
+  --insytful-btn-close-size: 40px;
+
+  /* Typing indicator + disclaimer (aliased to muted by default; override separately) */
+  --insytful-typing-indicator-text: var(--insytful-text-muted);
+  --insytful-disclaimer-text: var(--insytful-text-muted);
 
   /* Callout Error  */
   --insytful-callout-error-border: #d93025;
@@ -45,6 +71,52 @@
   /* Transition */
   --insytful-search-transition-duration: 200ms;
   --insytful-search-transition-easing: ease;
+}
+
+/* Close button baseline — kept outside arbitrary-value Tailwind so Razor
+   consumers can override colours via --insytful-btn-close-* vars alone. */
+.insytful-search-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: var(--insytful-btn-close-size);
+  height: var(--insytful-btn-close-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--insytful-btn-close-bg);
+  color: var(--insytful-btn-close-icon);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+.insytful-search-close:hover {
+  background: var(--insytful-btn-close-bg-hover);
+}
+.insytful-search-close:focus {
+  outline: 2px solid var(--insytful-semantic-search-field-focus);
+  outline-offset: 2px;
+}
+.insytful-search-close svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Suggestions below input — React tree applies `order` via :has().
+   The WC tree sets order via inline styles (see insytful-search-element.ts).
+   `:has()` is supported in all current evergreen browsers (Chrome 105+,
+   Safari 15.4+, Firefox 121+) — same baseline as our Shadow DOM v1 requirement. */
+.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position="below"])
+  > .insytful-search-message-input {
+  order: 1;
+}
+.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position="below"])
+  > .insytful-search-disclaimer-inner {
+  order: 3;
 }
 
 @media (prefers-reduced-motion: reduce) {

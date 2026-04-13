@@ -15,6 +15,8 @@ const SPARKLE_ICON = `<svg focusable="false" aria-hidden="true" role="presentati
 
 const SEND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill="var(--insytful-btn-icon-search-icon)" d="M15.991 8a1.606 1.606 0 0 0-.543-1.2L7.996.24a.96.96 0 0 0-1.267 1.442l5.758 5.067a.166.166 0 0 1 .046.183.167.167 0 0 1-.156.108H.967a.96.96 0 1 0 0 1.92h11.408a.167.167 0 0 1 .11.292l-5.758 5.067a.96.96 0 1 0 1.267 1.44L15.448 9.2A1.606 1.606 0 0 0 15.99 8Z"/></g><defs><clipPath id="a"><path fill="var(--insytful-btn-icon-search-icon)" d="M0 0h16v16H0z"/></clipPath></defs></svg>`;
 
+const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+
 /* ------------------------------------------------------------------ */
 /* Helper                                                               */
 /* ------------------------------------------------------------------ */
@@ -71,6 +73,10 @@ export interface DialogElements {
   emptyState: HTMLDivElement;
   /** Container for suggestion chips (populated by Unit 5) */
   suggestionsContainer: HTMLDivElement;
+  /** Wrapper around the input card — exposed so `order` can be toggled for suggestions-position="below" */
+  inputCardOuter: HTMLDivElement;
+  /** Container for the close button; button is appended only when <insytful-close> exists */
+  closeButtonContainer: HTMLDivElement;
   /** The input form */
   inputForm: HTMLFormElement;
   /** The textarea element */
@@ -121,6 +127,10 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     transition: 'opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)',
   });
 
+  // --- Close button container (top-right of dialog) ---
+  // Button itself is only appended when the light-DOM child <insytful-close> is present.
+  const closeButtonContainer = el('div', { 'data-insytful-close-container': '' });
+
   // --- Dialog inner ---
   const dialogInner = el('div', {},
     'insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]',
@@ -168,7 +178,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   );
 
   const messagesContainer = el('div', {},
-    'insytful-search-messages-outer w-full max-w-[784px] mx-auto',
+    'insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto',
   );
 
   const messagesList = el('ul', {
@@ -190,7 +200,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
 
   // Scroll hint — shown when content overflows and user hasn't reached bottom
   const scrollHint = el('div', {},
-    'w-full max-w-[784px] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center',
+    'w-full max-w-[var(--insytful-modal-max-width)] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center',
   );
   scrollHint.style.display = 'none';
   scrollHint.innerHTML = `<div class="insytful-search-messages-icon min-w-[42px] h-[42px] w-[42px] rounded-full border border-gray-200 flex items-center justify-center p-[8px] shadow-[0_2px_8px_0_rgba(0,0,0,0.15)] animate-slide-to-bounce-animate bg-white z-20"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M19 12l-7 7-7-7"/></svg></div>`;
@@ -210,7 +220,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   const inputCardOuter = el('div', {}, 'px-4');
 
   const inputCard = el('div', {},
-    'insytful-search-input-card w-full max-w-[784px] mx-auto rounded-[16px] border border-[var(--insytful-semantic-search-field-stroke)] bg-white overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white px-[12px] pb-[12px] pt-[12px]',
+    'insytful-search-input-card w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] bg-[var(--insytful-input-card-bg)] overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white px-[12px] pb-[12px] pt-[12px]',
   );
 
   const inputForm = el('form', {},
@@ -259,7 +269,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   );
 
   const disclaimerInner = el('div', {},
-    'insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--insytful-text-muted)]',
+    'insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--insytful-disclaimer-text)]',
   );
 
   const disclaimerSlot = document.createElement('slot');
@@ -269,6 +279,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   dialogInner.appendChild(disclaimerWrapper);
 
   // --- Assemble ---
+  dialogOuter.appendChild(closeButtonContainer);
   dialogOuter.appendChild(dialogInner);
   root.appendChild(dialogOuter);
 
@@ -289,6 +300,8 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     scrollHint,
     emptyState,
     suggestionsContainer,
+    inputCardOuter,
+    closeButtonContainer,
     inputForm,
     textarea,
     sendButton,
@@ -363,7 +376,7 @@ export function renderTypingIndicator(text = 'Searching'): HTMLLIElement {
   );
 
   const txt = el('div', {},
-    'insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-text-muted)]',
+    'insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-typing-indicator-text)]',
   );
 
   const span = document.createElement('span');
@@ -384,6 +397,27 @@ export function renderTypingIndicator(text = 'Searching'): HTMLLIElement {
 /* ------------------------------------------------------------------ */
 
 /**
+ * Create a close-button element. Placed absolutely inside `dialogOuter`, so
+ * the focus trap automatically includes it. `innerHTML` is raw markup; the
+ * caller is expected to have sanitised (DOMPurify) if the source is untrusted.
+ *
+ * Passing `null` / empty uses the default ✕ icon.
+ */
+export function renderCloseButton(
+  innerHTML: string | null,
+  onClick: () => void,
+  ariaLabel = 'Close search',
+): HTMLButtonElement {
+  const btn = el('button', {
+    'type': 'button',
+    'aria-label': ariaLabel,
+  }, 'insytful-search-close');
+  btn.innerHTML = innerHTML && innerHTML.trim() ? innerHTML : CLOSE_ICON;
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+
+/**
  * Create a suggestion chip button.
  * Matches the React `SearchSuggestions` component styling from search-suggestions.tsx.
  */
@@ -391,7 +425,7 @@ export function renderSuggestionChip(text: string, onClick: () => void): HTMLLIE
   const li = el('li', {}, 'insytful-search-suggestions-item');
 
   const btn = el('button', { 'type': 'button' },
-    'insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] whitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[12px] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--insytful-semantic-search-field-focus)]',
+    'insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] whitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[var(--insytful-btn-prompt-radius)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--insytful-btn-prompt-focus)]',
   );
   btn.textContent = text;
   btn.addEventListener('click', onClick);

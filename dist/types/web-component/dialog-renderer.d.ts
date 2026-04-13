@@ -39,6 +39,10 @@ export interface DialogElements {
     emptyState: HTMLDivElement;
     /** Container for suggestion chips (populated by Unit 5) */
     suggestionsContainer: HTMLDivElement;
+    /** Wrapper around the input card — exposed so `order` can be toggled for suggestions-position="below" */
+    inputCardOuter: HTMLDivElement;
+    /** Container for the close button; button is appended only when <insytful-close> exists */
+    closeButtonContainer: HTMLDivElement;
     /** The input form */
     inputForm: HTMLFormElement;
     /** The textarea element */
@@ -74,6 +78,14 @@ export declare function renderAssistantMessage(): {
  * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
  */
 export declare function renderTypingIndicator(text?: string): HTMLLIElement;
+/**
+ * Create a close-button element. Placed absolutely inside `dialogOuter`, so
+ * the focus trap automatically includes it. `innerHTML` is raw markup; the
+ * caller is expected to have sanitised (DOMPurify) if the source is untrusted.
+ *
+ * Passing `null` / empty uses the default ✕ icon.
+ */
+export declare function renderCloseButton(innerHTML: string | null, onClick: () => void, ariaLabel?: string): HTMLButtonElement;
 /**
  * Create a suggestion chip button.
  * Matches the React `SearchSuggestions` component styling from search-suggestions.tsx.

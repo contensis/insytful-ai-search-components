@@ -39,10 +39,21 @@ Add the script to your page, then use the `<insytful-search>` element:
 For classic Contensis sites using the .NET framework, add the Web Component to your layout or view:
 
 ```cshtml
-@using Contensis.Framework.Web
+@{
+    // Brand the modal — vars are documented under "CSS Custom Properties" below.
+    const string InsytfulAISearchTheme = @"
+        :host {
+          --insytful-font-family: 'Helvetica Neue', Arial, sans-serif;
+          --insytful-btn-prompt-bg-default: #f2f2f2;
+          --insytful-btn-prompt-bg-hover: #e5e5e5;
+          --insytful-btn-icon-search-bg-default: #da3949;
+          --insytful-btn-icon-search-bg-hover: #bf2f3d;
+        }
+    ";
+}
 
 <!-- Insytful AI Search Web Component -->
-<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.0/dist/insytful-search.js"></script>
 
 <style>
   /* Prevent flash of unstyled content before the script loads */
@@ -52,11 +63,16 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
 <insytful-search
   api-uri="CurrentContext.Site.AI.Endpoint"
   project-id="CurrentContext.Site.AI.ProjectId"
+  suggestions-position="below"
+  theme="@InsytfulAISearchTheme"
 >
   <button slot="trigger" class="search-trigger">Search this site</button>
   <span slot="title">Ask our AI</span>
   <span slot="description">Get instant answers about our courses and services</span>
   <span slot="disclaimer">AI responses may not always be accurate. Please verify important information.</span>
+
+  <!-- Built-in close button (top-right). Empty content uses the default ✕ icon. -->
+  <insytful-close></insytful-close>
 
   <insytful-suggestion>How do I apply?</insytful-suggestion>
   <insytful-suggestion>What courses do you offer?</insytful-suggestion>
@@ -85,16 +101,20 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
   id="aiSearch"
   api-uri="CurrentContext.Site.AI.Endpoint"
   project-id="CurrentContext.Site.AI.ProjectId"
+  suggestions-position="below"
 >
   <span slot="title">Ask our AI</span>
   <span slot="description">Get instant answers about our courses and services</span>
   <span slot="disclaimer">AI responses may not always be accurate.</span>
 
+  <!-- Built-in close button — focus-trap-aware, no light-DOM hacks needed -->
+  <insytful-close></insytful-close>
+
   <insytful-suggestion>How do I apply?</insytful-suggestion>
   <insytful-suggestion>What courses do you offer?</insytful-suggestion>
 </insytful-search>
 
-<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.0/dist/insytful-search.js"></script>
 ```
 
 ```cshtml
@@ -144,6 +164,7 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 | `sections` | No | Comma-separated section slugs to scope results |
 | `dev-mode` | No | Enable mock responses for development (no backend needed) |
 | `theme` | No | Custom CSS string injected into the Shadow DOM |
+| `suggestions-position` | No | `"above"` (default) or `"below"` — position of the suggestion chips relative to the input field |
 
 ### Slots
 
@@ -161,34 +182,41 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 <!-- Suggestion chips (shown before the first query) -->
 <insytful-suggestion>How do I apply?</insytful-suggestion>
 
+<!-- Close button (renders a top-right ✕ inside the dialog).
+     Empty content uses the default ✕ icon; or pass your own markup. -->
+<insytful-close></insytful-close>
+<insytful-close aria-label="Dismiss search">Cancel</insytful-close>
+
 <!-- Mode switching (AI search + classic URL navigation) -->
 <insytful-mode name="ai">AI Search</insytful-mode>
 <insytful-mode name="classic" path="/search?q=">Classic Search</insytful-mode>
 ```
 
+The close button lives **inside the dialog** (so the focus trap includes it) and is styled via the `--insytful-btn-close-*` CSS variables.
+
 ### JavaScript API
 
 ```javascript
-const el = document.querySelector('insytful-search');
+const element = document.querySelector('insytful-search');
 
 // Open/close programmatically
-el.open();
-el.close();
-el.toggle();
+element.open();
+element.close();
+element.toggle();
 
 // Check state
-console.log(el.isOpen);
+console.log(element.isOpen);
 
 // Override markdown rendering
-el.renderMarkdown = (md) => myCustomParser(md);
+element.renderMarkdown = (md) => myCustomParser(md);
 
 // Listen for events
-el.addEventListener('insytful-open', () => console.log('Opened'));
-el.addEventListener('insytful-close', () => console.log('Closed'));
-el.addEventListener('insytful-search', (e) => console.log('Query:', e.detail.query));
-el.addEventListener('insytful-message', (e) => console.log('Response:', e.detail.content));
-el.addEventListener('insytful-mode-change', (e) => console.log('Mode:', e.detail.mode));
-el.addEventListener('insytful-error', (e) => console.log('Error:', e.detail.error));
+element.addEventListener('insytful-open', () => console.log('Opened'));
+element.addEventListener('insytful-close', () => console.log('Closed'));
+element.addEventListener('insytful-search', (e) => console.log('Query:', e.detail.query));
+element.addEventListener('insytful-message', (e) => console.log('Response:', e.detail.content));
+element.addEventListener('insytful-mode-change', (e) => console.log('Mode:', e.detail.mode));
+element.addEventListener('insytful-error', (e) => console.log('Error:', e.detail.error));
 ```
 
 ### Dynamic Offsets
@@ -253,6 +281,7 @@ function App() {
 InsytfulSearch.Root          — Context provider (lives in your DOM tree)
 ├── InsytfulSearch.Trigger   — Toggle button (place anywhere in your DOM)
 └── InsytfulSearch.Portal    — Shadow DOM dialog (portalled to document.body)
+    ├── InsytfulSearch.Close — Close button (top-right; optional)
     ├── InsytfulSearch.Title
     ├── InsytfulSearch.Description
     ├── InsytfulSearch.Input
@@ -321,6 +350,26 @@ Toggles the modal. Renders a `<button>` by default, or merges props onto your ch
 
 > **Note:** When using `asChild`, the child's `onClick` handler will be replaced by the toggle behaviour.
 
+#### `InsytfulSearch.Close`
+
+Closes the modal. Place inside `InsytfulSearch.Portal` so the focus trap includes it. Renders a top-right ✕ button styled via `--insytful-btn-close-*` tokens; pass children to override the icon, or `asChild` to merge props onto your own element.
+
+```tsx
+<InsytfulSearch.Portal>
+  <InsytfulSearch.Close />
+
+  {/* Custom icon */}
+  <InsytfulSearch.Close>
+    <MyIcon />
+  </InsytfulSearch.Close>
+
+  {/* Or your own button element */}
+  <InsytfulSearch.Close asChild>
+    <button className="my-close-btn" aria-label="Dismiss">×</button>
+  </InsytfulSearch.Close>
+</InsytfulSearch.Portal>
+```
+
 #### `InsytfulSearch.Title`
 
 Heading for the empty state. Wires `aria-labelledby` on the dialog.
@@ -372,7 +421,16 @@ Clickable suggestion chips. Clicking sends the suggestion text via context `onSe
 
 ```tsx
 <InsytfulSearch.Suggestions items={['How do I...?', 'What features are available?']} />
+
+// Render below the input (default is "above")
+<InsytfulSearch.Suggestions position="below" items={['Tell me more', 'Other courses']} />
 ```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `items` | `string[]` | Suggestion strings. Each renders as a clickable chip. |
+| `position` | `"above" \| "below"` | Where suggestions sit relative to the input. Defaults to `"above"`. |
+| `className` | `string` | Additional CSS classes on the outer wrapper. |
 
 #### `InsytfulSearch.Disclaimer`
 
@@ -485,24 +543,48 @@ Override these variables in your theme CSS to change colours:
 
 ```css
 :host {
+  /* Typography */
+  --insytful-font-family: system-ui, -apple-system, sans-serif;
+
   /* Text */
   --insytful-text-default: #333333;
   --insytful-text-muted: #6c6c6c;
   --insytful-text-link-default: #1d70b8;
   --insytful-text-link-hover: #184b76;
+  --insytful-typing-indicator-text: var(--insytful-text-muted);
+  --insytful-disclaimer-text: var(--insytful-text-muted);
 
   /* Brand */
   --insytful-brand-primary: #195491;
+
+  /* Modal surface */
+  --insytful-modal-bg: #ffffff;
+  --insytful-modal-max-width: 784px;
+  --insytful-modal-radius: 0px;
 
   /* Suggestion buttons */
   --insytful-btn-prompt-bg-default: #e2eefa;
   --insytful-btn-prompt-bg-hover: #c8daec;
   --insytful-btn-prompt-text: #333333;
+  --insytful-btn-prompt-radius: 12px;
+  --insytful-btn-prompt-focus: var(--insytful-semantic-search-field-focus);
+
+  /* Input card */
+  --insytful-input-card-bg: #ffffff;
+  --insytful-input-card-radius: 16px;
+  --insytful-input-card-border: var(--insytful-semantic-search-field-stroke);
+  --insytful-input-card-border-width: 1px;
 
   /* Send button */
   --insytful-btn-icon-search-bg-default: #2e3339;
   --insytful-btn-icon-search-bg-hover: #3c444d;
   --insytful-btn-icon-search-icon: #ffffff;
+
+  /* Close button */
+  --insytful-btn-close-bg: transparent;
+  --insytful-btn-close-bg-hover: #f2f2f2;
+  --insytful-btn-close-icon: var(--insytful-text-default);
+  --insytful-btn-close-size: 40px;
 
   /* Error callout */
   --insytful-callout-error-border: #d93025;
@@ -577,16 +659,29 @@ Both versions support the same theme variables. Override them in your custom CSS
 
 ```css
 :host {
+  --insytful-font-family: system-ui, -apple-system, sans-serif;
   --insytful-text-default: #333333;
   --insytful-text-muted: #6c6c6c;
+  --insytful-disclaimer-text: var(--insytful-text-muted);
+  --insytful-typing-indicator-text: var(--insytful-text-muted);
   --insytful-brand-primary: #195491;
+  --insytful-modal-bg: #ffffff;
+  --insytful-modal-max-width: 784px;
   --insytful-btn-prompt-bg-default: #e2eefa;
+  --insytful-btn-prompt-radius: 12px;
+  --insytful-input-card-bg: #ffffff;
+  --insytful-input-card-radius: 16px;
+  --insytful-input-card-border: var(--insytful-semantic-search-field-stroke);
   --insytful-btn-icon-search-bg-default: #2e3339;
+  --insytful-btn-close-bg-hover: #f2f2f2;
+  --insytful-btn-close-icon: var(--insytful-text-default);
   --insytful-semantic-search-field-focus: #35d2c5;
   --insytful-search-transition-duration: 200ms;
   --insytful-z-index: 999;
 }
 ```
+
+See the [full CSS Custom Properties](#css-custom-properties) section above for the complete token list with defaults.
 
 ## Browser Support
 

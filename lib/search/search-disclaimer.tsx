@@ -11,7 +11,7 @@ export function SearchDisclaimer({
 }: SearchDisclaimerProps) {
   return (
     <div
-      className={`insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--insytful-text-muted)] ${className ?? ""}`}
+      className={`insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--insytful-disclaimer-text)] ${className ?? ""}`}
     >
       {children}
     </div>

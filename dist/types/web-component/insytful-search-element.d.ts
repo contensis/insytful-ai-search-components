@@ -106,6 +106,24 @@ export declare class InsytfulSearchElement extends HTMLElement {
      */
     private _switchMode;
     /**
+     * One-time parse of `<insytful-close>` child elements.
+     * If present, renders a close button into `closeButtonContainer` that
+     * lives inside `dialogOuter` — so the focus trap picks it up automatically.
+     *
+     * The child's innerHTML (sanitised via DOMPurify) becomes the button's
+     * content; an empty `<insytful-close></insytful-close>` renders a default
+     * ✕ icon. Light-DOM children are hidden (`display: none`) since the render
+     * happens in the shadow DOM.
+     */
+    private _parseCloseButton;
+    /**
+     * Apply `order:` CSS to the suggestions container and input-card wrapper
+     * based on the `suggestions-position` attribute. Uses inline styles directly
+     * rather than CSS sibling rules so the behaviour is independent of where the
+     * elements sit in `dialogInner`'s flex children.
+     */
+    private _applySuggestionsPosition;
+    /**
      * Navigate for classic mode — same-origin validated.
      * Mirrors search-modes.tsx classicOnSend logic.
      */

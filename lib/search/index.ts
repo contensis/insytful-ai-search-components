@@ -6,6 +6,9 @@ export { useSearchContext, useModeContext, useModeContextSafe } from "./context"
 export { SearchTrigger as Trigger } from "./search-trigger";
 export type { SearchTriggerProps } from "./search-trigger";
 
+export { SearchClose as Close } from "./search-close";
+export type { SearchCloseProps } from "./search-close";
+
 export { SearchTitle as Title } from "./search-title";
 export type { SearchTitleProps } from "./search-title";
 
