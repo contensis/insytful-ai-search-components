@@ -28,3 +28,4 @@ dist-ssr
 # Tooling artifacts
 .context/
 docs/plans/
+docs/brainstorms/

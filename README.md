@@ -107,14 +107,14 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
 To integrate with an existing search form (e.g. a dropdown with search types), open the dialog programmatically:
 
 ```cshtml
-<div class="sys_textBoxWithRedirect">
+<div>
   <input type="text" name="search" aria-label="Search" placeholder="Search..." id="search" />
-  <select id="searchType" name="searchType" aria-label="Select a type of search">
+  <select id="search-type" name="search-type" aria-label="Select a type of search">
+    <option value="all">All</option>
     <option value="courses">Courses</option>
-    <option value="all">Whole site</option>
     <option value="ai">AI Search</option>
   </select>
-  <input type="image" id="topSearchButton" alt="Search" src="/_design/img/search-button-50px-2017.png" />
+  <input type="image" id="search-btn" alt="Search" src="..." />
 </div>
 
 <insytful-search
@@ -147,13 +147,13 @@ To integrate with an existing search form (e.g. a dropdown with search types), o
             $('#search').keypress(function(e) {
                 if (e.which == 13) {
                     e.preventDefault();
-                    $('#topSearchButton').trigger('click');
+                    $('#search-btn').trigger('click');
                 }
             });
 
-            $('#topSearchButton').on('click', function(e) {
+            $('#search-btn').on('click', function(e) {
                 e.preventDefault();
-                var type = $('#searchType :selected').val();
+                var type = $('#search-type :selected').val();
                 var query = $('#search').val()
                     .replace(/[^0-9a-z\s]/gi, '')
                     .trim();
