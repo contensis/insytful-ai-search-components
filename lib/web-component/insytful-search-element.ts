@@ -670,7 +670,13 @@ export class InsytfulSearchElement extends HTMLElement {
    */
   private _autoScrollDuringStream(): void {
     const scroller = this._elements?.messagesScroll;
+    const spacer = this._elements?.scrollSpacer;
     if (!scroller) return;
+
+    // Don't auto-scroll when the spacer is expanded — this means
+    // _scrollMessageToTop is managing the viewport for a follow-up question.
+    // Scrolling to scrollHeight would overshoot into empty spacer space.
+    if (spacer && parseInt(spacer.style.height || '0', 10) > 0) return;
 
     // If user has scrolled up, don't auto-scroll
     const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 60;
