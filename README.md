@@ -21,7 +21,7 @@ Add the script to your page, then use the `<insytful-search>` element:
 <script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
 
 <insytful-search
-  api-uri="https://rag-api.insytful.com/api/v1"
+  api-uri="https://your-api.com"
   project-id="your-project"
 >
   <button slot="trigger">Search</button>
@@ -98,7 +98,7 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 
 <!-- AI search component (trigger hidden — opened programmatically) -->
 <insytful-search
-  id="aiSearch"
+  id="ai-search"
   api-uri="CurrentContext.Site.AI.Endpoint"
   project-id="CurrentContext.Site.AI.ProjectId"
   suggestions-position="below"
@@ -119,39 +119,32 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 
 ```cshtml
 @{
-    string scriptToAdd = @"
+    string custom = @"
     (function($) {
         $(function() {
-            var aiSearch = document.getElementById('aiSearch');
+            var element = document.getElementById('ai-search');
 
             $('#search').keypress(function(e) {
                 if (e.which == 13) {
                     e.preventDefault();
-                    $('#topSearchButton').trigger('click');
+                    $('#btn').trigger('click');
                 }
             });
 
-            $('#topSearchButton').on('click', function(e) {
+            $('#btn').on('click', function(e) {
                 e.preventDefault();
-                var searchType = $('#searchType :selected').val();
+                var type = $('#type :selected').val();
                 var query = $('#search')
                     .val()
                     .replace(/[^0-9a-z\s]/gi, '')
                     .replace(/\s+/gi, '+');
 
-                if (searchType === 'ai') {
-                    // Open the AI Search Dialog
-                    aiSearch.open();
-                } else if (searchType === 'courses') {
-                    // Code for Course Search ...
-                } else {
-                    // Code for Whole Site Search ...
-                }
+                if (type === 'ai') element.open();
             });
         });
     })(jQuery);
     ";
-    CurrentContext.Page.Scripts.AddInline(scriptToAdd, ScriptLocation.BodyEnd);
+    CurrentContext.Page.Scripts.AddInline(custom, ScriptLocation.BodyEnd);
 }
 ```
 
