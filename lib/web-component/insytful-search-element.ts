@@ -284,9 +284,11 @@ export class InsytfulSearchElement extends HTMLElement {
     this._setOpen(value);
   }
 
-  /** Open the dialog. */
-  open(): void {
+  /** Open the dialog, optionally sending a query immediately. */
+  open(query?: string): void {
     this._setOpen(true);
+    const trimmed = query?.trim();
+    if (trimmed) this._handleSend(trimmed);
   }
 
   /** Close the dialog. */
