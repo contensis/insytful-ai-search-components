@@ -79,6 +79,11 @@
     <div class="card">
       <h2>Usage Example</h2>
       <p>The component below is configured with dev mode enabled for mock API responses.</p>
+      <p>
+        <button class="search-trigger" onclick="document.querySelector('insytful-search').open('What products do you offer?')">
+          Open with query
+        </button>
+      </p>
     </div>
   </main>
 
@@ -91,6 +96,7 @@
     api-uri="http://rag-api.insytful.com/api/v1"
     project-id="demo"
     dev-mode
+    suggestions-position="below"
   >
     <!-- Trigger button (lives in light DOM) -->
     <button slot="trigger" class="search-trigger">
@@ -101,6 +107,12 @@
     <span slot="title">Ask our AI</span>
     <span slot="description">Get instant answers about our products and services</span>
     <span slot="disclaimer">AI responses may not always be accurate. Please verify important information.</span>
+
+    <!-- Avatar shown next to assistant messages -->
+    <img slot="avatar" src="https://placehold.co/32x32/195491/fff?text=AI" alt="" width="32" height="32" style="width:100%;height:100%;object-fit:contain;" />
+
+    <!-- Built-in close button -->
+    <insytful-close></insytful-close>
 
     <!-- Suggestion chips -->
     <insytful-suggestion>How do I get started?</insytful-suggestion>

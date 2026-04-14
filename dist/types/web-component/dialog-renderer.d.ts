@@ -69,7 +69,7 @@ export declare function renderUserMessage(content: string): HTMLLIElement;
  * Returns both the `<li>` and the content `<div>` so the caller can
  * update `contentDiv.innerHTML` as chunks arrive.
  */
-export declare function renderAssistantMessage(): {
+export declare function renderAssistantMessage(avatarHTML?: string | null): {
     li: HTMLLIElement;
     contentDiv: HTMLDivElement;
 };
@@ -77,7 +77,7 @@ export declare function renderAssistantMessage(): {
  * Create a typing indicator `<li>` with animated dots.
  * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
  */
-export declare function renderTypingIndicator(text?: string): HTMLLIElement;
+export declare function renderTypingIndicator(avatarHTML?: string | null, text?: string): HTMLLIElement;
 /**
  * Create a close-button element. Placed absolutely inside `dialogOuter`, so
  * the focus trap automatically includes it. `innerHTML` is raw markup; the

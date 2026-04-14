@@ -315,6 +315,13 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
 /* Message rendering helpers                                            */
 /* ------------------------------------------------------------------ */
 
+/** Create a wrapper div for an avatar image. */
+function createAvatarNode(avatarHTML: string, className: string): HTMLDivElement {
+  const node = el('div', {}, className);
+  node.innerHTML = avatarHTML;
+  return node;
+}
+
 /**
  * Create a user message `<li>` element.
  * Matches the React `<Message>` component styling for role === "user".
@@ -342,7 +349,7 @@ export function renderUserMessage(content: string): HTMLLIElement {
  * Returns both the `<li>` and the content `<div>` so the caller can
  * update `contentDiv.innerHTML` as chunks arrive.
  */
-export function renderAssistantMessage(): {
+export function renderAssistantMessage(avatarHTML?: string | null): {
   li: HTMLLIElement;
   contentDiv: HTMLDivElement;
 } {
@@ -350,11 +357,22 @@ export function renderAssistantMessage(): {
     'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
   );
 
+  // Desktop avatar — visible md+ as a sibling of the content bubble
+  if (avatarHTML) {
+    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-message-logo flex-shrink-0 hidden md:block'));
+  }
+
   const outer = el('div', {},
     'insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] text-[var(--insytful-text-default)]',
   );
   outer.style.overflowWrap = 'anywhere';
   outer.style.wordBreak = 'break-word';
+
+  // Mobile avatar — floated left so first paragraph wraps around it,
+  // subsequent content flows full-width once past the avatar height.
+  if (avatarHTML) {
+    outer.appendChild(createAvatarNode(avatarHTML, 'insytful-search-message-logo flex-shrink-0 md:hidden float-left mr-[12px]'));
+  }
 
   const contentDiv = el('div', {},
     'insytful-search-message-content',
@@ -370,10 +388,14 @@ export function renderAssistantMessage(): {
  * Create a typing indicator `<li>` with animated dots.
  * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
  */
-export function renderTypingIndicator(text = 'Searching'): HTMLLIElement {
+export function renderTypingIndicator(avatarHTML?: string | null, text = 'Searching'): HTMLLIElement {
   const li = el('li', {},
     'insytful-search-typing-indicator flex items-start gap-[12px] md:gap-[24px]',
   );
+
+  if (avatarHTML) {
+    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-typing-indicator-logo flex-shrink-0'));
+  }
 
   const txt = el('div', {},
     'insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-typing-indicator-text)]',

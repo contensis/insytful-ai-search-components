@@ -29,6 +29,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _suggestions;
     private _modes;
     private _currentMode;
+    private _avatarHTML;
     /**
      * Override the default markdown renderer.
      * The callback receives raw markdown and must return an HTML string.
@@ -105,6 +106,13 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Switch the active mode and re-render tabs.
      */
     private _switchMode;
+    /**
+     * One-time parse of an avatar element from the light DOM.
+     * Accepts `<img slot="avatar" ...>` or any element with `slot="avatar"`.
+     * The element's outer HTML is sanitised and stored for cloning into
+     * each assistant message. The light-DOM element is hidden.
+     */
+    private _parseAvatar;
     /**
      * One-time parse of `<insytful-close>` child elements.
      * If present, renders a close button into `closeButtonContainer` that

@@ -74,6 +74,9 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
   <!-- Built-in close button (top-right). Empty content uses the default ✕ icon. -->
   <insytful-close></insytful-close>
 
+  <!-- Avatar shown next to AI responses -->
+  <img slot="avatar" src="/_design/img/logo-icon.png" alt="" width="32" height="32" style="width:100%;height:100%;object-fit:contain;" />
+
   <insytful-suggestion>How do I apply?</insytful-suggestion>
   <insytful-suggestion>What courses do you offer?</insytful-suggestion>
   <insytful-suggestion>Contact us</insytful-suggestion>
@@ -109,6 +112,9 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 
   <!-- Built-in close button — focus-trap-aware, no light-DOM hacks needed -->
   <insytful-close></insytful-close>
+
+  <!-- Avatar next to AI responses -->
+  <img slot="avatar" src="/_design/img/logo-icon.png" alt="" width="32" height="32" style="width:100%;height:100%;object-fit:contain;" />
 
   <insytful-suggestion>How do I apply?</insytful-suggestion>
   <insytful-suggestion>What courses do you offer?</insytful-suggestion>
@@ -167,7 +173,8 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 | `title` | Heading text for the empty state |
 | `description` | Subheading text below the title |
 | `disclaimer` | Footer text (e.g. AI accuracy warning) |
-| `logo` | Logo image shown in the dialog header |
+| `logo` | Logo image shown in the dialog empty state |
+| `avatar` | Image shown next to AI responses and the typing indicator |
 
 ### Child Elements
 
@@ -180,12 +187,17 @@ To integrate with an existing search form (e.g. a dropdown with search types), y
 <insytful-close></insytful-close>
 <insytful-close aria-label="Dismiss search">Cancel</insytful-close>
 
+<!-- Avatar shown next to AI responses in the chat -->
+<img slot="avatar" src="/logo.png" alt="" width="32" height="32" />
+
 <!-- Mode switching (AI search + classic URL navigation) -->
 <insytful-mode name="ai">AI Search</insytful-mode>
 <insytful-mode name="classic" path="/search?q=">Classic Search</insytful-mode>
 ```
 
 The close button lives **inside the dialog** (so the focus trap includes it) and is styled via the `--insytful-btn-close-*` CSS variables.
+
+The avatar appears next to each AI response and the typing indicator. On desktop it sits as a column beside the message; on mobile it floats left so the first line of text wraps beside it and subsequent content flows full width. Style the wrapper via `.insytful-search-message-logo` in your theme CSS. This is the Web Component equivalent of the React `logo` prop on `Root`.
 
 ### JavaScript API
 
@@ -219,8 +231,6 @@ If your site has a sticky header, add `data-insytful-modal-offset` so the dialog
 ```html
 <header data-insytful-modal-offset>Your sticky header</header>
 ```
-
----
 
 ---
 

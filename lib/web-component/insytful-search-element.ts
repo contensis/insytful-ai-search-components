@@ -89,6 +89,9 @@ export class InsytfulSearchElement extends HTMLElement {
   private _modes: Array<{ name: string; path?: string; label: string }> = [];
   private _currentMode = 'ai';
 
+  /* Avatar — cloned into each assistant message */
+  private _avatarHTML: string | null = null;
+
   /**
    * Override the default markdown renderer.
    * The callback receives raw markdown and must return an HTML string.
@@ -195,6 +198,9 @@ export class InsytfulSearchElement extends HTMLElement {
     // --- Parse mode children from light DOM ---
     this._parseModes();
 
+    // --- Parse avatar from light DOM ---
+    this._parseAvatar();
+
     // --- Parse close-button children from light DOM ---
     this._parseCloseButton();
 
@@ -288,7 +294,7 @@ export class InsytfulSearchElement extends HTMLElement {
   open(query?: string): void {
     this._setOpen(true);
     const trimmed = query?.trim();
-    if (trimmed) this._handleSend(trimmed);
+    if (trimmed) setTimeout(() => this._handleSend(trimmed), 0);
   }
 
   /** Close the dialog. */
@@ -545,7 +551,7 @@ export class InsytfulSearchElement extends HTMLElement {
     // --- Show typing indicator ---
     this._isLoading = true;
     sendButton.disabled = true;
-    this._currentTypingIndicator = renderTypingIndicator();
+    this._currentTypingIndicator = renderTypingIndicator(this._avatarHTML);
     messagesList.appendChild(this._currentTypingIndicator);
 
     // --- Stream response ---
@@ -553,7 +559,7 @@ export class InsytfulSearchElement extends HTMLElement {
     this._streamingContent = '';
 
     // Create assistant message shell
-    const { li: assistantLi, contentDiv } = renderAssistantMessage();
+    const { li: assistantLi, contentDiv } = renderAssistantMessage(this._avatarHTML);
     // contentDiv is used locally for streaming updates below
 
     try {
@@ -936,6 +942,29 @@ export class InsytfulSearchElement extends HTMLElement {
       composed: true,
       detail: { mode },
     }));
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Private — avatar                                                    */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * One-time parse of an avatar element from the light DOM.
+   * Accepts `<img slot="avatar" ...>` or any element with `slot="avatar"`.
+   * The element's outer HTML is sanitised and stored for cloning into
+   * each assistant message. The light-DOM element is hidden.
+   */
+  private _parseAvatar(): void {
+    if (this._avatarHTML !== null) return;
+
+    const source = this.querySelector('[slot="avatar"]') as HTMLElement | null;
+    if (!source) return;
+
+    const sanitised = DOMPurify.sanitize(source.outerHTML);
+    if (sanitised) {
+      source.style.display = 'none';
+      this._avatarHTML = sanitised;
+    }
   }
 
   /* ---------------------------------------------------------------- */
