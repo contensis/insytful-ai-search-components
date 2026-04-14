@@ -42,8 +42,8 @@ export declare class InsytfulSearchElement extends HTMLElement {
     get isOpen(): boolean;
     /** Programmatically open or close the dialog. */
     set isOpen(value: boolean);
-    /** Open the dialog. */
-    open(): void;
+    /** Open the dialog, optionally sending a query immediately. */
+    open(query?: string): void;
     /** Close the dialog. */
     close(): void;
     /** Toggle the dialog open/closed. */
