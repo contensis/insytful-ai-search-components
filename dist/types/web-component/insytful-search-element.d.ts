@@ -106,6 +106,8 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Switch the active mode and re-render tabs.
      */
     private _switchMode;
+    /** Show the input gradient in AI mode with no messages, hide otherwise. */
+    private _updateInputGradient;
     /**
      * One-time parse of an avatar element from the light DOM.
      * Accepts `<img slot="avatar" ...>` or any element with `slot="avatar"`.

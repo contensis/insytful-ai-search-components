@@ -1,4 +1,4 @@
-import p, { createContext as Oe, useState as Y, useRef as D, useEffect as H, useCallback as ke, useMemo as ee, useContext as ge, forwardRef as We } from "react";
+import p, { createContext as Oe, useState as Y, useRef as _, useEffect as H, useCallback as ke, useMemo as ee, useContext as he, forwardRef as We } from "react";
 import St from "react-dom";
 var Te = function() {
   return Te = Object.assign || function(t) {
@@ -18,17 +18,17 @@ var Te = function() {
     n && n.remove();
   })();
 }, Nt = function(t) {
-  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, f = t.scriptProps, d = f === void 0 ? {} : f, h = d.nonce, l = h === void 0 ? "" : h, g = d.defer, N = g !== void 0 && g, v = d.async, C = v !== void 0 && v, F = d.id, P = F === void 0 ? "" : F, $ = d.appendTo, I = P || "google-recaptcha-v3";
+  var e = t.render, r = t.onLoadCallbackName, n = t.language, o = t.onLoad, i = t.useRecaptchaNet, a = t.useEnterprise, f = t.scriptProps, d = f === void 0 ? {} : f, m = d.nonce, l = m === void 0 ? "" : m, h = d.defer, N = h !== void 0 && h, v = d.async, C = v !== void 0 && v, F = d.id, P = F === void 0 ? "" : F, I = d.appendTo, $ = P || "google-recaptcha-v3";
   if ((function(b) {
     return !!document.querySelector("#" + b);
-  })(I)) o();
+  })($)) o();
   else {
     var M = (function(b) {
       return "https://www." + (b.useRecaptchaNet ? "recaptcha.net" : "google.com") + "/recaptcha/" + (b.useEnterprise ? "enterprise.js" : "api.js");
     })({ useEnterprise: a, useRecaptchaNet: i }), w = document.createElement("script");
-    w.id = I, w.src = M + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), l && (w.nonce = l), w.defer = !!N, w.async = !!C, w.onload = o, ($ === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(w);
+    w.id = $, w.src = M + "?render=" + e + (e === "explicit" ? "&onload=" + r : "") + (n ? "&hl=" + n : ""), l && (w.nonce = l), w.defer = !!N, w.async = !!C, w.onload = o, (I === "body" ? document.body : document.getElementsByTagName("head")[0]).appendChild(w);
   }
-}, Le = function(t) {
+}, De = function(t) {
   typeof process < "u" && process.env && process.env.NODE_ENV !== "production" || console.warn(t);
 };
 (function(t) {
@@ -39,10 +39,10 @@ var ze = Oe({ executeRecaptcha: function() {
 } });
 ze.Consumer;
 function Ct(t) {
-  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, f = t.language, d = t.container, h = t.children, l = Y(null), g = l[0], N = l[1], v = D(e), C = JSON.stringify(a), F = JSON.stringify(d?.parameters);
+  var e = t.reCaptchaKey, r = t.useEnterprise, n = r !== void 0 && r, o = t.useRecaptchaNet, i = o !== void 0 && o, a = t.scriptProps, f = t.language, d = t.container, m = t.children, l = Y(null), h = l[0], N = l[1], v = _(e), C = JSON.stringify(a), F = JSON.stringify(d?.parameters);
   H((function() {
     if (e) {
-      var I = a?.id || "google-recaptcha-v3", M = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
+      var $ = a?.id || "google-recaptcha-v3", M = a?.onLoadCallbackName || "onRecaptchaLoadCallback";
       return window[M] = function() {
         var w = n ? window.grecaptcha.enterprise : window.grecaptcha, b = Te({ badge: "inline", size: "invisible", sitekey: e }, d?.parameters || {});
         v.current = w.render(d?.element, b);
@@ -52,35 +52,35 @@ function Ct(t) {
           w.ready((function() {
             N(w);
           }));
-        } else Le("<GoogleRecaptchaProvider /> " + Re.SCRIPT_NOT_AVAILABLE);
+        } else De("<GoogleRecaptchaProvider /> " + Re.SCRIPT_NOT_AVAILABLE);
       } }), function() {
-        Et(I, d?.element);
+        Et($, d?.element);
       };
     }
-    Le("<GoogleReCaptchaProvider /> recaptcha key not provided");
+    De("<GoogleReCaptchaProvider /> recaptcha key not provided");
   }), [n, i, C, F, f, e, d?.element]);
-  var P = ke((function(I) {
-    if (!g || !g.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
-    return g.execute(v.current, { action: I });
-  }), [g, v]), $ = ee((function() {
-    return { executeRecaptcha: g ? P : void 0, container: d?.element };
-  }), [P, g, d?.element]);
-  return p.createElement(ze.Provider, { value: $ }, h);
+  var P = ke((function($) {
+    if (!h || !h.execute) throw new Error("<GoogleReCaptchaProvider /> Google Recaptcha has not been loaded");
+    return h.execute(v.current, { action: $ });
+  }), [h, v]), I = ee((function() {
+    return { executeRecaptcha: h ? P : void 0, container: d?.element };
+  }), [P, h, d?.element]);
+  return p.createElement(ze.Provider, { value: I }, m);
 }
 var Tt = function() {
-  return ge(ze);
+  return he(ze);
 };
 function Xe(t, e) {
   return t(e = { exports: {} }, e.exports), e.exports;
 }
-var z = typeof Symbol == "function" && Symbol.for, Fe = z ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = z ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, se = z ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, le = z ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ce = z ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, ue = z ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, de = z ? /* @__PURE__ */ Symbol.for("react.context") : 60110, $e = z ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, be = z ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, fe = z ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, pe = z ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, Rt = z ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, he = z ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, me = z ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, Ft = z ? /* @__PURE__ */ Symbol.for("react.block") : 60121, Pt = z ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, $t = z ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, It = z ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+var z = typeof Symbol == "function" && Symbol.for, Fe = z ? /* @__PURE__ */ Symbol.for("react.element") : 60103, Pe = z ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, se = z ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, le = z ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, ce = z ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, ue = z ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, de = z ? /* @__PURE__ */ Symbol.for("react.context") : 60110, Ie = z ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, be = z ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, fe = z ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, pe = z ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, Rt = z ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, me = z ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, ge = z ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, Ft = z ? /* @__PURE__ */ Symbol.for("react.block") : 60121, Pt = z ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, It = z ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, $t = z ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
 function V(t) {
   if (typeof t == "object" && t !== null) {
     var e = t.$$typeof;
     switch (e) {
       case Fe:
         switch (t = t.type) {
-          case $e:
+          case Ie:
           case be:
           case se:
           case ce:
@@ -91,8 +91,8 @@ function V(t) {
             switch (t = t && t.$$typeof) {
               case de:
               case fe:
+              case ge:
               case me:
-              case he:
               case ue:
                 return t;
               default:
@@ -104,12 +104,12 @@ function V(t) {
     }
   }
 }
-function _e(t) {
+function Le(t) {
   return V(t) === be;
 }
-var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvider: ue, Element: Fe, ForwardRef: fe, Fragment: se, Lazy: me, Memo: he, Portal: Pe, Profiler: ce, StrictMode: le, Suspense: pe, isAsyncMode: function(t) {
-  return _e(t) || V(t) === $e;
-}, isConcurrentMode: _e, isContextConsumer: function(t) {
+var At = { AsyncMode: Ie, ConcurrentMode: be, ContextConsumer: de, ContextProvider: ue, Element: Fe, ForwardRef: fe, Fragment: se, Lazy: ge, Memo: me, Portal: Pe, Profiler: ce, StrictMode: le, Suspense: pe, isAsyncMode: function(t) {
+  return Le(t) || V(t) === Ie;
+}, isConcurrentMode: Le, isContextConsumer: function(t) {
   return V(t) === de;
 }, isContextProvider: function(t) {
   return V(t) === ue;
@@ -120,9 +120,9 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
 }, isFragment: function(t) {
   return V(t) === se;
 }, isLazy: function(t) {
-  return V(t) === me;
+  return V(t) === ge;
 }, isMemo: function(t) {
-  return V(t) === he;
+  return V(t) === me;
 }, isPortal: function(t) {
   return V(t) === Pe;
 }, isProfiler: function(t) {
@@ -132,10 +132,10 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
 }, isSuspense: function(t) {
   return V(t) === pe;
 }, isValidElementType: function(t) {
-  return typeof t == "string" || typeof t == "function" || t === se || t === be || t === ce || t === le || t === pe || t === Rt || typeof t == "object" && t !== null && (t.$$typeof === me || t.$$typeof === he || t.$$typeof === ue || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === Pt || t.$$typeof === $t || t.$$typeof === It || t.$$typeof === Ft);
+  return typeof t == "string" || typeof t == "function" || t === se || t === be || t === ce || t === le || t === pe || t === Rt || typeof t == "object" && t !== null && (t.$$typeof === ge || t.$$typeof === me || t.$$typeof === ue || t.$$typeof === de || t.$$typeof === fe || t.$$typeof === Pt || t.$$typeof === It || t.$$typeof === $t || t.$$typeof === Ft);
 }, typeOf: V }, R = Xe((function(t, e) {
   process.env.NODE_ENV !== "production" && (function() {
-    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, f = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, h = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, l = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, g = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, N = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, v = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, C = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, F = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, P = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, $ = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, I = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, M = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, w = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+    var r = typeof Symbol == "function" && Symbol.for, n = r ? /* @__PURE__ */ Symbol.for("react.element") : 60103, o = r ? /* @__PURE__ */ Symbol.for("react.portal") : 60106, i = r ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107, a = r ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108, f = r ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114, d = r ? /* @__PURE__ */ Symbol.for("react.provider") : 60109, m = r ? /* @__PURE__ */ Symbol.for("react.context") : 60110, l = r ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111, h = r ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111, N = r ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112, v = r ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113, C = r ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120, F = r ? /* @__PURE__ */ Symbol.for("react.memo") : 60115, P = r ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116, I = r ? /* @__PURE__ */ Symbol.for("react.block") : 60121, $ = r ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117, M = r ? /* @__PURE__ */ Symbol.for("react.responder") : 60118, w = r ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
     function b(u) {
       if (typeof u == "object" && u !== null) {
         var k = u.$$typeof;
@@ -144,7 +144,7 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
             var A = u.type;
             switch (A) {
               case l:
-              case g:
+              case h:
               case i:
               case f:
               case a:
@@ -153,7 +153,7 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
               default:
                 var K = A && A.$$typeof;
                 switch (K) {
-                  case h:
+                  case m:
                   case N:
                   case P:
                   case F:
@@ -168,14 +168,14 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
         }
       }
     }
-    var O = l, j = g, L = h, _ = d, q = n, B = N, G = i, T = P, s = F, c = o, m = f, S = a, x = v, E = !1;
+    var O = l, j = h, D = m, L = d, q = n, B = N, G = i, T = P, s = F, c = o, g = f, S = a, x = v, E = !1;
     function y(u) {
-      return b(u) === g;
+      return b(u) === h;
     }
-    e.AsyncMode = O, e.ConcurrentMode = j, e.ContextConsumer = L, e.ContextProvider = _, e.Element = q, e.ForwardRef = B, e.Fragment = G, e.Lazy = T, e.Memo = s, e.Portal = c, e.Profiler = m, e.StrictMode = S, e.Suspense = x, e.isAsyncMode = function(u) {
+    e.AsyncMode = O, e.ConcurrentMode = j, e.ContextConsumer = D, e.ContextProvider = L, e.Element = q, e.ForwardRef = B, e.Fragment = G, e.Lazy = T, e.Memo = s, e.Portal = c, e.Profiler = g, e.StrictMode = S, e.Suspense = x, e.isAsyncMode = function(u) {
       return E || (E = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), y(u) || b(u) === l;
     }, e.isConcurrentMode = y, e.isContextConsumer = function(u) {
-      return b(u) === h;
+      return b(u) === m;
     }, e.isContextProvider = function(u) {
       return b(u) === d;
     }, e.isElement = function(u) {
@@ -197,7 +197,7 @@ var At = { AsyncMode: $e, ConcurrentMode: be, ContextConsumer: de, ContextProvid
     }, e.isSuspense = function(u) {
       return b(u) === v;
     }, e.isValidElementType = function(u) {
-      return typeof u == "string" || typeof u == "function" || u === i || u === g || u === f || u === a || u === v || u === C || typeof u == "object" && u !== null && (u.$$typeof === P || u.$$typeof === F || u.$$typeof === d || u.$$typeof === h || u.$$typeof === N || u.$$typeof === I || u.$$typeof === M || u.$$typeof === w || u.$$typeof === $);
+      return typeof u == "string" || typeof u == "function" || u === i || u === h || u === f || u === a || u === v || u === C || typeof u == "object" && u !== null && (u.$$typeof === P || u.$$typeof === F || u.$$typeof === d || u.$$typeof === m || u.$$typeof === N || u.$$typeof === $ || u.$$typeof === M || u.$$typeof === w || u.$$typeof === I);
     }, e.typeOf = b;
   })();
 })), Be = (R.AsyncMode, R.ConcurrentMode, R.ContextConsumer, R.ContextProvider, R.Element, R.ForwardRef, R.Fragment, R.Lazy, R.Memo, R.Portal, R.Profiler, R.StrictMode, R.Suspense, R.isAsyncMode, R.isConcurrentMode, R.isContextConsumer, R.isContextProvider, R.isElement, R.isForwardRef, R.isFragment, R.isLazy, R.isMemo, R.isPortal, R.isProfiler, R.isStrictMode, R.isSuspense, R.isValidElementType, R.typeOf, Xe((function(t) {
@@ -208,36 +208,36 @@ var Ze = Oe(null), Ot = function(t) {
   var e = t.children, r = t.baseUrl, n = r === void 0 ? "http://rag-api.insytful.com/api/v1" : r, o = t.config, i = t.recaptchaSiteKey, a = p.createElement(Ze.Provider, { value: { config: o, baseUrl: n, recaptchaSiteKey: i } }, e);
   return i ? p.createElement(Ct, { reCaptchaKey: i, scriptProps: { async: !0, defer: !0, appendTo: "head" } }, a) : a;
 }, zt = function() {
-  var t = ge(Ze);
+  var t = he(Ze);
   if (!t) throw new Error("useRAGConfig must be used within RAGProvider");
   return t;
 };
 function jt(t, e, r, n) {
   return new (r || (r = Promise))(function(o, i) {
-    function a(h) {
+    function a(m) {
       try {
-        d(n.next(h));
+        d(n.next(m));
       } catch (l) {
         i(l);
       }
     }
-    function f(h) {
+    function f(m) {
       try {
-        d(n.throw(h));
+        d(n.throw(m));
       } catch (l) {
         i(l);
       }
     }
-    function d(h) {
+    function d(m) {
       var l;
-      h.done ? o(h.value) : (l = h.value, l instanceof r ? l : new r(function(g) {
-        g(l);
+      m.done ? o(m.value) : (l = m.value, l instanceof r ? l : new r(function(h) {
+        h(l);
       })).then(a, f);
     }
     d((n = n.apply(t, [])).next());
   });
 }
-function Dt(t, e) {
+function _t(t, e) {
   var r, n, o, i = { label: 0, sent: function() {
     if (1 & o[0]) throw o[1];
     return o[1];
@@ -246,7 +246,7 @@ function Dt(t, e) {
     return this;
   }), a;
   function f(d) {
-    return function(h) {
+    return function(m) {
       return (function(l) {
         if (r) throw new TypeError("Generator is already executing.");
         for (; a && (a = 0, l[0] && (i = 0)), i; ) try {
@@ -285,14 +285,14 @@ function Dt(t, e) {
               continue;
           }
           l = e.call(t, i);
-        } catch (g) {
-          l = [6, g], n = 0;
+        } catch (h) {
+          l = [6, h], n = 0;
         } finally {
           r = o = 0;
         }
         if (5 & l[0]) throw l[1];
         return { value: l[0] ? l[1] : void 0, done: !0 };
-      })([d, h]);
+      })([d, m]);
     };
   }
 }
@@ -300,11 +300,11 @@ function ne(t, e, r) {
   if (r || arguments.length === 2) for (var n, o = 0, i = e.length; o < i; o++) !n && o in e || (n || (n = Array.prototype.slice.call(e, 0, o)), n[o] = e[o]);
   return t.concat(n || Array.prototype.slice.call(e));
 }
-var Lt = function(t, e, r) {
-  var n = Y([]), o = n[0], i = n[1], a = Y(!1), f = a[0], d = a[1], h = Y(null), l = h[0], g = h[1], N = ke(function(v, C) {
+var Dt = function(t, e, r) {
+  var n = Y([]), o = n[0], i = n[1], a = Y(!1), f = a[0], d = a[1], m = Y(null), l = m[0], h = m[1], N = ke(function(v, C) {
     return jt(void 0, void 0, void 0, function() {
-      var F, P, $, I, M, w, b, O, j, L, _, q, B, G, T, s, c, m, S, x, E, y;
-      return Dt(this, function(u) {
+      var F, P, I, $, M, w, b, O, j, D, L, q, B, G, T, s, c, g, S, x, E, y;
+      return _t(this, function(u) {
         switch (u.label) {
           case 0:
             if (F = null, !r) return [3, 5];
@@ -320,9 +320,9 @@ var Lt = function(t, e, r) {
           case 5:
             i(function(k) {
               return ne(ne([], k, !0), [{ role: "user", content: v }], !1);
-            }), d(!0), g(null), u.label = 6;
+            }), d(!0), h(null), u.label = 6;
           case 6:
-            return u.trys.push([6, 17, , 18]), $ = new URLSearchParams({ question: v, config: t, history: String(!0), stream: String(!0) }), C && C?.length >= 1 && $.set("sections", C.join(",")), I = $.toString(), M = new Headers({ Accept: "text/event-stream" }), F && M.append("X-Recaptcha-Token", F), (w = localStorage.getItem("rag-session-id")) && M.append("X-Session-Id", w), [4, fetch("".concat(e, "/query-collection?").concat(I), { method: "GET", headers: M })];
+            return u.trys.push([6, 17, , 18]), I = new URLSearchParams({ question: v, config: t, history: String(!0), stream: String(!0) }), C && C?.length >= 1 && I.set("sections", C.join(",")), $ = I.toString(), M = new Headers({ Accept: "text/event-stream" }), F && M.append("X-Recaptcha-Token", F), (w = localStorage.getItem("rag-session-id")) && M.append("X-Session-Id", w), [4, fetch("".concat(e, "/query-collection?").concat($), { method: "GET", headers: M })];
           case 7:
             if ((b = u.sent()).ok) return [3, 13];
             O = "Request failed (".concat(b.status, ")"), u.label = 8;
@@ -338,17 +338,17 @@ var Lt = function(t, e, r) {
             throw new Error(O);
           case 13:
             if (b.headers.has("X-Session-Id") && localStorage.setItem("rag-session-id", b.headers.get("X-Session-Id")), !b.body) throw new Error("No response body");
-            L = b.body.getReader(), _ = new TextDecoder("utf-8"), q = "", B = "", i(function(k) {
+            D = b.body.getReader(), L = new TextDecoder("utf-8"), q = "", B = "", i(function(k) {
               return ne(ne([], k, !0), [{ role: "assistant", content: "" }], !1);
             }), u.label = 14;
           case 14:
-            return [4, L.read()];
+            return [4, D.read()];
           case 15:
             if (G = u.sent(), T = G.value, G.done) return [3, 16];
-            for (q += _.decode(T, { stream: !0 }), s = q.split(`
+            for (q += L.decode(T, { stream: !0 }), s = q.split(`
 
-`), q = s.pop() || "", c = 0, m = s; c < m.length; c++) {
-              if ((S = m[c]).startsWith("event: done")) return d(!1), [2];
+`), q = s.pop() || "", c = 0, g = s; c < g.length; c++) {
+              if ((S = g[c]).startsWith("event: done")) return d(!1), [2];
               if (S.startsWith("data:")) try {
                 (x = JSON.parse(S.replace("data: ", ""))) != null && x.content && (B += x.content, i(function(k) {
                   var A = ne([], k, !0);
@@ -362,7 +362,7 @@ var Lt = function(t, e, r) {
           case 16:
             return d(!1), [3, 18];
           case 17:
-            return E = u.sent(), console.error(E), g(E.message || "Something went wrong"), d(!1), [3, 18];
+            return E = u.sent(), console.error(E), h(E.message || "Something went wrong"), d(!1), [3, 18];
           case 18:
             return [2];
         }
@@ -370,14 +370,14 @@ var Lt = function(t, e, r) {
     });
   }, [t, e]);
   return { messages: o, loading: f, error: l, ask: N };
-}, _t = function() {
+}, Lt = function() {
   var t = zt(), e = t.config, r = t.baseUrl, n = t.recaptchaSiteKey;
-  return Lt(e, r, n);
+  return Dt(e, r, n);
 };
 function Je(t) {
   const e = Oe(null);
   function r(o) {
-    const i = ge(e);
+    const i = he(e);
     if (i === null)
       throw new Error(
         `<${o}> must be used within <${t}>`
@@ -385,7 +385,7 @@ function Je(t) {
     return i;
   }
   function n() {
-    return ge(e);
+    return he(e);
   }
   return [e.Provider, r, n];
 }
@@ -395,22 +395,22 @@ function tt({
   defaultProp: e,
   onChange: r
 }) {
-  const n = t !== void 0, [o, i] = Y(e), a = n ? t : o, f = D(r);
+  const n = t !== void 0, [o, i] = Y(e), a = n ? t : o, f = _(r);
   H(() => {
     f.current = r;
   }, [r]);
-  const d = D(a);
+  const d = _(a);
   H(() => {
     d.current = a;
   }, [a]);
-  const h = ke(
+  const m = ke(
     (l) => {
-      const g = typeof l == "function" ? l(d.current) : l;
-      n || i(g), f.current?.(g);
+      const h = typeof l == "function" ? l(d.current) : l;
+      n || i(h), f.current?.(h);
     },
     [n]
   );
-  return [a, h];
+  return [a, m];
 }
 var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] *)", "textarea:not([inert]):not([inert] *)", "a[href]:not([inert]):not([inert] *)", "button:not([inert]):not([inert] *)", "[tabindex]:not(slot):not([inert]):not([inert] *)", "audio[controls]:not([inert]):not([inert] *)", "video[controls]:not([inert]):not([inert] *)", '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', "details>summary:first-of-type:not([inert]):not([inert] *)", "details:not([inert]):not([inert] *)"], ve = /* @__PURE__ */ rt.join(","), nt = typeof Element > "u", te = nt ? function() {
 } : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector, ye = !nt && Element.prototype.getRootNode ? function(t) {
@@ -438,18 +438,18 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
     var a = i.shift();
     if (!we(a, !1))
       if (a.tagName === "SLOT") {
-        var f = a.assignedElements(), d = f.length ? f : a.children, h = xe(d, !0, n);
-        n.flatten ? o.push.apply(o, h) : o.push({
+        var f = a.assignedElements(), d = f.length ? f : a.children, m = xe(d, !0, n);
+        n.flatten ? o.push.apply(o, m) : o.push({
           scopeParent: a,
-          candidates: h
+          candidates: m
         });
       } else {
         var l = te.call(a, ve);
         l && n.filter(a) && (r || !e.includes(a)) && o.push(a);
-        var g = a.shadowRoot || // check for an undisclosed shadow
-        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), N = !we(g, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
-        if (g && N) {
-          var v = xe(g === !0 ? a.children : g.children, !0, n);
+        var h = a.shadowRoot || // check for an undisclosed shadow
+        typeof n.getShadowRoot == "function" && n.getShadowRoot(a), N = !we(h, !1) && (!n.shadowRootFilter || n.shadowRootFilter(a));
+        if (h && N) {
+          var v = xe(h === !0 ? a.children : h.children, !0, n);
           n.flatten ? o.push.apply(o, v) : o.push({
             scopeParent: a,
             candidates: v
@@ -508,8 +508,8 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   if (n && n !== e) {
     var a, f, d;
     for (i = !!((a = o) !== null && a !== void 0 && (f = a.ownerDocument) !== null && f !== void 0 && f.contains(o) || e != null && (d = e.ownerDocument) !== null && d !== void 0 && d.contains(e)); !i && o; ) {
-      var h, l, g;
-      n = ye(o), o = (h = n) === null || h === void 0 ? void 0 : h.host, i = !!((l = o) !== null && l !== void 0 && (g = l.ownerDocument) !== null && g !== void 0 && g.contains(o));
+      var m, l, h;
+      n = ye(o), o = (m = n) === null || m === void 0 ? void 0 : m.host, i = !!((l = o) !== null && l !== void 0 && (h = l.ownerDocument) !== null && h !== void 0 && h.contains(o));
     }
   }
   return i;
@@ -544,10 +544,10 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   n === "full-native" || n === "legacy-full") {
     if (typeof o == "function") {
       for (var d = e; e; ) {
-        var h = e.parentElement, l = ye(e);
-        if (h && !h.shadowRoot && o(h) === !0)
+        var m = e.parentElement, l = ye(e);
+        if (m && !m.shadowRoot && o(m) === !0)
           return qe(e);
-        e.assignedSlot ? e = e.assignedSlot : !h && l !== e.ownerDocument ? e = l.host : e = h;
+        e.assignedSlot ? e = e.assignedSlot : !m && l !== e.ownerDocument ? e = l.host : e = m;
       }
       e = d;
     }
@@ -575,7 +575,7 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
 }, Se = function(e, r) {
   return !(r.disabled || Vt(r) || Jt(r, e) || // For a details element with a summary, the summary element gets the focus
   Gt(r) || Qt(r));
-}, Ie = function(e, r) {
+}, $e = function(e, r) {
   return !(Xt(r) || Q(r) < 0 || !Se(e, r));
 }, er = function(e) {
   var r = parseInt(e.getAttribute("tabindex"), 10);
@@ -583,13 +583,13 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
 }, st = function(e) {
   var r = [], n = [];
   return e.forEach(function(o, i) {
-    var a = !!o.scopeParent, f = a ? o.scopeParent : o, d = qt(f, a), h = a ? st(o.candidates) : f;
-    d === 0 ? a ? r.push.apply(r, h) : r.push(f) : n.push({
+    var a = !!o.scopeParent, f = a ? o.scopeParent : o, d = qt(f, a), m = a ? st(o.candidates) : f;
+    d === 0 ? a ? r.push.apply(r, m) : r.push(f) : n.push({
       documentOrder: i,
       tabIndex: d,
       item: o,
       isScope: a,
-      content: h
+      content: m
     });
   }), n.sort(Kt).reduce(function(o, i) {
     return i.isScope ? o.push.apply(o, i.content) : o.push(i.content), o;
@@ -598,11 +598,11 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
   r = r || {};
   var n;
   return r.getShadowRoot ? n = xe([e], r.includeContainer, {
-    filter: Ie.bind(null, r),
+    filter: $e.bind(null, r),
     flatten: !1,
     getShadowRoot: r.getShadowRoot,
     shadowRootFilter: er
-  }) : n = at(e, r.includeContainer, Ie.bind(null, r)), st(n);
+  }) : n = at(e, r.includeContainer, $e.bind(null, r)), st(n);
 }, rr = function(e, r) {
   r = r || {};
   var n;
@@ -614,7 +614,7 @@ var rt = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] 
 }, re = function(e, r) {
   if (r = r || {}, !e)
     throw new Error("No node provided");
-  return te.call(e, ve) === !1 ? !1 : Ie(r, e);
+  return te.call(e, ve) === !1 ? !1 : $e(r, e);
 }, nr = /* @__PURE__ */ rt.concat("iframe:not([inert]):not([inert] *)").join(","), Ce = function(e, r) {
   if (r = r || {}, !e)
     throw new Error("No node provided");
@@ -770,7 +770,7 @@ var X = {
   return e?.key === "Tab" || e?.keyCode === 9;
 }, pr = function(e) {
   return oe(e) && !e.shiftKey;
-}, hr = function(e) {
+}, mr = function(e) {
   return oe(e) && e.shiftKey;
 }, Ue = function(e) {
   return setTimeout(e, 0);
@@ -780,14 +780,14 @@ var X = {
   return typeof e == "function" ? e.apply(void 0, n) : e;
 }, ie = function(e) {
   return e.target.shadowRoot && typeof e.composedPath == "function" ? e.composedPath()[0] : e.target;
-}, mr = [], gr = function(e, r) {
-  var n = r?.document || document, o = r?.trapStack || mr, i = Ge({
+}, gr = [], hr = function(e, r) {
+  var n = r?.document || document, o = r?.trapStack || gr, i = Ge({
     returnFocusOnDeactivate: !0,
     escapeDeactivates: !0,
     delayInitialFocus: !0,
     isolateSubtrees: !1,
     isKeyForward: pr,
-    isKeyBackward: hr
+    isKeyBackward: mr
   }, r), a = {
     // containers given to createFocusTrap()
     /** @type {Array<HTMLElement>} */
@@ -832,18 +832,18 @@ var X = {
     delayInitialFocusTimer: void 0,
     // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
     recentNavEvent: void 0
-  }, f, d = function(s, c, m) {
-    return s && s[c] !== void 0 ? s[c] : i[m || c];
-  }, h = function(s, c) {
-    var m = typeof c?.composedPath == "function" ? c.composedPath() : void 0;
+  }, f, d = function(s, c, g) {
+    return s && s[c] !== void 0 ? s[c] : i[g || c];
+  }, m = function(s, c) {
+    var g = typeof c?.composedPath == "function" ? c.composedPath() : void 0;
     return a.containerGroups.findIndex(function(S) {
       var x = S.container, E = S.tabbableNodes;
-      return x.contains(s) || m?.includes(x) || E.find(function(y) {
+      return x.contains(s) || g?.includes(x) || E.find(function(y) {
         return y === s;
       });
     });
   }, l = function(s) {
-    var c = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, m = c.hasFallback, S = m === void 0 ? !1 : m, x = c.params, E = x === void 0 ? [] : x, y = i[s];
+    var c = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, g = c.hasFallback, S = g === void 0 ? !1 : g, x = c.params, E = x === void 0 ? [] : x, y = i[s];
     if (typeof y == "function" && (y = y.apply(void 0, lr(E))), y === !0 && (y = void 0), !y) {
       if (y === void 0 || y === !1)
         return y;
@@ -860,18 +860,18 @@ var X = {
         throw new Error("`".concat(s, "` as selector refers to no known node"));
     }
     return u;
-  }, g = function() {
+  }, h = function() {
     var s = l("initialFocus", {
       hasFallback: !0
     });
     if (s === !1)
       return !1;
     if (s === void 0 || s && !Ce(s, i.tabbableOptions))
-      if (h(n.activeElement) >= 0)
+      if (m(n.activeElement) >= 0)
         s = n.activeElement;
       else {
-        var c = a.tabbableGroups[0], m = c && c.firstTabbableNode;
-        s = m || l("fallbackFocus");
+        var c = a.tabbableGroups[0], g = c && c.firstTabbableNode;
+        s = g || l("fallbackFocus");
       }
     else s === null && (s = l("fallbackFocus"));
     if (!s)
@@ -879,9 +879,9 @@ var X = {
     return s;
   }, N = function() {
     if (a.containerGroups = a.containers.map(function(s) {
-      var c = tr(s, i.tabbableOptions), m = rr(s, i.tabbableOptions), S = c.length > 0 ? c[0] : void 0, x = c.length > 0 ? c[c.length - 1] : void 0, E = m.find(function(k) {
+      var c = tr(s, i.tabbableOptions), g = rr(s, i.tabbableOptions), S = c.length > 0 ? c[0] : void 0, x = c.length > 0 ? c[c.length - 1] : void 0, E = g.find(function(k) {
         return re(k);
-      }), y = m.slice().reverse().find(function(k) {
+      }), y = g.slice().reverse().find(function(k) {
         return re(k);
       }), u = !!c.find(function(k) {
         return Q(k) > 0;
@@ -889,7 +889,7 @@ var X = {
       return {
         container: s,
         tabbableNodes: c,
-        focusableNodes: m,
+        focusableNodes: g,
         /** True if at least one node with positive `tabindex` was found in this container. */
         posTabIndexesFound: u,
         /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
@@ -917,9 +917,9 @@ var X = {
          */
         nextTabbableNode: function(A) {
           var K = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, U = c.indexOf(A);
-          return U < 0 ? K ? m.slice(m.indexOf(A) + 1).find(function(J) {
+          return U < 0 ? K ? g.slice(g.indexOf(A) + 1).find(function(J) {
             return re(J);
-          }) : m.slice(0, m.indexOf(A)).reverse().find(function(J) {
+          }) : g.slice(0, g.indexOf(A)).reverse().find(function(J) {
             return re(J);
           }) : c[U + (K ? 1 : -1)];
         }
@@ -939,7 +939,7 @@ var X = {
   }, C = function(s) {
     if (s !== !1 && s !== v(document)) {
       if (!s || !s.focus) {
-        C(g());
+        C(h());
         return;
       }
       s.focus({
@@ -952,11 +952,11 @@ var X = {
     });
     return c || (c === !1 ? !1 : s);
   }, P = function(s) {
-    var c = s.target, m = s.event, S = s.isBackward, x = S === void 0 ? !1 : S;
-    c = c || ie(m), N();
+    var c = s.target, g = s.event, S = s.isBackward, x = S === void 0 ? !1 : S;
+    c = c || ie(g), N();
     var E = null;
     if (a.tabbableGroups.length > 0) {
-      var y = h(c, m), u = y >= 0 ? a.containerGroups[y] : void 0;
+      var y = m(c, g), u = y >= 0 ? a.containerGroups[y] : void 0;
       if (y < 0)
         x ? E = a.tabbableGroups[a.tabbableGroups.length - 1].lastTabbableNode : E = a.tabbableGroups[0].firstTabbableNode;
       else if (x) {
@@ -967,7 +967,7 @@ var X = {
         if (k < 0 && (u.container === c || Ce(c, i.tabbableOptions) && !re(c, i.tabbableOptions) && !u.nextTabbableNode(c, !1)) && (k = y), k >= 0) {
           var A = k === 0 ? a.tabbableGroups.length - 1 : k - 1, K = a.tabbableGroups[A];
           E = Q(c) >= 0 ? K.lastTabbableNode : K.lastDomTabbableNode;
-        } else oe(m) || (E = u.nextTabbableNode(c, !1));
+        } else oe(g) || (E = u.nextTabbableNode(c, !1));
       } else {
         var U = a.tabbableGroups.findIndex(function(Ee) {
           var Ne = Ee.lastTabbableNode;
@@ -976,14 +976,14 @@ var X = {
         if (U < 0 && (u.container === c || Ce(c, i.tabbableOptions) && !re(c, i.tabbableOptions) && !u.nextTabbableNode(c)) && (U = y), U >= 0) {
           var J = U === a.tabbableGroups.length - 1 ? 0 : U + 1, Z = a.tabbableGroups[J];
           E = Q(c) >= 0 ? Z.firstTabbableNode : Z.firstDomTabbableNode;
-        } else oe(m) || (E = u.nextTabbableNode(c));
+        } else oe(g) || (E = u.nextTabbableNode(c));
       }
     } else
       E = l("fallbackFocus");
     return E;
-  }, $ = function(s) {
+  }, I = function(s) {
     var c = ie(s);
-    if (!(h(c, s) >= 0)) {
+    if (!(m(c, s) >= 0)) {
       if (ae(i.clickOutsideDeactivates, s)) {
         f.deactivate({
           // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
@@ -998,16 +998,16 @@ var X = {
       }
       ae(i.allowOutsideClick, s) || s.preventDefault();
     }
-  }, I = function(s) {
-    var c = ie(s), m = h(c, s) >= 0;
-    if (m || c instanceof Document)
-      m && (a.mostRecentlyFocusedNode = c);
+  }, $ = function(s) {
+    var c = ie(s), g = m(c, s) >= 0;
+    if (g || c instanceof Document)
+      g && (a.mostRecentlyFocusedNode = c);
     else {
       s.stopImmediatePropagation();
       var S, x = !0;
       if (a.mostRecentlyFocusedNode)
         if (Q(a.mostRecentlyFocusedNode) > 0) {
-          var E = h(a.mostRecentlyFocusedNode), y = a.containerGroups[E].tabbableNodes;
+          var E = m(a.mostRecentlyFocusedNode), y = a.containerGroups[E].tabbableNodes;
           if (y.length > 0) {
             var u = y.findIndex(function(k) {
               return k === a.mostRecentlyFocusedNode;
@@ -1027,32 +1027,32 @@ var X = {
         //  outside the trap causing the focus escape we're trying to fix)
         target: a.mostRecentlyFocusedNode,
         isBackward: i.isKeyBackward(a.recentNavEvent)
-      })), C(S || a.mostRecentlyFocusedNode || g());
+      })), C(S || a.mostRecentlyFocusedNode || h());
     }
     a.recentNavEvent = void 0;
   }, M = function(s) {
     var c = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !1;
     a.recentNavEvent = s;
-    var m = P({
+    var g = P({
       event: s,
       isBackward: c
     });
-    m && (oe(s) && s.preventDefault(), C(m));
+    g && (oe(s) && s.preventDefault(), C(g));
   }, w = function(s) {
     (i.isKeyForward(s) || i.isKeyBackward(s)) && M(s, i.isKeyBackward(s));
   }, b = function(s) {
     fr(s) && ae(i.escapeDeactivates, s) !== !1 && (s.preventDefault(), f.deactivate());
   }, O = function(s) {
     var c = ie(s);
-    h(c, s) >= 0 || ae(i.clickOutsideDeactivates, s) || ae(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
+    m(c, s) >= 0 || ae(i.clickOutsideDeactivates, s) || ae(i.allowOutsideClick, s) || (s.preventDefault(), s.stopImmediatePropagation());
   }, j = function() {
     if (a.active)
       return X.activateTrap(o, f), a.delayInitialFocusTimer = i.delayInitialFocus ? Ue(function() {
-        C(g());
-      }) : C(g()), n.addEventListener("focusin", I, !0), n.addEventListener("mousedown", $, {
+        C(h());
+      }) : C(h()), n.addEventListener("focusin", $, !0), n.addEventListener("mousedown", I, {
         capture: !0,
         passive: !1
-      }), n.addEventListener("touchstart", $, {
+      }), n.addEventListener("touchstart", I, {
         capture: !0,
         passive: !1
       }), n.addEventListener("click", O, {
@@ -1062,9 +1062,9 @@ var X = {
         capture: !0,
         passive: !1
       }), n.addEventListener("keydown", b), f;
-  }, L = function(s) {
+  }, D = function(s) {
     a.active && !a.paused && f._setSubtreeIsolation(!1), a.adjacentElements.clear(), a.alreadySilent.clear();
-    var c = /* @__PURE__ */ new Set(), m = /* @__PURE__ */ new Set(), S = Ke(s), x;
+    var c = /* @__PURE__ */ new Set(), g = /* @__PURE__ */ new Set(), S = Ke(s), x;
     try {
       for (S.s(); !(x = S.n()).done; ) {
         var E = x.value;
@@ -1077,7 +1077,7 @@ var X = {
           try {
             for (K.s(); !(U = K.n()).done; ) {
               var J = U.value;
-              m.add(J);
+              g.add(J);
             }
           } catch (Z) {
             K.e(Z);
@@ -1093,19 +1093,19 @@ var X = {
       S.f();
     }
     c.forEach(function(Z) {
-      m.delete(Z);
-    }), a.adjacentElements = m;
-  }, _ = function() {
+      g.delete(Z);
+    }), a.adjacentElements = g;
+  }, L = function() {
     if (a.active)
-      return n.removeEventListener("focusin", I, !0), n.removeEventListener("mousedown", $, !0), n.removeEventListener("touchstart", $, !0), n.removeEventListener("click", O, !0), n.removeEventListener("keydown", w, !0), n.removeEventListener("keydown", b), f;
+      return n.removeEventListener("focusin", $, !0), n.removeEventListener("mousedown", I, !0), n.removeEventListener("touchstart", I, !0), n.removeEventListener("click", O, !0), n.removeEventListener("keydown", w, !0), n.removeEventListener("keydown", b), f;
   }, q = function(s) {
-    var c = s.some(function(m) {
-      var S = Array.from(m.removedNodes);
+    var c = s.some(function(g) {
+      var S = Array.from(g.removedNodes);
       return S.some(function(x) {
         return x === a.mostRecentlyFocusedNode;
       });
     });
-    c && C(g());
+    c && C(h());
   }, B = typeof window < "u" && "MutationObserver" in window ? new MutationObserver(q) : void 0, G = function() {
     B && (B.disconnect(), a.active && !a.paused && a.containers.map(function(s) {
       B.observe(s, {
@@ -1124,7 +1124,7 @@ var X = {
     activate: function(s) {
       if (a.active)
         return this;
-      var c = d(s, "onActivate"), m = d(s, "onPostActivate"), S = d(s, "checkCanFocusTrap"), x = X.getActiveTrap(o), E = !1;
+      var c = d(s, "onActivate"), g = d(s, "onPostActivate"), S = d(s, "checkCanFocusTrap"), x = X.getActiveTrap(o), E = !1;
       if (x && !x.paused) {
         var y;
         (y = x._setSubtreeIsolation) === null || y === void 0 || y.call(x, !1), E = !0;
@@ -1132,7 +1132,7 @@ var X = {
       try {
         S || N(), a.active = !0, a.paused = !1, a.nodeFocusedBeforeActivation = v(n), c?.();
         var u = function() {
-          S && N(), j(), G(), i.isolateSubtrees && f._setSubtreeIsolation(!0), m?.();
+          S && N(), j(), G(), i.isolateSubtrees && f._setSubtreeIsolation(!0), g?.();
         };
         if (S)
           return S(a.containers.concat()).then(u, u), this;
@@ -1154,9 +1154,9 @@ var X = {
         onPostDeactivate: i.onPostDeactivate,
         checkCanReturnFocus: i.checkCanReturnFocus
       }, s);
-      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || f._setSubtreeIsolation(!1), a.alreadySilent.clear(), _(), a.active = !1, a.paused = !1, G(), X.deactivateTrap(o, f);
-      var m = d(c, "onDeactivate"), S = d(c, "onPostDeactivate"), x = d(c, "checkCanReturnFocus"), E = d(c, "returnFocus", "returnFocusOnDeactivate");
-      m?.();
+      clearTimeout(a.delayInitialFocusTimer), a.delayInitialFocusTimer = void 0, a.paused || f._setSubtreeIsolation(!1), a.alreadySilent.clear(), L(), a.active = !1, a.paused = !1, G(), X.deactivateTrap(o, f);
+      var g = d(c, "onDeactivate"), S = d(c, "onPostDeactivate"), x = d(c, "checkCanReturnFocus"), E = d(c, "returnFocus", "returnFocusOnDeactivate");
+      g?.();
       var y = function() {
         Ue(function() {
           E && C(F(a.nodeFocusedBeforeActivation)), S?.();
@@ -1172,9 +1172,9 @@ var X = {
     },
     updateContainerElements: function(s) {
       var c = [].concat(s).filter(Boolean);
-      return a.containers = c.map(function(m) {
-        return typeof m == "string" ? n.querySelector(m) : m;
-      }), i.isolateSubtrees && L(a.containers), a.active && (N(), i.isolateSubtrees && !a.paused && f._setSubtreeIsolation(!0)), G(), this;
+      return a.containers = c.map(function(g) {
+        return typeof g == "string" ? n.querySelector(g) : g;
+      }), i.isolateSubtrees && D(a.containers), a.active && (N(), i.isolateSubtrees && !a.paused && f._setSubtreeIsolation(!0)), G(), this;
     }
   }, Object.defineProperties(f, {
     _isManuallyPaused: {
@@ -1187,8 +1187,8 @@ var X = {
         if (a.paused === s)
           return this;
         if (a.paused = s, s) {
-          var m = d(c, "onPause"), S = d(c, "onPostPause");
-          m?.(), _(), G(), f._setSubtreeIsolation(!1), S?.();
+          var g = d(c, "onPause"), S = d(c, "onPostPause");
+          g?.(), L(), G(), f._setSubtreeIsolation(!1), S?.();
         } else {
           var x = d(c, "onUnpause"), E = d(c, "onPostUnpause");
           x?.(), f._setSubtreeIsolation(!0), N(), j(), G(), E?.();
@@ -1199,15 +1199,15 @@ var X = {
     _setSubtreeIsolation: {
       value: function(s) {
         i.isolateSubtrees && a.adjacentElements.forEach(function(c) {
-          var m;
-          s ? i.isolateSubtrees === "aria-hidden" ? ((c.ariaHidden === "true" || ((m = c.getAttribute("aria-hidden")) === null || m === void 0 ? void 0 : m.toLowerCase()) === "true") && a.alreadySilent.add(c), c.setAttribute("aria-hidden", "true")) : ((c.inert || c.hasAttribute("inert")) && a.alreadySilent.add(c), c.setAttribute("inert", !0)) : a.alreadySilent.has(c) || (i.isolateSubtrees === "aria-hidden" ? c.removeAttribute("aria-hidden") : c.removeAttribute("inert"));
+          var g;
+          s ? i.isolateSubtrees === "aria-hidden" ? ((c.ariaHidden === "true" || ((g = c.getAttribute("aria-hidden")) === null || g === void 0 ? void 0 : g.toLowerCase()) === "true") && a.alreadySilent.add(c), c.setAttribute("aria-hidden", "true")) : ((c.inert || c.hasAttribute("inert")) && a.alreadySilent.add(c), c.setAttribute("inert", !0)) : a.alreadySilent.has(c) || (i.isolateSubtrees === "aria-hidden" ? c.removeAttribute("aria-hidden") : c.removeAttribute("inert"));
         });
       }
     }
   }), f.updateContainerElements(e), f;
 };
 function br(t, e) {
-  const r = D(null), n = D(null), o = D(null), i = D(t), a = D(e);
+  const r = _(null), n = _(null), o = _(null), i = _(t), a = _(e);
   return H(() => {
     i.current = t;
   }, [t]), H(() => {
@@ -1215,7 +1215,7 @@ function br(t, e) {
   }, [e]), H(() => {
     if (!e || !r.current) return;
     n.current = document.activeElement;
-    const f = gr(r.current, {
+    const f = hr(r.current, {
       fallbackFocus: r.current,
       initialFocus: () => r.current?.querySelector("textarea") ?? r.current,
       escapeDeactivates: !0,
@@ -1368,11 +1368,11 @@ const vr = (t) => {
       ], a = new ReadableStream({
         async start(f) {
           const d = new TextEncoder();
-          for (const h of i) {
-            const l = `data: ${JSON.stringify({ content: h })}
+          for (const m of i) {
+            const l = `data: ${JSON.stringify({ content: m })}
 
 `;
-            f.enqueue(d.encode(l)), await new Promise((g) => setTimeout(g, 30));
+            f.enqueue(d.encode(l)), await new Promise((h) => setTimeout(h, 30));
           }
           f.enqueue(d.encode(`event: done
 data: {}
@@ -1394,7 +1394,7 @@ data: {}
     if (!(!t || !e))
       return vr(e);
   }, [t, e]);
-}, wr = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\\!container{width:100%!important}.container{width:100%}@media(min-width:640px){.\\!container{max-width:640px!important}.container{max-width:640px}}@media(min-width:768px){.\\!container{max-width:768px!important}.container{max-width:768px}}@media(min-width:1024px){.\\!container{max-width:1024px!important}.container{max-width:1024px}}@media(min-width:1280px){.\\!container{max-width:1280px!important}.container{max-width:1280px}}@media(min-width:1536px){.\\!container{max-width:1536px!important}.container{max-width:1536px}}.pointer-events-none{pointer-events:none}.visible{visibility:visible}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-2px\\]{inset:-2px}.bottom-0{bottom:0}.left-0{left:0}.left-1\\/2{left:50%}.left-\\[16px\\]{left:16px}.right-0{right:0}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[14px\\]{top:14px}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.float-left{float:left}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mr-\\[12px\\]{margin-right:12px}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.block{display:block}.inline{display:inline}.flex{display:flex}.inline-flex{display:inline-flex}.hidden{display:none}.h-\\[40px\\]{height:40px}.h-\\[42px\\]{height:42px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[48px\\]{min-height:48px}.min-h-\\[500px\\]{min-height:500px}.min-h-\\[62px\\]{min-height:62px}.w-\\[40px\\]{width:40px}.w-\\[42px\\]{width:42px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[42px\\]{min-width:42px}.max-w-\\[var\\(--insytful-modal-max-width\\)\\]{max-width:var(--insytful-modal-max-width)}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\\/2{--tw-translate-x: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes slide-to-bounce-animate{0%,40%{transform:translateY(0)}50%{transform:translateY(8px)}60%{transform:translateY(-2px)}70%,to{transform:translateY(0)}}.animate-slide-to-bounce-animate{animation:slide-to-bounce-animate 2s ease-in-out infinite}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[2px\\]{gap:2px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.self-stretch{align-self:stretch}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.rounded-\\[16px\\]{border-radius:16px}.rounded-\\[4px\\]{border-radius:4px}.rounded-\\[8px\\]{border-radius:8px}.rounded-\\[var\\(--insytful-btn-prompt-radius\\)\\]{border-radius:var(--insytful-btn-prompt-radius)}.rounded-\\[var\\(--insytful-input-card-radius\\)\\]{border-radius:var(--insytful-input-card-radius)}.rounded-full{border-radius:9999px}.rounded-none{border-radius:0}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-0{border-width:0px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-input-card-border\\)\\]{border-color:var(--insytful-input-card-border)}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-\\[\\#F2EFF8\\]{--tw-bg-opacity: 1;background-color:rgb(242 239 248 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-\\[var\\(--insytful-input-card-bg\\)\\]{background-color:var(--insytful-input-card-bg)}.bg-\\[var\\(--insytful-modal-bg\\)\\]{background-color:var(--insytful-modal-bg)}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-4{padding:1rem}.p-\\[16px\\]{padding:16px}.p-\\[4px\\]{padding:4px}.p-\\[8px\\]{padding:8px}.px-4{padding-left:1rem;padding-right:1rem}.px-\\[12px\\]{padding-left:12px;padding-right:12px}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[4px\\]{padding-top:4px;padding-bottom:4px}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pb-0{padding-bottom:0}.pb-\\[12px\\]{padding-bottom:12px}.pb-\\[24px\\]{padding-bottom:24px}.pl-\\[32px\\]{padding-left:32px}.pl-\\[48px\\]{padding-left:48px}.pr-\\[48px\\]{padding-right:48px}.pr-\\[64px\\]{padding-right:64px}.pt-\\[12px\\]{padding-top:12px}.pt-\\[32px\\]{padding-top:32px}.text-center{text-align:center}.text-\\[13px\\]{font-size:13px}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[24px\\]{font-size:24px}.text-sm{font-size:.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-disclaimer-text\\)\\]{color:var(--insytful-disclaimer-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-typing-indicator-text\\)\\]{color:var(--insytful-typing-indicator-text)}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.opacity-30{opacity:.3}.shadow{--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-\\[0_2px_8px_0_rgba\\(0\\,0\\,0\\,0\\.15\\)\\]{--tw-shadow: 0 2px 8px 0 rgba(0,0,0,.15);--tw-shadow-colored: 0 2px 8px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.ring{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.blur-\\[7px\\]{--tw-blur: blur(7px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}.\\[-webkit-mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_90\\%\\,rgba\\(0\\,0\\,0\\,0\\.3\\)_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 90%,rgba(0,0,0,.3) 100%)}.\\[mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_90\\%\\,rgba\\(0\\,0\\,0\\,0\\.3\\)_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 90%,rgba(0,0,0,.3) 100%);mask-image:linear-gradient(to bottom,#000 0% 90%,#0000004d)}:host,:root,.insytful-root{font-size:16px;line-height:1.5;font-family:var(--insytful-font-family);--insytful-font-family: system-ui, -apple-system, sans-serif;--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-modal-bg: #ffffff;--insytful-modal-max-width: 784px;--insytful-modal-radius: 0px;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-prompt-radius: 12px;--insytful-btn-prompt-focus: var(--insytful-semantic-search-field-focus);--insytful-input-card-bg: #ffffff;--insytful-input-card-radius: 16px;--insytful-input-card-border: var(--insytful-semantic-search-field-stroke);--insytful-input-card-border-width: 1px;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-btn-close-bg: transparent;--insytful-btn-close-bg-hover: #f2f2f2;--insytful-btn-close-icon: var(--insytful-text-default);--insytful-btn-close-size: 40px;--insytful-typing-indicator-text: var(--insytful-text-muted);--insytful-disclaimer-text: var(--insytful-text-muted);--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5;--insytful-search-transition-duration: .2s;--insytful-search-transition-easing: ease}.insytful-search-close{position:absolute;top:12px;right:12px;width:var(--insytful-btn-close-size);height:var(--insytful-btn-close-size);display:flex;align-items:center;justify-content:center;background:var(--insytful-btn-close-bg);color:var(--insytful-btn-close-icon);border:none;border-radius:9999px;cursor:pointer;padding:0;z-index:10}.insytful-search-close:hover{background:var(--insytful-btn-close-bg-hover)}.insytful-search-close:focus{outline:2px solid var(--insytful-semantic-search-field-focus);outline-offset:2px}.insytful-search-close svg{width:20px;height:20px;stroke:currentColor;fill:none}.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position=below])>.insytful-search-message-input{order:1}.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position=below])>.insytful-search-disclaimer-inner{order:3}@media(prefers-reduced-motion:reduce){:host,:root,.insytful-root{--insytful-search-transition-duration: 0ms}.insytful-search-dialog-outer,.insytful-search-mode-transition{transition-duration:0ms!important}.insytful-search-messages-icon{animation:none!important}}@keyframes dot-animate{0%{content:"."}25%{content:".."}50%{content:"..."}75%{content:"."}to{content:".."}}.after\\:animate-dot-animate:after{content:var(--tw-content);animation:dot-animate 1.5s steps(1,end) infinite}.focus-within\\:ring-2:focus-within{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus-within\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus-within{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus-within\\:ring-offset-2:focus-within{--tw-ring-offset-width: 2px}.focus-within\\:ring-offset-white:focus-within{--tw-ring-offset-color: #fff}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#333\\]:hover{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\\:ring-2:focus{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus\\:ring-inset:focus{--tw-ring-inset: inset}.focus\\:ring-\\[var\\(--insytful-btn-prompt-focus\\)\\]:focus{--tw-ring-color: var(--insytful-btn-prompt-focus)}.focus\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus\\:ring-offset-2:focus{--tw-ring-offset-width: 2px}.focus\\:ring-offset-white:focus{--tw-ring-offset-color: #fff}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:hidden{display:none}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[24px\\]{gap:24px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[14px\\]{font-size:14px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}';
+}, wr = `*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\\!container{width:100%!important}.container{width:100%}@media(min-width:640px){.\\!container{max-width:640px!important}.container{max-width:640px}}@media(min-width:768px){.\\!container{max-width:768px!important}.container{max-width:768px}}@media(min-width:1024px){.\\!container{max-width:1024px!important}.container{max-width:1024px}}@media(min-width:1280px){.\\!container{max-width:1280px!important}.container{max-width:1280px}}@media(min-width:1536px){.\\!container{max-width:1536px!important}.container{max-width:1536px}}.pointer-events-none{pointer-events:none}.visible{visibility:visible}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-\\[-2px\\]{inset:-2px}.bottom-0{bottom:0}.left-0{left:0}.left-1\\/2{left:50%}.left-\\[16px\\]{left:16px}.right-0{right:0}.right-\\[8px\\]{right:8px}.top-1\\/2{top:50%}.top-\\[14px\\]{top:14px}.top-\\[18px\\]{top:18px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.float-left{float:left}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mr-\\[12px\\]{margin-right:12px}.mt-2{margin-top:.5rem}.mt-6{margin-top:1.5rem}.mt-\\[8px\\]{margin-top:8px}.mt-auto{margin-top:auto}.block{display:block}.inline{display:inline}.flex{display:flex}.inline-flex{display:inline-flex}.hidden{display:none}.h-\\[40px\\]{height:40px}.h-\\[42px\\]{height:42px}.h-\\[88px\\]{height:88px}.h-full{height:100%}.max-h-\\[240px\\]{max-height:240px}.min-h-0{min-height:0px}.min-h-\\[48px\\]{min-height:48px}.min-h-\\[500px\\]{min-height:500px}.min-h-\\[62px\\]{min-height:62px}.min-h-screen{min-height:100vh}.w-\\[40px\\]{width:40px}.w-\\[42px\\]{width:42px}.w-full{width:100%}.min-w-0{min-width:0px}.min-w-\\[42px\\]{min-width:42px}.max-w-\\[1920px\\]{max-width:1920px}.max-w-\\[784px\\]{max-width:784px}.max-w-\\[var\\(--insytful-modal-max-width\\)\\]{max-width:var(--insytful-modal-max-width)}.max-w-full{max-width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\\/2{--tw-translate-x: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\\/2{--tw-translate-y: -50%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes slide-to-bounce-animate{0%,40%{transform:translateY(0)}50%{transform:translateY(8px)}60%{transform:translateY(-2px)}70%,to{transform:translateY(0)}}.animate-slide-to-bounce-animate{animation:slide-to-bounce-animate 2s ease-in-out infinite}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.resize{resize:both}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.list-none{list-style-type:none}.flex-row{flex-direction:row}.flex-row-reverse{flex-direction:row-reverse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-\\[10px\\]{gap:10px}.gap-\\[12px\\]{gap:12px}.gap-\\[16px\\]{gap:16px}.gap-\\[24px\\]{gap:24px}.gap-\\[2px\\]{gap:2px}.gap-\\[32px\\]{gap:32px}.gap-\\[8px\\]{gap:8px}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.self-stretch{align-self:stretch}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-\\[12px\\]{border-radius:12px}.rounded-\\[16px\\]{border-radius:16px}.rounded-\\[4px\\]{border-radius:4px}.rounded-\\[8px\\]{border-radius:8px}.rounded-\\[var\\(--insytful-btn-prompt-radius\\)\\]{border-radius:var(--insytful-btn-prompt-radius)}.rounded-\\[var\\(--insytful-input-card-radius\\)\\]{border-radius:var(--insytful-input-card-radius)}.rounded-full{border-radius:9999px}.rounded-none{border-radius:0}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-0{border-width:0px}.border-2{border-width:2px}.border-l-\\[4px\\]{border-left-width:4px}.border-none{border-style:none}.border-\\[\\#acbeef\\]{--tw-border-opacity: 1;border-color:rgb(172 190 239 / var(--tw-border-opacity, 1))}.border-\\[var\\(--insytful-callout-error-border\\)\\]{border-color:var(--insytful-callout-error-border)}.border-\\[var\\(--insytful-input-card-border\\)\\]{border-color:var(--insytful-input-card-border)}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-\\[\\#F2EFF8\\]{--tw-bg-opacity: 1;background-color:rgb(242 239 248 / var(--tw-bg-opacity, 1))}.bg-\\[var\\(--insytful-btn-icon-search-bg-default\\)\\]{background-color:var(--insytful-btn-icon-search-bg-default)}.bg-\\[var\\(--insytful-btn-prompt-bg-default\\)\\]{background-color:var(--insytful-btn-prompt-bg-default)}.bg-\\[var\\(--insytful-callout-error-bg\\)\\]{background-color:var(--insytful-callout-error-bg)}.bg-\\[var\\(--insytful-input-card-bg\\)\\]{background-color:var(--insytful-input-card-bg)}.bg-\\[var\\(--insytful-modal-bg\\)\\]{background-color:var(--insytful-modal-bg)}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-\\[\\#35d2c5\\]{--tw-gradient-from: #35d2c5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-\\[\\#35d2c5\\]{--tw-gradient-to: rgb(53 210 197 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #35d2c5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\\[\\#1d70b8\\]{--tw-gradient-to: #1d70b8 var(--tw-gradient-to-position)}.p-0{padding:0}.p-3{padding:.75rem}.p-4{padding:1rem}.p-\\[16px\\]{padding:16px}.p-\\[4px\\]{padding:4px}.p-\\[8px\\]{padding:8px}.px-1{padding-left:.25rem;padding-right:.25rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-\\[12px\\]{padding-left:12px;padding-right:12px}.px-\\[16px\\]{padding-left:16px;padding-right:16px}.px-\\[8px\\]{padding-left:8px;padding-right:8px}.py-0\\.5{padding-top:.125rem;padding-bottom:.125rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.py-\\[16px\\]{padding-top:16px;padding-bottom:16px}.py-\\[4px\\]{padding-top:4px;padding-bottom:4px}.py-\\[8px\\]{padding-top:8px;padding-bottom:8px}.pb-0{padding-bottom:0}.pb-3{padding-bottom:.75rem}.pb-6{padding-bottom:1.5rem}.pb-\\[12px\\]{padding-bottom:12px}.pb-\\[24px\\]{padding-bottom:24px}.pl-6{padding-left:1.5rem}.pl-\\[32px\\]{padding-left:32px}.pl-\\[48px\\]{padding-left:48px}.pr-\\[48px\\]{padding-right:48px}.pr-\\[64px\\]{padding-right:64px}.pt-3{padding-top:.75rem}.pt-\\[12px\\]{padding-top:12px}.pt-\\[32px\\]{padding-top:32px}.text-center{text-align:center}.font-\\[\\'Inter\\'\\,sans-serif\\]{font-family:Inter,sans-serif}.font-\\[\\'Source_Sans_3\\'\\,sans-serif\\]{font-family:"Source Sans 3",sans-serif}.text-\\[13px\\]{font-size:13px}.text-\\[14px\\]{font-size:14px}.text-\\[16px\\]{font-size:16px}.text-\\[24px\\]{font-size:24px}.text-\\[44px\\]{font-size:44px}.text-sm{font-size:.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-6{line-height:1.5rem}.leading-\\[24px\\]{line-height:24px}.leading-\\[32px\\]{line-height:32px}.leading-\\[52px\\]{line-height:52px}.tracking-\\[-0\\.54px\\]{letter-spacing:-.54px}.tracking-\\[-1\\.32px\\]{letter-spacing:-1.32px}.text-\\[\\#222\\]{--tw-text-opacity: 1;color:rgb(34 34 34 / var(--tw-text-opacity, 1))}.text-\\[\\#333\\]{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\\[\\#6b6b6b\\]{--tw-text-opacity: 1;color:rgb(107 107 107 / var(--tw-text-opacity, 1))}.text-\\[var\\(--insytful-btn-prompt-text\\)\\]{color:var(--insytful-btn-prompt-text)}.text-\\[var\\(--insytful-callout-error-text\\)\\]{color:var(--insytful-callout-error-text)}.text-\\[var\\(--insytful-disclaimer-text\\)\\]{color:var(--insytful-disclaimer-text)}.text-\\[var\\(--insytful-text-default\\)\\]{color:var(--insytful-text-default)}.text-\\[var\\(--insytful-typing-indicator-text\\)\\]{color:var(--insytful-typing-indicator-text)}.text-black{--tw-text-opacity: 1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.opacity-30{opacity:.3}.shadow{--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-\\[0_2px_8px_0_rgba\\(0\\,0\\,0\\,0\\.15\\)\\]{--tw-shadow: 0 2px 8px 0 rgba(0,0,0,.15);--tw-shadow-colored: 0 2px 8px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-\\[0px_24px_32px_0px_rgba\\(0\\,0\\,0\\,0\\.08\\)\\]{--tw-shadow: 0px 24px 32px 0px rgba(0,0,0,.08);--tw-shadow-colored: 0px 24px 32px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.ring{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.blur-\\[7px\\]{--tw-blur: blur(7px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}.\\[-webkit-mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_90\\%\\,rgba\\(0\\,0\\,0\\,0\\.3\\)_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 90%,rgba(0,0,0,.3) 100%)}.\\[mask-image\\:linear-gradient\\(to_bottom\\,black_0\\%\\,black_90\\%\\,rgba\\(0\\,0\\,0\\,0\\.3\\)_100\\%\\)\\]{-webkit-mask-image:linear-gradient(to bottom,black 0%,black 90%,rgba(0,0,0,.3) 100%);mask-image:linear-gradient(to bottom,#000 0% 90%,#0000004d)}:host,:root,.insytful-root{font-size:16px;line-height:1.5;font-family:var(--insytful-font-family);--insytful-font-family: system-ui, -apple-system, sans-serif;--insytful-text-default: #333333;--insytful-text-muted: #6c6c6c;--insytful-text-link-default: #1d70b8;--insytful-text-link-hover: #184b76;--insytful-brand-primary: #195491;--insytful-modal-bg: #ffffff;--insytful-modal-max-width: 784px;--insytful-modal-radius: 0px;--insytful-btn-prompt-bg-default: #e2eefa;--insytful-btn-prompt-bg-hover: #c8daec;--insytful-btn-prompt-text: #333333;--insytful-btn-prompt-radius: 12px;--insytful-btn-prompt-focus: var(--insytful-semantic-search-field-focus);--insytful-input-card-bg: #ffffff;--insytful-input-card-radius: 16px;--insytful-input-card-border: var(--insytful-semantic-search-field-stroke);--insytful-input-card-border-width: 1px;--insytful-btn-icon-search-bg-default: #2e3339;--insytful-btn-icon-search-bg-hover: #3c444d;--insytful-btn-icon-search-bg-disabled: #e7e7e7;--insytful-btn-icon-search-icon: #ffffff;--insytful-btn-close-bg: transparent;--insytful-btn-close-bg-hover: #f2f2f2;--insytful-btn-close-icon: var(--insytful-text-default);--insytful-btn-close-size: 40px;--insytful-typing-indicator-text: var(--insytful-text-muted);--insytful-disclaimer-text: var(--insytful-text-muted);--insytful-callout-error-border: #d93025;--insytful-callout-error-bg: #fce8e6;--insytful-callout-error-text: #333333;--insytful-semantic-search-field-stroke: #333333;--insytful-semantic-search-field-ai-gradient-start: #35d2c5;--insytful-semantic-search-field-ai-gradient-end: #1d70b8;--insytful-semantic-search-field-focus: #35d2c5;--insytful-search-transition-duration: .2s;--insytful-search-transition-easing: ease}.insytful-search-close{position:absolute;top:12px;right:12px;width:var(--insytful-btn-close-size);height:var(--insytful-btn-close-size);display:flex;align-items:center;justify-content:center;background:var(--insytful-btn-close-bg);color:var(--insytful-btn-close-icon);border:none;border-radius:9999px;cursor:pointer;padding:0;z-index:10}.insytful-search-close:hover{background:var(--insytful-btn-close-bg-hover)}.insytful-search-close:focus{outline:2px solid var(--insytful-semantic-search-field-focus);outline-offset:2px}.insytful-search-close svg{width:20px;height:20px;stroke:currentColor;fill:none}.insytful-search-dialog-outer:has(.insytful-search-close) .insytful-search-dialog-inner{padding-top:60px}.insytful-search-message-content h2{font-size:1.5rem;font-weight:600;line-height:2rem;color:var(--insytful-text-default);margin-top:0;margin-bottom:.75rem}.insytful-search-message-content h3{font-size:1.25rem;font-weight:600;line-height:1.75rem;color:var(--insytful-text-default);margin-top:1.25rem;margin-bottom:.5rem}.insytful-search-message-content h4{font-size:1.1rem;font-weight:600;line-height:1.5rem;color:var(--insytful-text-default);margin-top:1rem;margin-bottom:.5rem}.insytful-search-message-content p{margin-bottom:1rem;line-height:1.75;color:var(--insytful-text-default)}.insytful-search-message-content a{color:var(--insytful-text-link-default);text-decoration:underline;font-weight:500}.insytful-search-message-content a:hover{color:var(--insytful-text-link-hover);text-decoration:none}.insytful-search-message-content ul{list-style-type:disc;margin-left:1.5rem;margin-bottom:1rem}.insytful-search-message-content ol{list-style-type:decimal;margin-left:1.5rem;margin-bottom:1rem}.insytful-search-message-content li{margin-bottom:.5rem;line-height:1.6;padding-left:.25rem}.insytful-search-message-content strong{font-weight:700}.insytful-search-message-content em{font-style:italic}.insytful-search-message-content code{background-color:#f7fafc;border:1px solid #e2e8f0;border-radius:4px;padding:.125rem .375rem;font-family:monospace;font-size:.875em}.insytful-search-message-content pre{background-color:#2d3748;color:#e2e8f0;border-radius:8px;padding:1rem;overflow-x:auto;margin-bottom:1rem}.insytful-search-message-content pre code{background:transparent;border:none;color:inherit;padding:0}.insytful-search-message-content blockquote{border-left:4px solid var(--insytful-brand-primary);padding:.75rem 1rem;margin:1rem 0;font-style:italic;color:var(--insytful-text-muted);background-color:#f7fafc;border-radius:0 4px 4px 0}.insytful-search-message-content blockquote p{margin:0}.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position=below])>.insytful-search-message-input{order:1}.insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position=below])>.insytful-search-disclaimer-inner{order:3}@media(prefers-reduced-motion:reduce){:host,:root,.insytful-root{--insytful-search-transition-duration: 0ms}.insytful-search-dialog-outer,.insytful-search-mode-transition{transition-duration:0ms!important}.insytful-search-messages-icon{animation:none!important}}@keyframes dot-animate{0%{content:"."}25%{content:".."}50%{content:"..."}75%{content:"."}to{content:".."}}.after\\:animate-dot-animate:after{content:var(--tw-content);animation:dot-animate 1.5s steps(1,end) infinite}.focus-within\\:ring-2:focus-within{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus-within\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus-within{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus-within\\:ring-offset-2:focus-within{--tw-ring-offset-width: 2px}.focus-within\\:ring-offset-white:focus-within{--tw-ring-offset-color: #fff}.hover\\:bg-\\[var\\(--insytful-btn-icon-search-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-icon-search-bg-hover)}.hover\\:bg-\\[var\\(--insytful-btn-prompt-bg-hover\\)\\]:hover{background-color:var(--insytful-btn-prompt-bg-hover)}.hover\\:text-\\[\\#333\\]:hover{--tw-text-opacity: 1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.hover\\:text-blue-900:hover{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.hover\\:no-underline:hover{text-decoration-line:none}.focus\\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\\:ring-2:focus{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus\\:ring-inset:focus{--tw-ring-inset: inset}.focus\\:ring-\\[var\\(--insytful-btn-prompt-focus\\)\\]:focus{--tw-ring-color: var(--insytful-btn-prompt-focus)}.focus\\:ring-\\[var\\(--insytful-semantic-search-field-focus\\)\\]:focus{--tw-ring-color: var(--insytful-semantic-search-field-focus)}.focus\\:ring-offset-2:focus{--tw-ring-offset-width: 2px}.focus\\:ring-offset-white:focus{--tw-ring-offset-color: #fff}.disabled\\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\\:opacity-50:disabled{opacity:.5}.group:focus-within .group-focus-within\\:opacity-60{opacity:.6}@media(min-width:768px){.md\\:mt-auto{margin-top:auto}.md\\:block{display:block}.md\\:hidden{display:none}.md\\:justify-center{justify-content:center}.md\\:gap-0{gap:0px}.md\\:gap-\\[16px\\]{gap:16px}.md\\:gap-\\[24px\\]{gap:24px}.md\\:gap-\\[32px\\]{gap:32px}.md\\:px-\\[16px\\]{padding-left:16px;padding-right:16px}.md\\:py-\\[12px\\]{padding-top:12px;padding-bottom:12px}.md\\:text-\\[14px\\]{font-size:14px}.md\\:text-\\[18px\\]{font-size:18px}.md\\:text-\\[20px\\]{font-size:20px}.md\\:text-\\[56px\\]{font-size:56px}.md\\:leading-\\[32px\\]{line-height:32px}.md\\:leading-\\[64px\\]{line-height:64px}}@media(min-width:1024px){.lg\\:mx-auto{margin-left:auto;margin-right:auto}.lg\\:mt-16{margin-top:4rem}.lg\\:mt-6{margin-top:1.5rem}.lg\\:mt-auto{margin-top:auto}.lg\\:h-\\[120px\\]{height:120px}.lg\\:max-w-\\[1000px\\]{max-width:1000px}.lg\\:max-w-\\[610px\\]{max-width:610px}.lg\\:gap-10{gap:2.5rem}.lg\\:gap-4{gap:1rem}.lg\\:rounded-\\[16px\\]{border-radius:16px}.lg\\:py-\\[200px\\]{padding-top:200px;padding-bottom:200px}.lg\\:text-\\[18px\\]{font-size:18px}.lg\\:text-\\[88px\\]{font-size:88px}.lg\\:leading-\\[26px\\]{line-height:26px}.lg\\:leading-\\[96px\\]{line-height:96px}.lg\\:tracking-\\[-0\\.72px\\]{letter-spacing:-.72px}.lg\\:tracking-\\[-2\\.64px\\]{letter-spacing:-2.64px}}`;
 if (typeof window < "u")
   try {
     localStorage.removeItem("rag-session-id");
@@ -1415,13 +1415,13 @@ function ct({
   renderMarkdown: a,
   logo: f,
   isDevMode: d = !1,
-  offsets: h
+  offsets: m
 }) {
-  const [l, g] = tt({
+  const [l, h] = tt({
     prop: r,
     defaultProp: n,
     onChange: o
-  }), N = Me("insytful-search-heading"), v = Me("insytful-search-description"), C = ee(() => e, [e.config, e.baseUrl]), F = ee(() => h, [h?.top, h?.left, h?.right]);
+  }), N = Me("insytful-search-heading"), v = Me("insytful-search-description"), C = ee(() => e, [e.config, e.baseUrl]), F = ee(() => m, [m?.top, m?.left, m?.right]);
   return /* @__PURE__ */ p.createElement(
     Ot,
     {
@@ -1433,7 +1433,7 @@ function ct({
       Sr,
       {
         open: l,
-        setOpen: g,
+        setOpen: h,
         titleId: N,
         descriptionId: v,
         options: C,
@@ -1458,35 +1458,35 @@ function Sr({
   theme: a,
   renderMarkdown: f,
   logo: d,
-  isDevMode: h,
+  isDevMode: m,
   offsets: l
 }) {
-  const { messages: g, loading: N, error: v, ask: C } = _t();
-  yr(h, i.baseUrl ?? "");
-  const F = D(""), P = D(""), $ = D(0);
+  const { messages: h, loading: N, error: v, ask: C } = Lt();
+  yr(m, i.baseUrl ?? "");
+  const F = _(""), P = _(""), I = _(0);
   H(() => {
     if (!(typeof window > "u")) {
       if (e) {
-        $.current = window.scrollY, F.current = document.body.style.overflow, P.current = document.body.style.paddingRight;
+        I.current = window.scrollY, F.current = document.body.style.overflow, P.current = document.body.style.paddingRight;
         const b = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.overflow = "hidden", document.body.style.paddingRight = `${b}px`, window.scrollTo(0, 0);
       } else
-        document.body.style.overflow = F.current, document.body.style.paddingRight = P.current, window.scrollTo(0, $.current);
+        document.body.style.overflow = F.current, document.body.style.paddingRight = P.current, window.scrollTo(0, I.current);
       return () => {
         document.body.style.overflow = F.current, document.body.style.paddingRight = P.current;
       };
     }
   }, [e]);
-  const [I, M] = Y(0);
+  const [$, M] = Y(0);
   H(() => {
     if (typeof window > "u" || !e) return;
     const b = document.querySelectorAll("[data-insytful-modal-offset]"), O = () => {
-      let L = 0;
-      b.forEach((_) => L += _.offsetHeight), M(L);
+      let D = 0;
+      b.forEach((L) => D += L.offsetHeight), M(D);
     };
     O();
     const j = new ResizeObserver(O);
-    return b.forEach((L) => j.observe(L)), () => j.disconnect();
+    return b.forEach((D) => j.observe(D)), () => j.disconnect();
   }, [e]);
   const w = ee(() => ({
     open: e,
@@ -1494,51 +1494,51 @@ function Sr({
     titleId: n,
     descriptionId: o,
     options: i,
-    messages: g,
+    messages: h,
     loading: N,
     error: v,
     onSend: C,
     renderMarkdown: f,
     logo: d,
-    isDevMode: h,
+    isDevMode: m,
     theme: a,
     offsets: l,
-    computedOffsetHeight: I
+    computedOffsetHeight: $
   }), [
     e,
     r,
     n,
     o,
     i,
-    g,
+    h,
     N,
     v,
     C,
     f,
     d,
-    h,
+    m,
     a,
     l,
-    I
+    $
   ]);
   return /* @__PURE__ */ p.createElement(Qe, { value: w }, t);
 }
 function ut({ children: t }) {
-  const e = W("Search.Portal"), { open: r, titleId: n, descriptionId: o, theme: i, offsets: a, computedOffsetHeight: f } = e, { elModalRef: d } = br(e.onOpenChange, r), h = Me("insytful-ai-modal-portal"), l = D(null), g = D(null), [N, v] = Y(!1);
+  const e = W("Search.Portal"), { open: r, titleId: n, descriptionId: o, theme: i, offsets: a, computedOffsetHeight: f } = e, { elModalRef: d } = br(e.onOpenChange, r), m = Me("insytful-ai-modal-portal"), l = _(null), h = _(null), [N, v] = Y(!1);
   H(() => {
     if (typeof window > "u") return;
-    const $ = document.createElement("div");
-    $.id = h;
-    const I = $.attachShadow({ mode: "open" }), M = document.createElement("style");
+    const I = document.createElement("div");
+    I.id = m;
+    const $ = I.attachShadow({ mode: "open" }), M = document.createElement("style");
     M.textContent = wr;
     const w = document.createElement("style");
     i && (w.textContent = i);
     const b = document.createElement("div");
-    return b.className = "insytful-root", I.append(M, w, b), document.body.appendChild($), l.current = b, g.current = w, v(!0), () => {
-      $.parentNode && document.body.removeChild($);
+    return b.className = "insytful-root", $.append(M, w, b), document.body.appendChild(I), l.current = b, h.current = w, v(!0), () => {
+      I.parentNode && document.body.removeChild(I);
     };
   }, []), H(() => {
-    g.current && (g.current.textContent = i ?? "");
+    h.current && (h.current.textContent = i ?? "");
   }, [i]);
   const { left: C = 0, right: F = 0 } = a || {}, P = a?.top ?? f;
   return !N || !l.current ? null : St.createPortal(
@@ -1573,7 +1573,7 @@ function ut({ children: t }) {
 ut.displayName = "Search.Portal";
 const dt = We(
   function({ children: e, asChild: r = !1, onClick: n, ...o }, i) {
-    const { open: a, onOpenChange: f } = W("Search.Trigger"), h = {
+    const { open: a, onOpenChange: f } = W("Search.Trigger"), m = {
       "data-insytful-toggle": "",
       "aria-expanded": a,
       "data-state": a ? "open" : "closed",
@@ -1587,15 +1587,15 @@ const dt = We(
       return p.cloneElement(
         e,
         {
-          ...h,
-          onClick: (g) => {
-            l?.(g), g.defaultPrevented || f(!a);
+          ...m,
+          onClick: (h) => {
+            l?.(h), h.defaultPrevented || f(!a);
           },
           ref: i
         }
       );
     }
-    return /* @__PURE__ */ p.createElement("button", { ref: i, type: "button", ...h }, e);
+    return /* @__PURE__ */ p.createElement("button", { ref: i, type: "button", ...m }, e);
   }
 );
 dt.displayName = "Search.Trigger";
@@ -1622,18 +1622,18 @@ const ft = We(
   function({ children: e, asChild: r = !1, onClick: n, className: o, ...i }, a) {
     const { onOpenChange: f } = W("Search.Close"), d = (l) => {
       n?.(l), l.defaultPrevented || f(!1);
-    }, h = {
+    }, m = {
       "aria-label": i["aria-label"] ?? "Close search",
       onClick: d,
       ...i
     };
     if (r && p.isValidElement(e)) {
-      const l = e, g = l.props.onClick, N = l.props.className ?? "";
+      const l = e, h = l.props.onClick, N = l.props.className ?? "";
       return p.cloneElement(l, {
-        ...h,
+        ...m,
         className: `${N} ${o ?? ""}`.trim() || void 0,
         onClick: (v) => {
-          g?.(v), v.defaultPrevented || f(!1);
+          h?.(v), v.defaultPrevented || f(!1);
         },
         ref: a
       });
@@ -1644,7 +1644,7 @@ const ft = We(
         ref: a,
         type: "button",
         className: `insytful-search-close ${o ?? ""}`.trim(),
-        ...h
+        ...m
       },
       e ?? /* @__PURE__ */ p.createElement(kr, null)
     );
@@ -1663,7 +1663,7 @@ function pt({ children: t, className: e }) {
   );
 }
 pt.displayName = "Search.Title";
-function ht({
+function mt({
   children: t,
   className: e
 }) {
@@ -1677,10 +1677,10 @@ function ht({
     t
   );
 }
-ht.displayName = "Search.Description";
-function mt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
-  const { onSend: o, loading: i, messages: a } = W("Search.Input"), f = et(), d = f ? f.mode !== "ai" : !1, [h, l] = Y(""), g = a.length > 0, N = async () => {
-    const v = h.trim();
+mt.displayName = "Search.Description";
+function gt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
+  const { onSend: o, loading: i, messages: a } = W("Search.Input"), f = et(), d = f ? f.mode !== "ai" : !1, [m, l] = Y(""), h = a.length > 0, N = async () => {
+    const v = m.trim();
     if (v) {
       if (l(""), n) {
         n(v);
@@ -1743,7 +1743,7 @@ function mt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
     !d && !e && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-60" }, /* @__PURE__ */ p.createElement(
       "div",
       {
-        className: `pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 ${g ? "" : "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]"}`,
+        className: `pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 ${h ? "" : "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]"}`,
         "aria-hidden": "true"
       }
     )),
@@ -1751,7 +1751,7 @@ function mt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
       "textarea",
       {
         rows: 1,
-        value: h,
+        value: m,
         disabled: i,
         placeholder: r ?? (d ? "Search" : "Ask a question"),
         "aria-label": d ? "Search" : "Ask a question",
@@ -1797,8 +1797,8 @@ function mt({ className: t, embedded: e = !1, placeholder: r, onSubmit: n }) {
     )
   );
 }
-mt.displayName = "Search.Input";
-function De(t) {
+gt.displayName = "Search.Input";
+function _e(t) {
   let e = 0;
   for (let r = 0; r < t.length; r++)
     e = (e << 5) - e + t.charCodeAt(r), e |= 0;
@@ -1833,7 +1833,7 @@ function Er({
       n ? t.content : /* @__PURE__ */ p.createElement(p.Fragment, null, /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0" }, e && /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-logo flex-shrink-0 md:hidden" }, e), /* @__PURE__ */ p.createElement("div", { className: "insytful-search-message-content" }, r ? r(Ye(o[0])) : o[0])), o.slice(1).map((i, a) => /* @__PURE__ */ p.createElement(
         "div",
         {
-          key: `${a}-${De(i)}`,
+          key: `${a}-${_e(i)}`,
           className: "insytful-search-message-content mt-[8px]"
         },
         r ? r(Ye(i)) : i
@@ -1868,14 +1868,14 @@ function Tr({ onSwitchClassic: t }) {
     "Try classic?"
   ));
 }
-function gt({
+function ht({
   className: t,
   searchingText: e,
   children: r
 }) {
-  const { messages: n, loading: o, error: i, renderMarkdown: a, logo: f, open: d } = W("Search.Messages"), h = D(null), l = D(null), [g, N] = Y(!1), [v, C] = Y(!1), F = D(0);
+  const { messages: n, loading: o, error: i, renderMarkdown: a, logo: f, open: d } = W("Search.Messages"), m = _(null), l = _(null), [h, N] = Y(!1), [v, C] = Y(!1), F = _(0);
   H(() => {
-    const w = h.current;
+    const w = m.current;
     if (!w) return;
     const b = () => {
       const q = w.scrollHeight > w.clientHeight;
@@ -1889,29 +1889,29 @@ function gt({
     const j = w.querySelector(
       ".insytful-search-messages-inner"
     );
-    let L = 0;
-    const _ = j ? new ResizeObserver(() => {
-      cancelAnimationFrame(L), L = requestAnimationFrame(b);
+    let D = 0;
+    const L = j ? new ResizeObserver(() => {
+      cancelAnimationFrame(D), D = requestAnimationFrame(b);
     }) : null;
-    return _ && j && _.observe(j), () => {
-      w.removeEventListener("scroll", O), window.removeEventListener("resize", b), _ && _.disconnect(), cancelAnimationFrame(L);
+    return L && j && L.observe(j), () => {
+      w.removeEventListener("scroll", O), window.removeEventListener("resize", b), L && L.disconnect(), cancelAnimationFrame(D);
     };
   }, [n.length]);
-  const P = n.length > 0 ? n[n.length - 1] : null, $ = o && !!P && P.role === "user", I = D(0);
+  const P = n.length > 0 ? n[n.length - 1] : null, I = o && !!P && P.role === "user", $ = _(0);
   H(() => {
     if (n.length === 0 || !d) return;
-    const w = h.current;
-    if (n.length > I.current && n[n.length - 1].role === "user" && (C(!1), I.current > 0 && w && l.current)) {
+    const w = m.current;
+    if (n.length > $.current && n[n.length - 1].role === "user" && (C(!1), $.current > 0 && w && l.current)) {
       const O = w.querySelectorAll(
         ".insytful-search-message"
       ), j = O[O.length - 1];
       j && (F.current = Date.now(), Cr(w, j, l.current));
     }
-    I.current = n.length;
+    $.current = n.length;
   }, [n.length, d]), H(() => {
     (!o || i) && l.current && (l.current.style.transition = i ? "none" : "height 500ms ease-out", l.current.style.height = "0px");
   }, [o, i]);
-  const M = g && !v && !$;
+  const M = h && !v && !I;
   return !n || n.length === 0 ? null : /* @__PURE__ */ p.createElement(
     "div",
     {
@@ -1920,18 +1920,18 @@ function gt({
     /* @__PURE__ */ p.createElement(
       "div",
       {
-        ref: h,
+        ref: m,
         className: `overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${M ? "[mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)]" : ""}`
       },
       /* @__PURE__ */ p.createElement("div", { className: "insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto" }, /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none" }, n.map((w, b) => /* @__PURE__ */ p.createElement(
         Er,
         {
-          key: `${b}-${De(w.content)}`,
+          key: `${b}-${_e(w.content)}`,
           renderContent: a,
           logo: f,
           message: w
         }
-      )), $ && /* @__PURE__ */ p.createElement(Nr, { logo: f, text: e })), r, /* @__PURE__ */ p.createElement("div", { ref: l, className: "insytful-search-scroll-spacer", "aria-hidden": "true" }))
+      )), I && /* @__PURE__ */ p.createElement(Nr, { logo: f, text: e })), r, /* @__PURE__ */ p.createElement("div", { ref: l, className: "insytful-search-scroll-spacer", "aria-hidden": "true" }))
     ),
     M && /* @__PURE__ */ p.createElement("div", { className: "w-full max-w-[var(--insytful-modal-max-width)] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center" }, /* @__PURE__ */ p.createElement(
       "div",
@@ -1962,7 +1962,7 @@ function gt({
     ))
   );
 }
-gt.displayName = "Search.Messages";
+ht.displayName = "Search.Messages";
 function bt({ items: t, className: e, position: r = "above" }) {
   const { onSend: n } = W("Search.Suggestions");
   if (!t || t.length <= 0) return null;
@@ -1977,7 +1977,7 @@ function bt({ items: t, className: e, position: r = "above" }) {
     /* @__PURE__ */ p.createElement("ul", { className: "insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 flex-wrap justify-center p-0 m-0 list-none" }, t.map((i, a) => /* @__PURE__ */ p.createElement(
       "li",
       {
-        key: `${a}-${De(i)}`,
+        key: `${a}-${_e(i)}`,
         className: "insytful-search-suggestions-item"
       },
       /* @__PURE__ */ p.createElement(
@@ -2030,9 +2030,9 @@ function wt({
   onNavigate: n
 }) {
   const { mode: o } = je("Search.Mode"), { onOpenChange: i } = W("Search.Mode"), a = o === e, f = !!r, d = ke(
-    async (h) => {
+    async (m) => {
       if (!r) return;
-      const l = encodeURIComponent(h);
+      const l = encodeURIComponent(m);
       try {
         if (new URL(`${r}${l}`, window.location.origin).origin !== window.location.origin) {
           console.error(
@@ -2066,14 +2066,14 @@ function xt({ children: t }) {
   return typeof t == "function" ? /* @__PURE__ */ p.createElement(p.Fragment, null, t({ mode: e, onSwitch: r })) : /* @__PURE__ */ p.createElement(p.Fragment, null, t);
 }
 xt.displayName = "Search.ModeSwitch";
-const $r = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const Ir = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Close: ft,
-  Description: ht,
+  Description: mt,
   Disclaimer: vt,
   ErrorCallout: Tr,
-  Input: mt,
-  Messages: gt,
+  Input: gt,
+  Messages: ht,
   Mode: wt,
   ModeSwitch: xt,
   Modes: yt,
@@ -2087,5 +2087,5 @@ const $r = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   useSearchContext: W
 }, Symbol.toStringTag, { value: "Module" }));
 export {
-  $r as InsytfulSearch
+  Ir as InsytfulSearch
 };

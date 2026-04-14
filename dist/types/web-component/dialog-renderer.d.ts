@@ -55,6 +55,8 @@ export interface DialogElements {
     inputCard: HTMLDivElement;
     /** Disclaimer wrapper at the bottom */
     disclaimerWrapper: HTMLDivElement;
+    /** Gradient shimmer behind the input card (AI mode, empty state) */
+    inputGradient: HTMLDivElement;
 }
 export declare function renderDialog(titleId: string, descriptionId: string): DialogElements;
 /**
@@ -103,4 +105,4 @@ export declare function renderModeSwitchTabs(modes: Array<{
  * Create an error callout `<li>` element.
  * Matches the React `SearchErrorCallout` component styling.
  */
-export declare function renderErrorMessage(message: string): HTMLLIElement;
+export declare function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null): HTMLLIElement;
