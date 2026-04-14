@@ -4,7 +4,7 @@ import { RAGProvider, useRAGConversationContext } from "contensis-rag-react";
 
 import { SearchProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
-import { useModalFocusTrap } from "../utilities/hooks.util";
+import { useModalFocusTrap } from "./hooks.util";
 import { useMockFetch } from "../utilities/mock-fetch";
 
 import css from "../main.css?inline";

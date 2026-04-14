@@ -1,7 +1,7 @@
 /**
  * Focus Trap Setup — configures focus-trap for the web component dialog.
  *
- * Mirrors the React `useModalFocusTrap` hook from `lib/utilities/hooks.util.ts`
+ * Mirrors the React `useModalFocusTrap` hook from `lib/search/hooks.util.ts`
  * with identical options so keyboard/accessibility behaviour is consistent
  * across the React and web-component surfaces.
  */
