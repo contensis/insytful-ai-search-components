@@ -534,9 +534,12 @@ export class InsytfulSearchElement extends HTMLElement {
     const userLi = renderUserMessage(query);
     messagesList.appendChild(userLi);
 
-    // Show messages container, hide empty state
+    // Show messages container, hide empty state and input gradient
     messagesOuter.style.display = '';
     emptyState.style.display = 'none';
+    if (this._elements.inputGradient) {
+      this._elements.inputGradient.style.display = 'none';
+    }
 
     // Reset scroll state for new question
     this._hasReachedBottom = false;
@@ -616,7 +619,12 @@ export class InsytfulSearchElement extends HTMLElement {
 
       // Don't show error UI for user-initiated aborts
       if (!(err instanceof DOMException && err.name === 'AbortError')) {
-        const errorLi = renderErrorMessage(errorMessage);
+        // Offer classic mode fallback if a mode with a path is configured
+        const classicMode = this._modes.find(m => m.path && m.name !== this._currentMode);
+        const onSwitchClassic = classicMode
+          ? () => this._navigateClassic(classicMode.path!, query)
+          : null;
+        const errorLi = renderErrorMessage(errorMessage, onSwitchClassic);
         messagesList.appendChild(errorLi);
 
         // Dispatch error event
@@ -939,6 +947,9 @@ export class InsytfulSearchElement extends HTMLElement {
     if (mode === this._currentMode) return;
     this._currentMode = mode;
 
+    // Toggle input gradient — visible only in AI mode with no messages
+    this._updateInputGradient();
+
     // Re-render tabs to update active state
     this._renderModeTabs();
 
@@ -948,6 +959,15 @@ export class InsytfulSearchElement extends HTMLElement {
       composed: true,
       detail: { mode },
     }));
+  }
+
+  /** Show the input gradient in AI mode with no messages, hide otherwise. */
+  private _updateInputGradient(): void {
+    const gradient = this._elements?.inputGradient;
+    if (!gradient) return;
+    const isClassic = this._modes.find(m => m.name === this._currentMode)?.path;
+    const show = !isClassic && this._messages.length === 0;
+    gradient.style.display = show ? '' : 'none';
   }
 
   /* ---------------------------------------------------------------- */

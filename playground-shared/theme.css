@@ -1,0 +1,20 @@
+/* Shared playground brand theme — Insytful product demo.
+   Imported by both React and WC playgrounds.
+   Prose/markdown styles are handled by the component defaults. */
+
+/* Brand token overrides */
+.insytful-root {
+  --insytful-font-family: 'Poppins', sans-serif;
+  --insytful-semantic-search-field-stroke: #acbeef;
+  --insytful-input-card-border: #acbeef;
+  --insytful-input-card-border-width: 2px;
+  --insytful-input-card-radius: 16px;
+  --insytful-btn-icon-search-bg-default: #0b0c0c;
+  --insytful-btn-icon-search-bg-hover: #333;
+  --insytful-brand-primary: #5128c3;
+  --insytful-semantic-search-field-focus: #916ee5;
+  --insytful-semantic-search-field-ai-gradient-start: #916ee5;
+  --insytful-semantic-search-field-ai-gradient-end: #acbeef;
+  --insytful-text-link-default: #2165be;
+  --insytful-text-link-hover: #194d8f;
+}

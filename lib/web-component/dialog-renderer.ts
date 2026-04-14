@@ -89,6 +89,8 @@ export interface DialogElements {
   inputCard: HTMLDivElement;
   /** Disclaimer wrapper at the bottom */
   disclaimerWrapper: HTMLDivElement;
+  /** Gradient shimmer behind the input card (AI mode, empty state) */
+  inputGradient: HTMLDivElement;
 }
 
 /* ------------------------------------------------------------------ */
@@ -114,7 +116,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     'aria-labelledby': titleId,
     'aria-describedby': descriptionId,
     'inert': '',
-  }, 'insytful-search-dialog-outer fixed flex flex-col bg-white overflow-hidden pb-0 insytful-search-dialog-closed');
+  }, 'insytful-search-dialog-outer fixed flex flex-col bg-[var(--insytful-modal-bg)] overflow-hidden pb-0 insytful-search-dialog-closed');
 
   Object.assign(dialogOuter.style, {
     zIndex: 'var(--insytful-z-index, 999)',
@@ -217,7 +219,17 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   dialogInner.appendChild(suggestionsContainer);
 
   // --- Input area ---
-  const inputCardOuter = el('div', {}, 'px-4');
+  const inputCardOuter = el('div', {}, 'px-4 relative group');
+
+  // Gradient shimmer — visible in AI mode empty state only
+  const inputGradient = el('div', {},
+    'insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-60',
+  );
+  const inputGradientInner = el('div', {
+    'aria-hidden': 'true',
+  }, 'pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]');
+  inputGradient.appendChild(inputGradientInner);
+  inputCardOuter.appendChild(inputGradient);
 
   const inputCard = el('div', {},
     'insytful-search-input-card w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] bg-[var(--insytful-input-card-bg)] overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white px-[12px] pb-[12px] pt-[12px]',
@@ -239,7 +251,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     'rows': '1',
     'placeholder': 'Ask a question',
     'aria-label': 'Ask a question',
-  }, 'insytful-search-message-input-textarea relative z-10 w-full resize-none bg-white max-h-[240px] overflow-y-auto outline-none focus:outline-none py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]');
+  }, 'insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto outline-none focus:outline-none py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]');
 
   inputForm.appendChild(textarea);
 
@@ -308,6 +320,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     modeSwitchContainer,
     inputCard,
     disclaimerWrapper,
+    inputGradient,
   };
 }
 
@@ -495,7 +508,7 @@ export function renderModeSwitchTabs(
  * Create an error callout `<li>` element.
  * Matches the React `SearchErrorCallout` component styling.
  */
-export function renderErrorMessage(message: string): HTMLLIElement {
+export function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null): HTMLLIElement {
   const li = el('li', {},
     'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
   );
@@ -521,6 +534,16 @@ export function renderErrorMessage(message: string): HTMLLIElement {
   content.appendChild(title);
   content.appendChild(text);
   callout.appendChild(content);
+
+  if (onSwitchClassic) {
+    const btn = el('button', { type: 'button' },
+      'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white',
+    );
+    btn.textContent = 'Try classic?';
+    btn.addEventListener('click', onSwitchClassic);
+    callout.appendChild(btn);
+  }
+
   li.appendChild(callout);
 
   return li;

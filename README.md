@@ -86,14 +86,14 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
   suggestions-position="below"
   theme="@InsytfulAISearchTheme"
 >
-  <button slot="trigger" class="search-trigger">Search this site</button>
+  <button slot="trigger">Search this site</button>
   <span slot="title">Ask our AI</span>
   <span slot="description">Get instant answers about our courses and services</span>
   <span slot="disclaimer">AI responses may not always be accurate. Please verify important information.</span>
 
   <insytful-close></insytful-close>
 
-  <img slot="avatar" src="/_design/img/logo-icon.png" alt="" width="32" height="32" style="width:100%;height:100%;object-fit:contain;" />
+  <img slot="avatar" src="/logo.png" alt="" width="32" height="32" />
 
   <insytful-suggestion>How do I apply?</insytful-suggestion>
   <insytful-suggestion>What courses do you offer?</insytful-suggestion>
@@ -104,76 +104,18 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
 </insytful-search>
 ```
 
-To integrate with an existing search form (e.g. a dropdown with search types), open the dialog programmatically:
+To open the dialog programmatically from your own search form:
 
-```cshtml
-<div>
-  <input type="text" name="search" aria-label="Search" placeholder="Search..." id="search" />
-  <select id="search-type" name="search-type" aria-label="Select a type of search">
-    <option value="all">All</option>
-    <option value="courses">Courses</option>
-    <option value="ai">AI Search</option>
-  </select>
-  <input type="image" id="search-btn" alt="Search" src="..." />
-</div>
+```javascript
+const element = document.getElementById('ai-search');
+const input = document.getElementById('search');
 
-<insytful-search
-  id="ai-search"
-  api-uri="CurrentContext.Site.AI.Endpoint"
-  project-id="CurrentContext.Site.AI.ProjectId"
-  suggestions-position="below"
->
-  <span slot="title">Ask our AI</span>
-  <span slot="description">Get instant answers about our courses and services</span>
-  <span slot="disclaimer">AI responses may not always be accurate.</span>
-
-  <insytful-close></insytful-close>
-  <img slot="avatar" src="/_design/img/logo-icon.png" alt="" width="32" height="32" style="width:100%;height:100%;object-fit:contain;" />
-
-  <insytful-suggestion>How do I apply?</insytful-suggestion>
-  <insytful-suggestion>What courses do you offer?</insytful-suggestion>
-</insytful-search>
-
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.2/dist/insytful-search.js"></script>
-```
-
-```cshtml
-@{
-    string custom = @"
-    (function($) {
-        $(function() {
-            var element = document.getElementById('ai-search');
-
-            $('#search').keypress(function(e) {
-                if (e.which == 13) {
-                    e.preventDefault();
-                    $('#search-btn').trigger('click');
-                }
-            });
-
-            $('#search-btn').on('click', function(e) {
-                e.preventDefault();
-                var type = $('#search-type :selected').val();
-                var query = $('#search').val()
-                    .replace(/[^0-9a-z\s]/gi, '')
-                    .trim();
-
-                if (type === 'ai') {
-                    element.open(query);
-                } else {
-                    var urlEnd = query.replace(/\s+/g, '+');
-                    if (type === 'courses') {
-                        window.open('/search/index.aspx/courses?search_keywords=' + urlEnd, '_self');
-                    } else {
-                        window.open('/search/index.aspx?search_keywords=' + urlEnd, '_self');
-                    }
-                }
-            });
-        });
-    })(jQuery);
-    ";
-    CurrentContext.Page.Scripts.AddInline(custom, ScriptLocation.BodyEnd);
-}
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    element.open(input.value.trim());
+  }
+});
 ```
 
 ### Attributes
@@ -393,7 +335,7 @@ Closes the modal. Place inside `InsytfulSearch.Portal` so the focus trap include
 
   {/* Or your own button element */}
   <InsytfulSearch.Close asChild>
-    <button className="my-close-btn" aria-label="Dismiss">x</button>
+    <button aria-label="Dismiss">x</button>
   </InsytfulSearch.Close>
 </InsytfulSearch.Portal>
 ```
@@ -443,6 +385,24 @@ Displays the AI conversation thread with auto-scroll, typing indicator, gradient
 <InsytfulSearch.Messages className="px-4" />
 ```
 
+#### `InsytfulSearch.ErrorCallout`
+
+Renders an error callout when the AI search fails. Place it conditionally based on the `error` state from `useSearchContext`. Optionally includes a "Try classic?" button to switch modes.
+
+```tsx
+const { error } = InsytfulSearch.useSearchContext('MyComponent');
+
+{error && <InsytfulSearch.ErrorCallout />}
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `onSwitchClassic` | `() => void` | Optional callback to switch to classic search mode. When provided, renders a "Try classic?" button. |
+
+Styled via `--insytful-callout-error-border`, `--insytful-callout-error-bg`, and `--insytful-callout-error-text` CSS variables.
+
+> **Web Component:** The error callout is built-in and renders automatically when the RAG API fails. The "Try classic?" button appears when a classic mode with a `path` is configured. No consumer code needed.
+
 #### `InsytfulSearch.Suggestions`
 
 Clickable suggestion chips. Clicking sends the suggestion text via context `onSend`.
@@ -477,14 +437,10 @@ Switch between AI search and classic (URL-based) search:
   <InsytfulSearch.Modes defaultValue="ai">
     <InsytfulSearch.ModeSwitch>
       {({ mode, onSwitch }) => (
-        <div className="tabs">
-          <button onClick={() => onSwitch('ai')} className={mode === 'ai' ? 'active' : ''}>
-            AI Search
-          </button>
-          <button onClick={() => onSwitch('classic')} className={mode === 'classic' ? 'active' : ''}>
-            Classic Search
-          </button>
-        </div>
+        <>
+          <button onClick={() => onSwitch('ai')}>AI Search</button>
+          <button onClick={() => onSwitch('classic')}>Classic Search</button>
+        </>
       )}
     </InsytfulSearch.ModeSwitch>
 
