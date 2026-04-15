@@ -39,7 +39,7 @@ function Message({
 
       <div
         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-        className={`insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] ${
+        className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] ${
           isUser
             ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]"
             : "text-[var(--insytful-text-default)]"
@@ -94,7 +94,7 @@ function TypingIndicator({
           {logo}
         </div>
       )}
-      <div className="insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-typing-indicator-text)]">
+      <div className="insytful-search-typing-indicator-txt text-[1em] md:text-[1.25em] leading-[2] text-[var(--insytful-typing-indicator-text)]">
         <span>
           {text}
           <span className="after:animate-dot-animate"></span>

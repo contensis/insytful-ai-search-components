@@ -28,6 +28,7 @@ Both share the same visual design, [CSS theming](#css-custom-properties), and Co
   - [Markdown Rendering](#markdown-rendering)
   - [TypeScript](#typescript)
 - [CSS Custom Properties](#css-custom-properties)
+  - [Base font-size and scaling](#base-font-size-and-scaling)
 - [Accessibility](#accessibility)
 - [Browser Support](#browser-support)
 
@@ -572,6 +573,7 @@ Both versions support the same theme variables. For the Web Component, set these
 ```css
 /* Typography */
 --insytful-font-family: system-ui, -apple-system, sans-serif;
+--insytful-base-font-size: 1rem;
 
 /* Text */
 --insytful-text-default: #333333;
@@ -628,6 +630,64 @@ Both versions support the same theme variables. For the Web Component, set these
 --insytful-z-index: 999;
 ```
 
+### Base font-size and scaling
+
+`--insytful-base-font-size` sets the typographic base for AI-response markdown
+prose (headings, paragraphs, lists, inline code, blockquotes). All prose
+sizing — font-size, margins, padding — is in `em`, so the whole block scales
+uniformly with this single variable. Border widths and border-radii stay in
+`px` so they don't distort when the base changes.
+
+Why `em`, not `rem`? `rem` always resolves against the host page's `<html>`,
+even inside a Shadow DOM — we can't isolate it from a host doing
+`html { font-size: 62.5% }`. `em` inherits from our own root, which we
+control, so a consumer gets a predictable single knob.
+
+**Default — `1rem`**
+
+Inherits from the host page's `<html>` font-size. On a standard page that's
+16px, and end users who change their browser default (for readability) see
+the AI response prose scale with their preference.
+
+**Override with a `px` value** — pins the base, disables text-size scaling:
+
+```css
+/* Use when the host page does `html { font-size: 62.5% }` or similar —
+   otherwise the prose would render at ~62.5% of the intended size. */
+--insytful-base-font-size: 16px;
+```
+
+**Override with a `rem` value** — keeps text-size scaling, shifts the base:
+
+```css
+/* Nudge the base up 12.5% while still honouring browser text-size prefs. */
+--insytful-base-font-size: 1.125rem;
+```
+
+#### Responsive prose
+
+Body text inside assistant responses steps up by 25% at the `md` breakpoint
+(≥768px). With the default base of `1rem`, that's 16px on mobile → 20px
+desktop. Because the prose uses `em`, headings scale proportionally with
+the body — a consistent **1.5× heading-to-body hierarchy** across
+breakpoints, and everything scales uniformly when `--insytful-base-font-size`
+changes.
+
+If you prefer fixed-size prose that doesn't step up at the `md` breakpoint,
+override the responsive wrapper class in your theme CSS. The class name
+below is a stable styling hook (consider it part of the public API):
+
+```css
+/* Lock body text to the base value on all breakpoints. */
+.insytful-search-message-content-outer { font-size: 1em; }
+```
+
+To pin at a specific size regardless of the base variable:
+
+```css
+.insytful-search-message-content-outer { font-size: 16px; }
+```
+
 ## Accessibility
 
 Both the React and Web Component versions share the same accessibility features:
@@ -638,6 +698,8 @@ Both the React and Web Component versions share the same accessibility features:
 - Trigger elements set `aria-expanded` and `data-state`
 - `inert` attribute hides the dialog from assistive tech when closed
 - Respects `prefers-reduced-motion` (transitions disabled)
+- AI-response prose scales with the user's browser text-size preference
+  (see [Base font-size and scaling](#base-font-size-and-scaling))
 
 ## Browser Support
 

@@ -345,7 +345,7 @@ export function renderUserMessage(content: string): HTMLLIElement {
   );
 
   const bubble = el('div', {},
-    'insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]',
+    'insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]',
   );
   bubble.style.overflowWrap = 'anywhere';
   bubble.style.wordBreak = 'break-word';
@@ -376,7 +376,7 @@ export function renderAssistantMessage(avatarHTML?: string | null): {
   }
 
   const outer = el('div', {},
-    'insytful-search-message-content-outer text-[16px] md:text-[20px] leading-[32px] rounded-[16px] text-[var(--insytful-text-default)]',
+    'insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]',
   );
   outer.style.overflowWrap = 'anywhere';
   outer.style.wordBreak = 'break-word';
@@ -411,7 +411,7 @@ export function renderTypingIndicator(avatarHTML?: string | null, text = 'Search
   }
 
   const txt = el('div', {},
-    'insytful-search-typing-indicator-txt text-[16px] md:text-[20px] leading-[32px] text-[var(--insytful-typing-indicator-text)]',
+    'insytful-search-typing-indicator-txt text-[1em] md:text-[1.25em] leading-[2] text-[var(--insytful-typing-indicator-text)]',
   );
 
   const span = document.createElement('span');

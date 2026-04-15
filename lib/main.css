@@ -6,8 +6,14 @@
 :host,
 :root,
 .insytful-root {
-  /* Font baseline — protects against client overriding html font-size */
-  font-size: 16px;
+  /* Font baseline.
+     Default `1rem` inherits from <html>, so browser text-size preferences
+     (accessibility) flow through. Consumers on hostile hosts that do
+     `html { font-size: 62.5% }` can pin to px via the variable, e.g.
+     `--insytful-base-font-size: 16px`. `em` values in this stylesheet
+     resolve against this base (not against <html>), so this single knob
+     controls scaling for the markdown prose. */
+  font-size: var(--insytful-base-font-size, 1rem);
   line-height: 1.5;
   font-family: var(--insytful-font-family);
 
@@ -113,34 +119,45 @@
 }
 
 /* Default markdown prose styles for AI responses.
-   Applied always — consumers can override via theme CSS (appended after
-   these base styles, so equal specificity wins by source order). */
+   Uses `em` (not `rem` or `px`) so sizing scales with the single
+   `--insytful-base-font-size` variable defined on :host/.insytful-root.
+   — `rem` was avoided because it resolves against the host document's
+     <html>, which we don't control and which some client sites override
+     with `html { font-size: 62.5% }`.
+   — `px` was avoided because it ignores the end user's browser
+     text-size preferences (accessibility).
+   — `em` inherits from the parent's computed font-size, so our root
+     baseline captures the value once at the boundary.
+   Border widths and border-radii stay in `px` — they're visual design
+   tokens, not typography, and shouldn't scale with font-size.
+   Consumers can override any of these rules via theme CSS (appended
+   after these base styles, so equal specificity wins by source order). */
 .insytful-search-message-content h2 {
-  font-size: 1.5rem;
+  font-size: 1.5em;
   font-weight: 600;
-  line-height: 2rem;
+  line-height: 1.333;
   color: var(--insytful-text-default);
   margin-top: 0;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5em;
 }
 .insytful-search-message-content h3 {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   font-weight: 600;
-  line-height: 1.75rem;
+  line-height: 1.4;
   color: var(--insytful-text-default);
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
 }
 .insytful-search-message-content h4 {
-  font-size: 1.1rem;
+  font-size: 1.125em;
   font-weight: 600;
-  line-height: 1.5rem;
+  line-height: 1.333;
   color: var(--insytful-text-default);
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.875em;
+  margin-bottom: 0.5em;
 }
 .insytful-search-message-content p {
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
   line-height: 1.75;
   color: var(--insytful-text-default);
 }
@@ -155,18 +172,18 @@
 }
 .insytful-search-message-content ul {
   list-style-type: disc;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-left: 1.5em;
+  margin-bottom: 1em;
 }
 .insytful-search-message-content ol {
   list-style-type: decimal;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-left: 1.5em;
+  margin-bottom: 1em;
 }
 .insytful-search-message-content li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
   line-height: 1.6;
-  padding-left: 0.25rem;
+  padding-left: 0.25em;
 }
 .insytful-search-message-content strong {
   font-weight: 700;
@@ -178,7 +195,7 @@
   background-color: #f7fafc;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
-  padding: 0.125rem 0.375rem;
+  padding: 2px 6px;
   font-family: monospace;
   font-size: 0.875em;
 }
@@ -186,9 +203,9 @@
   background-color: #2d3748;
   color: #e2e8f0;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1em;
   overflow-x: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 .insytful-search-message-content pre code {
   background: transparent;
@@ -198,8 +215,8 @@
 }
 .insytful-search-message-content blockquote {
   border-left: 4px solid var(--insytful-brand-primary);
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
+  padding: 0.75em 1em;
+  margin: 1em 0;
   font-style: italic;
   color: var(--insytful-text-muted);
   background-color: #f7fafc;
@@ -207,6 +224,10 @@
 }
 .insytful-search-message-content blockquote p {
   margin: 0;
+}
+.insytful-search-message-content hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 /* Suggestions below input — React tree applies `order` via :has().
