@@ -44,6 +44,7 @@
     "build": "tsc -b && vite build",
     "build:wc": "vite build --config vite.config.wc.ts",
     "build:all": "rimraf dist && tsc -b && vite build && vite build --config vite.config.wc.ts",
+    "pack:test": "npm run build:wc && node scripts/pack-test.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "pack": "npm run build && npm pack",
