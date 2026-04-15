@@ -86,11 +86,11 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
       )}
 
       {!isClassic && !embedded && (
-        <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-60">
+        <div className="insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-80">
           <div
-            className={`pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 ${
+            className={`pointer-events-none absolute inset-x-[-2px] top-[2px] -bottom-[10px] rounded-[var(--insytful-input-card-radius)] opacity-50 blur-[14px] transition-opacity z-0 ${
               !hasMessages
-                ? "bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]"
+                ? "bg-gradient-to-b from-[var(--insytful-semantic-search-field-ai-gradient-start)] to-[var(--insytful-semantic-search-field-ai-gradient-end)]"
                 : ""
             }`}
             aria-hidden="true"
@@ -115,7 +115,7 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
         className={`insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto outline-none focus:outline-none ${
           embedded
             ? "py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]"
-            : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"
+            : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)]"
         }`}
       />
 

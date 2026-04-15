@@ -227,12 +227,12 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   );
   const inputGradientInner = el('div', {
     'aria-hidden': 'true',
-  }, 'pointer-events-none absolute inset-[-2px] rounded-[var(--insytful-input-card-radius)] opacity-30 blur-[7px] transition-opacity z-0 bg-gradient-to-br from-[#35d2c5] via-[#35d2c5] to-[#1d70b8]');
+  }, 'pointer-events-none absolute inset-x-[-2px] top-[2px] -bottom-[10px] rounded-[var(--insytful-input-card-radius)] opacity-50 blur-[14px] transition-opacity z-0 bg-gradient-to-b from-[var(--insytful-semantic-search-field-ai-gradient-start)] to-[var(--insytful-semantic-search-field-ai-gradient-end)]');
   inputGradient.appendChild(inputGradientInner);
   inputCardOuter.appendChild(inputGradient);
 
   const inputCard = el('div', {},
-    'insytful-search-input-card w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] bg-[var(--insytful-input-card-bg)] overflow-hidden focus-within:ring-2 focus-within:ring-[var(--insytful-semantic-search-field-focus)] focus-within:ring-offset-2 focus-within:ring-offset-white px-[12px] pb-[12px] pt-[12px]',
+    'insytful-search-input-card relative z-10 w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] bg-[var(--insytful-input-card-bg)] overflow-hidden px-[12px] pb-[12px] pt-[12px]',
   );
 
   const inputForm = el('form', {},

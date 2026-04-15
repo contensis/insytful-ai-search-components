@@ -104,7 +104,24 @@
     }
 
     /* Hero search card */
+    .hero-search-card-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .hero-search-halo {
+      pointer-events: none;
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      opacity: 0.3;
+      filter: blur(7px);
+      transition: opacity 150ms;
+      z-index: 0;
+      background: linear-gradient(to bottom right, #35d2c5, #35d2c5 50%, #1d70b8);
+    }
     .hero-search-card {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 88px;
       padding: 12px;
@@ -280,7 +297,9 @@
 
       <div class="hero-search-block">
         <!-- Hero search input — submits to insytful-search via el.open(query) -->
-        <div class="hero-search-card">
+        <div class="hero-search-card-wrapper">
+          <div class="hero-search-halo" aria-hidden="true"></div>
+          <div class="hero-search-card">
           <form class="hero-search-form" id="hero-search-form">
             <svg class="hero-search-icon" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path fill="#333" d="M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z"/>
@@ -290,6 +309,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill="#fff" d="M15.991 8a1.606 1.606 0 0 0-.543-1.2L7.996.24a.96.96 0 0 0-1.267 1.442l5.758 5.067a.166.166 0 0 1 .046.183.167.167 0 0 1-.156.108H.967a.96.96 0 1 0 0 1.92h11.408a.167.167 0 0 1 .11.292l-5.758 5.067a.96.96 0 1 0 1.267 1.44L15.448 9.2A1.606 1.606 0 0 0 15.99 8Z"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
             </button>
           </form>
+          </div>
         </div>
 
         <!-- Insytful Search — dialog only, opened programmatically -->
