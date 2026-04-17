@@ -7,7 +7,7 @@ export type SearchMessagesProps = {
     searchingText?: string;
     children?: React.ReactNode;
 };
-export declare function SearchMessages({ className, searchingText, children, }: SearchMessagesProps): React.JSX.Element | null;
+export declare function SearchMessages({ className, searchingText: _searchingText, children, }: SearchMessagesProps): React.JSX.Element | null;
 export declare namespace SearchMessages {
     var displayName: string;
 }

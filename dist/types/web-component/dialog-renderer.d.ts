@@ -81,6 +81,11 @@ export declare function renderAssistantMessage(avatarHTML?: string | null): {
  */
 export declare function renderTypingIndicator(avatarHTML?: string | null, text?: string): HTMLLIElement;
 /**
+ * Create a skeleton loader `<li>` with animated shimmer bars.
+ * Uses the `animate-skeleton-shimmer` Tailwind utility (skeleton-shimmer keyframe).
+ */
+export declare function renderSkeletonLoader(avatarHTML?: string | null): HTMLLIElement;
+/**
  * Create a close-button element. Placed absolutely inside `dialogOuter`, so
  * the focus trap automatically includes it. `innerHTML` is raw markup; the
  * caller is expected to have sanitised (DOMPurify) if the source is untrusted.

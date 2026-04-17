@@ -16,10 +16,15 @@ export default {
           '75%':  { content: '"."' },
           '100%': { content: '".."' },
         },
+        'skeleton-shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: 'calc(200% + 100%) 0' },
+        },
       },
       animation: {
         'dot-animate': 'dot-animate 1.5s steps(1,end) infinite',
         'slide-to-bounce-animate': 'slide-to-bounce-animate 2s ease-in-out infinite',
+        'skeleton-shimmer': 'skeleton-shimmer 1.5s ease-in-out infinite',
       },
     },
   },

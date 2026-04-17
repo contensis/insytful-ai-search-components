@@ -63,6 +63,10 @@
   --insytful-typing-indicator-text: var(--insytful-text-muted);
   --insytful-disclaimer-text: var(--insytful-text-muted);
 
+  /* Skeleton loader */
+  --insytful-skeleton-bg: #e8e8e8;
+  --insytful-skeleton-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+
   /* Callout Error  */
   --insytful-callout-error-border: #d93025;
   --insytful-callout-error-bg: #fce8e6;
@@ -77,6 +81,7 @@
   /* Transition */
   --insytful-search-transition-duration: 200ms;
   --insytful-search-transition-easing: ease;
+  --insytful-search-transition-duration-dev: 5000ms;
 }
 
 /* Close button baseline — kept outside arbitrary-value Tailwind so Razor
@@ -243,6 +248,60 @@
   order: 3;
 }
 
+.insytful-search-skeleton-bar {
+  background: var(--insytful-skeleton-bg);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  height: 1em;
+}
+
+.insytful-search-skeleton-bar.animate-skeleton-shimmer {
+  background-image: var(--insytful-skeleton-shimmer);
+}
+
+.insytful-search-skeleton span {
+  font-size: 0.875em;
+  color: var(--insytful-text-muted);
+  margin-top: 0.5em;
+}
+
+/* Messages list */
+.insytful-search-messages-inner {
+  position: relative;
+}
+
+/* Wrapper container for skeleton and response — provides positioning context for skeleton overlay */
+.insytful-search-response-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Skeleton loader positioned absolutely to overlay response content without affecting layout.
+   Allows synchronized fade-in of response and fade-out of skeleton for smooth transition. */
+.insytful-search-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 1;
+}
+
+/* Skeleton fade-out animation when streaming completes */
+.insytful-search-skeleton.fade-out {
+  animation: skeleton-fade-out var(--insytful-search-transition-duration) var(--insytful-search-transition-easing) forwards;
+}
+
+@keyframes skeleton-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :host,
   :root,
@@ -256,6 +315,10 @@
   }
 
   .insytful-search-messages-icon {
+    animation: none !important;
+  }
+
+  .insytful-search-skeleton-bar {
     animation: none !important;
   }
 }

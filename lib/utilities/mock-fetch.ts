@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const setupMockFetch = (baseUrl: string): (() => void) => {
+const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => void) => {
   const originalFetch = window.fetch;
 
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -116,6 +116,11 @@ const setupMockFetch = (baseUrl: string): (() => void) => {
         async start(controller) {
           const encoder = new TextEncoder();
 
+          // In dev mode, delay the response by 3 seconds so skeleton shows before streaming
+          if (isDevMode) {
+            await new Promise(res => setTimeout(res, 3000));
+          }
+
           for (const chunk of chunks) {
             const sse = `data: ${JSON.stringify({ content: chunk })}\n\n`;
             controller.enqueue(encoder.encode(sse));
@@ -141,7 +146,7 @@ const setupMockFetch = (baseUrl: string): (() => void) => {
 
 export const useMockFetch = (isDevMode = false, base: string) => {
   useEffect(() => {
-    if (!isDevMode || !base) return;
-    return setupMockFetch(base);
+    if (!isDevMode) return;
+    return setupMockFetch(base, isDevMode);
   }, [isDevMode, base]);
 };

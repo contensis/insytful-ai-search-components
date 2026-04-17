@@ -427,6 +427,46 @@ export function renderTypingIndicator(avatarHTML?: string | null, text = 'Search
   return li;
 }
 
+/**
+ * Create a skeleton loader `<li>` with animated shimmer bars.
+ * Uses the `animate-skeleton-shimmer` Tailwind utility (skeleton-shimmer keyframe).
+ */
+export function renderSkeletonLoader(avatarHTML?: string | null): HTMLLIElement {
+  const li = el('li', {},
+    'insytful-search-skeleton flex items-start gap-[12px] md:gap-[24px]',
+  );
+
+  if (avatarHTML) {
+    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-skeleton-logo flex-shrink-0'));
+  }
+
+  const content = el('div', {},
+    'insytful-search-skeleton-content flex-1 flex flex-col gap-[8px]',
+  );
+
+  const bar1 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-full',
+  );
+  const bar2 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[90%]',
+  );
+  const bar3 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[70%]',
+  );
+
+  content.appendChild(bar1);
+  content.appendChild(bar2);
+  content.appendChild(bar3);
+
+  const text = document.createElement('span');
+  text.textContent = 'Generating response...';
+  content.appendChild(text);
+
+  li.appendChild(content);
+
+  return li;
+}
+
 /* ------------------------------------------------------------------ */
 /* Suggestion chip & mode switch helpers                                */
 /* ------------------------------------------------------------------ */

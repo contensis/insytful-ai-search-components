@@ -21,7 +21,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _isLoading;
     private _streamingContent;
     private _abortController;
-    private _currentTypingIndicator;
+    private _currentSkeletonLoader;
     private _conversationGeneration;
     private _hasReachedBottom;
     private _lastProgrammaticScroll;
@@ -68,6 +68,17 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Remove the typing indicator from the messages list.
      */
     private _removeTypingIndicator;
+    /**
+     * Get the animation duration in milliseconds.
+     * Returns 3000ms in dev-mode, 200ms in production.
+     */
+    private _getAnimationDuration;
+    /**
+     * Fade out skeleton loader and remove from DOM.
+     * Coordinates with response fade-in for smooth cross-fade transition.
+     * Duration: 200ms in production, 3000ms in dev-mode.
+     */
+    private _fadeOutSkeletonLoader;
     /**
      * Auto-scroll the messages container to the bottom during streaming,
      * but only if the user hasn't manually scrolled up.

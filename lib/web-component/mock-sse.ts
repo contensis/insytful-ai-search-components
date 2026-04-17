@@ -151,6 +151,9 @@ export function createMockFetch(
         const encoder = new TextEncoder();
         const signal = init?.signal;
 
+        // Delay the response by 3 seconds so skeleton has time to show
+        await new Promise(res => setTimeout(res, 3000));
+
         for (const chunk of MOCK_CHUNKS) {
           if (signal?.aborted) {
             controller.close();

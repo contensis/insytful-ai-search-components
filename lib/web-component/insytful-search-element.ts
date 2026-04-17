@@ -15,7 +15,7 @@ import {
   renderDialog,
   renderUserMessage,
   renderAssistantMessage,
-  renderTypingIndicator,
+  renderSkeletonLoader,
   renderErrorMessage,
   renderSuggestionChip,
   renderModeSwitchTabs,
@@ -74,7 +74,7 @@ export class InsytfulSearchElement extends HTMLElement {
   private _isLoading = false;
   private _streamingContent = '';
   private _abortController: AbortController | null = null;
-  private _currentTypingIndicator: HTMLLIElement | null = null;
+  private _currentSkeletonLoader: HTMLLIElement | null = null;
   private _conversationGeneration = 0;
 
   /* Scroll state */
@@ -551,11 +551,20 @@ export class InsytfulSearchElement extends HTMLElement {
       this._scrollMessageToTop(messagesScroll, userLi, scrollSpacer);
     }
 
-    // --- Show typing indicator ---
+    // --- Show skeleton loader ---
     this._isLoading = true;
     sendButton.disabled = true;
-    this._currentTypingIndicator = renderTypingIndicator(this._avatarHTML);
-    messagesList.appendChild(this._currentTypingIndicator);
+    this._currentSkeletonLoader = renderSkeletonLoader(this._avatarHTML);
+
+    // Create wrapper container with position: relative to provide positioning context for skeleton
+    const responseWrapper = document.createElement('div');
+    responseWrapper.className = 'insytful-search-response-wrapper';
+    responseWrapper.style.position = 'relative';
+    responseWrapper.style.width = '100%';
+    messagesList.appendChild(responseWrapper);
+
+    // Append skeleton inside wrapper
+    responseWrapper.appendChild(this._currentSkeletonLoader);
 
     // --- Stream response ---
     this._abortController = new AbortController();
@@ -573,9 +582,12 @@ export class InsytfulSearchElement extends HTMLElement {
 
       for await (const chunk of generator) {
         if (firstChunk) {
-          this._removeTypingIndicator();
-          messagesList.appendChild(assistantLi);
+          // Append response inside wrapper, hidden until skeleton fades (in dev mode)
+          assistantLi.style.opacity = this.hasAttribute('dev-mode') ? '0' : '1';
+          responseWrapper.appendChild(assistantLi);
           firstChunk = false;
+          // Fade skeleton immediately when streaming starts (first chunk received)
+          this._triggerSkeletonFadeOut();
         }
 
         this._streamingContent += chunk;
@@ -586,11 +598,13 @@ export class InsytfulSearchElement extends HTMLElement {
         this._autoScrollDuringStream();
       }
 
-      // If we never got any chunks, remove typing indicator
+      // If we never got any chunks, still append response inside wrapper (hidden in dev mode)
       if (firstChunk) {
-        this._removeTypingIndicator();
-        messagesList.appendChild(assistantLi);
+        assistantLi.style.opacity = this.hasAttribute('dev-mode') ? '0' : '1';
+        responseWrapper.appendChild(assistantLi);
         contentDiv.innerHTML = this._renderMarkdownSafe(this._streamingContent || '');
+        // Fade skeleton even if no chunks arrived
+        this._triggerSkeletonFadeOut();
       }
 
       // Finalize assistant message
@@ -607,11 +621,16 @@ export class InsytfulSearchElement extends HTMLElement {
       }));
 
     } catch (err: unknown) {
-      // Remove typing indicator
-      this._removeTypingIndicator();
-
-      // Remove the empty assistant message shell if it was added
-      if (assistantLi.parentNode) {
+      // If response was already added to wrapper, clean up gracefully
+      // Otherwise, remove the entire wrapper and skeleton immediately
+      if (!assistantLi.parentNode) {
+        this._removeTypingIndicator();
+        // Remove wrapper and skeleton if response was never appended
+        if (responseWrapper.parentNode) {
+          responseWrapper.remove();
+        }
+      } else {
+        // Remove the response message if it was added
         assistantLi.remove();
       }
 
@@ -666,10 +685,45 @@ export class InsytfulSearchElement extends HTMLElement {
    * Remove the typing indicator from the messages list.
    */
   private _removeTypingIndicator(): void {
-    if (this._currentTypingIndicator && this._currentTypingIndicator.parentNode) {
-      this._currentTypingIndicator.remove();
+    if (this._currentSkeletonLoader && this._currentSkeletonLoader.parentNode) {
+      this._currentSkeletonLoader.remove();
     }
-    this._currentTypingIndicator = null;
+    this._currentSkeletonLoader = null;
+  }
+
+  /**
+   * Trigger skeleton fade-out by adding the fade-out CSS class.
+   * The CSS animation drives the fade using --insytful-search-transition-duration.
+   * Skeleton is removed from DOM when the animation completes.
+   * Skeleton visibility is purely driven by the fade-out animation — no independent timer.
+   */
+  private _triggerSkeletonFadeOut(): void {
+    if (!this._currentSkeletonLoader || !this._currentSkeletonLoader.parentNode) {
+      return;
+    }
+
+    // Fade in response at the same time (in dev mode where response is hidden)
+    // The response's opacity was set to 0 at the start of streaming
+    const responseWrapper = this._currentSkeletonLoader.parentNode;
+    const responseLi = responseWrapper.querySelector('.insytful-search-message:not(.insytful-search-skeleton)') as HTMLLIElement | null;
+    if (responseLi) {
+      responseLi.style.transition = `opacity var(--insytful-search-transition-duration) ease`;
+      responseLi.style.opacity = '1';
+    }
+
+    // Add the fade-out class to trigger CSS animation
+    this._currentSkeletonLoader.classList.add('fade-out');
+
+    // Remove skeleton from DOM when animation completes
+    const onAnimationEnd = () => {
+      if (this._currentSkeletonLoader && this._currentSkeletonLoader.parentNode) {
+        this._currentSkeletonLoader.removeEventListener('animationend', onAnimationEnd);
+        this._currentSkeletonLoader.remove();
+      }
+      this._currentSkeletonLoader = null;
+    };
+
+    this._currentSkeletonLoader.addEventListener('animationend', onAnimationEnd, { once: true });
   }
 
   /**
