@@ -69,16 +69,12 @@ export declare class InsytfulSearchElement extends HTMLElement {
      */
     private _removeTypingIndicator;
     /**
-     * Get the animation duration in milliseconds.
-     * Returns 3000ms in dev-mode, 200ms in production.
+     * Trigger skeleton fade-out by adding the fade-out CSS class.
+     * The CSS animation drives the fade using --insytful-search-transition-duration.
+     * Skeleton is removed from DOM when the animation completes.
+     * Skeleton visibility is purely driven by the fade-out animation — no independent timer.
      */
-    private _getAnimationDuration;
-    /**
-     * Fade out skeleton loader and remove from DOM.
-     * Coordinates with response fade-in for smooth cross-fade transition.
-     * Duration: 200ms in production, 3000ms in dev-mode.
-     */
-    private _fadeOutSkeletonLoader;
+    private _triggerSkeletonFadeOut;
     /**
      * Auto-scroll the messages container to the bottom during streaming,
      * but only if the user hasn't manually scrolled up.
