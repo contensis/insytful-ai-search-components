@@ -314,8 +314,9 @@
 
         <!-- Insytful Search — dialog only, opened programmatically -->
         <insytful-search
-          api-uri="https://rag-api-develop-insytful-dev-blue.insytful.com/api/v1"
-          project-id="contensis"
+          api-uri="https://api.insytful.com/v1"
+          project-id="demo"
+          dev-mode="true"
           theme="
             .insytful-root {
               --insytful-font-family: 'Poppins', sans-serif;
@@ -388,12 +389,6 @@
       heroSend.classList.remove("active");
       searchEl.open(query);
     });
-
-    // Debug event listeners
-    document.addEventListener("insytful-open", () => console.log("[WC] Dialog opened"));
-    document.addEventListener("insytful-close", () => console.log("[WC] Dialog closed"));
-    document.addEventListener("insytful-search", (e) => console.log("[WC] Search:", e.detail));
-    document.addEventListener("insytful-message", (e) => console.log("[WC] Message:", e.detail));
   </script>
 </body>
 </html>

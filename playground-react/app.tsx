@@ -4,17 +4,15 @@ import { InsytfulSearch } from "../lib/main";
 import { Markdown } from "./components/markdown";
 import theme from "./components/modal-theme.css?inline";
 
-const config = {
-  config: import.meta.env.VITE_AI_CONFIG_ID,
-  baseUrl: import.meta.env.VITE_AI_BASE_URL,
-};
-
 function App() {
   const [isOpen, setOpen] = useState(false);
 
   return (
     <InsytfulSearch.Root
-      options={config}
+      options={{
+        config: 'demo',
+        baseUrl: 'https://api.insytful.com/v1',
+      }}
       open={isOpen}
       onOpenChange={setOpen}
       theme={theme}

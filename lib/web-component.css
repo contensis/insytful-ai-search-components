@@ -137,6 +137,9 @@
    tokens, not typography, and shouldn't scale with font-size.
    Consumers can override any of these rules via theme CSS (appended
    after these base styles, so equal specificity wins by source order). */
+.insytful-search-message-content {
+  overflow: hidden;
+}
 .insytful-search-message-content h2 {
   font-size: 1.5em;
   font-weight: 600;
@@ -257,6 +260,10 @@
 
 .insytful-search-skeleton-bar.animate-skeleton-shimmer {
   background-image: var(--insytful-skeleton-shimmer);
+}
+
+.insytful-search-skeleton-content {
+  width: 100%;
 }
 
 .insytful-search-skeleton span {

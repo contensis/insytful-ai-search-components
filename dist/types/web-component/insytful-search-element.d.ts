@@ -21,7 +21,6 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _isLoading;
     private _streamingContent;
     private _abortController;
-    private _currentSkeletonLoader;
     private _conversationGeneration;
     private _hasReachedBottom;
     private _lastProgrammaticScroll;
@@ -30,6 +29,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _modes;
     private _currentMode;
     private _avatarHTML;
+    searchingText: string;
     /**
      * Override the default markdown renderer.
      * The callback receives raw markdown and must return an HTML string.
@@ -64,17 +64,6 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Render markdown to sanitized HTML, using custom override if provided.
      */
     private _renderMarkdownSafe;
-    /**
-     * Remove the typing indicator from the messages list.
-     */
-    private _removeTypingIndicator;
-    /**
-     * Trigger skeleton fade-out by adding the fade-out CSS class.
-     * The CSS animation drives the fade using --insytful-search-transition-duration.
-     * Skeleton is removed from DOM when the animation completes.
-     * Skeleton visibility is purely driven by the fade-out animation — no independent timer.
-     */
-    private _triggerSkeletonFadeOut;
     /**
      * Auto-scroll the messages container to the bottom during streaming,
      * but only if the user hasn't manually scrolled up.

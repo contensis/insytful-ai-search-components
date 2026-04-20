@@ -76,6 +76,11 @@ export declare function renderAssistantMessage(avatarHTML?: string | null): {
     contentDiv: HTMLDivElement;
 };
 /**
+ * Create skeleton body content (just the inner content, no <li> wrapper).
+ * Mirrors React's SearchSkeletonBody — renders inside an assistant message slot.
+ */
+export declare function renderSkeletonBody(searchingText?: string): HTMLDivElement;
+/**
  * Create a typing indicator `<li>` with animated dots.
  * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
  */

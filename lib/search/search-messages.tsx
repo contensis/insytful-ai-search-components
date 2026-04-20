@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { useSearchContext } from "./context";
 import { hash } from "../utilities/hash.util";
-import { SearchSkeleton } from "./skeleton";
+import { SearchSkeletonBody } from "./skeleton";
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -15,10 +15,14 @@ function Message({
   message,
   logo,
   renderContent,
+  showSkeleton,
+  searchingText,
 }: {
   message: { role: "user" | "assistant"; content: string };
   logo?: React.ReactNode;
   renderContent?: (content: string) => React.ReactNode;
+  showSkeleton?: boolean;
+  searchingText?: string;
 }) {
   const isUser = message.role === "user";
   const paragraphs = useMemo(
@@ -31,6 +35,7 @@ function Message({
       className={`insytful-search-message flex items-start gap-[24px] w-full max-w-full ${
         isUser ? "flex-row-reverse" : "flex-row"
       }`}
+      data-role={message.role} // Used to target user messages for scroll-to-top positioning
     >
       {logo && !isUser && (
         <div className="insytful-search-message-logo flex-shrink-0 hidden md:block">
@@ -38,41 +43,42 @@ function Message({
         </div>
       )}
 
-      <div
-        style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-        className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] ${
-          isUser
-            ? "flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]"
-            : "text-[var(--insytful-text-default)]"
-        }`}
-      >
-        {isUser ? (
-          message.content
-        ) : (
-          <>
-            <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
-              {logo && (
-                <div className="insytful-search-message-logo flex-shrink-0 md:hidden">
-                  {logo}
-                </div>
-              )}
-              <div className="insytful-search-message-content">
-                {renderContent
-                  ? renderContent(doShiftHeadings(paragraphs[0]))
-                  : paragraphs[0]}
+      {isUser ? (
+        <div
+          style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+          className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]`}
+        >
+          {message.content}
+        </div>
+      ) : showSkeleton ? (
+        <SearchSkeletonBody searchingText={searchingText} />
+      ) : (
+        <div
+          style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+          className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]`}
+        >
+          <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
+            {logo && (
+              <div className="insytful-search-message-logo flex-shrink-0 md:hidden">
+                {logo}
               </div>
+            )}
+            <div className="insytful-search-message-content">
+              {renderContent
+                ? renderContent(doShiftHeadings(paragraphs[0]))
+                : paragraphs[0]}
             </div>
-            {paragraphs.slice(1).map((p, i) => (
-              <div
-                key={`${i}-${hash(p)}`}
-                className="insytful-search-message-content mt-[8px]"
-              >
-                {renderContent ? renderContent(doShiftHeadings(p)) : p}
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+          </div>
+          {paragraphs.slice(1).map((p, i) => (
+            <div
+              key={`${i}-${hash(p)}`}
+              className="insytful-search-message-content mt-[8px]"
+            >
+              {renderContent ? renderContent(doShiftHeadings(p)) : p}
+            </div>
+          ))}
+        </div>
+      )}
     </li>
   );
 }
@@ -157,7 +163,7 @@ export type SearchMessagesProps = {
 
 export function SearchMessages({
   className,
-  searchingText: _searchingText,
+  searchingText,
   children,
 }: SearchMessagesProps) {
   const { messages, loading, error, renderMarkdown, logo, open } =
@@ -165,12 +171,8 @@ export function SearchMessages({
 
   const elContainerRef = useRef<HTMLDivElement>(null);
   const elSpacerRef = useRef<HTMLDivElement>(null);
-  const skeletonRef = useRef<HTMLLIElement>(null);
-  const responseWrapperRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setOverflowing] = useState(false);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
-  const [showSkeleton, setShowSkeleton] = useState(false);
-  const [skeletonInDOM, setSkeletonInDOM] = useState(false);
   const efLastProgrammaticScrollRef = useRef(0);
 
   // Overflow detection + "reached bottom" tracking
@@ -221,13 +223,20 @@ export function SearchMessages({
     };
   }, [messages.length]);
 
-  // Searching state — derived, not stateful
-  const lastMessage =
-    messages.length > 0 ? messages[messages.length - 1] : null;
-  const isSearching = loading && !!lastMessage && (
-    lastMessage.role === "user" ||
-    (lastMessage.role === "assistant" && !lastMessage.content)
-  );
+  // When loading but there's no assistant message yet (user just submitted),
+  // append a synthetic empty assistant so the skeleton has a slot to render in.
+  const displayMessages = useMemo(() => {
+    if (loading && (messages.length === 0 || messages[messages.length - 1].role === "user")) {
+      return [...messages, { role: "assistant" as const, content: "" }];
+    }
+    return messages;
+  }, [messages, loading]);
+
+  // Skeleton visibility: show when loading, last assistant has no content, and no error.
+  // The error guard prevents skeleton from showing alongside error callout mid-stream.
+  const lastAssistant = [...displayMessages].reverse().find(m => m.role === 'assistant');
+  const hasContent = !!lastAssistant?.content;
+  const showSkeleton = loading && !hasContent && !error;
 
   // Handle new messages — scroll the latest user message to the top.
   //
@@ -250,11 +259,11 @@ export function SearchMessages({
 
         // Follow-up question: scroll the user's message to the top of the container
         if (prevMessageCountRef.current > 0 && scroller && elSpacerRef.current) {
-          const allMessages = scroller.querySelectorAll(
-            ".insytful-search-message",
+          const userMessages = scroller.querySelectorAll(
+            ".insytful-search-message[data-role='user']",
           );
-          const userMsgEl = allMessages[
-            allMessages.length - 1
+          const userMsgEl = userMessages[
+            userMessages.length - 1
           ] as HTMLElement | null;
 
           if (userMsgEl) {
@@ -278,31 +287,13 @@ export function SearchMessages({
     }
   }, [loading, error]);
 
-  // Skeleton visibility: show while searching, fade-out when response arrives
-  useEffect(() => {
-    if (isSearching) {
-      setShowSkeleton(true);
-      setSkeletonInDOM(true);
-      // Remove fade-out class for new search
-      if (skeletonRef.current) {
-        skeletonRef.current.classList.remove("fade-out");
-      }
-    } else if (showSkeleton) {
-      // Response arrived—hide response overlay and trigger skeleton fade-out
-      setShowSkeleton(false);
-      if (skeletonRef.current) {
-        skeletonRef.current.classList.add("fade-out");
-      }
-      // Keep skeleton in DOM so animation can complete; CSS forwards keeps it opacity: 0
-    }
-  }, [isSearching]);
 
   // Show arrow when content overflows and user hasn't reached the bottom yet.
   // Once the user scrolls to the bottom, arrow hides and stays hidden.
-  // Resets when a new user message is sent (setHasReachedBottom(false) on line 212).
-  const showScrollHint = isOverflowing && !hasReachedBottom && !isSearching;
+  // Resets when a new user message is sent (setHasReachedBottom(false) on line 251).
+  const showScrollHint = isOverflowing && !hasReachedBottom && !showSkeleton;
 
-  if (!messages || messages.length === 0) return null;
+  if ((!messages || messages.length === 0) && !loading) return null;
 
   return (
     <div
@@ -318,40 +309,22 @@ export function SearchMessages({
       >
         <div className="insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto">
           <ul className="insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
-            {messages.map((message, i) => {
-              const isLastMessage = i === messages.length - 1;
-              const isLastAssistant = isLastMessage && message.role === "assistant" && (isSearching || showSkeleton);
+            {displayMessages.map((message, i) => {
+              const isLastMessage = i === displayMessages.length - 1;
+              const isLastAssistant =
+                isLastMessage && message.role === "assistant";
 
-              return isLastAssistant ? (
-                <div key={`${i}-${hash(message.content)}-wrapper`} className="insytful-search-response-wrapper">
-                  <div
-                    ref={responseWrapperRef}
-                    style={{
-                      opacity: showSkeleton ? '0' : '1'
-                    }}
-                  >
-                    <Message
-                      renderContent={renderMarkdown}
-                      logo={logo}
-                      message={message}
-                    />
-                  </div>
-                  {skeletonInDOM && (
-                    <SearchSkeleton ref={skeletonRef} logo={logo} />
-                  )}
-                </div>
-              ) : (
+              return (
                 <Message
                   key={`${i}-${hash(message.content)}`}
                   renderContent={renderMarkdown}
                   logo={logo}
                   message={message}
+                  showSkeleton={isLastAssistant && showSkeleton}
+                  searchingText={searchingText}
                 />
               );
             })}
-            {isSearching && !messages.length && showSkeleton && (
-              <SearchSkeleton ref={skeletonRef} logo={logo} />
-            )}
           </ul>
           {children}
           {/* Scroll spacer: expanded via ref when user sends a follow-up so

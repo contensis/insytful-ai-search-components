@@ -21,8 +21,6 @@ export type { SearchInputProps } from "./search-input";
 export { SearchMessages as Messages, SearchErrorCallout as ErrorCallout } from "./search-messages";
 export type { SearchMessagesProps } from "./search-messages";
 
-export { SearchSkeleton as Skeleton } from "./skeleton";
-
 export { SearchSuggestions as Suggestions } from "./search-suggestions";
 export type { SearchSuggestionsProps } from "./search-suggestions";
 

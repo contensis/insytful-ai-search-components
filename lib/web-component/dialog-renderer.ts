@@ -340,7 +340,8 @@ function createAvatarNode(avatarHTML: string, className: string): HTMLDivElement
  * Matches the React `<Message>` component styling for role === "user".
  */
 export function renderUserMessage(content: string): HTMLLIElement {
-  const li = el('li', {},
+  // data-role='user' is used to target user messages for scroll-to-top positioning
+  const li = el('li', { 'data-role': 'user' },
     'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row-reverse',
   );
 
@@ -366,7 +367,8 @@ export function renderAssistantMessage(avatarHTML?: string | null): {
   li: HTMLLIElement;
   contentDiv: HTMLDivElement;
 } {
-  const li = el('li', {},
+  // data-role='assistant' is used to identify assistant messages in the DOM
+  const li = el('li', { 'data-role': 'assistant' },
     'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
   );
 
@@ -376,7 +378,7 @@ export function renderAssistantMessage(avatarHTML?: string | null): {
   }
 
   const outer = el('div', {},
-    'insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]',
+    'insytful-search-message-content-outer w-full text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]',
   );
   outer.style.overflowWrap = 'anywhere';
   outer.style.wordBreak = 'break-word';
@@ -395,6 +397,37 @@ export function renderAssistantMessage(avatarHTML?: string | null): {
   li.appendChild(outer);
 
   return { li, contentDiv };
+}
+
+/**
+ * Create skeleton body content (just the inner content, no <li> wrapper).
+ * Mirrors React's SearchSkeletonBody — renders inside an assistant message slot.
+ */
+export function renderSkeletonBody(searchingText = 'Generating response...'): HTMLDivElement {
+  const content = el('div', {},
+    'insytful-search-skeleton-content flex flex-col gap-[8px] w-full',
+  );
+
+  const bar1 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-full',
+  );
+  const bar2 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[90%]',
+  );
+  const bar3 = el('div', {},
+    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[70%]',
+  );
+
+  content.appendChild(bar1);
+  content.appendChild(bar2);
+  content.appendChild(bar3);
+
+  const text = document.createElement('span');
+  text.className = 'insytful-search-skeleton-text text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px]';
+  text.textContent = searchingText;
+  content.appendChild(text);
+
+  return content;
 }
 
 /**
