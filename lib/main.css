@@ -265,10 +265,6 @@
   margin-top: 0.5em;
 }
 
-.insytful-search-skeleton-text {
-  font-size: revert !important;
-}
-
 /* Messages list */
 .insytful-search-messages-inner {
   position: relative;
