@@ -5,7 +5,7 @@
 ## Setup
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.6/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
 
 <insytful-search
   api-uri="https://your-api.com"
@@ -39,7 +39,7 @@ For classic Contensis sites using the .NET framework, add the Web Component to y
     ";
 }
 
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.6/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
 
 <style>
   insytful-search:not(:defined) { display: none; }

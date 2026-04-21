@@ -15,7 +15,7 @@ Peer dependencies: `react` (>=17) and `react-dom` (>=17).
 **Web Component** — single script tag, no build step:
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.6/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
 ```
 
 ## Quick start — React
@@ -51,7 +51,7 @@ function App() {
 ## Quick start — Web Component
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.6/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
 
 <insytful-search
   api-uri="https://your-api.com"
