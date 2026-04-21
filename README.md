@@ -596,7 +596,7 @@ Both versions support the same theme variables. For the Web Component, set these
 --insytful-btn-prompt-bg-hover: #c8daec;
 --insytful-btn-prompt-text: #333333;
 --insytful-btn-prompt-radius: 12px;
---insytful-btn-prompt-focus: var(--insytful-semantic-search-field-focus);
+--insytful-btn-prompt-focus: var(--insytful-semantic-focus-ring);
 
 /* Input card */
 --insytful-input-card-bg: #ffffff;
@@ -621,7 +621,19 @@ Both versions support the same theme variables. For the Web Component, set these
 
 /* Search field */
 --insytful-semantic-search-field-stroke: #333333;
---insytful-semantic-search-field-focus: #35d2c5;
+
+/* Focus ring — single library-wide token governing every focus ring.
+   Override --insytful-semantic-focus-ring once to restyle focus on all
+   components. The older --insytful-semantic-search-field-focus name is
+   kept as a deprecated alias so existing overrides keep working.
+   Lib components emit `outline` focus rings keyed on their existing
+   `insytful-search-*` classes — no `ring-offset` band, so the offset
+   inherits the page background. Overrides set inside a shadow-DOM mount
+   (the `theme` prop/attr) apply to modal contents; to style focus on
+   playground-shell elements in the outer page, also set the token on
+   `:root` in light-DOM CSS (see `playground-shared/focus-ring.css`). */
+--insytful-semantic-search-field-focus: #35d2c5; /* deprecated */
+--insytful-semantic-focus-ring: var(--insytful-semantic-search-field-focus);
 
 /* Transitions */
 --insytful-search-transition-duration: 200ms;
@@ -629,6 +641,44 @@ Both versions support the same theme variables. For the Web Component, set these
 /* Z-index */
 --insytful-z-index: 999;
 ```
+
+### Focus ring behaviour
+
+Every focusable element in the library emits a `2px` outline at `2px` offset,
+coloured by `--insytful-semantic-focus-ring`. No hardcoded `ring-offset-*`
+bands — the offset shows the page background, so the indicator is visible
+on any theme.
+
+The default modal flow renders the search input with its halo wrapper
+(`.insytful-search-message-input-bg`). In that flow the **wrapper** gets the
+focus ring when the textarea is focused; tabbing to the send button moves the
+ring onto the button. This is driven by `:has()` selectors in the library's
+own CSS — no consumer configuration required.
+
+**Using `<InsytfulSearch.Input embedded>` inside your own card?** The
+embedded renderer omits the halo wrapper so the textarea rings itself as a
+fallback (you always see focus). If you'd rather have your own outer card
+take the ring — the playgrounds in this repo do this — add two rules in your
+consumer CSS:
+
+```css
+/* Ring the outer card when the textarea inside has focus, not when any
+   descendant has focus (which :focus-within would give). */
+.my-hero-card:has(.insytful-search-message-input-textarea:focus) {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Suppress the textarea's own fallback ring so it doesn't stack inside the
+   card ring. */
+.my-hero-card .insytful-search-message-input-textarea:focus {
+  outline: none;
+}
+```
+
+The send button still rings on its own when tabbed to, and the card ring
+drops — so you see one clean indicator per focus stop. Requires `:has()`
+(Chromium 105+, Safari 15.4+, Firefox 121+).
 
 ### Base font-size and scaling
 

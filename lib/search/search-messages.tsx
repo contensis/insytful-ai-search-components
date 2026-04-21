@@ -50,12 +50,10 @@ function Message({
         >
           {message.content}
         </div>
-      ) : showSkeleton ? (
-        <SearchSkeletonBody searchingText={searchingText} />
       ) : (
         <div
           style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-          className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]`}
+          className={`insytful-search-message-content-outer w-full text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]`}
         >
           <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
             {logo && (
@@ -63,20 +61,25 @@ function Message({
                 {logo}
               </div>
             )}
-            <div className="insytful-search-message-content">
-              {renderContent
-                ? renderContent(doShiftHeadings(paragraphs[0]))
-                : paragraphs[0]}
-            </div>
+            {showSkeleton ? (
+              <SearchSkeletonBody searchingText={searchingText} />
+            ) : (
+              <div className="insytful-search-message-content">
+                {renderContent
+                  ? renderContent(doShiftHeadings(paragraphs[0]))
+                  : paragraphs[0]}
+              </div>
+            )}
           </div>
-          {paragraphs.slice(1).map((p, i) => (
-            <div
-              key={`${i}-${hash(p)}`}
-              className="insytful-search-message-content mt-[8px]"
-            >
-              {renderContent ? renderContent(doShiftHeadings(p)) : p}
-            </div>
-          ))}
+          {!showSkeleton &&
+            paragraphs.slice(1).map((p, i) => (
+              <div
+                key={`${i}-${hash(p)}`}
+                className="insytful-search-message-content mt-[8px]"
+              >
+                {renderContent ? renderContent(doShiftHeadings(p)) : p}
+              </div>
+            ))}
         </div>
       )}
     </li>
@@ -142,7 +145,7 @@ export function SearchErrorCallout({ onSwitchClassic }: { onSwitchClassic?: () =
       {onSwitchClassic && (
         <button
           onClick={onSwitchClassic}
-          className="insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white"
+          className="insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium"
         >
           Try classic?
         </button>

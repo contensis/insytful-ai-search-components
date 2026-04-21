@@ -251,7 +251,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     'rows': '1',
     'placeholder': 'Ask a question',
     'aria-label': 'Ask a question',
-  }, 'insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto outline-none focus:outline-none py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]');
+  }, 'insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]');
 
   inputForm.appendChild(textarea);
 
@@ -259,7 +259,7 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   const sendButton = el('button', {
     'type': 'submit',
     'aria-label': 'Send message',
-  }, 'insytful-search-message-input-btn z-20 absolute right-0 top-1/2 -translate-y-1/2 w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white');
+  }, 'insytful-search-message-input-btn z-20 absolute right-0 top-1/2 -translate-y-1/2 w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50');
 
   sendButton.innerHTML = SEND_ICON;
   inputForm.appendChild(sendButton);
@@ -610,7 +610,7 @@ export function renderErrorMessage(message: string, onSwitchClassic?: (() => voi
 
   if (onSwitchClassic) {
     const btn = el('button', { type: 'button' },
-      'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white',
+      'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium',
     );
     btn.textContent = 'Try classic?';
     btn.addEventListener('click', onSwitchClassic);

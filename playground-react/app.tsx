@@ -60,7 +60,7 @@ function HeroSearchCard({ onOpenModal }: { onOpenModal: () => void }) {
   };
 
   return (
-    <div className="bg-white rounded-[12px] lg:rounded-[16px] border-2 border-[#acbeef] shadow-[0px_24px_32px_0px_rgba(0,0,0,0.08)] overflow-hidden p-3 h-[88px] lg:h-[120px]">
+    <div className="insytful-playground-hero-card bg-white rounded-[12px] lg:rounded-[16px] border-2 border-[#acbeef] shadow-[0px_24px_32px_0px_rgba(0,0,0,0.08)] overflow-hidden p-3 h-[88px] lg:h-[120px]">
       <InsytfulSearch.Input
         embedded
         placeholder="Ask a question"

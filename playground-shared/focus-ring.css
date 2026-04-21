@@ -1,0 +1,58 @@
+/* Shared playground focus-ring rules — light-DOM only.
+   Imported by both React and WC playgrounds.
+
+   Why a separate file from theme.css:
+   `playground-shared/theme.css` scopes its overrides to `.insytful-root`, which
+   in both playgrounds is attached to the shadow-DOM mount. The playground
+   shell — hero cards and bare-HTML controls — lives in the light DOM and
+   inherits only the lib default (`#35d2c5`, teal) from `lib/main.css`'s
+   `:host, :root, .insytful-root` declaration. That produces teal rings on
+   light-DOM elements where the playground theme expects purple.
+
+   This file sets `--insytful-semantic-focus-ring: #916ee5` on `:root` (light
+   DOM) and provides focus rules for the playground hero cards and the WC
+   bare-HTML hero controls. The purple value is intentionally duplicated
+   here and in `theme.css:15` — the two files target different CSS scopes
+   (light DOM vs `.insytful-root` inside shadow). Do NOT import this file
+   into shadow-DOM scope; shadow-side theming flows through the
+   `<insytful-search theme="…">` attribute (WC) or `modal-theme.css` which
+   imports `theme.css` (React).
+
+   Design note: the hero **card** takes the focus ring when the textarea is
+   focused. When the send button is tabbed to, the button rings on its own
+   and the card ring turns off. This is achieved with `:has()` — the card
+   ring selector only matches when the textarea descendant has focus, not
+   when the button does. */
+
+:root {
+  --insytful-semantic-focus-ring: #916ee5;
+}
+
+/* Hero card: ring on the card only when the TEXTAREA inside it has focus.
+   When focus moves to the send button, this selector stops matching, and
+   the button renders its own ring via the lib-side or bare-HTML rule.
+   Compound selector covers WC (`.hero-search-card` + bare `.hero-search-
+   textarea`), React (`.insytful-playground-hero-card` + lib-class
+   textarea), and WC if it ever embeds `<InsytfulSearch.Input>`. */
+.hero-search-card:has(.hero-search-textarea:focus),
+.hero-search-card:has(.insytful-search-message-input-textarea:focus),
+.insytful-playground-hero-card:has(.insytful-search-message-input-textarea:focus) {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Suppress the textarea's own focus ring when it is inside a playground
+   hero card — the card ring above is the indicator. Without this, the
+   lib's embedded-mode fallback (`.insytful-search-message-input-textarea
+   :focus { outline: 2px ... }`) would stack inside the card ring. */
+.hero-search-card .hero-search-textarea:focus,
+.hero-search-card .insytful-search-message-input-textarea:focus,
+.insytful-playground-hero-card .insytful-search-message-input-textarea:focus {
+  outline: none;
+}
+
+/* WC bare-HTML send button: own ring (not a wrapped/delegated indicator). */
+.hero-search-send:focus {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}

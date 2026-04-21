@@ -112,7 +112,7 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
             handleSend();
           }
         }}
-        className={`insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto outline-none focus:outline-none ${
+        className={`insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto ${
           embedded
             ? "py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]"
             : "py-[16px] min-h-[62px] pl-[48px] pr-[64px] rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)]"
@@ -122,7 +122,7 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
       <button
         type="submit"
         disabled={loading}
-        className={`insytful-search-message-input-btn z-20 absolute ${embedded ? 'right-0' : 'right-[8px]'} top-1/2 -translate-y-1/2 w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[var(--insytful-semantic-search-field-focus)] focus:ring-offset-2 focus:ring-offset-white`}
+        className={`insytful-search-message-input-btn z-20 absolute ${embedded ? 'right-0' : 'right-[8px]'} top-1/2 -translate-y-1/2 w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50`}
         aria-label={isClassic ? "Search" : "Send message"}
       >
         <svg
