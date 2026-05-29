@@ -1,5 +1,12 @@
 import { default as React } from 'react';
-export declare function SearchErrorCallout({ onSwitchClassic }: {
+export type SearchErrorCalloutCta = {
+    text: string;
+    path: string;
+};
+export declare function SearchErrorCallout({ title, text, cta, onSwitchClassic, }: {
+    title?: string;
+    text?: string;
+    cta?: SearchErrorCalloutCta;
     onSwitchClassic?: () => void;
 }): React.JSX.Element;
 export type SearchMessagesProps = {

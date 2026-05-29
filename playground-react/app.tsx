@@ -96,6 +96,9 @@ function ModalContent() {
             {error && (
               <div className="pb-3 w-full max-w-[784px] mx-auto">
                 <InsytfulSearch.ErrorCallout
+                  title="Something went wrong"
+                  text="We couldn't reach the search service. Try again or get help."
+                  cta={{ text: "Visit help centre", path: "https://www.example.com/help" }}
                   onSwitchClassic={modeCtx?.onSwitchMode ? () => modeCtx.onSwitchMode("classic") : undefined}
                 />
               </div>

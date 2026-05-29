@@ -71,6 +71,9 @@
   --insytful-callout-error-border: #d93025;
   --insytful-callout-error-bg: #fce8e6;
   --insytful-callout-error-text: #333333;
+  --insytful-callout-error-cta-bg: #2e3339;
+  --insytful-callout-error-cta-text: #ffffff;
+  --insytful-callout-error-cta-border-radius: 4px;
 
   /* Semantic - Search Field */
   --insytful-semantic-search-field-stroke: #333333;
@@ -172,9 +175,21 @@
   outline: 2px solid var(--insytful-semantic-focus-ring);
   outline-offset: 2px;
 }
-.insytful-search-error-callout-btn:focus {
+.insytful-search-error-callout-btn:focus,
+.insytful-search-error-callout-cta:focus {
   outline: 2px solid var(--insytful-semantic-focus-ring);
   outline-offset: 2px;
+}
+.insytful-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Default markdown prose styles for AI responses.

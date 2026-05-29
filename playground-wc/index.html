@@ -313,7 +313,6 @@
         <insytful-search
           api-uri="https://api.insytful.com/v1"
           project-id="demo"
-          dev-mode="true"
           theme="
             .insytful-root {
               --insytful-font-family: 'Poppins', sans-serif;
@@ -343,6 +342,12 @@
           </svg>
 
           <insytful-close></insytful-close>
+
+          <insytful-callout type="error">
+            <insytful-callout-title>Something went wrong</insytful-callout-title>
+            <insytful-callout-text>We couldn't reach the search service. Try again or get help.</insytful-callout-text>
+            <insytful-callout-cta href="https://www.example.com/help" target="_blank" rel="noopener">Visit help centre</insytful-callout-cta>
+          </insytful-callout>
 
           <insytful-suggestion>Where can I find school term dates?</insytful-suggestion>
           <insytful-suggestion>What courses do you offer?</insytful-suggestion>

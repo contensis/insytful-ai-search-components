@@ -581,7 +581,14 @@ export function renderModeSwitchTabs(
  * Create an error callout `<li>` element.
  * Matches the React `SearchErrorCallout` component styling.
  */
-export function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null): HTMLLIElement {
+export function renderErrorMessage(
+  message: string,
+  onSwitchClassic?: (() => void) | null,
+  opts?: {
+    title?: string;
+    cta?: { text: string; path: string; target?: string; rel?: string };
+  },
+): HTMLLIElement {
   const li = el('li', {},
     'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
   );
@@ -597,7 +604,7 @@ export function renderErrorMessage(message: string, onSwitchClassic?: (() => voi
   const title = el('p', {},
     'insytful-search-error-callout-title font-semibold text-[var(--insytful-callout-error-text)] m-0',
   );
-  title.textContent = 'Something went wrong';
+  title.textContent = opts?.title ?? 'Something went wrong';
 
   const text = el('p', {},
     'insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0',
@@ -608,10 +615,32 @@ export function renderErrorMessage(message: string, onSwitchClassic?: (() => voi
   content.appendChild(text);
   callout.appendChild(content);
 
-  if (onSwitchClassic) {
-    const btn = el('button', { type: 'button' },
-      'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium',
-    );
+  const btnClass =
+    'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium';
+
+  const ctaClass =
+    'insytful-search-error-callout-cta inline-flex items-center justify-center rounded-[var(--insytful-callout-error-cta-border-radius)] bg-[var(--insytful-callout-error-cta-bg)] px-[16px] py-[8px] text-[14px] font-medium text-[var(--insytful-callout-error-cta-text)] no-underline transition-opacity hover:opacity-90';
+
+  if (opts?.cta) {
+    const cta = opts.cta;
+    const target = cta.target ?? (cta.path.startsWith('https://www') ? '_blank' : undefined);
+    const isExternal = target === '_blank';
+    const rel = cta.rel ?? (isExternal ? 'noopener noreferrer' : undefined);
+
+    const linkAttrs: Record<string, string> = { href: cta.path };
+    if (target) linkAttrs.target = target;
+    if (rel) linkAttrs.rel = rel;
+
+    const link = el('a', linkAttrs, ctaClass);
+    link.textContent = cta.text;
+    if (isExternal) {
+      const srOnly = el('span', {}, 'insytful-sr-only');
+      srOnly.textContent = ' (opens in a new tab)';
+      link.appendChild(srOnly);
+    }
+    callout.appendChild(link);
+  } else if (onSwitchClassic) {
+    const btn = el('button', { type: 'button' }, btnClass);
     btn.textContent = 'Try classic?';
     btn.addEventListener('click', onSwitchClassic);
     callout.appendChild(btn);

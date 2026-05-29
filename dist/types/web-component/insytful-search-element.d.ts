@@ -28,6 +28,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _suggestions;
     private _modes;
     private _currentMode;
+    private _errorCallout;
     private _avatarHTML;
     searchingText: string;
     /**
@@ -94,6 +95,18 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Reads `name`, `path` attributes and `textContent` as the tab label.
      */
     private _parseModes;
+    /**
+     * One-time parse of `<insytful-callout type="error">` child config.
+     * The callout itself is never displayed in light DOM (unprojected children
+     * are hidden); its descendants are read as data and used by the error
+     * handler when an API call fails.
+     *
+     * Supported children:
+     *   <insytful-callout-title>...</insytful-callout-title>
+     *   <insytful-callout-text>...</insytful-callout-text>
+     *   <insytful-callout-cta href="..." [target="..."] [rel="..."]>...</insytful-callout-cta>
+     */
+    private _parseErrorCallout;
     /**
      * Render mode switch tabs into the modeSwitchContainer.
      */

@@ -131,25 +131,55 @@ function scrollMessageToTop(
 /* Error Callout                                                        */
 /* ------------------------------------------------------------------ */
 
-export function SearchErrorCallout({ onSwitchClassic }: { onSwitchClassic?: () => void }) {
+export type SearchErrorCalloutCta = { text: string; path: string };
+
+export function SearchErrorCallout({
+  title = "Something went wrong",
+  text = "Failed to fetch",
+  cta,
+  onSwitchClassic,
+}: {
+  title?: string;
+  text?: string;
+  cta?: SearchErrorCalloutCta;
+  onSwitchClassic?: () => void;
+}) {
   return (
     <div className="insytful-search-error-callout-inner flex items-start flex-col gap-[12px] p-[16px] border-l-[4px] border-[var(--insytful-callout-error-border)] bg-[var(--insytful-callout-error-bg)] rounded-r-lg max-w-full w-full">
       <div className="insytful-search-error-callout-content flex-1 gap-[8px] flex flex-col">
         <p className="insytful-search-error-callout-title font-semibold text-[var(--insytful-callout-error-text)] m-0">
-          Something went wrong
+          {title}
         </p>
         <p className="insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0">
-          Failed to fetch
+          {text}
         </p>
       </div>
-      {onSwitchClassic && (
+      {cta ? (
+        (() => {
+          const isExternal = cta.path.startsWith("https://www");
+          return (
+            <a
+              href={cta.path}
+              {...(isExternal
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+              className="insytful-search-error-callout-cta inline-flex items-center justify-center rounded-[var(--insytful-callout-error-cta-border-radius)] bg-[var(--insytful-callout-error-cta-bg)] px-[16px] py-[8px] text-[14px] font-medium text-[var(--insytful-callout-error-cta-text)] no-underline transition-opacity hover:opacity-90"
+            >
+              {cta.text}
+              {isExternal && (
+                <span className="insytful-sr-only"> (opens in a new tab)</span>
+              )}
+            </a>
+          );
+        })()
+      ) : onSwitchClassic ? (
         <button
           onClick={onSwitchClassic}
           className="insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium"
         >
           Try classic?
         </button>
-      )}
+      ) : null}
     </div>
   );
 }

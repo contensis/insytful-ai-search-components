@@ -88,6 +88,13 @@ export class InsytfulSearchElement extends HTMLElement {
   private _modes: Array<{ name: string; path?: string; label: string }> = [];
   private _currentMode = 'ai';
 
+  /* Error callout config (parsed from <insytful-callout type="error"> child) */
+  private _errorCallout: {
+    title?: string;
+    text?: string;
+    cta?: { text: string; path: string; target?: string; rel?: string };
+  } | null = null;
+
   /* Avatar — cloned into each assistant message */
   private _avatarHTML: string | null = null;
 
@@ -199,6 +206,9 @@ export class InsytfulSearchElement extends HTMLElement {
 
     // --- Parse mode children from light DOM ---
     this._parseModes();
+
+    // --- Parse error callout config from light DOM ---
+    this._parseErrorCallout();
 
     // --- Parse avatar from light DOM ---
     this._parseAvatar();
@@ -628,7 +638,13 @@ export class InsytfulSearchElement extends HTMLElement {
         const onSwitchClassic = classicMode
           ? () => this._navigateClassic(classicMode.path!, query)
           : null;
-        const errorLi = renderErrorMessage(errorMessage, onSwitchClassic);
+
+        const calloutConfig = this._errorCallout;
+        const errorLi = renderErrorMessage(
+          calloutConfig?.text ?? errorMessage,
+          onSwitchClassic,
+          { title: calloutConfig?.title, cta: calloutConfig?.cta },
+        );
         messagesList.appendChild(errorLi);
 
         // Dispatch error event
@@ -913,6 +929,46 @@ export class InsytfulSearchElement extends HTMLElement {
     if (this._modes.length >= 2) {
       this._renderModeTabs();
     }
+  }
+
+  /**
+   * One-time parse of `<insytful-callout type="error">` child config.
+   * The callout itself is never displayed in light DOM (unprojected children
+   * are hidden); its descendants are read as data and used by the error
+   * handler when an API call fails.
+   *
+   * Supported children:
+   *   <insytful-callout-title>...</insytful-callout-title>
+   *   <insytful-callout-text>...</insytful-callout-text>
+   *   <insytful-callout-cta href="..." [target="..."] [rel="..."]>...</insytful-callout-cta>
+   */
+  private _parseErrorCallout(): void {
+    const calloutEl = this.querySelector('insytful-callout[type="error"]');
+    if (!calloutEl) return;
+
+    const titleEl = calloutEl.querySelector('insytful-callout-title');
+    const textEl = calloutEl.querySelector('insytful-callout-text');
+    const ctaEl = calloutEl.querySelector('insytful-callout-cta');
+
+    const title = titleEl?.textContent?.trim() || undefined;
+    const text = textEl?.textContent?.trim() || undefined;
+
+    let cta: { text: string; path: string; target?: string; rel?: string } | undefined;
+    if (ctaEl) {
+      const ctaText = ctaEl.textContent?.trim();
+      const path = ctaEl.getAttribute('href') || undefined;
+      if (ctaText && path) {
+        cta = {
+          text: ctaText,
+          path,
+          target: ctaEl.getAttribute('target') || undefined,
+          rel: ctaEl.getAttribute('rel') || undefined,
+        };
+      }
+    }
+
+    if (!title && !text && !cta) return;
+    this._errorCallout = { title, text, cta };
   }
 
   /**

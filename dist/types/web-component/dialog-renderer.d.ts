@@ -115,4 +115,12 @@ export declare function renderModeSwitchTabs(modes: Array<{
  * Create an error callout `<li>` element.
  * Matches the React `SearchErrorCallout` component styling.
  */
-export declare function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null): HTMLLIElement;
+export declare function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null, opts?: {
+    title?: string;
+    cta?: {
+        text: string;
+        path: string;
+        target?: string;
+        rel?: string;
+    };
+}): HTMLLIElement;
