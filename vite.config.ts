@@ -5,7 +5,7 @@
  * - ES modules only
  * - React 17+ compatible (classic JSX runtime)
  * - Externalises react/react-dom (peer dependencies)
- * - Bundles contensis-rag-react and focus-trap
+ * - Bundles the RAG hooks (lib/api) and focus-trap
  * - Generates TypeScript declaration files
  */
 
@@ -22,11 +22,9 @@ export default defineConfig({
       entryRoot: "lib",
       outDir: "dist/types",
       insertTypesEntry: true,
+      exclude: ["lib/**/*.test.ts", "lib/**/*.test.tsx", "lib/**/__tests__/**"],
     }),
   ],
-  ssr: {
-    noExternal: ["contensis-rag-react"],
-  },
   build: {
     commonjsOptions: {
       esmExternals: true,

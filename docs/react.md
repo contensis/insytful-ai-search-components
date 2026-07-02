@@ -67,7 +67,7 @@ Provider component. Everything else must be a descendant.
 
 ```tsx
 <InsytfulSearch.Root
-  options={{ config: 'your-config' }}
+  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
   open={isOpen}
   onOpenChange={setOpen}
   theme={customCSS}
@@ -82,7 +82,7 @@ Provider component. Everything else must be a descendant.
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
-| `options` | `{ config: string, baseUrl?: string }` | Yes | RAG API configuration |
+| `options` | `{ config: string, baseUrl: string }` | Yes | RAG API configuration |
 | `open` | `boolean` | No | Controlled open state |
 | `defaultOpen` | `boolean` | No | Initial open state (uncontrolled) |
 | `onOpenChange` | `(open: boolean) => void` | No | Called when open state changes |
@@ -230,7 +230,7 @@ Footer text, typically for AI disclaimers.
 Switch between AI search and classic (URL-based) search:
 
 ```tsx
-<InsytfulSearch.Root options={{ config: 'your-config' }} open={open} onOpenChange={setOpen}>
+<InsytfulSearch.Root options={{ config: 'your-config', baseUrl: 'https://your-api.com' }} open={open} onOpenChange={setOpen}>
   <InsytfulSearch.Modes defaultValue="ai">
     <InsytfulSearch.ModeSwitch>
       {({ mode, onSwitch }) => (
@@ -303,6 +303,63 @@ const { mode, onSwitchMode } = InsytfulSearch.useModeContext('MyComponent');
 // Safe variant -- returns null if not inside Search.Modes
 const modeCtx = InsytfulSearch.useModeContextSafe();
 ```
+
+## RAG Hooks
+
+`Search.Root` streams AI responses using a `RAGProvider` and `useRAGConversationContext` under the hood. These hooks are also exported directly, so you can build a custom chat UI without the compound-component modal.
+
+```tsx
+import {
+  RAGProvider,
+  useRAGConversationContext,
+  useRAGResponseContext,
+  useRAGConversation,
+  useRAGResponse,
+} from 'insytful-ai-search-components';
+import type { RAGMessage } from 'insytful-ai-search-components';
+```
+
+### `RAGProvider`
+
+Provider that holds the RAG API config for descendant hooks. Wraps children in a `GoogleReCaptchaProvider` when `recaptchaSiteKey` is set.
+
+```tsx
+<RAGProvider config="your-config" baseUrl="https://your-api.com" recaptchaSiteKey="...">
+  {children}
+</RAGProvider>
+```
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `config` | `string` | Yes | RAG project/config identifier |
+| `baseUrl` | `string` | Yes | RAG API base URL |
+| `recaptchaSiteKey` | `string` | No | Google reCAPTCHA v3 site key. When set, requests include an `X-Recaptcha-Token` header |
+
+### `useRAGConversationContext` / `useRAGResponseContext`
+
+Read the ambient `RAGProvider` config -- use these inside a `RAGProvider` descendant instead of passing `config`/`baseUrl` manually. Throws if used outside a `RAGProvider`.
+
+```tsx
+const { messages, loading, error, ask } = useRAGConversationContext();
+const { response, loading, error, ask } = useRAGResponseContext();
+
+await ask('What is this?', ['faq', 'docs']); // sections param is optional
+```
+
+### `useRAGConversation` / `useRAGResponse`
+
+Standalone variants that take `config`, `baseUrl`, and an optional `recaptchaSiteKey` directly, without requiring a `RAGProvider`.
+
+```tsx
+const { messages, loading, error, ask } = useRAGConversation(config, baseUrl, recaptchaSiteKey);
+const { response, loading, error, ask } = useRAGResponse(config, baseUrl, recaptchaSiteKey);
+```
+
+`useRAGConversation` accumulates a `RAGMessage[]` transcript (`{ role: 'user' | 'assistant', content: string }`); `useRAGResponse` exposes a single accumulated `response: string` for the latest question. Both stream via Server-Sent Events and expose the same `ask(question, sections?)` signature.
+
+> **Security notes:**
+> - Session continuity is tracked via one `rag-session-id` key in `localStorage`, shared across every `RAGProvider`/hook instance on the page -- it is not namespaced per config or per component.
+> - If the reCAPTCHA script fails to load or isn't ready, the hooks log a warning and send the request without a token rather than blocking the user (fail-open).
 
 ## Styling
 

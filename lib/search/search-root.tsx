@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { RAGProvider, useRAGConversationContext } from "contensis-rag-react";
+import { RAGProvider, useRAGConversationContext } from "../api";
 
 import { SearchProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
@@ -11,7 +11,7 @@ import css from "../main.css?inline";
 
 export type SearchRootProps = {
   children: React.ReactNode;
-  options: { config: string; baseUrl?: string };
+  options: { config: string; baseUrl: string };
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -27,7 +27,7 @@ export type SearchRootProps = {
 };
 
 // Clear any stale RAG session so each page load starts a fresh conversation.
-// The session ID is read lazily by contensis-rag-react only when ask() is called,
+// The session ID is read lazily by lib/api only when ask() is called,
 // so this always runs before any session ID is consumed.
 if (typeof window !== "undefined") {
   try { localStorage.removeItem("rag-session-id"); } catch { /* restricted env */ }
@@ -94,7 +94,7 @@ function SearchRootInner({
   setOpen: (open: boolean) => void;
   titleId: string;
   descriptionId: string;
-  options: { config: string; baseUrl?: string };
+  options: { config: string; baseUrl: string };
   theme?: string;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
@@ -104,7 +104,7 @@ function SearchRootInner({
   const { messages, loading, error, ask } = useRAGConversationContext();
 
   // Auto-enable mock fetch when isDevMode is true
-  useMockFetch(isDevMode, options.baseUrl ?? "");
+  useMockFetch(isDevMode, options.baseUrl);
 
   // Body scroll lock + scroll position save/restore
   const prevOverflow = useRef("");

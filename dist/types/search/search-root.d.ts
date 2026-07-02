@@ -3,7 +3,7 @@ export type SearchRootProps = {
     children: React.ReactNode;
     options: {
         config: string;
-        baseUrl?: string;
+        baseUrl: string;
     };
     open?: boolean;
     defaultOpen?: boolean;

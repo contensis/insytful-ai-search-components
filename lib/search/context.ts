@@ -38,7 +38,7 @@ export type SearchContextValue = {
   descriptionId: string;
 
   // RAG config
-  options: { config: string; baseUrl?: string };
+  options: { config: string; baseUrl: string };
 
   // Conversation state (from RAGProvider)
   messages: { role: "user" | "assistant"; content: string }[];

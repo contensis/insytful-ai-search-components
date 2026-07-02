@@ -11,7 +11,7 @@ export type SearchContextValue = {
     descriptionId: string;
     options: {
         config: string;
-        baseUrl?: string;
+        baseUrl: string;
     };
     messages: {
         role: "user" | "assistant";
