@@ -8,6 +8,58 @@ function App() {
   const [isOpen, setOpen] = useState(false);
 
   return (
+    <>
+      <InsytfulSearch.Root
+        options={{
+          config: 'demo',
+          baseUrl: 'https://api.insytful.com/v1',
+        }}
+        open={isOpen}
+        onOpenChange={setOpen}
+        theme={theme}
+        isDevMode={true}
+        renderMarkdown={(text) => <Markdown content={text} />}
+        logo={<SparkleIcon size={24} color="#5128c3" />}
+      >
+        <InsytfulSearch.Modes defaultValue="ai">
+          <div className="min-h-screen bg-white">
+            {/* Hero */}
+            <section className="flex items-center justify-center gap-4 lg:gap-10 px-4 py-4 lg:py-[200px] max-w-[1920px] mx-auto w-full">
+              <div className="w-full lg:max-w-[1000px]">
+                <h1 className="font-['Inter',sans-serif] font-extrabold text-[44px] lg:text-[88px] leading-[52px] lg:leading-[96px] tracking-[-1.32px] lg:tracking-[-2.64px] text-[#222] text-center">
+                  The future of AI search starts here
+                </h1>
+                <p className="font-['Inter',sans-serif] text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px] tracking-[-0.54px] lg:tracking-[-0.72px] text-black mt-2 lg:mt-6 text-center">
+                  Unlock faster, smarter answers across your entire website experience
+                </p>
+
+                <div className="lg:max-w-[610px] lg:mx-auto mt-6 lg:mt-16">
+                  <HeroSearchCard onOpenModal={() => setOpen(true)} />
+                  <p className="mt-6 font-['Source_Sans_3',sans-serif] text-[14px] leading-6 text-[#6b6b6b] text-center">
+                    AI-generated answers may contain mistakes. Please verify important information.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <InsytfulSearch.Portal>
+            <InsytfulSearch.Close />
+            <ModalContent />
+          </InsytfulSearch.Portal>
+        </InsytfulSearch.Modes>
+      </InsytfulSearch.Root>
+
+      <ChatWidgetDemo />
+    </>
+  );
+}
+
+/** Demo of variant="widget" — a corner-anchored chat panel instead of the full-bleed modal. */
+function ChatWidgetDemo() {
+  const [isOpen, setOpen] = useState(false);
+
+  return (
     <InsytfulSearch.Root
       options={{
         config: 'demo',
@@ -15,38 +67,27 @@ function App() {
       }}
       open={isOpen}
       onOpenChange={setOpen}
-      theme={theme}
       isDevMode={true}
+      variant="widget"
       renderMarkdown={(text) => <Markdown content={text} />}
       logo={<SparkleIcon size={24} color="#5128c3" />}
     >
-      <InsytfulSearch.Modes defaultValue="ai">
-        <div className="min-h-screen bg-white">
-          {/* Hero */}
-          <section className="flex items-center justify-center gap-4 lg:gap-10 px-4 py-4 lg:py-[200px] max-w-[1920px] mx-auto w-full">
-            <div className="w-full lg:max-w-[1000px]">
-              <h1 className="font-['Inter',sans-serif] font-extrabold text-[44px] lg:text-[88px] leading-[52px] lg:leading-[96px] tracking-[-1.32px] lg:tracking-[-2.64px] text-[#222] text-center">
-                The future of AI search starts here
-              </h1>
-              <p className="font-['Inter',sans-serif] text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px] tracking-[-0.54px] lg:tracking-[-0.72px] text-black mt-2 lg:mt-6 text-center">
-                Unlock faster, smarter answers across your entire website experience
-              </p>
+      <InsytfulSearch.Trigger className="fixed bottom-6 right-6 z-[1000] w-14 h-14 rounded-full bg-[#195491] text-white shadow-[0px_12px_24px_rgba(0,0,0,0.2)] flex items-center justify-center">
+        <SparkleIcon size={24} color="#ffffff" />
+      </InsytfulSearch.Trigger>
 
-              <div className="lg:max-w-[610px] lg:mx-auto mt-6 lg:mt-16">
-                <HeroSearchCard onOpenModal={() => setOpen(true)} />
-                <p className="mt-6 font-['Source_Sans_3',sans-serif] text-[14px] leading-6 text-[#6b6b6b] text-center">
-                  AI-generated answers may contain mistakes. Please verify important information.
-                </p>
-              </div>
-            </div>
-          </section>
+      <InsytfulSearch.Portal>
+        <InsytfulSearch.Close />
+        <InsytfulSearch.Title>How can we help?</InsytfulSearch.Title>
+        <InsytfulSearch.Description>Ask a question in your own words.</InsytfulSearch.Description>
+        <InsytfulSearch.Messages className="px-4" />
+        <div className="px-4">
+          <InsytfulSearch.Input />
         </div>
-
-        <InsytfulSearch.Portal>
-          <InsytfulSearch.Close />
-          <ModalContent />
-        </InsytfulSearch.Portal>
-      </InsytfulSearch.Modes>
+        <InsytfulSearch.Disclaimer className="text-center p-4">
+          AI-generated answers may be inaccurate.
+        </InsytfulSearch.Disclaimer>
+      </InsytfulSearch.Portal>
     </InsytfulSearch.Root>
   );
 }

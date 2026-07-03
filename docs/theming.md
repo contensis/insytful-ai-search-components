@@ -25,6 +25,14 @@ Both the Web Component and React versions support the same theme variables. For 
 --insytful-modal-max-width: 784px;
 --insytful-modal-radius: 0px;
 
+/* Widget surface — only used when Search.Root has variant="widget" */
+--insytful-widget-width: 380px;
+--insytful-widget-height: 600px;
+--insytful-widget-inset-bottom: 24px;
+--insytful-widget-inset-right: 24px;
+--insytful-widget-radius: 16px;
+--insytful-widget-shadow: 0px 12px 40px rgba(0, 0, 0, 0.16);
+
 /* Suggestion buttons */
 --insytful-btn-prompt-bg-default: #e2eefa;
 --insytful-btn-prompt-bg-hover: #c8daec;

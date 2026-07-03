@@ -19,6 +19,12 @@ export type SearchRootProps = {
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode?: boolean;
+  /**
+   * "modal" (default) is a full-bleed dialog that locks body scroll while open.
+   * "widget" is a floating panel anchored to a corner (sized/positioned via
+   * --insytful-widget-* CSS variables) that leaves the host page scrollable.
+   */
+  variant?: "modal" | "widget";
   offsets?: {
     top?: number | string;
     left?: number | string;
@@ -51,7 +57,7 @@ const useStableId = typeof React.useId === "function"
 export function SearchRoot({
   children, options,
   open: openProp, defaultOpen = false, onOpenChange,
-  theme, renderMarkdown, logo, isDevMode = false, offsets,
+  theme, renderMarkdown, logo, isDevMode = false, variant = "modal", offsets,
 }: SearchRootProps) {
   const [open, setOpen] = useControllableState({
     prop: openProp, defaultProp: defaultOpen, onChange: onOpenChange,
@@ -74,7 +80,7 @@ export function SearchRoot({
         titleId={titleId} descriptionId={descriptionId}
         options={stableOptions} theme={theme}
         renderMarkdown={renderMarkdown} logo={logo}
-        isDevMode={isDevMode} offsets={stableOffsets}
+        isDevMode={isDevMode} variant={variant} offsets={stableOffsets}
       >
         {children}
       </SearchRootInner>
@@ -87,7 +93,7 @@ SearchRoot.displayName = "Search.Root";
 /** Inner component inside RAGProvider to access conversation context. */
 function SearchRootInner({
   children, open, setOpen, titleId, descriptionId,
-  options, theme, renderMarkdown, logo, isDevMode, offsets,
+  options, theme, renderMarkdown, logo, isDevMode, variant, offsets,
 }: {
   children: React.ReactNode;
   open: boolean;
@@ -99,6 +105,7 @@ function SearchRootInner({
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode: boolean;
+  variant: "modal" | "widget";
   offsets?: SearchRootProps["offsets"];
 }) {
   const { messages, loading, error, ask } = useRAGConversationContext();
@@ -106,12 +113,15 @@ function SearchRootInner({
   // Auto-enable mock fetch when isDevMode is true
   useMockFetch(isDevMode, options.baseUrl);
 
-  // Body scroll lock + scroll position save/restore
+  // Body scroll lock + scroll position save/restore.
+  // Only applies to "modal" — a widget is a small floating panel that
+  // shouldn't take over the host page's scroll behaviour while open.
+  const isModal = variant === "modal";
   const prevOverflow = useRef("");
   const prevPaddingRight = useRef("");
   const prevScrollY = useRef(0);
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !isModal) return;
     if (open) {
       // Save scroll position and scroll to top so modal aligns with header
       prevScrollY.current = window.scrollY;
@@ -131,12 +141,13 @@ function SearchRootInner({
       document.body.style.overflow = prevOverflow.current;
       document.body.style.paddingRight = prevPaddingRight.current;
     };
-  }, [open]);
+  }, [open, isModal]);
 
-  // Offset measurement
+  // Offset measurement — only relevant to the full-bleed modal, which can be
+  // pushed down below a sticky header; the widget is corner-anchored instead.
   const [computedOffsetHeight, setComputedOffsetHeight] = useState(0);
   useEffect(() => {
-    if (typeof window === "undefined" || !open) return;
+    if (typeof window === "undefined" || !open || !isModal) return;
     const els = document.querySelectorAll("[data-insytful-modal-offset]");
     const calc = () => {
       let h = 0;
@@ -147,18 +158,18 @@ function SearchRootInner({
     const ro = new ResizeObserver(calc);
     els.forEach((el) => ro.observe(el));
     return () => ro.disconnect();
-  }, [open]);
+  }, [open, isModal]);
 
   const ctx: SearchContextValue = useMemo(() => ({
     open, onOpenChange: setOpen, titleId, descriptionId, options,
     messages, loading, error, onSend: ask,
     renderMarkdown, logo, isDevMode,
-    theme, offsets, computedOffsetHeight,
+    variant, theme, offsets, computedOffsetHeight,
   }), [
     open, setOpen, titleId, descriptionId, options,
     messages, loading, error, ask,
     renderMarkdown, logo, isDevMode,
-    theme, offsets, computedOffsetHeight,
+    variant, theme, offsets, computedOffsetHeight,
   ]);
 
   return <SearchProvider value={ctx}>{children}</SearchProvider>;
@@ -178,7 +189,8 @@ export type SearchPortalProps = { children: React.ReactNode };
  */
 export function SearchPortal({ children }: SearchPortalProps) {
   const ctx = useSearchContext("Search.Portal");
-  const { open, titleId, descriptionId, theme, offsets, computedOffsetHeight } = ctx;
+  const { open, titleId, descriptionId, theme, variant, offsets, computedOffsetHeight } = ctx;
+  const isWidget = variant === "widget";
 
   const { elModalRef } = useModalFocusTrap(ctx.onOpenChange, open);
 
@@ -235,19 +247,32 @@ export function SearchPortal({ children }: SearchPortalProps) {
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       {...(!open ? { inert: "" } : {})}
+      data-insytful-variant={variant}
       className={`insytful-search-dialog-outer fixed flex flex-col bg-[var(--insytful-modal-bg)] overflow-hidden pb-0 ${
         open ? "insytful-search-dialog-open" : "insytful-search-dialog-closed"
       }`}
       style={{
         zIndex: "var(--insytful-z-index, 999)",
-        top: typeof topOffset === "number" ? `${topOffset}px` : topOffset,
-        left, right, bottom: 0,
+        // Widget geometry (corner-anchored size/position) is driven entirely
+        // by CSS custom properties in main.css, not by offset/top math.
+        ...(isWidget
+          ? {}
+          : {
+              top: typeof topOffset === "number" ? `${topOffset}px` : topOffset,
+              left, right, bottom: 0,
+            }),
         opacity: open ? 1 : 0,
         pointerEvents: open ? "auto" : "none",
-        transition: "opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)",
+        transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)${
+          isWidget ? ", transform var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)" : ""
+        }`,
       } as React.CSSProperties}
     >
-      <div className="insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]">
+      <div
+        className={`insytful-search-dialog-inner px-4 w-full mx-auto flex flex-col h-full justify-start gap-[24px] pt-[32px] ${
+          isWidget ? "" : "min-h-[500px] md:justify-center md:gap-[32px]"
+        }`}
+      >
         {children}
       </div>
     </div>,

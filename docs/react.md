@@ -59,6 +59,38 @@ InsytfulSearch.Root          -- Context provider (lives in your DOM tree)
 
 `Root` lives in the consumer's DOM so components like `Trigger` can be placed anywhere (e.g. in a site header). `Portal` creates the Shadow DOM boundary for the modal dialog.
 
+## Widget mode
+
+Every component above works unchanged as a corner-anchored chat widget instead of a full-bleed modal — set `variant="widget"` on `Root` and style `Trigger` as a floating action button:
+
+```tsx
+<InsytfulSearch.Root
+  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  open={open}
+  onOpenChange={setOpen}
+  variant="widget"
+>
+  <InsytfulSearch.Trigger className="fixed bottom-6 right-6 z-[1000] rounded-full w-14 h-14 shadow-lg">
+    Chat
+  </InsytfulSearch.Trigger>
+
+  <InsytfulSearch.Portal>
+    <InsytfulSearch.Close />
+    <InsytfulSearch.Title>How can we help?</InsytfulSearch.Title>
+    <InsytfulSearch.Input />
+    <InsytfulSearch.Messages />
+  </InsytfulSearch.Portal>
+</InsytfulSearch.Root>
+```
+
+What changes under `variant="widget"`:
+
+- `Portal` renders a fixed-size panel anchored to the bottom-right corner instead of an edge-to-edge dialog. Size and position are controlled by CSS variables (`--insytful-widget-width`, `--insytful-widget-height`, `--insytful-widget-inset-bottom`, `--insytful-widget-inset-right`, `--insytful-widget-radius`, `--insytful-widget-shadow`) — see [Theming](./theming.md).
+- `Root` no longer locks body scroll or scrolls the page to top when it opens, since a widget shouldn't take over the host page.
+- The `offsets` prop (sticky-header push-down) is ignored — position the widget with the CSS variables above instead.
+
+Everything else — focus trap, `Trigger`/`Close` behaviour, RAG streaming, theming — is identical to modal mode.
+
 ## Components
 
 ### `InsytfulSearch.Root`
@@ -74,6 +106,7 @@ Provider component. Everything else must be a descendant.
   renderMarkdown={(md) => <ReactMarkdown>{md}</ReactMarkdown>}
   logo={<MyLogo />}
   isDevMode={false}
+  variant="modal"
   offsets={{ top: 80 }}
 >
   {children}
@@ -90,7 +123,8 @@ Provider component. Everything else must be a descendant.
 | `renderMarkdown` | `(md: string) => ReactNode` | No | Custom markdown renderer |
 | `logo` | `ReactNode` | No | Logo shown next to AI responses |
 | `isDevMode` | `boolean` | No | Use mock responses for development |
-| `offsets` | `{ top?, bottom?, left?, right? }` | No | Modal positioning (number or string) |
+| `variant` | `"modal" \| "widget"` | No | `"modal"` (default) is a full-bleed dialog that locks body scroll while open. `"widget"` is a corner-anchored floating panel that leaves the host page scrollable. |
+| `offsets` | `{ top?, bottom?, left?, right? }` | No | Modal positioning (number or string). Ignored by `variant="widget"` — see [Widget mode](#widget-mode) for its own sizing/position variables. |
 
 ### `InsytfulSearch.Portal`
 

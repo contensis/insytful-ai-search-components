@@ -54,6 +54,7 @@ export type SearchContextValue = {
   isDevMode: boolean;
 
   // Portal config
+  variant: "modal" | "widget";
   theme?: string;
   offsets?: {
     top?: number | string;

@@ -38,7 +38,7 @@ function Message({
       data-role={message.role} // Used to target user messages for scroll-to-top positioning
     >
       {logo && !isUser && (
-        <div className="insytful-search-message-logo flex-shrink-0 hidden md:block">
+        <div className="insytful-search-message-logo insytful-search-message-logo-aside flex-shrink-0 hidden md:block">
           {logo}
         </div>
       )}
@@ -57,7 +57,7 @@ function Message({
         >
           <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
             {logo && (
-              <div className="insytful-search-message-logo flex-shrink-0 md:hidden">
+              <div className="insytful-search-message-logo insytful-search-message-logo-inline flex-shrink-0 md:hidden">
                 {logo}
               </div>
             )}
