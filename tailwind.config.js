@@ -31,7 +31,7 @@ export default {
   content: [
     "./index.html",
     "./lib/**/*.{js,ts,jsx,tsx}",
-    "./playground-react/**/*.{js,ts,jsx,tsx}",
+    "./stories/**/*.{js,ts,jsx,tsx}",
   ],
   plugins: [],
   important: false,
