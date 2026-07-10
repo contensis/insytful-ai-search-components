@@ -1,0 +1,12 @@
+/* Storybook demo theme — imports shared brand tokens.
+   Prose/markdown styles are handled by the component defaults
+   in lib/main.css. Only brand overrides and layout tweaks here. */
+@import '../playground-shared/theme.css';
+
+/* Responsive heading adjustments for larger screens */
+@media only screen and (min-width: 1024px) {
+  .insytful-search-message-content h2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}

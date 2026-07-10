@@ -1,0 +1,197 @@
+/* Storybook demo shell for the standalone Web Component — trimmed from
+   playground-wc/index.html's inline <style> (hero section only, no nav).
+   Scoped under .wc-hero-demo so it can't leak into other stories that
+   share the same Storybook preview iframe. */
+
+.wc-hero-demo insytful-search:not(:defined) { display: none; }
+
+.wc-hero-demo,
+.wc-hero-demo *,
+.wc-hero-demo *::before,
+.wc-hero-demo *::after {
+  box-sizing: border-box;
+}
+
+.wc-hero-demo {
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.wc-hero-demo .hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 16px 16px 40px;
+}
+
+.wc-hero-demo .hero-content {
+  width: 100%;
+}
+
+.wc-hero-demo .hero-heading {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 52px;
+  letter-spacing: -1.32px;
+  color: #222;
+  text-align: center;
+}
+
+.wc-hero-demo .hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.54px;
+  color: #000;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.wc-hero-demo .hero-search-block {
+  margin-top: 24px;
+}
+
+.wc-hero-demo .hero-search-card-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.wc-hero-demo .hero-search-halo {
+  pointer-events: none;
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  opacity: 0.3;
+  filter: blur(7px);
+  transition: opacity 150ms;
+  z-index: 0;
+  background: linear-gradient(to bottom right, #35d2c5, #35d2c5 50%, #1d70b8);
+}
+
+.wc-hero-demo .hero-search-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 88px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #acbeef;
+  border-radius: 12px;
+  box-shadow: 0px 24px 32px 0px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.wc-hero-demo .hero-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  position: relative;
+}
+
+.wc-hero-demo .hero-search-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.wc-hero-demo .hero-search-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333;
+  padding: 0 40px 0 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.wc-hero-demo .hero-search-textarea::placeholder {
+  color: #999;
+}
+
+.wc-hero-demo .hero-search-send {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border: none;
+  background: #0b0c0c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.1;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.wc-hero-demo .hero-search-send.active {
+  opacity: 1;
+}
+
+.wc-hero-demo .hero-search-send.active:hover {
+  background: #333;
+}
+
+.wc-hero-demo .hero-source-text {
+  margin-top: 24px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  color: #6b6b6b;
+  text-align: center;
+}
+
+.wc-hero-demo .hero-source-text a {
+  color: #2165be;
+  text-decoration: underline;
+}
+
+.wc-hero-demo .hero-source-text a:hover {
+  text-decoration: none;
+}
+
+@media (min-width: 1024px) {
+  .wc-hero-demo .hero {
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    padding: 200px 16px;
+  }
+  .wc-hero-demo .hero-content {
+    max-width: 1000px;
+  }
+  .wc-hero-demo .hero-heading {
+    font-size: 88px;
+    line-height: 96px;
+    letter-spacing: -2.64px;
+  }
+  .wc-hero-demo .hero-subtitle {
+    font-size: 18px;
+    line-height: 26px;
+    letter-spacing: -0.72px;
+    margin-top: 24px;
+  }
+  .wc-hero-demo .hero-search-block {
+    max-width: 610px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 64px;
+  }
+  .wc-hero-demo .hero-search-card {
+    height: 120px;
+    border-radius: 16px;
+  }
+}
