@@ -399,6 +399,22 @@
   margin-top: 0.5em;
 }
 
+.insytful-search-skeleton-text-transition {
+  display: inline-block;
+  animation: skeleton-text-entrance 300ms ease-out;
+}
+
+@keyframes skeleton-text-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(-1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Messages list */
 .insytful-search-messages-inner {
   position: relative;
@@ -434,6 +450,22 @@
   to {
     opacity: 0;
   }
+}
+
+@keyframes skeleton-dots {
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+}
+
+.animate-skeleton-dots {
+  animation: skeleton-dots 1.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

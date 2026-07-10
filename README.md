@@ -48,6 +48,27 @@ export function App() {
 
 [Full React guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/react-implementation)
 
+### Loading message rotation (React only)
+
+Customise the loading message that displays while the AI is generating a response. Messages rotate based on elapsed time (in milliseconds):
+
+```tsx
+<InsytfulSearch.Messages
+  searching={{
+    messages: [
+      { from: 0, to: 1000, text: "Searching..." },
+      { from: 1000, to: 4000, text: "Finding the most relevant pages..." },
+      { from: 4000, to: 6000, text: "Finding the most relevant pages..." },
+      { from: 6000, to: "Infinity", text: "Writing an answer..." },
+    ],
+  }}
+/>
+```
+
+If `searching` is not provided, the default message "Generating response..." is used. Timestamps are in milliseconds (e.g., `1000` = 1 second, `6000` = 6 seconds).
+
+**Note:** Message rotation is currently available in React only. Web Component support can be added in a future release if needed.
+
 ## Web Component
 
 ```html

@@ -116,9 +116,9 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
         async start(controller) {
           const encoder = new TextEncoder();
 
-          // In dev mode, delay the response by 3 seconds so skeleton shows before streaming
+          // In dev mode, delay the response by 8 seconds so skeleton loading messages have time to display
           if (isDevMode) {
-            await new Promise(res => setTimeout(res, 3000));
+            await new Promise(res => setTimeout(res, 8000));
           }
 
           for (const chunk of chunks) {

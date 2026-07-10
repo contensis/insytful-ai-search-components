@@ -43,6 +43,7 @@ export type SearchContextValue = {
   // Conversation state (from RAGProvider)
   messages: { role: "user" | "assistant"; content: string }[];
   loading: boolean;
+  elapsed: number;
   error?: string | null;
 
   // Actions

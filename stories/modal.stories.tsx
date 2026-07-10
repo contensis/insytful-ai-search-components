@@ -6,7 +6,13 @@ import theme from "./theme.css?inline";
 
 const BASE_URL = "https://api.insytful.com/v1";
 
-function SparkleIcon({ size = 24, color = "#333" }: { size?: number; color?: string }) {
+function SparkleIcon({
+  size = 24,
+  color = "#333",
+}: {
+  size?: number;
+  color?: string;
+}) {
   return (
     <svg
       focusable="false"
@@ -56,13 +62,22 @@ function ModalContent() {
           <div className="flex flex-col items-center gap-2 lg:gap-4 lg:mt-auto px-4">
             <InsytfulSearch.Title>How can we help?</InsytfulSearch.Title>
             <InsytfulSearch.Description>
-              AI search can help you find services, report issues, or guide you through applications.
+              AI search can help you find services, report issues, or guide you
+              through applications.
             </InsytfulSearch.Description>
           </div>
         </InsytfulSearch.Mode>
       )}
 
-      <InsytfulSearch.Messages className="px-4" />
+      <InsytfulSearch.Messages
+        className="px-4"
+        searching={[
+          { from: 0, to: 1000, text: "..." },
+          { from: 1000, to: 3000, text: "Searching Zengenti's content..." },
+          { from: 3000, to: 6000, text: "Finding the most relevant pages..." },
+          { from: 6000, to: "Infinity", text: "Writing an answer..." },
+        ]}
+      />
 
       {hasMessages ? (
         <div className="mt-auto">
@@ -72,8 +87,15 @@ function ModalContent() {
                 <InsytfulSearch.ErrorCallout
                   title="Something went wrong"
                   text="We couldn't reach the search service. Try again or get help."
-                  cta={{ text: "Visit help centre", path: "https://www.example.com/help" }}
-                  onSwitchClassic={modeCtx?.onSwitchMode ? () => modeCtx.onSwitchMode("classic") : undefined}
+                  cta={{
+                    text: "Visit help centre",
+                    path: "https://www.example.com/help",
+                  }}
+                  onSwitchClassic={
+                    modeCtx?.onSwitchMode
+                      ? () => modeCtx.onSwitchMode("classic")
+                      : undefined
+                  }
                 />
               </div>
             )}
@@ -81,7 +103,8 @@ function ModalContent() {
               <InsytfulSearch.Input />
             </div>
             <InsytfulSearch.Disclaimer className="text-center p-4">
-              AI-generated answers may be inaccurate. Please verify important information.
+              AI-generated answers may be inaccurate. Please verify important
+              information.
             </InsytfulSearch.Disclaimer>
           </InsytfulSearch.Mode>
         </div>
@@ -96,7 +119,8 @@ function ModalContent() {
           </div>
           <div className="mt-auto pb-6 p-4">
             <InsytfulSearch.Disclaimer>
-              AI-generated answers may be inaccurate. Please verify important information.
+              AI-generated answers may be inaccurate. Please verify important
+              information.
             </InsytfulSearch.Disclaimer>
           </div>
         </>
@@ -126,13 +150,15 @@ function HeroAndModalDemo() {
                 The future of AI search starts here
               </h1>
               <p className="font-['Inter',sans-serif] text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px] tracking-[-0.54px] lg:tracking-[-0.72px] text-black mt-2 lg:mt-6 text-center">
-                Unlock faster, smarter answers across your entire website experience
+                Unlock faster, smarter answers across your entire website
+                experience
               </p>
 
               <div className="lg:max-w-[610px] lg:mx-auto mt-6 lg:mt-16">
                 <HeroSearchCard onOpenModal={() => setOpen(true)} />
                 <p className="mt-6 font-['Source_Sans_3',sans-serif] text-[14px] leading-6 text-[#6b6b6b] text-center">
-                  AI-generated answers may contain mistakes. Please verify important information.
+                  AI-generated answers may contain mistakes. Please verify
+                  important information.
                 </p>
               </div>
             </div>

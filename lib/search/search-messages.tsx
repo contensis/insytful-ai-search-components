@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { useSearchContext } from "./context";
 import { hash } from "../utilities/hash.util";
-import { SearchSkeletonBody } from "./skeleton";
+import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -11,19 +11,23 @@ function doShiftHeadings(markdown: string): string {
   return markdown.replace(/^(#{1,5})\s/gm, (_match, hashes: string) => `${hashes}# `);
 }
 
+type MessageProps = {
+  message: { role: "user" | "assistant"; content: string };
+  logo?: React.ReactNode;
+  renderContent?: (content: string) => React.ReactNode;
+  showSkeleton?: boolean;
+  elapsed?: SearchSkeletonProps["elapsed"];
+  searching?: SearchSkeletonProps['messages'];
+}
+
 function Message({
   message,
   logo,
   renderContent,
   showSkeleton,
-  searchingText,
-}: {
-  message: { role: "user" | "assistant"; content: string };
-  logo?: React.ReactNode;
-  renderContent?: (content: string) => React.ReactNode;
-  showSkeleton?: boolean;
-  searchingText?: string;
-}) {
+  elapsed,
+  searching,
+}: MessageProps) {
   const isUser = message.role === "user";
   const paragraphs = useMemo(
     () => message.content.split("\n\n"),
@@ -62,7 +66,7 @@ function Message({
               </div>
             )}
             {showSkeleton ? (
-              <SearchSkeletonBody searchingText={searchingText} />
+              <SearchSkeletonBody elapsed={elapsed} messages={searching || []} />
             ) : (
               <div className="insytful-search-message-content">
                 {renderContent
@@ -190,16 +194,16 @@ export function SearchErrorCallout({
 
 export type SearchMessagesProps = {
   className?: string;
-  searchingText?: string;
+  searching?: SearchSkeletonProps['messages'];
   children?: React.ReactNode;
 };
 
 export function SearchMessages({
   className,
-  searchingText,
+  searching,
   children,
 }: SearchMessagesProps) {
-  const { messages, loading, error, renderMarkdown, logo, open } =
+  const { messages, loading, elapsed, error, renderMarkdown, logo, open } =
     useSearchContext("Search.Messages");
 
   const elContainerRef = useRef<HTMLDivElement>(null);
@@ -355,7 +359,8 @@ export function SearchMessages({
                   logo={logo}
                   message={message}
                   showSkeleton={isLastAssistant && showSkeleton}
-                  searchingText={searchingText}
+                  elapsed={elapsed}
+                  searching={searching}
                 />
               );
             })}

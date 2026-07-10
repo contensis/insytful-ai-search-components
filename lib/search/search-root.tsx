@@ -110,7 +110,7 @@ function SearchRootInner({
   variant: "modal" | "widget";
   offsets?: SearchRootProps["offsets"];
 }) {
-  const { messages, loading, error, ask } = useRAGConversationContext();
+  const { messages, loading, elapsed, error, ask } = useRAGConversationContext();
 
   // Auto-enable mock fetch when isDevMode is true
   useMockFetch(isDevMode, options.baseUrl);
@@ -164,12 +164,12 @@ function SearchRootInner({
 
   const ctx: SearchContextValue = useMemo(() => ({
     open, onOpenChange: setOpen, titleId, descriptionId, options,
-    messages, loading, error, onSend: ask,
+    messages, loading, elapsed, error, onSend: ask,
     renderMarkdown, logo, isDevMode,
     variant, theme, offsets, computedOffsetHeight,
   }), [
     open, setOpen, titleId, descriptionId, options,
-    messages, loading, error, ask,
+    messages, loading, elapsed, error, ask,
     renderMarkdown, logo, isDevMode,
     variant, theme, offsets, computedOffsetHeight,
   ]);
