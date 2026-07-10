@@ -38,10 +38,13 @@
     "./dist/insytful-search.js"
   ],
   "scripts": {
-    "dev": "vite --host",
+    "dev": "npm run storybook",
     "dev:wc": "vite --config vite.config.wc-dev.ts",
+    "prestorybook": "npm run build:wc:storybook",
     "storybook": "storybook dev -p 6006",
+    "prebuild-storybook": "npm run build:wc:storybook",
     "build-storybook": "storybook build",
+    "build:wc:storybook": "vite build --config vite.config.wc-storybook.ts",
     "prebuild": "rimraf dist",
     "build": "tsc -b && vite build",
     "build:wc": "vite build --config vite.config.wc.ts",

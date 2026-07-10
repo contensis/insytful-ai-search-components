@@ -29,7 +29,6 @@ export default {
     },
   },
   content: [
-    "./index.html",
     "./lib/**/*.{js,ts,jsx,tsx}",
     "./stories/**/*.{js,ts,jsx,tsx}",
   ],

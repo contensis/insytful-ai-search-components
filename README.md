@@ -1,6 +1,6 @@
 # Insytful AI Search Components
 
-AI-powered search modals for the web. Ships in two flavours — a standalone **Web Component** for any HTML page, and **React components** for React applications. Both share the same visual design, theming, and Contensis RAG API integration.
+AI-powered search modals for the web. Ships in two flavours — a standalone **Web Component** for any HTML page, and **React components** for React applications. Both share the same visual design, theming, and Insytful RAG API integration.
 
 ## Install
 
@@ -15,16 +15,16 @@ Peer dependencies: `react` (>=17) and `react-dom` (>=17).
 **Web Component** — single script tag, no build step:
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
 ```
 
-## Quick start — React
+## React
 
 ```tsx
 import { useState } from 'react';
 import { InsytfulSearch } from 'insytful-ai-search-components';
 
-function App() {
+export function App() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,41 +34,43 @@ function App() {
       onOpenChange={setOpen}
     >
       <InsytfulSearch.Trigger>Search</InsytfulSearch.Trigger>
-
       <InsytfulSearch.Portal>
         <InsytfulSearch.Title>How can we help?</InsytfulSearch.Title>
         <InsytfulSearch.Input />
         <InsytfulSearch.Messages />
-        <InsytfulSearch.Suggestions items={['How do I...?', 'What is...?']} />
       </InsytfulSearch.Portal>
     </InsytfulSearch.Root>
   );
 }
 ```
 
-`InsytfulSearch.Root` provides shared context. `InsytfulSearch.Portal` renders into a Shadow DOM dialog on `document.body`. `Trigger` can be placed anywhere in your DOM.
+[Full React guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/react-implementation)
 
-## Quick start — Web Component
+## Web Component
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components@2.1.7/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
 
-<insytful-search
-  api-uri="https://your-api.com"
-  project-id="your-project"
->
+<insytful-search api-uri="https://your-api.com" project-id="your-project">
   <button slot="trigger">Search</button>
   <span slot="title">How can we help?</span>
-  <insytful-close></insytful-close>
-  <insytful-suggestion>How do I get started?</insytful-suggestion>
 </insytful-search>
 ```
 
-## Documentation
+[Full Web Component guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/classic-contensis-implementation)
 
-- **[Web Component](./docs/web-component.md)** — attributes, slots, child elements, JavaScript API, Contensis/Razor integration, dynamic offsets
-- **[React Components](./docs/react.md)** — full API reference, architecture, mode switching, context hooks, markdown rendering, TypeScript types
-- **[Theming](./docs/theming.md)** — CSS custom properties, focus ring behaviour, font-size scaling
+## Local development
+
+```bash
+npm install
+npm run storybook
+```
+
+Opens Storybook with live, hot-reloadable demos of both flavours — the React modal and corner-widget variants, and the standalone Web Component — each running against a mocked API response so no backend is required. Storybook is dev tooling only; it is never bundled into the published package.
+
+## Configuration & theming
+
+See the [full documentation on insytful.com](https://insytful.com/help-and-docs/guides/insytful-ai-search/overview) for configuration options, [theming](https://insytful.com/help-and-docs/guides/insytful-ai-search/theming), and API details.
 
 ## Accessibility
 
@@ -80,7 +82,6 @@ Both versions share the same accessibility features:
 - Trigger elements expose `aria-expanded` and `data-state`
 - `inert` hides the dialog from assistive tech when closed
 - Respects `prefers-reduced-motion`
-- AI-response prose scales with the user's browser text-size preference (see [Theming](./docs/theming.md#base-font-size-and-scaling))
 
 ## Browser support
 

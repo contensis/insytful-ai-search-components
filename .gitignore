@@ -12,6 +12,7 @@ node_modules
 dist-ssr
 *.local
 storybook-static
+stories/web-component/dist
 
 # Editor directories and files
 .vscode/*
