@@ -66,8 +66,10 @@ export function SearchRoot({
   const descriptionId = useStableId("insytful-search-description");
 
   // Stabilise object props so inline literals don't break context memoisation
-  const stableOptions = useMemo(() => options, [options.config, options.baseUrl]); // eslint-disable-line react-hooks/exhaustive-deps
-  const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableOptions = useMemo(() => options, [options.config, options.baseUrl]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
   return (
     <RAGProvider
@@ -235,6 +237,7 @@ export function SearchPortal({ children }: SearchPortalProps) {
   const { left = 0, right = 0 } = offsets || {};
   const topOffset = offsets?.top ?? computedOffsetHeight;
 
+  // eslint-disable-next-line react-hooks/refs
   if (!ready || !mountRef.current) return null;
 
   return ReactDOM.createPortal(
@@ -276,6 +279,7 @@ export function SearchPortal({ children }: SearchPortalProps) {
         {children}
       </div>
     </div>,
+    // eslint-disable-next-line react-hooks/refs
     mountRef.current,
   );
 }

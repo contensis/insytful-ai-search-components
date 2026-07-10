@@ -41,6 +41,7 @@ export const RAGProvider = ({
   return content;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useRAGConfig = () => {
   const ctx = useContext(RAGContext);
   if (!ctx) throw new Error("useRAGConfig must be used within RAGProvider");

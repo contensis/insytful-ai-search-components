@@ -38,7 +38,9 @@ export function App() {
         <InsytfulSearch.Title>How can we help?</InsytfulSearch.Title>
         <InsytfulSearch.Input />
         <InsytfulSearch.Messages />
+        <InsytfulSearch.Suggestions />
       </InsytfulSearch.Portal>
+      <InsytfulSearch.Close />
     </InsytfulSearch.Root>
   );
 }
@@ -54,10 +56,12 @@ export function App() {
 <insytful-search api-uri="https://your-api.com" project-id="your-project">
   <button slot="trigger">Search</button>
   <span slot="title">How can we help?</span>
+  <insytful-suggestion slot="suggestions"></insytful-suggestion>
+  <insytful-close slot="close"></insytful-close>
 </insytful-search>
 ```
 
-[Full Web Component guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/classic-contensis-implementation)
+[Full Web Component guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/web-component-implementation)
 
 ## Local development
 
@@ -68,9 +72,34 @@ npm run storybook
 
 Opens Storybook with live, hot-reloadable demos of both flavours — the React modal and corner-widget variants, and the standalone Web Component — each running against a mocked API response so no backend is required. Storybook is dev tooling only; it is never bundled into the published package.
 
+## Release checklist
+
+Before publishing a new version:
+
+```bash
+# 1. Verify code quality
+npm run lint
+
+# 2. Run tests
+npm run test
+
+# 3. Build all outputs (React components + Web Component)
+npm run build:all
+
+# 4. Create package tarball (optional, for inspection)
+npm run pack
+
+# 5. Publish to npm (when ready)
+npm publish
+```
+
+The `npm publish` step is handled by the `prepublishOnly` hook, which runs `npm run build:all` automatically to ensure dist files are up-to-date.
+
 ## Configuration & theming
 
 See the [full documentation on insytful.com](https://insytful.com/help-and-docs/guides/insytful-ai-search/overview) for configuration options, [theming](https://insytful.com/help-and-docs/guides/insytful-ai-search/theming), and API details.
+
+Both variants scale text size with the browser's text-size preferences via the `--insytful-base-font-size` CSS variable, ensuring accessibility for users with vision needs.
 
 ## Accessibility
 

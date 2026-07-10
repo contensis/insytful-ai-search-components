@@ -26,7 +26,7 @@ export const useRAGResponse = (config: string, baseUrl: string, recaptchaSiteKey
           if (executeRecaptcha) {
             recaptchaToken = await executeRecaptcha("rag_search");
           }
-        } catch (err) {
+        } catch {
           console.warn("reCAPTCHA skipped: no provider found");
         }
       }
@@ -105,17 +105,18 @@ export const useRAGResponse = (config: string, baseUrl: string, recaptchaSiteKey
               try {
                 const json = JSON.parse(part.replace("data: ", ""));
                 if (json?.content) setResponse((prev) => prev + json.content);
-              } catch (err) {
-                console.error("Failed to parse SSE chunk", err, part);
+              } catch (parseErr) {
+                console.error("Failed to parse SSE chunk", parseErr, part);
               }
             }
           }
         }
 
         setLoading(false);
-      } catch (err: any) {
+      } catch (err) {
+        const errorMessage = (err instanceof Error && err.message) ? err.message : "Something went wrong";
         console.error(err);
-        setError(err.message || "Something went wrong");
+        setError(errorMessage);
         setLoading(false);
       }
     },

@@ -57,6 +57,7 @@ export const SearchClose = forwardRef<HTMLButtonElement, SearchCloseProps>(
       const child = children as React.ReactElement<Record<string, unknown>>;
       const childOnClick = (child.props.onClick as ((e: React.MouseEvent) => void) | undefined);
       const childClassName = (child.props.className as string | undefined) ?? "";
+      // eslint-disable-next-line react-hooks/refs
       return React.cloneElement(child, {
         ...closeProps,
         className: `${childClassName} ${className ?? ""}`.trim() || undefined,

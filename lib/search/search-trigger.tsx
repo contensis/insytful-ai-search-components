@@ -25,17 +25,15 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, SearchTriggerProps>(
 
     if (asChild && React.isValidElement(children)) {
       const childOnClick = (children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>).props.onClick;
-      return React.cloneElement(
-        children as React.ReactElement<Record<string, unknown>>,
-        {
-          ...triggerProps,
-          onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
-            childOnClick?.(e);
-            if (!e.defaultPrevented) onOpenChange(!open);
-          },
-          ref,
-        }
-      );
+      // eslint-disable-next-line react-hooks/refs
+      return React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+        ...triggerProps,
+        onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+          childOnClick?.(e);
+          if (!e.defaultPrevented) onOpenChange(!open);
+        },
+        ref,
+      });
     }
 
     return (

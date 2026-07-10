@@ -307,6 +307,7 @@ export function SearchMessages({
       }
     }
     prevMessageCountRef.current = messages.length;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length, open]);
 
   // Collapse the scroll spacer smoothly once the response has finished
