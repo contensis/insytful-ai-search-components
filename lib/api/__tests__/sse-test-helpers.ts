@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+import type { Cta } from "../rag.types";
 
 /** Type-safe factory for a mocked `executeRecaptcha` function, avoiding `as any` at call sites. */
 export function mockExecuteRecaptcha() {
@@ -30,6 +31,11 @@ export function mockSSEBody(chunks: string[]) {
 /** Builds a single SSE "data:" frame (as sent by the RAG API), including the trailing blank line. */
 export function sseDataFrame(content: string): string {
   return `data: ${JSON.stringify({ content })}\n\n`;
+}
+
+/** Builds a single SSE "cta" frame (as sent by the RAG API), including the trailing blank line. */
+export function sseCtaFrame(ctas: Cta[]): string {
+  return `event: cta\ndata: ${JSON.stringify({ ctas })}\n\n`;
 }
 
 export const sseDoneFrame = "event: done\n\n";

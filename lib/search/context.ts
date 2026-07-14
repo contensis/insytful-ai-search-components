@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import type { RAGMessage } from "../api/rag.types";
+import type { Cta, RAGMessage } from "../api/rag.types";
 
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
@@ -49,6 +49,8 @@ export type SearchContextValue = {
 
   // Actions
   onSend: (msg: string) => Promise<void>;
+  /** Observability: fired with the full CTA on every CTA chip click (D8). */
+  onCtaClick?: (cta: Cta) => void;
 
   // Render delegates
   renderMarkdown?: (markdown: string) => React.ReactNode;

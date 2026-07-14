@@ -75,6 +75,21 @@
   --insytful-skeleton-bg: #e8e8e8;
   --insytful-skeleton-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 
+  /* CTA quick actions (Search.Ctas). Pills above the answer — only `primary`
+     gets the solid fill; `secondary` is a ghost/outline. The radius is the
+     family signature (first thing GOV-style hosts square off). */
+  --insytful-cta-bar-gap: 8px;
+  --insytful-cta-radius: 9999px;
+  --insytful-cta-label-text: var(--insytful-text-muted);
+  --insytful-cta-primary-bg-default: #2e3339;
+  --insytful-cta-primary-bg-hover: #3c444d;
+  --insytful-cta-primary-text: #ffffff;
+  --insytful-cta-primary-border: transparent;
+  --insytful-cta-secondary-bg-default: transparent;
+  --insytful-cta-secondary-bg-hover: #f2f2f2;
+  --insytful-cta-secondary-text: var(--insytful-text-default);
+  --insytful-cta-secondary-border: #c8cdd3;
+
   /* Callout Error  */
   --insytful-callout-error-border: #d93025;
   --insytful-callout-error-bg: #fce8e6;
@@ -238,6 +253,10 @@
 }
 .insytful-search-error-callout-btn:focus,
 .insytful-search-error-callout-cta:focus {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}
+.insytful-search-cta-btn:focus-visible {
   outline: 2px solid var(--insytful-semantic-focus-ring);
   outline-offset: 2px;
 }
@@ -415,6 +434,36 @@
   }
 }
 
+/* CTA quick actions — baseline rules the Tailwind utilities in
+   search-ctas.tsx don't cover: sizing floor (WCAG 2.5.8 comfortably),
+   label wrap inside the pill, 16px icons, and the entrance animation
+   (skeleton-text-entrance reused, 40ms per-chip stagger, CSS-only). */
+.insytful-search-cta-btn {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  animation: skeleton-text-entrance 300ms ease-out backwards;
+}
+.insytful-search-cta-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.insytful-search-cta-bar > :nth-child(2) { animation-delay: 40ms; }
+.insytful-search-cta-bar > :nth-child(3) { animation-delay: 80ms; }
+.insytful-search-cta-bar > :nth-child(4) { animation-delay: 120ms; }
+.insytful-search-cta-bar > :nth-child(5) { animation-delay: 160ms; }
+.insytful-search-cta-bar > :nth-child(6) { animation-delay: 200ms; }
+.insytful-search-cta-bar > :nth-child(7) { animation-delay: 240ms; }
+.insytful-search-cta-bar > :nth-child(8) { animation-delay: 280ms; }
+
+/* Compact CTA sizing inside the widget variant (matches the other
+   widget-tier overrides above). */
+.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-cta-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
 /* Messages list */
 .insytful-search-messages-inner {
   position: relative;
@@ -485,6 +534,10 @@
   }
 
   .insytful-search-skeleton-bar {
+    animation: none !important;
+  }
+
+  .insytful-search-cta-btn {
     animation: none !important;
   }
 }

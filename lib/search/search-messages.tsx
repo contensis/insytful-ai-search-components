@@ -3,6 +3,7 @@ import type { RAGMessage } from "../api/rag.types";
 import { useSearchContext } from "./context";
 import { hash } from "../utilities/hash.util";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
+import { SearchCtas } from "./search-ctas";
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -60,6 +61,11 @@ function Message({
           style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
           className={`insytful-search-message-content-outer w-full text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]`}
         >
+          {/* CTA quick actions live ABOVE the answer, OUTSIDE the skeleton/
+              content conditional: they render while the skeleton throbs, and
+              their DOM position is stable across streaming and error states.
+              (Renders null when the message carries no CTAs.) */}
+          <SearchCtas ctas={message.ctas} />
           <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
             {logo && (
               <div className="insytful-search-message-logo insytful-search-message-logo-inline flex-shrink-0 md:hidden">
@@ -355,7 +361,11 @@ export function SearchMessages({
 
               return (
                 <Message
-                  key={`${i}-${hash(message.content)}`}
+                  // Stable per-slot key — the array is append-only, so the
+                  // index identifies a message for its lifetime. A content-
+                  // derived key would remount the whole <li> on every token
+                  // frame, destroying focus on the CTA chips mid-stream.
+                  key={i}
                   renderContent={renderMarkdown}
                   logo={logo}
                   message={message}

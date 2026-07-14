@@ -1,7 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import type { RAGMessage } from "./rag.types";
 import { readSSEFrames } from "../shared/sse";
+// Imported from the validation module directly (not the `shared/cta` barrel)
+// so hook-only consumers tree-shake the handlers/bus modules out.
+import { sanitizeCtas } from "../shared/cta/validation";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 
 export const useRAGConversation = (
@@ -16,6 +19,11 @@ export const useRAGConversation = (
 
   const { elapsed, setElapsed } = useElapsedTime(loading);
 
+  // One AbortController per ask(); a newer ask() (or unmount) aborts the
+  // previous in-flight stream so its late frames can never touch state.
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   /**
    * Asks a question and returns a response.
    *
@@ -25,6 +33,12 @@ export const useRAGConversation = (
    */
   const ask = useCallback(
     async (question: string, sections?: string[]) => {
+      // Supersede any in-flight request before doing anything else.
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const { signal } = controller;
+
       let recaptchaToken: string | null = null;
       if (recaptchaSiteKey) {
         try {
@@ -35,6 +49,7 @@ export const useRAGConversation = (
           console.warn("reCAPTCHA skipped: no provider found");
         }
       }
+      if (signal.aborted) return; // superseded while awaiting reCAPTCHA
 
       // add the user’s message immediately
       setMessages((prev) => [...prev, { role: "user", content: question }]);
@@ -66,6 +81,7 @@ export const useRAGConversation = (
         const response = await fetch(`${baseUrl}/query-collection?${query}`, {
           method: "GET",
           headers,
+          signal,
         });
 
         if (!response.ok) {
@@ -92,10 +108,29 @@ export const useRAGConversation = (
 
         let assistantMsg = ""; // accumulate assistant’s message
 
-        // add a placeholder assistant message we’ll update while streaming
-        setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+        // Add a placeholder assistant message we’ll update while streaming.
+        // Its INDEX is captured here in ask()'s closure — every write (tokens
+        // and CTAs) goes through it, never `updated[updated.length - 1]`, so
+        // a slow stream's late frames can never land on a follow-up's message.
+        let assistantIndex = -1;
+        setMessages((prev) => {
+          assistantIndex = prev.length;
+          return [...prev, { role: "assistant", content: "" }];
+        });
 
-        for await (const frame of readSSEFrames(response.body)) {
+        /** Patches THIS ask()'s assistant message by its captured index,
+         *  spreading the previous value so `content` and `ctas` writes
+         *  never clobber each other. */
+        const patchAssistant = (patch: Partial<RAGMessage>) => {
+          setMessages((prev) => {
+            if (assistantIndex < 0 || assistantIndex >= prev.length) return prev;
+            const updated = [...prev];
+            updated[assistantIndex] = { ...updated[assistantIndex], ...patch };
+            return updated;
+          });
+        };
+
+        for await (const frame of readSSEFrames(response.body, signal)) {
           switch (frame.event) {
             case "done": {
               setLoading(false);
@@ -103,8 +138,18 @@ export const useRAGConversation = (
               return;
             }
             case "cta": {
-              // TODO(Phase 3): sanitize and attach CTAs to the assistant message.
-              // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+              try {
+                const json = JSON.parse(frame.data);
+                const ctas = sanitizeCtas(json?.ctas);
+                if (ctas.length > 0) patchAssistant({ ctas });
+              } catch (parseErr) {
+                // Never fail an answer over a decoration — warn and stream on.
+                console.warn(
+                  "[Insytful] Failed to parse cta frame; skipping",
+                  parseErr,
+                  frame.data,
+                );
+              }
               break;
             }
             case "message": {
@@ -112,14 +157,7 @@ export const useRAGConversation = (
                 const json = JSON.parse(frame.data);
                 if (json?.content) {
                   assistantMsg += json.content;
-                  setMessages((prev) => {
-                    const updated = [...prev];
-                    updated[updated.length - 1] = {
-                      role: "assistant",
-                      content: assistantMsg,
-                    };
-                    return updated;
-                  });
+                  patchAssistant({ content: assistantMsg });
                 }
               } catch (parseErr) {
                 console.error("Failed to parse SSE chunk", parseErr, frame.data);
@@ -129,9 +167,13 @@ export const useRAGConversation = (
           }
         }
 
+        if (signal.aborted) return; // superseded — the newer ask() owns state now
         setLoading(false);
         setElapsed(0);
       } catch (err) {
+        // An abort is expected (a newer ask() superseded this one, or the
+        // hook unmounted) — never surface it as an error state.
+        if (signal.aborted) return;
         const errorMessage =
           err instanceof Error && err.message
             ? err.message

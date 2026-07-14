@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { RAGProvider, useRAGConversationContext } from "../api";
+import type { Cta } from "../api/rag.types";
 
 import { SearchProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
@@ -19,6 +20,12 @@ export type SearchRootProps = {
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode?: boolean;
+  /**
+   * Observability callback fired with the full CTA whenever a quick-action
+   * chip is clicked (anchor or button, default action or override). Pair it
+   * with the `insytful-cta` bus event for non-React listeners.
+   */
+  onCtaClick?: (cta: Cta) => void;
   /**
    * "modal" (default) is a full-bleed dialog that locks body scroll while open.
    * "widget" is a floating panel anchored to a corner (sized/positioned via
@@ -58,6 +65,7 @@ export function SearchRoot({
   children, options,
   open: openProp, defaultOpen = false, onOpenChange,
   theme, renderMarkdown, logo, isDevMode = false, variant = "modal", offsets,
+  onCtaClick,
 }: SearchRootProps) {
   const [open, setOpen] = useControllableState({
     prop: openProp, defaultProp: defaultOpen, onChange: onOpenChange,
@@ -71,6 +79,18 @@ export function SearchRoot({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
+  // Hold the latest onCtaClick in a ref behind a stable wrapper so host
+  // inline lambdas don't invalidate the memoised context on every render
+  // (same intent as the stableOptions pattern above).
+  const onCtaClickRef = useRef(onCtaClick);
+  useEffect(() => {
+    onCtaClickRef.current = onCtaClick;
+  });
+  const stableOnCtaClick = useCallback(
+    (cta: Cta) => onCtaClickRef.current?.(cta),
+    [],
+  );
+
   return (
     <RAGProvider
       key={stableOptions.config || "default"}
@@ -83,6 +103,7 @@ export function SearchRoot({
         options={stableOptions} theme={theme}
         renderMarkdown={renderMarkdown} logo={logo}
         isDevMode={isDevMode} variant={variant} offsets={stableOffsets}
+        onCtaClick={stableOnCtaClick}
       >
         {children}
       </SearchRootInner>
@@ -96,6 +117,7 @@ SearchRoot.displayName = "Search.Root";
 function SearchRootInner({
   children, open, setOpen, titleId, descriptionId,
   options, theme, renderMarkdown, logo, isDevMode, variant, offsets,
+  onCtaClick,
 }: {
   children: React.ReactNode;
   open: boolean;
@@ -109,6 +131,7 @@ function SearchRootInner({
   isDevMode: boolean;
   variant: "modal" | "widget";
   offsets?: SearchRootProps["offsets"];
+  onCtaClick?: (cta: Cta) => void;
 }) {
   const { messages, loading, elapsed, error, ask } = useRAGConversationContext();
 
@@ -164,12 +187,12 @@ function SearchRootInner({
 
   const ctx: SearchContextValue = useMemo(() => ({
     open, onOpenChange: setOpen, titleId, descriptionId, options,
-    messages, loading, elapsed, error, onSend: ask,
+    messages, loading, elapsed, error, onSend: ask, onCtaClick,
     renderMarkdown, logo, isDevMode,
     variant, theme, offsets, computedOffsetHeight,
   }), [
     open, setOpen, titleId, descriptionId, options,
-    messages, loading, elapsed, error, ask,
+    messages, loading, elapsed, error, ask, onCtaClick,
     renderMarkdown, logo, isDevMode,
     variant, theme, offsets, computedOffsetHeight,
   ]);
