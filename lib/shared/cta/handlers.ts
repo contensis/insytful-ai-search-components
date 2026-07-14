@@ -86,6 +86,36 @@ export function registerCtaHandler<K extends Cta["type"]>(
 }
 
 /**
+ * True when a host registered an override for this CTA type via
+ * `registerCtaHandler`. Renderers use this to pick the anchor click path:
+ * native navigation when no override exists, `preventDefault` + `executeCta`
+ * when one does. Read-only — never creates the backing store, and clicks only
+ * happen in a browser, so SSR returns false.
+ */
+export function hasCtaHandlerOverride(type: Cta["type"]): boolean {
+  if (typeof window === "undefined") return false;
+  const store = window.__insytfulCtaHandlers;
+  return store !== undefined && Object.hasOwn(store, type);
+}
+
+/**
+ * Dispatches the generic `insytful-cta` observability event on the shared bus
+ * without executing the CTA — for the anchor default path, where navigation
+ * is native and `executeCta` must not run (it would navigate a second time).
+ * `executeCta` dispatches this same event after executing (D8).
+ */
+export function dispatchCtaObservability(cta: Cta): void {
+  getInsytfulAISearchEvents()?.dispatchEvent(
+    new CustomEvent("insytful-cta", {
+      detail: {
+        name: cta.type === "event" ? cta.event : cta.type,
+        cta,
+      },
+    }),
+  );
+}
+
+/**
  * Navigation seam — the single place default handlers touch
  * `window.location`/`window.open`, so tests can `vi.spyOn` it (jsdom cannot
  * actually navigate).
@@ -177,12 +207,5 @@ export function executeCta(cta: Cta): void {
   // two lookups across the union.
   (handler as (c: Cta) => void)(resolved);
 
-  getInsytfulAISearchEvents()?.dispatchEvent(
-    new CustomEvent("insytful-cta", {
-      detail: {
-        name: resolved.type === "event" ? resolved.event : resolved.type,
-        cta: resolved,
-      },
-    }),
-  );
+  dispatchCtaObservability(resolved);
 }

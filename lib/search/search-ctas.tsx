@@ -6,8 +6,11 @@ import {
   CTA_BAR_CLASS,
   CTA_LABEL_CLASS,
 } from "../shared/cta/view-model";
-import { executeCta } from "../shared/cta/handlers";
-import { getInsytfulAISearchEvents } from "../shared/cta/bus";
+import {
+  executeCta,
+  hasCtaHandlerOverride,
+  dispatchCtaObservability,
+} from "../shared/cta/handlers";
 
 export type SearchCtasProps = {
   /** Sanitized CTAs (post-`sanitizeCtas`) to render; nothing renders when absent/empty. */
@@ -25,31 +28,6 @@ const useStableId =
         const [id] = useState(() => `${prefix}-${++idCounter}`);
         return id;
       };
-
-/** True when a host registered an override for this CTA type via
- *  `registerCtaHandler`. Reads the window-keyed registry store directly
- *  (typed by the global augmentation in `lib/shared/cta/handlers.ts`) —
- *  `handlers.ts` exports no query API, and clicks only happen in a browser. */
-function hasCtaHandlerOverride(type: Cta["type"]): boolean {
-  if (typeof window === "undefined") return false;
-  const store = window.__insytfulCtaHandlers;
-  return store !== undefined && Object.hasOwn(store, type);
-}
-
-/** Dispatches the generic `insytful-cta` observability bus event with the
- *  same detail shape `executeCta` uses — for the anchor default path, where
- *  navigation is native and `executeCta` must NOT run (it would navigate a
- *  second time). */
-function dispatchCtaObservability(cta: Cta): void {
-  getInsytfulAISearchEvents()?.dispatchEvent(
-    new CustomEvent("insytful-cta", {
-      detail: {
-        name: cta.type === "event" ? cta.event : cta.type,
-        cta,
-      },
-    }),
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Chip                                                                 */
