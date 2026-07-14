@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { readSSEFrames } from "../shared/sse";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 
 const history = false;
@@ -88,35 +89,26 @@ export const useRAGResponse = (
 
         if (!payload.body) throw new Error("No payload body");
 
-        const reader = payload.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-
-        let buffer = "";
-
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-
-          // SSE messages are separated by double newlines
-          const parts = buffer.split("\n\n");
-          buffer = parts.pop() || ""; // keep incomplete chunk
-
-          for (const part of parts) {
-            if (part.startsWith("event: done")) {
+        for await (const frame of readSSEFrames(payload.body)) {
+          switch (frame.event) {
+            case "done": {
               setLoading(false);
               setElapsed(0);
               return;
             }
-
-            if (part.startsWith("data:")) {
+            case "cta": {
+              // TODO(Phase 3): CTAs are ignored by the non-conversation hook in v1.
+              // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+              break;
+            }
+            case "message": {
               try {
-                const json = JSON.parse(part.replace("data: ", ""));
+                const json = JSON.parse(frame.data);
                 if (json?.content) setResponse((prev) => prev + json.content);
               } catch (parseErr) {
-                console.error("Failed to parse SSE chunk", parseErr, part);
+                console.error("Failed to parse SSE chunk", parseErr, frame.data);
               }
+              break;
             }
           }
         }

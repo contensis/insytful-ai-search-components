@@ -1,5 +1,6 @@
+import { readSSEFrames } from '../shared/sse';
+
 const SESSION_KEY = 'rag-session-id';
-const DATA_PREFIX = /^data:\s?/;
 
 export interface RAGClientConfig {
   baseUrl: string;
@@ -80,53 +81,30 @@ export class RAGClient {
       throw new Error('No response body');
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let buffer = '';
-
-    try {
-      while (true) {
-        // Respect abort signal between reads
-        if (signal?.aborted) {
+    // readSSEFrames owns decoding, abort checks, and reader cleanup
+    // (mirrors the useRAGConversation / useRAGResponse stream loops).
+    for await (const frame of readSSEFrames(response.body, signal)) {
+      switch (frame.event) {
+        case 'done': {
           return;
         }
-
-        const { value, done: streamDone } = await reader.read();
-        if (streamDone) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split('\n\n');
-        buffer = parts.pop() || '';
-
-        for (const part of parts) {
-          // Respect abort signal between frames
-          if (signal?.aborted) {
-            return;
-          }
-
-          if (part.startsWith('event: done')) {
-            return;
-          }
-
-          if (part.startsWith('data:')) {
-            const jsonStr = part.replace(DATA_PREFIX, '');
-            try {
-              const json = JSON.parse(jsonStr);
-              if (json?.content) {
-                yield json.content;
-              }
-            } catch {
-              // Malformed JSON frame — skip
+        case 'cta': {
+          // TODO(Phase 4): re-shape ask() to yield RAGStreamEvent and surface CTAs.
+          // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+          break;
+        }
+        case 'message': {
+          try {
+            const json = JSON.parse(frame.data);
+            if (json?.content) {
+              yield json.content;
             }
+          } catch {
+            // Malformed JSON frame — skip
           }
+          break;
         }
       }
-
-      // Flush any remaining multi-byte UTF-8 sequences
-      buffer += decoder.decode();
-    } finally {
-      try { reader.cancel(); } catch { /* already closed */ }
-      reader.releaseLock();
     }
   }
 

@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import type { RAGMessage } from "./rag.types";
+import { readSSEFrames } from "../shared/sse";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 
 export const useRAGConversation = (
@@ -89,33 +90,26 @@ export const useRAGConversation = (
 
         if (!response.body) throw new Error("No response body");
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-
-        let buffer = "";
         let assistantMsg = ""; // accumulate assistant’s message
 
         // add a placeholder assistant message we’ll update while streaming
         setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const parts = buffer.split("\n\n");
-          buffer = parts.pop() || "";
-
-          for (const part of parts) {
-            if (part.startsWith("event: done")) {
+        for await (const frame of readSSEFrames(response.body)) {
+          switch (frame.event) {
+            case "done": {
               setLoading(false);
               setElapsed(0);
               return;
             }
-
-            if (part.startsWith("data:")) {
+            case "cta": {
+              // TODO(Phase 3): sanitize and attach CTAs to the assistant message.
+              // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+              break;
+            }
+            case "message": {
               try {
-                const json = JSON.parse(part.replace("data: ", ""));
+                const json = JSON.parse(frame.data);
                 if (json?.content) {
                   assistantMsg += json.content;
                   setMessages((prev) => {
@@ -128,8 +122,9 @@ export const useRAGConversation = (
                   });
                 }
               } catch (parseErr) {
-                console.error("Failed to parse SSE chunk", parseErr, part);
+                console.error("Failed to parse SSE chunk", parseErr, frame.data);
               }
+              break;
             }
           }
         }
