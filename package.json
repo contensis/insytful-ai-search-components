@@ -4,6 +4,14 @@
   "version": "2.1.9",
   "author": "Zengenti",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contensis/insytful-ai-search-components.git"
+  },
+  "homepage": "https://github.com/contensis/insytful-ai-search-components#readme",
+  "bugs": {
+    "url": "https://github.com/contensis/insytful-ai-search-components/issues"
+  },
   "keywords": [
     "react",
     "components",
