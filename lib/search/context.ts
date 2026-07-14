@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from "react";
+import type { RAGMessage } from "../api/rag.types";
 
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
@@ -41,7 +42,7 @@ export type SearchContextValue = {
   options: { config: string; baseUrl: string };
 
   // Conversation state (from RAGProvider)
-  messages: { role: "user" | "assistant"; content: string }[];
+  messages: RAGMessage[];
   loading: boolean;
   elapsed: number;
   error?: string | null;

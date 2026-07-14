@@ -23,6 +23,8 @@ import {
   type DialogElements,
 } from './dialog-renderer';
 import { RAGClient } from './rag-client';
+// Types-only import — adds zero runtime weight to the IIFE bundle.
+import type { RAGMessage } from '../api/rag.types';
 import { renderMarkdown as defaultRenderMarkdown } from './markdown';
 import { createMockFetch } from './mock-sse';
 import { setupFocusTrap, type FocusTrap } from './focus-trap-setup';
@@ -69,8 +71,8 @@ export class InsytfulSearchElement extends HTMLElement {
   /* RAG client — lazily created from attributes */
   private _ragClient: RAGClient | null = null;
 
-  /* Conversation state */
-  private _messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+  /* Conversation state (mirrors useRAGConversation's RAGMessage[] state) */
+  private _messages: RAGMessage[] = [];
   private _isLoading = false;
   private _streamingContent = '';
   private _abortController: AbortController | null = null;

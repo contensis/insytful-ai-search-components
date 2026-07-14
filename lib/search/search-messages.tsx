@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
+import type { RAGMessage } from "../api/rag.types";
 import { useSearchContext } from "./context";
 import { hash } from "../utilities/hash.util";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
@@ -12,7 +13,7 @@ function doShiftHeadings(markdown: string): string {
 }
 
 type MessageProps = {
-  message: { role: "user" | "assistant"; content: string };
+  message: RAGMessage;
   logo?: React.ReactNode;
   renderContent?: (content: string) => React.ReactNode;
   showSkeleton?: boolean;

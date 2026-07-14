@@ -30,4 +30,12 @@ export {
   useRAGConversation,
   useRAGConversationContext,
 } from "./api";
-export type { RAGMessage } from "./api";
+export type {
+  RAGMessage,
+  Cta,
+  CtaIntent,
+  CtaCall,
+  CtaEmail,
+  CtaLink,
+  CtaEvent,
+} from "./api";

@@ -9,4 +9,12 @@ export { useRAGResponse } from "./use-rag-response";
 export { useRAGConversation } from "./use-rag-conversation";
 
 // Types
-export type { RAGMessage } from "./rag.types";
+export type {
+  RAGMessage,
+  Cta,
+  CtaIntent,
+  CtaCall,
+  CtaEmail,
+  CtaLink,
+  CtaEvent,
+} from "./rag.types";
