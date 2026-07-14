@@ -3,5 +3,6 @@ export declare const useRAGConversation: (config: string, baseUrl: string, recap
     messages: RAGMessage[];
     loading: boolean;
     error: string | null;
+    elapsed: number;
     ask: (question: string, sections?: string[]) => Promise<void>;
 };

@@ -18,11 +18,13 @@ export type SearchContextValue = {
         content: string;
     }[];
     loading: boolean;
+    elapsed: number;
     error?: string | null;
     onSend: (msg: string) => Promise<void>;
     renderMarkdown?: (markdown: string) => React.ReactNode;
     logo?: React.ReactNode;
     isDevMode: boolean;
+    variant: "modal" | "widget";
     theme?: string;
     offsets?: {
         top?: number | string;
