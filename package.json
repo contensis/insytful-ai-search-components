@@ -1,7 +1,7 @@
 {
   "name": "insytful-ai-search-components",
   "description": "An accessible, AI-powered search modal component library built with React, TypeScript, and Tailwind CSS",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "author": "Zengenti",
   "license": "MIT",
   "keywords": [
