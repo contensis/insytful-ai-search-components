@@ -39,3 +39,13 @@ export type {
   CtaLink,
   CtaEvent,
 } from "./api";
+
+// CTA machinery — sanitize CMS payloads, override execution, observe the bus.
+// The Web Component entry re-exports the handler pieces separately (Phase 4).
+export {
+  sanitizeCtas,
+  registerCtaHandler,
+  executeCta,
+  getInsytfulAISearchEvents,
+} from "./shared/cta";
+export type { CtaHandlerMap } from "./shared/cta";
