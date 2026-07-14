@@ -20,11 +20,12 @@ import {
   renderSuggestionChip,
   renderModeSwitchTabs,
   renderCloseButton,
+  renderCtaBar,
   type DialogElements,
 } from './dialog-renderer';
 import { RAGClient } from './rag-client';
 // Types-only import — adds zero runtime weight to the IIFE bundle.
-import type { RAGMessage } from '../api/rag.types';
+import type { Cta, RAGMessage } from '../api/rag.types';
 import { renderMarkdown as defaultRenderMarkdown } from './markdown';
 import { createMockFetch } from './mock-sse';
 import { setupFocusTrap, type FocusTrap } from './focus-trap-setup';
@@ -74,7 +75,6 @@ export class InsytfulSearchElement extends HTMLElement {
   /* Conversation state (mirrors useRAGConversation's RAGMessage[] state) */
   private _messages: RAGMessage[] = [];
   private _isLoading = false;
-  private _streamingContent = '';
   private _abortController: AbortController | null = null;
   private _conversationGeneration = 0;
 
@@ -586,18 +586,56 @@ export class InsytfulSearchElement extends HTMLElement {
 
     // --- Stream response ---
     this._abortController = new AbortController();
-    this._streamingContent = '';
+    const signal = this._abortController.signal;
+
+    // The streaming accumulator is deliberately a LOCAL, not an instance
+    // field: a shared field is a cross-generation stomp vector — an aborted
+    // stream's queued resumption would append its stale chunk to the new
+    // stream's accumulator.
+    let streamingContent = '';
+    let ctas: Cta[] | null = null;
+    let ctaRow: HTMLElement | null = null;
+
+    // True once a newer conversation has superseded this one, or this one
+    // was aborted. Checked after every await resumption.
+    const isStale = () =>
+      generation !== this._conversationGeneration || signal.aborted;
 
     try {
-      const generator = this._ragClient.ask(query, this._abortController.signal);
+      const generator = this._ragClient.ask(query, signal);
 
       // Replace skeleton body with real content on first non-empty chunk
       let firstChunk = true;
 
-      for await (const chunk of generator) {
-        this._streamingContent += chunk;
+      for await (const ev of generator) {
+        // Re-check after every await resumption: a follow-up submitted while
+        // we were suspended must not let this loop touch the DOM again.
+        if (isStale()) break;
 
-        if (firstChunk && this._streamingContent.length > 0) {
+        if (ev.kind === 'ctas') {
+          // Insert the CTA row once per stream, as a SIBLING of contentDiv
+          // (above it) so per-chunk innerHTML rewrites of contentDiv can't
+          // destroy the row or its keyboard focus. Never touches the token
+          // accumulator — a cta-first stream keeps its skeleton visible.
+          if (!ctaRow) {
+            ctas = ev.ctas;
+            ctaRow = renderCtaBar(ev.ctas, {
+              onCtaClick: (cta) => {
+                this.dispatchEvent(new CustomEvent('insytful-cta-click', {
+                  bubbles: true,
+                  composed: true,
+                  detail: cta,
+                }));
+              },
+            });
+            contentDiv.parentElement?.insertBefore(ctaRow, contentDiv);
+          }
+          continue;
+        }
+
+        streamingContent += ev.content;
+
+        if (firstChunk && streamingContent.length > 0) {
           // Clear skeleton and render first content
           contentDiv.innerHTML = '';
           firstChunk = false;
@@ -605,36 +643,44 @@ export class InsytfulSearchElement extends HTMLElement {
 
         if (!firstChunk) {
           // Render accumulated markdown on each chunk (after skeleton cleared)
-          contentDiv.innerHTML = this._renderMarkdownSafe(this._streamingContent);
+          contentDiv.innerHTML = this._renderMarkdownSafe(streamingContent);
         }
 
         // Auto-scroll during streaming
         this._autoScrollDuringStream();
       }
 
-      // Finalize assistant message
-      this._messages.push({ role: 'assistant', content: this._streamingContent });
+      // Clean-abort path: the generator completes *normally* when the signal
+      // aborts (readSSEFrames returns rather than throwing). Don't push the
+      // partial content into _messages, don't fire insytful-message, and
+      // remove the orphaned assistant <li> (previously only the catch path
+      // removed it, leaving the skeleton throbbing forever).
+      if (isStale()) {
+        assistantLi.remove();
+        return;
+      }
 
-      // Dispatch message event
+      // Finalize assistant message (ctas attached per-message, D1)
+      const message: RAGMessage = ctas
+        ? { role: 'assistant', content: streamingContent, ctas }
+        : { role: 'assistant', content: streamingContent };
+      this._messages.push(message);
+
+      // Dispatch message event — detail includes `ctas` when present so
+      // host scripts can enumerate offered CTAs without scraping shadow DOM
       this.dispatchEvent(new CustomEvent('insytful-message', {
         bubbles: true,
         composed: true,
-        detail: {
-          role: 'assistant',
-          content: this._streamingContent,
-        },
+        detail: message,
       }));
 
     } catch (err: unknown) {
-      // Remove the assistant message with skeleton if stream failed
-      if (assistantLi.parentNode) {
+      // Superseded or user-initiated abort — discard silently.
+      if (isStale() || (err instanceof DOMException && err.name === 'AbortError')) {
         assistantLi.remove();
-      }
+      } else {
+        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
 
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-
-      // Don't show error UI for user-initiated aborts
-      if (!(err instanceof DOMException && err.name === 'AbortError')) {
         // Offer classic mode fallback if a mode with a path is configured
         const classicMode = this._modes.find(m => m.path && m.name !== this._currentMode);
         const onSwitchClassic = classicMode
@@ -647,7 +693,19 @@ export class InsytfulSearchElement extends HTMLElement {
           onSwitchClassic,
           { title: calloutConfig?.title, cta: calloutConfig?.cta },
         );
-        messagesList.appendChild(errorLi);
+
+        if (ctaRow) {
+          // A CTA row exists: never remove assistantLi (removing it would
+          // blur a focused CTA to <body> inside the focus trap). Swap the
+          // contentDiv's contents for the error callout instead, leaving the
+          // CTA row's DOM nodes untouched.
+          contentDiv.replaceChildren(...errorLi.children);
+        } else {
+          // Remove the assistant message with skeleton and append a
+          // standalone error message.
+          assistantLi.remove();
+          messagesList.appendChild(errorLi);
+        }
 
         // Dispatch error event
         this.dispatchEvent(new CustomEvent('insytful-error', {
@@ -657,19 +715,21 @@ export class InsytfulSearchElement extends HTMLElement {
         }));
       }
     } finally {
-      // Only reset shared state if this is still the active conversation
-      // (a newer _runConversation may have started after we were aborted)
+      // Only reset shared state — and only touch the scroll spacer/hint —
+      // if this is still the active conversation (a newer _runConversation
+      // may have started after we were aborted; collapsing the spacer here
+      // would stomp its scroll-to-top positioning).
       if (this._conversationGeneration === generation) {
         this._isLoading = false;
         this._abortController = null;
         sendButton.disabled = false;
+
+        // Collapse scroll spacer smoothly once response finishes
+        scrollSpacer.style.transition = 'height 500ms ease-out';
+        scrollSpacer.style.height = '0px';
+
+        this._updateScrollHint();
       }
-
-      // Collapse scroll spacer smoothly once response finishes
-      scrollSpacer.style.transition = 'height 500ms ease-out';
-      scrollSpacer.style.height = '0px';
-
-      this._updateScrollHint();
     }
   }
 

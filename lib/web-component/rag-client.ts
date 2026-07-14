@@ -1,6 +1,22 @@
 import { readSSEFrames } from '../shared/sse';
+import { sanitizeCtas } from '../shared/cta/validation';
+// Types-only import — adds zero runtime weight to the IIFE bundle.
+import type { Cta } from '../api/rag.types';
 
 const SESSION_KEY = 'rag-session-id';
+
+/**
+ * One event from a streamed `ask()` response.
+ *
+ * Named `kind` (not `type`) deliberately: this is an envelope whose `ctas`
+ * payload holds objects with their own `type` field — reusing the name would
+ * be a readability trap.
+ */
+export type RAGStreamEvent =
+  /** One streamed answer token. */
+  | { kind: 'token'; content: string }
+  /** The sanitized CTAs for this answer (yielded only when non-empty). */
+  | { kind: 'ctas'; ctas: Cta[] };
 
 export interface RAGClientConfig {
   baseUrl: string;
@@ -24,10 +40,31 @@ export class RAGClient {
   }
 
   /**
-   * Send a question to the RAG API and yield content chunks as they arrive
-   * via Server-Sent Events.
+   * Send a question to the RAG API and yield {@link RAGStreamEvent} objects
+   * as Server-Sent Events arrive.
+   *
+   * BREAKING CHANGE (v3.0.0): `ask()` previously yielded plain content
+   * strings. It now yields discriminated events so CTA frames can be
+   * surfaced alongside answer tokens:
+   *
+   * - `{ kind: "token", content: string }` — one streamed answer chunk
+   * - `{ kind: "ctas", ctas: Cta[] }` — sanitized CTAs (only when non-empty)
+   *
+   * Migration for existing `ragClient` consumers:
+   * ```ts
+   * let answer = "";
+   * for await (const ev of client.ask(question)) {
+   *   if (ev.kind === "token") answer += ev.content;
+   * }
+   * ```
+   *
+   * Malformed `cta` frame JSON logs a `[Insytful]` warn and is skipped —
+   * streaming continues (never fail an answer over a decoration).
    */
-  async *ask(question: string, signal?: AbortSignal): AsyncGenerator<string> {
+  async *ask(
+    question: string,
+    signal?: AbortSignal,
+  ): AsyncGenerator<RAGStreamEvent, void, void> {
     const params = new URLSearchParams({
       question,
       config: this.projectId,
@@ -89,15 +126,24 @@ export class RAGClient {
           return;
         }
         case 'cta': {
-          // TODO(Phase 4): re-shape ask() to yield RAGStreamEvent and surface CTAs.
-          // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+          let payload: unknown;
+          try {
+            payload = JSON.parse(frame.data);
+          } catch {
+            console.warn('[Insytful] Malformed cta frame JSON — skipped');
+            break;
+          }
+          const ctas = sanitizeCtas(payload);
+          if (ctas.length > 0) {
+            yield { kind: 'ctas', ctas };
+          }
           break;
         }
         case 'message': {
           try {
             const json = JSON.parse(frame.data);
             if (json?.content) {
-              yield json.content;
+              yield { kind: 'token', content: json.content };
             }
           } catch {
             // Malformed JSON frame — skip

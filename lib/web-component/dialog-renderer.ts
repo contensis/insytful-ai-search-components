@@ -7,6 +7,12 @@
  * the shared CSS produces an identical visual result.
  */
 
+// Types-only import — adds zero runtime weight to the IIFE bundle.
+import type { Cta } from '../api/rag.types';
+import { ctaViewModel, CTA_BAR_CLASS, CTA_LABEL_CLASS } from '../shared/cta/view-model';
+import { executeCta } from '../shared/cta/handlers';
+import { getInsytfulAISearchEvents } from '../shared/cta/bus';
+
 /* ------------------------------------------------------------------ */
 /* SVG icon markup                                                      */
 /* ------------------------------------------------------------------ */
@@ -649,4 +655,194 @@ export function renderErrorMessage(
   li.appendChild(callout);
 
   return li;
+}
+
+/* ------------------------------------------------------------------ */
+/* CTA quick-actions bar                                                */
+/* ------------------------------------------------------------------ */
+
+/* Tailwind utility strings for the CTA markup — kept identical to
+   search-ctas.tsx so both flavours emit the same class attributes. They MUST
+   also live in this file: the WC Tailwind content glob (tailwind.config.wc.js)
+   only scans lib/web-component.ts + lib/web-component/**; classes written in
+   lib/shared/ would silently produce no CSS. The stable
+   `insytful-search-cta-*` hook classes come from the shared view model so
+   React/WC parity is structural. Focus-visible ring, icon sizing, entrance
+   animation, and the widget-variant override live in web-component.css. */
+
+const CTA_LABEL_UTILITIES =
+  'text-[13px] leading-[20px] mb-[6px] text-[var(--insytful-cta-label-text)]';
+
+const CTA_BAR_UTILITIES =
+  'flex flex-wrap gap-[var(--insytful-cta-bar-gap)] max-w-full';
+
+const CTA_CHIP_BASE_CLASSES =
+  'inline-flex items-center gap-[6px] min-h-[44px] max-w-full whitespace-normal ' +
+  'py-[10px] px-[18px] text-[14px] leading-[24px] font-medium no-underline ' +
+  'cursor-pointer transition-colors rounded-[var(--insytful-cta-radius)] ' +
+  'border border-solid';
+
+/** Intent variants — only `primary` gets the solid fill (§9 hierarchy rule). */
+const CTA_CHIP_INTENT_CLASSES: Record<Cta['intent'], string> = {
+  primary:
+    'bg-[var(--insytful-cta-primary-bg-default)] hover:bg-[var(--insytful-cta-primary-bg-hover)] ' +
+    'text-[var(--insytful-cta-primary-text)] border-[var(--insytful-cta-primary-border)]',
+  secondary:
+    'bg-[var(--insytful-cta-secondary-bg-default)] hover:bg-[var(--insytful-cta-secondary-bg-hover)] ' +
+    'text-[var(--insytful-cta-secondary-text)] border-[var(--insytful-cta-secondary-border)]',
+};
+
+/** Module counter for unique `aria-labelledby` ids (no React.useId here). */
+let ctaLabelIdCounter = 0;
+
+/** True when a host registered an override for this CTA type via
+ *  `registerCtaHandler`. Reads the window-keyed registry store directly
+ *  (typed by the global augmentation in `lib/shared/cta/handlers.ts`) —
+ *  `handlers.ts` exports no query API, and clicks only happen in a browser.
+ *  Mirrors the same helper in search-ctas.tsx. */
+function hasCtaHandlerOverride(type: Cta['type']): boolean {
+  if (typeof window === 'undefined') return false;
+  const store = window.__insytfulCtaHandlers;
+  return store !== undefined && Object.hasOwn(store, type);
+}
+
+/** Dispatches the generic `insytful-cta` observability bus event with the
+ *  same detail shape `executeCta` uses — for the anchor default path, where
+ *  navigation is native and `executeCta` must NOT run (it would navigate a
+ *  second time). */
+function dispatchCtaObservability(cta: Cta): void {
+  getInsytfulAISearchEvents()?.dispatchEvent(
+    new CustomEvent('insytful-cta', {
+      detail: {
+        name: cta.type === 'event' ? cta.event : cta.type,
+        cta,
+      },
+    }),
+  );
+}
+
+/**
+ * Create one CTA chip — an `<a>` for call/email/link (native navigation is
+ * the default path) or a `<button type="button">` for event CTAs (D7).
+ * Mirrors `CtaChip` in search-ctas.tsx.
+ */
+function renderCtaChip(cta: Cta, onCtaClick: (cta: Cta) => void): HTMLElement {
+  const vm = ctaViewModel(cta);
+  const chipClass = `${vm.classes.btn} ${CTA_CHIP_BASE_CLASSES} ${CTA_CHIP_INTENT_CLASSES[vm.intent]}`;
+
+  let chip: HTMLAnchorElement | HTMLButtonElement;
+  if (vm.element === 'a') {
+    const attrs: Record<string, string> = { href: vm.href ?? '' };
+    if (vm.newTab) {
+      attrs.target = '_blank';
+      attrs.rel = 'noopener noreferrer';
+    }
+    chip = el('a', attrs, chipClass);
+
+    // Anchors (call/email/link): native navigation is the default path — it
+    // preserves middle-click, copy-link, long-press, and OS handler choice.
+    // A registered override intercepts unmodified left-clicks only (D7).
+    chip.addEventListener('click', (e: MouseEvent) => {
+      onCtaClick(cta);
+      const unmodified =
+        e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+      if (unmodified && hasCtaHandlerOverride(cta.type)) {
+        e.preventDefault();
+        executeCta(cta); // runs the override + dispatches `insytful-cta`
+      } else {
+        // Native navigation proceeds — fire observability only. Calling
+        // executeCta here would trigger a second, JS-driven navigation.
+        dispatchCtaObservability(cta);
+      }
+    });
+  } else {
+    // `event` CTAs have no native action — executeCta dispatches the
+    // CMS-named bus event (or a registered override) plus `insytful-cta`.
+    chip = el('button', { type: 'button' }, chipClass);
+    chip.addEventListener('click', () => {
+      onCtaClick(cta);
+      executeCta(cta);
+    });
+  }
+
+  // Icon SVG strings are our own constants (lib/shared/cta/icons.ts) — never
+  // CMS data — so innerHTML is safe here. External-link glyph trails
+  // ("leaves this page" grammar); all others lead.
+  const iconTrails = vm.iconKey === 'external';
+  let iconSpan: HTMLSpanElement | null = null;
+  if (vm.iconSvg) {
+    iconSpan = el(
+      'span',
+      { 'aria-hidden': 'true' },
+      `insytful-search-cta-icon inline-flex flex-shrink-0 ${iconTrails ? 'mr-[-4px]' : 'ml-[-4px]'}`,
+    );
+    iconSpan.innerHTML = vm.iconSvg;
+  }
+
+  if (iconSpan && !iconTrails) chip.appendChild(iconSpan);
+
+  // Label via textContent ONLY — CMS markup must render literally.
+  chip.appendChild(document.createTextNode(vm.label));
+
+  if (vm.srNewTabSuffix) {
+    const srOnly = el('span', {}, 'insytful-sr-only');
+    srOnly.textContent = ' (opens in a new tab)';
+    chip.appendChild(srOnly);
+  }
+
+  if (iconSpan && iconTrails) chip.appendChild(iconSpan);
+
+  return chip;
+}
+
+/**
+ * Create the CTA quick-actions row rendered above an assistant answer.
+ * Mirrors `lib/search/search-ctas.tsx` via the shared `ctaViewModel`.
+ *
+ * A11y (§10):
+ * - the wrapper is `aria-live="off"` so the messages list's ancestor
+ *   `aria-live="polite"` region never announces interactive content as flat
+ *   prose;
+ * - availability is announced instead via a one-shot visually-hidden
+ *   `role="status"` node ("N quick actions available");
+ * - the row is `role="group"` labelled by the visible "Quick actions"
+ *   micro-label (`aria-labelledby`, unique id via a module counter);
+ * - every chip is a separate tab stop — no roving tabindex.
+ *
+ * The caller inserts the returned element as a SIBLING of the assistant
+ * message's content div (above it), so streaming innerHTML rewrites cannot
+ * destroy the row or its keyboard focus.
+ */
+export function renderCtaBar(
+  ctas: Cta[],
+  opts: { onCtaClick(cta: Cta): void },
+): HTMLElement {
+  const wrapper = el('div', { 'aria-live': 'off' }, 'insytful-search-cta-outer mb-[16px]');
+
+  // One-shot availability cue for screen readers (see A11y notes above).
+  // The node mounts empty and the text lands on a macrotask, so screen
+  // readers see a live-region *change* (mirrors search-ctas.tsx's effect).
+  const status = el('div', { role: 'status' }, 'insytful-sr-only');
+  wrapper.appendChild(status);
+  const announcement = `${ctas.length} quick action${ctas.length === 1 ? '' : 's'} available`;
+  setTimeout(() => {
+    status.textContent = announcement;
+  }, 0);
+
+  const labelId = `insytful-search-cta-label-${++ctaLabelIdCounter}`;
+  const label = el('div', { id: labelId }, `${CTA_LABEL_CLASS} ${CTA_LABEL_UTILITIES}`);
+  label.textContent = 'Quick actions';
+  wrapper.appendChild(label);
+
+  const bar = el('div', {
+    'role': 'group',
+    'aria-labelledby': labelId,
+  }, `${CTA_BAR_CLASS} ${CTA_BAR_UTILITIES}`);
+
+  for (const cta of ctas) {
+    bar.appendChild(renderCtaChip(cta, opts.onCtaClick));
+  }
+  wrapper.appendChild(bar);
+
+  return wrapper;
 }

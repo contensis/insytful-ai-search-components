@@ -75,6 +75,20 @@
   --insytful-callout-error-cta-text: #ffffff;
   --insytful-callout-error-cta-border-radius: 4px;
 
+  /* Button - CTA quick actions (third button family: full pills; only
+     `primary` gets the solid fill, `secondary` is a ghost/outline) */
+  --insytful-cta-bar-gap: 8px;
+  --insytful-cta-radius: 9999px;
+  --insytful-cta-label-text: var(--insytful-text-muted);
+  --insytful-cta-primary-bg-default: #2e3339;
+  --insytful-cta-primary-bg-hover: #3c444d;
+  --insytful-cta-primary-text: #ffffff;
+  --insytful-cta-primary-border: transparent;
+  --insytful-cta-secondary-bg-default: transparent;
+  --insytful-cta-secondary-bg-hover: #f2f2f2;
+  --insytful-cta-secondary-text: var(--insytful-text-default);
+  --insytful-cta-secondary-border: #c8cdd3;
+
   /* Semantic - Search Field */
   --insytful-semantic-search-field-stroke: #333333;
   --insytful-semantic-search-field-ai-gradient-start: #35d2c5;
@@ -324,6 +338,55 @@
   order: 3;
 }
 
+/* CTA quick actions — baseline rules the Tailwind utilities in
+   dialog-renderer.ts don't cover: sizing floor (WCAG 2.5.8 comfortably),
+   label wrap inside the pill, 16px icons, and the entrance animation
+   (opacity + rise, 40ms per-chip stagger, CSS-only). Mirrors the
+   .insytful-search-cta-* rules in main.css; utilities live in
+   dialog-renderer.ts because the WC content glob only scans
+   lib/web-component*. */
+.insytful-search-cta-btn {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  animation: cta-entrance 300ms ease-out backwards;
+}
+.insytful-search-cta-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.insytful-search-cta-btn:focus-visible {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Entrance — opacity + 2px rise with a 40ms per-chip stagger (max 8 chips).
+   CSS-only; killed by the reduced-motion block below. */
+@keyframes cta-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.insytful-search-cta-bar > :nth-child(2) { animation-delay: 40ms; }
+.insytful-search-cta-bar > :nth-child(3) { animation-delay: 80ms; }
+.insytful-search-cta-bar > :nth-child(4) { animation-delay: 120ms; }
+.insytful-search-cta-bar > :nth-child(5) { animation-delay: 160ms; }
+.insytful-search-cta-bar > :nth-child(6) { animation-delay: 200ms; }
+.insytful-search-cta-bar > :nth-child(7) { animation-delay: 240ms; }
+.insytful-search-cta-bar > :nth-child(8) { animation-delay: 280ms; }
+
+/* Widget-variant sizing — denser chips inside the compact widget surface. */
+.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-cta-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
 .insytful-search-skeleton-bar {
   background: var(--insytful-skeleton-bg);
   background-size: 200% 100%;
@@ -399,6 +462,10 @@
   }
 
   .insytful-search-skeleton-bar {
+    animation: none !important;
+  }
+
+  .insytful-search-cta-btn {
     animation: none !important;
   }
 }
