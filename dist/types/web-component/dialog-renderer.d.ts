@@ -1,11 +1,4 @@
-/**
- * DialogRenderer — builds the dialog DOM structure inside the shadow root.
- *
- * Mirrors the React component tree (SearchPortal > SearchRoot > Title,
- * Description, Messages, Input, Suggestions, Disclaimer) using plain DOM
- * elements with the same BEM class names and Tailwind utility classes so
- * the shared CSS produces an identical visual result.
- */
+import { Cta } from '../api/rag.types';
 export interface DialogElements {
     /** The outermost container appended to the shadow root */
     root: HTMLDivElement;
@@ -124,3 +117,24 @@ export declare function renderErrorMessage(message: string, onSwitchClassic?: ((
         rel?: string;
     };
 }): HTMLLIElement;
+/**
+ * Create the CTA quick-actions row rendered above an assistant answer.
+ * Mirrors `lib/search/search-ctas.tsx` via the shared `ctaViewModel`.
+ *
+ * A11y (§10):
+ * - the wrapper is `aria-live="off"` so the messages list's ancestor
+ *   `aria-live="polite"` region never announces interactive content as flat
+ *   prose;
+ * - availability is announced instead via a one-shot visually-hidden
+ *   `role="status"` node ("N quick actions available");
+ * - the row is `role="group"` labelled by the visible "Quick actions"
+ *   micro-label (`aria-labelledby`, unique id via a module counter);
+ * - every chip is a separate tab stop — no roving tabindex.
+ *
+ * The caller inserts the returned element as a SIBLING of the assistant
+ * message's content div (above it), so streaming innerHTML rewrites cannot
+ * destroy the row or its keyboard focus.
+ */
+export declare function renderCtaBar(ctas: Cta[], opts: {
+    onCtaClick(cta: Cta): void;
+}): HTMLElement;

@@ -1,4 +1,5 @@
 import { default as React } from 'react';
+import { Cta } from '../api/rag.types';
 export type SearchRootProps = {
     children: React.ReactNode;
     options: {
@@ -12,6 +13,18 @@ export type SearchRootProps = {
     renderMarkdown?: (markdown: string) => React.ReactNode;
     logo?: React.ReactNode;
     isDevMode?: boolean;
+    /**
+     * Observability callback fired with the full CTA whenever a quick-action
+     * chip is clicked (anchor or button, default action or override). Pair it
+     * with the `insytful-cta` bus event for non-React listeners.
+     */
+    onCtaClick?: (cta: Cta) => void;
+    /**
+     * "modal" (default) is a full-bleed dialog that locks body scroll while open.
+     * "widget" is a floating panel anchored to a corner (sized/positioned via
+     * --insytful-widget-* CSS variables) that leaves the host page scrollable.
+     */
+    variant?: "modal" | "widget";
     offsets?: {
         top?: number | string;
         left?: number | string;
@@ -25,7 +38,7 @@ export type SearchRootProps = {
  * anywhere in the consumer's DOM. Use Search.Portal to render content
  * inside the Shadow DOM dialog.
  */
-export declare function SearchRoot({ children, options, open: openProp, defaultOpen, onOpenChange, theme, renderMarkdown, logo, isDevMode, offsets, }: SearchRootProps): React.JSX.Element;
+export declare function SearchRoot({ children, options, open: openProp, defaultOpen, onOpenChange, theme, renderMarkdown, logo, isDevMode, variant, offsets, onCtaClick, }: SearchRootProps): React.JSX.Element;
 export declare namespace SearchRoot {
     var displayName: string;
 }

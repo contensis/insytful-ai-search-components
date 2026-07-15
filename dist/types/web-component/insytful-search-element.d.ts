@@ -19,7 +19,6 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _ragClient;
     private _messages;
     private _isLoading;
-    private _streamingContent;
     private _abortController;
     private _conversationGeneration;
     private _hasReachedBottom;
