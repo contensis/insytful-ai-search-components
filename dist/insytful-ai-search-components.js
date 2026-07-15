@@ -1443,13 +1443,14 @@ function dt({
     prop: r,
     defaultProp: a,
     onChange: o
-  }), b = $e("insytful-search-heading"), P = $e("insytful-search-description"), T = Z(() => e, [e.config, e.baseUrl]), x = Z(() => p, [p?.top, p?.left, p?.right]);
+  }), b = $e("insytful-search-heading"), P = $e("insytful-search-description"), T = Z(() => e, [e.config, e.baseUrl, e.recaptchaSiteKey]), x = Z(() => p, [p?.top, p?.left, p?.right]);
   return /* @__PURE__ */ u.createElement(
     Ot,
     {
       key: T.config || "default",
       config: T.config || "",
-      baseUrl: T.baseUrl
+      baseUrl: T.baseUrl,
+      recaptchaSiteKey: T.recaptchaSiteKey
     },
     /* @__PURE__ */ u.createElement(
       Sr,
