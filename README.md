@@ -15,8 +15,29 @@ Peer dependencies: `react` (>=17) and `react-dom` (>=17).
 **Web Component** — single script tag, no build step:
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@3/dist/insytful-search.js"></script>
 ```
+
+Pin the major version in the URL (`@3`, as above) rather than using an unversioned URL — unversioned URLs auto-upgrade to every new release within CDN cache TTL, future breaking changes included.
+
+## Migrating to 3.0
+
+**Breaking change:** `RAGClient.ask()` — reachable on the Web Component via `element.ragClient` — now yields `RAGStreamEvent` objects instead of plain strings, so CTA frames can flow through the same stream:
+
+```js
+// Before (2.x) — ask() yielded answer text chunks
+for await (const chunk of element.ragClient.ask(question)) {
+  answer += chunk;
+}
+
+// After (3.x) — ask() yields RAGStreamEvent objects
+for await (const ev of element.ragClient.ask(question)) {
+  if (ev.kind === "token") answer += ev.content;
+  // ev.kind === "ctas" carries the sanitized Cta[] for the answer
+}
+```
+
+Everything else is additive (see [CHANGELOG.md](./CHANGELOG.md)). If you use the components without touching `ragClient`, no code changes are needed.
 
 ## React
 
@@ -72,7 +93,7 @@ If `searching` is not provided, the default message "Generating response..." is 
 ## Web Component
 
 ```html
-<script src="https://unpkg.com/insytful-ai-search-components/dist/insytful-search.js"></script>
+<script src="https://unpkg.com/insytful-ai-search-components@3/dist/insytful-search.js"></script>
 
 <insytful-search api-uri="https://your-api.com" project-id="your-project">
   <button slot="trigger">Search</button>
@@ -83,6 +104,129 @@ If `searching` is not provided, the default message "Generating response..." is 
 ```
 
 [Full Web Component guide →](https://insytful.com/help-and-docs/guides/insytful-ai-search/web-component-implementation)
+
+## Quick action CTAs (calls-to-action)
+
+The Insytful RAG API can send calls-to-action with an answer — configured per-site in the CMS and selected server-side per query. The components render them as a "Quick actions" row above the answer (visible while it streams): `link` / `call` / `email` CTAs are real anchors that navigate natively, and `event` CTAs are buttons that dispatch a CMS-named event on a shared event bus. No setup is required for the defaults; the hooks below let you observe or override them.
+
+### Observing clicks
+
+**React** — the `onCtaClick` prop on `Search.Root` receives the full sanitized `Cta`:
+
+```tsx
+<InsytfulSearch.Root
+  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  onCtaClick={(cta) => analytics.track('ai_search_cta_click', { type: cta.type, label: cta.label })}
+>
+```
+
+**Web Component** — listen for the composed `insytful-cta-click` DOM event on the element:
+
+```js
+document.querySelector('insytful-search')
+  .addEventListener('insytful-cta-click', (e) => {
+    console.log('CTA clicked:', e.detail); // the full Cta object
+  });
+```
+
+Both fire on every CTA click and never cancel the action — they are observability hooks, not interception points. To change what a click *does*, register a handler override.
+
+### Overriding execution
+
+`registerCtaHandler(type, handler)` replaces the built-in action for one CTA type (`"link" | "call" | "email" | "event"`) and returns an unregister function that restores the previous behaviour:
+
+```ts
+// React / npm:
+import { registerCtaHandler } from 'insytful-ai-search-components';
+
+// Web Component / script tag:
+const { registerCtaHandler } = window.InsytfulSearch;
+
+const unregister = registerCtaHandler('link', (cta) => {
+  myRouter.navigate(cta.url); // cta is narrowed to the "link" variant
+});
+
+// Later — restore the default (native navigation):
+unregister();
+```
+
+The handler registry is shared across every component instance on the page (and between the React bundle and the Web Component bundle when both are loaded), so register once, not per instance.
+
+### `event` CTAs and the event bus
+
+`event`-type CTAs dispatch their CMS-configured event name on a shared `EventTarget` at `window.insytfulAISearchEvents`. Host pages subscribe using this exact guarded form (it works whether the host script runs before or after the package loads):
+
+```html
+<script>
+  (window.insytfulAISearchEvents ??= new EventTarget()).addEventListener("openWebChat", (e) => {
+    MyChatVendor.load().then(() => MyChatVendor.open(e.detail?.topic));
+  });
+</script>
+```
+
+Three similar event names, different transports:
+
+| Event | Transport | When it fires | Use it for |
+|---|---|---|---|
+| `insytful-cta` | Bus (`window.insytfulAISearchEvents`) | Every CTA execution, click or programmatic; detail is `{ name, cta }` | Observability / analytics across all CTA types |
+| `insytful-cta-click` | Composed DOM event from the `<insytful-search>` element | User clicks a CTA in the Web Component; detail is the `Cta` | Per-element click tracking, host reactions (e.g. closing the modal) |
+| CMS-named events (e.g. `openWebChat`) | Bus (`window.insytfulAISearchEvents`) | An `event`-type CTA executes | The functional contract — actually doing the thing |
+
+Notes:
+
+- `e.detail` is CMS-authored data — treat it as untrusted: never `innerHTML` it and never deep-merge it into configuration objects.
+- Bus events are forgeable by any script on the page — make no security decisions based on them.
+- The bus is same-realm only — embedded iframes need `postMessage`, not the bus.
+- CTA `detail` payloads must never carry user-derived or personal data (they are CMS configuration, not query context).
+- Pages with multiple search instances share one handler registry and one bus by design.
+
+### Closing the modal from a CTA
+
+The package never auto-closes the modal on a CTA click (a web-chat widget opened behind the modal would be invisible, but that is the host's call). Close it yourself in your handler:
+
+```tsx
+// React — via onOpenChange state:
+<InsytfulSearch.Root open={open} onOpenChange={setOpen}
+  onCtaClick={(cta) => { if (cta.type === 'event') setOpen(false); }}>
+```
+
+```js
+// Web Component:
+const el = document.querySelector('insytful-search');
+el.addEventListener('insytful-cta-click', (e) => {
+  if (e.detail.type === 'event') el.close();
+});
+```
+
+### Theming CTAs
+
+The CTA row is themable through CSS custom properties (hook classes: `insytful-search-cta-bar`, `insytful-search-cta-label`, `insytful-search-cta-btn`, `insytful-search-cta-btn-primary`, `insytful-search-cta-btn-secondary`):
+
+```css
+--insytful-cta-bar-gap: 8px;
+--insytful-cta-radius: 9999px;
+--insytful-cta-label-text: var(--insytful-text-muted);
+--insytful-cta-primary-bg-default: #2e3339;
+--insytful-cta-primary-bg-hover: #3c444d;
+--insytful-cta-primary-text: #ffffff;
+--insytful-cta-primary-border: transparent;
+--insytful-cta-secondary-bg-default: transparent;
+--insytful-cta-secondary-bg-hover: #f2f2f2;
+--insytful-cta-secondary-text: var(--insytful-text-default);
+--insytful-cta-secondary-border: #c8cdd3;
+```
+
+Dark-theme override (via the `theme` prop/attribute):
+
+```css
+.insytful-root {
+  --insytful-cta-primary-bg-default: #e8eaed;
+  --insytful-cta-primary-bg-hover: #ffffff;
+  --insytful-cta-primary-text: #1a1d21;
+  --insytful-cta-secondary-bg-hover: #2a2f36;
+  --insytful-cta-secondary-border: #4a515a;
+}
+```
 
 ## Local development
 
