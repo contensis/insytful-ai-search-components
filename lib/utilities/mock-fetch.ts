@@ -112,6 +112,15 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
         '\n',
       ];
 
+      // One of each CTA type, mixed intents — mirrors what the RAG API sends
+      // in its `event: cta` frame so dev mode exercises the full CTA bar.
+      const ctas = [
+        { type: 'link', label: 'Contact Us', url: 'https://example.com/contact', intent: 'primary', newTab: false },
+        { type: 'call', label: 'Call us on 01234 567890', phone: '01234 567890', intent: 'secondary' },
+        { type: 'email', label: 'Email the team', email: 'help@example.com', subject: 'Website enquiry', intent: 'secondary' },
+        { type: 'event', label: 'Start web chat', event: 'openWebChat', detail: { topic: 'general' }, intent: 'primary' },
+      ];
+
       const stream = new ReadableStream({
         async start(controller) {
           const encoder = new TextEncoder();
@@ -120,6 +129,9 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
           if (isDevMode) {
             await new Promise(res => setTimeout(res, 8000));
           }
+
+          // The API sends the cta frame before any token frames.
+          controller.enqueue(encoder.encode(`event: cta\ndata: ${JSON.stringify({ ctas })}\n\n`));
 
           for (const chunk of chunks) {
             const sse = `data: ${JSON.stringify({ content: chunk })}\n\n`;

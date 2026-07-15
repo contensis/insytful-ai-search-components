@@ -114,6 +114,18 @@ const MOCK_CHUNKS = [
 ];
 
 /**
+ * One of each CTA type, mixed intents — mirrors what the RAG API sends in
+ * its `event: cta` frame so dev mode exercises the full CTA bar.
+ * Copied from lib/utilities/mock-fetch.ts.
+ */
+const MOCK_CTAS = [
+  { type: 'link', label: 'Contact Us', url: 'https://example.com/contact', intent: 'primary', newTab: false },
+  { type: 'call', label: 'Call us on 01234 567890', phone: '01234 567890', intent: 'secondary' },
+  { type: 'email', label: 'Email the team', email: 'help@example.com', subject: 'Website enquiry', intent: 'secondary' },
+  { type: 'event', label: 'Start web chat', event: 'openWebChat', detail: { topic: 'general' }, intent: 'primary' },
+];
+
+/**
  * Create a fetch-compatible function that intercepts requests to `baseUrl`
  * and returns a mock SSE stream. All other requests are passed through to
  * the real `window.fetch`.
@@ -153,6 +165,11 @@ export function createMockFetch(
 
         // Delay the response by 3 seconds so skeleton has time to show
         await new Promise(res => setTimeout(res, 3000));
+
+        // The API sends the cta frame before any token frames.
+        controller.enqueue(
+          encoder.encode(`event: cta\ndata: ${JSON.stringify({ ctas: MOCK_CTAS })}\n\n`),
+        );
 
         for (const chunk of MOCK_CHUNKS) {
           if (signal?.aborted) {

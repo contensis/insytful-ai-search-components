@@ -81,8 +81,11 @@ const HERO_HTML = `
  * Mounts the vanilla-JS hero + <insytful-search> markup imperatively
  * (matching playground-wc/index.html) rather than as JSX, since custom
  * elements and their slotted children aren't part of React's JSX typings.
+ *
+ * When `initialQuery` is set, the modal opens immediately with that query
+ * so the story lands straight on a streaming answer.
  */
-function WebComponentHeroDemo() {
+function WebComponentHeroDemo({ initialQuery }: { initialQuery?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -118,13 +121,17 @@ function WebComponentHeroDemo() {
     heroInput.addEventListener("keydown", onKeydown);
     heroForm.addEventListener("submit", onSubmit);
 
+    if (initialQuery && searchEl) {
+      searchEl.open(initialQuery);
+    }
+
     return () => {
       heroInput.removeEventListener("input", onInput);
       heroInput.removeEventListener("keydown", onKeydown);
       heroForm.removeEventListener("submit", onSubmit);
       container.innerHTML = "";
     };
-  }, []);
+  }, [initialQuery]);
 
   return <div className="wc-hero-demo" ref={containerRef} />;
 }
@@ -139,4 +146,19 @@ type Story = StoryObj<typeof meta>;
 
 export const HeroAndModal: Story = {
   render: () => <WebComponentHeroDemo />,
+};
+
+/**
+ * Opens straight into a streaming answer with the quick-action CTA bar above
+ * it — the `dev-mode` mock stream (lib/web-component/mock-sse.ts) leads with
+ * an `event: cta` frame carrying all four CTA types.
+ *
+ * Note: this story loads the prebuilt IIFE from ./dist, so CTA changes only
+ * show after a Web Component rebuild — `npm run build:wc:storybook` (run
+ * automatically by the `prestorybook` / `prebuild-storybook` hooks).
+ */
+export const QuickActionCtas: Story = {
+  render: () => (
+    <WebComponentHeroDemo initialQuery="How do I contact the council?" />
+  ),
 };

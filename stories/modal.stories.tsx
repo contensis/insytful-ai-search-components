@@ -229,6 +229,105 @@ function ErrorStateDemo() {
   );
 }
 
+/** One of each CTA type, mixed intents — the same set the dev-mode mocks emit. */
+const STORY_CTAS = [
+  { type: "link", label: "Contact Us", url: "https://example.com/contact", intent: "primary", newTab: false },
+  { type: "call", label: "Call us on 01234 567890", phone: "01234 567890", intent: "secondary" },
+  { type: "email", label: "Email the team", email: "help@example.com", subject: "Website enquiry", intent: "secondary" },
+  { type: "event", label: "Start web chat", event: "openWebChat", detail: { topic: "general" }, intent: "primary" },
+];
+
+const CTA_STORY_TOKENS = [
+  "You can",
+  " reach the team",
+  " through any of the",
+  " quick actions above,",
+  " or read on for the",
+  " full contact details.",
+];
+
+/**
+ * Intercepts fetch for the demo base URL (modeled on useFailingFetch above)
+ * and streams a response that leads with an `event: cta` frame — all four CTA
+ * types, mixed intents — before the answer tokens. When `errorAfterTokens` is
+ * set, the stream errors after that many token frames, demonstrating that
+ * CTAs stay visible alongside the error callout.
+ */
+function useCtaFetch(baseUrl: string, errorAfterTokens?: number) {
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    window.fetch = async (input, init) => {
+      const url = typeof input === "string" ? input : input.toString();
+      if (!url.startsWith(baseUrl)) return originalFetch(input, init);
+
+      const stream = new ReadableStream({
+        async start(controller) {
+          const encoder = new TextEncoder();
+          const send = (frame: string) => controller.enqueue(encoder.encode(frame));
+
+          await new Promise((res) => setTimeout(res, 800));
+          // The API sends the cta frame before any token frames.
+          send(`event: cta\ndata: ${JSON.stringify({ ctas: STORY_CTAS })}\n\n`);
+
+          let sent = 0;
+          for (const token of CTA_STORY_TOKENS) {
+            if (errorAfterTokens !== undefined && sent >= errorAfterTokens) {
+              controller.error(new Error("Mock stream failure"));
+              return;
+            }
+            await new Promise((res) => setTimeout(res, 150));
+            send(`data: ${JSON.stringify({ content: token })}\n\n`);
+            sent += 1;
+          }
+
+          send("event: done\ndata: {}\n\n");
+          controller.close();
+        },
+      });
+
+      return new Response(stream, {
+        status: 200,
+        headers: { "Content-Type": "text/event-stream" },
+      });
+    };
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [baseUrl, errorAfterTokens]);
+}
+
+function CtaTrigger({ errorAfterTokens }: { errorAfterTokens?: number }) {
+  const { onSend } = InsytfulSearch.useSearchContext("CtaTrigger");
+
+  useCtaFetch(BASE_URL, errorAfterTokens);
+
+  useEffect(() => {
+    onSend("How do I contact the council?");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <ModalContent />;
+}
+
+function CtaDemo({ errorAfterTokens }: { errorAfterTokens?: number }) {
+  return (
+    <InsytfulSearch.Root
+      options={{ config: "demo", baseUrl: BASE_URL }}
+      defaultOpen
+      theme={theme}
+      renderMarkdown={(text) => <Markdown content={text} />}
+      logo={<SparkleIcon size={24} color="#5128c3" />}
+      onCtaClick={(cta) => console.log("[story] onCtaClick", cta)}
+    >
+      <InsytfulSearch.Modes defaultValue="ai">
+        <InsytfulSearch.Portal>
+          <InsytfulSearch.Close />
+          <CtaTrigger errorAfterTokens={errorAfterTokens} />
+        </InsytfulSearch.Portal>
+      </InsytfulSearch.Modes>
+    </InsytfulSearch.Root>
+  );
+}
+
 const meta = {
   title: "AI Search - ReactJS/Modal",
   parameters: { layout: "fullscreen" },
@@ -243,4 +342,14 @@ export const HeroAndModal: Story = {
 
 export const ErrorState: Story = {
   render: () => <ErrorStateDemo />,
+};
+
+/** Quick-action CTAs rendered above the streaming answer (clicks log to the console). */
+export const QuickActionCtas: Story = {
+  render: () => <CtaDemo />,
+};
+
+/** Stream errors after the cta frame + two tokens — CTAs stay visible with the error callout. */
+export const ErrorAfterCtas: Story = {
+  render: () => <CtaDemo errorAfterTokens={2} />,
 };
