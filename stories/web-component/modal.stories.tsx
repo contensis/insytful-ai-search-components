@@ -121,11 +121,18 @@ function WebComponentHeroDemo({ initialQuery }: { initialQuery?: string }) {
     heroInput.addEventListener("keydown", onKeydown);
     heroForm.addEventListener("submit", onSubmit);
 
+    // Wait for the custom element to upgrade before calling `open()` — the
+    // IIFE may register `insytful-search` after this effect runs (it does in
+    // the static Storybook build), and an un-upgraded element has no methods.
+    let cancelled = false;
     if (initialQuery && searchEl) {
-      searchEl.open(initialQuery);
+      customElements.whenDefined("insytful-search").then(() => {
+        if (!cancelled) searchEl.open(initialQuery);
+      });
     }
 
     return () => {
+      cancelled = true;
       heroInput.removeEventListener("input", onInput);
       heroInput.removeEventListener("keydown", onKeydown);
       heroForm.removeEventListener("submit", onSubmit);
