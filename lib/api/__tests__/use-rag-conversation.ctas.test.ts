@@ -239,9 +239,7 @@ describe("useRAGConversation — CTA frames", () => {
     });
     expect(result.current.error).toBeNull();
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("[Insytful]"),
-      expect.anything(),
-      expect.anything(),
+      "[Insytful] Malformed cta frame JSON — skipped",
     );
   });
 

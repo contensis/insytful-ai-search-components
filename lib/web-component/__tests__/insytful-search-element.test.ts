@@ -35,8 +35,9 @@ if (!customElements.get("insytful-search")) {
 const sseDataFrame = (content: string): string =>
   `data: ${JSON.stringify({ content })}\n\n`;
 
+// Wire contract: `{"ctas":[...]}`, not a bare array (see rag-client.test.ts).
 const sseCtaFrame = (ctas: unknown[]): string =>
-  `event: cta\ndata: ${JSON.stringify(ctas)}\n\n`;
+  `event: cta\ndata: ${JSON.stringify({ ctas })}\n\n`;
 
 const sseDoneFrame = (): string => "event: done\ndata: {}\n\n";
 

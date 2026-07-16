@@ -1,5 +1,5 @@
 import { readSSEFrames } from '../shared/sse';
-import { sanitizeCtas } from '../shared/cta/validation';
+import { ctasFromFrameData } from '../shared/cta/validation';
 // Types-only import — adds zero runtime weight to the IIFE bundle.
 import type { Cta } from '../api/rag.types';
 
@@ -126,14 +126,9 @@ export class RAGClient {
           return;
         }
         case 'cta': {
-          let payload: unknown;
-          try {
-            payload = JSON.parse(frame.data);
-          } catch {
-            console.warn('[Insytful] Malformed cta frame JSON — skipped');
-            break;
-          }
-          const ctas = sanitizeCtas(payload);
+          // ctasFromFrameData owns the wire shape ({"ctas":[...]}) and
+          // malformed-JSON handling — shared with useRAGConversation.
+          const ctas = ctasFromFrameData(frame.data);
           if (ctas.length > 0) {
             yield { kind: 'ctas', ctas };
           }

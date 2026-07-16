@@ -4,7 +4,7 @@ import type { RAGMessage } from "./rag.types";
 import { readSSEFrames } from "../shared/sse";
 // Imported from the validation module directly (not the `shared/cta` barrel)
 // so hook-only consumers tree-shake the handlers/bus modules out.
-import { sanitizeCtas } from "../shared/cta/validation";
+import { ctasFromFrameData } from "../shared/cta/validation";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 
 export const useRAGConversation = (
@@ -138,18 +138,10 @@ export const useRAGConversation = (
               return;
             }
             case "cta": {
-              try {
-                const json = JSON.parse(frame.data);
-                const ctas = sanitizeCtas(json?.ctas);
-                if (ctas.length > 0) patchAssistant({ ctas });
-              } catch (parseErr) {
-                // Never fail an answer over a decoration — warn and stream on.
-                console.warn(
-                  "[Insytful] Failed to parse cta frame; skipping",
-                  parseErr,
-                  frame.data,
-                );
-              }
+              // ctasFromFrameData owns the wire shape ({"ctas":[...]}) and
+              // malformed-JSON handling — shared with RAGClient.ask().
+              const ctas = ctasFromFrameData(frame.data);
+              if (ctas.length > 0) patchAssistant({ ctas });
               break;
             }
             case "message": {

@@ -11,7 +11,13 @@ import { RAGClient, type RAGStreamEvent } from "../rag-client";
 const sseDataFrame = (content: string): string =>
   `data: ${JSON.stringify({ content })}\n\n`;
 
-const sseCtaFrame = (payloadJson: string): string =>
+// Wire contract: the cta frame's data is `{"ctas":[...]}`, NOT a bare array —
+// the original bare-array fixture masked a bug where the client passed the
+// whole wrapper object to the sanitizer and dropped every CTA.
+const sseCtaFrame = (ctas: unknown[]): string =>
+  `event: cta\ndata: ${JSON.stringify({ ctas })}\n\n`;
+
+const sseRawCtaFrame = (payloadJson: string): string =>
   `event: cta\ndata: ${payloadJson}\n\n`;
 
 const sseDoneFrame = (): string => "event: done\ndata: {}\n\n";
@@ -74,10 +80,10 @@ describe("RAGClient.ask", () => {
   });
 
   it("yields a { kind: 'ctas' } event with sanitized CTAs for a cta frame", async () => {
-    const payload = JSON.stringify([
+    const payload = [
       { type: "link", label: "Visit", url: "https://example.com/contact" },
       { type: "call", label: "Call us", phone: "+44 1234 567890", intent: "primary" },
-    ]);
+    ];
     const events = await collect(
       clientFor([sseCtaFrame(payload), sseDataFrame("Hi"), sseDoneFrame()]),
     );
@@ -106,7 +112,7 @@ describe("RAGClient.ask", () => {
 
   it("warns and skips a cta frame with malformed JSON; streaming continues", async () => {
     const events = await collect(
-      clientFor([sseCtaFrame("{not json"), sseDataFrame("Still here"), sseDoneFrame()]),
+      clientFor([sseRawCtaFrame("{not json"), sseDataFrame("Still here"), sseDoneFrame()]),
     );
     expect(events).toEqual([{ kind: "token", content: "Still here" }]);
     expect(warnSpy).toHaveBeenCalledWith(
@@ -115,7 +121,7 @@ describe("RAGClient.ask", () => {
   });
 
   it("yields no ctas event when every CTA is dropped by the sanitizer", async () => {
-    const payload = JSON.stringify([{ type: "bogus", label: "Nope" }]);
+    const payload = [{ type: "bogus", label: "Nope" }];
     const events = await collect(
       clientFor([sseCtaFrame(payload), sseDataFrame("Hi"), sseDoneFrame()]),
     );
@@ -128,7 +134,7 @@ describe("RAGClient.ask", () => {
         sseDataFrame("Before"),
         sseDoneFrame(),
         sseDataFrame("After"),
-        sseCtaFrame(JSON.stringify([{ type: "event", label: "Chat", event: "open" }])),
+        sseCtaFrame([{ type: "event", label: "Chat", event: "open" }]),
       ]),
     );
     expect(events).toEqual([{ kind: "token", content: "Before" }]);

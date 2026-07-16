@@ -268,6 +268,27 @@ function sanitizeCta(raw: unknown): Cta | null {
 }
 
 /**
+ * Parses the raw `data:` payload of an SSE `cta` frame and returns sanitized
+ * CTAs. This is the single place that knows the wire shape —
+ * `{"ctas":[...]}` per the API contract — so the React hook and the Web
+ * Component client cannot diverge on it (the WC originally passed the whole
+ * `{ctas}` wrapper to `sanitizeCtas` and silently dropped every CTA).
+ * Malformed JSON warns and returns empty: never fail an answer over a
+ * decoration.
+ */
+export function ctasFromFrameData(data: string): Cta[] {
+  let payload: unknown;
+  try {
+    payload = JSON.parse(data);
+  } catch {
+    console.warn("[Insytful] Malformed cta frame JSON — skipped");
+    return Object.freeze([]) as unknown as Cta[];
+  }
+  const ctas = (payload as { ctas?: unknown } | null)?.ctas;
+  return sanitizeCtas(ctas);
+}
+
+/**
  * Sanitizes raw CMS CTA data into normalized `Cta` objects.
  *
  * Normalize-and-rewrite, not just filter: link URLs are rewritten to the
