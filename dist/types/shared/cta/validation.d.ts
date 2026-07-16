@@ -20,6 +20,16 @@ import { Cta } from '../../api/rag.types';
  */
 export declare function normalizeHttpUrl(url: string): string | null;
 /**
+ * Parses the raw `data:` payload of an SSE `cta` frame and returns sanitized
+ * CTAs. This is the single place that knows the wire shape —
+ * `{"ctas":[...]}` per the API contract — so the React hook and the Web
+ * Component client cannot diverge on it (the WC originally passed the whole
+ * `{ctas}` wrapper to `sanitizeCtas` and silently dropped every CTA).
+ * Malformed JSON warns and returns empty: never fail an answer over a
+ * decoration.
+ */
+export declare function ctasFromFrameData(data: string): Cta[];
+/**
  * Sanitizes raw CMS CTA data into normalized `Cta` objects.
  *
  * Normalize-and-rewrite, not just filter: link URLs are rewritten to the

@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.1 — 2026-07-16
+
+### Fixed
+
+- **Web Component: CTAs never rendered.** `RAGClient` passed the whole `{"ctas":[...]}` frame payload to the sanitizer instead of the array, dropping every CTA. Wire-shape parsing now lives in one shared `ctasFromFrameData()` used by both flavours.
+- Storybook WC story no longer calls `open()` before the custom element upgrades.
+
 ## 3.0.0 (2026-07-15)
 
 ### Breaking
