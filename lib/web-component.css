@@ -81,13 +81,16 @@
   --insytful-semantic-search-field-ai-gradient-end: #1d70b8;
 
   /* Semantic - Focus ring.
-     Single library-wide token governing every focus ring. Override
-     --insytful-semantic-focus-ring once to restyle focus on all components.
+     Library-wide tokens governing every focus ring. Override
+     --insytful-semantic-focus-ring once to restyle focus colour on all
+     components, and -width/-offset to resize the ring.
      The old --insytful-semantic-search-field-focus name holds the default
-     value and remains supported as a deprecated alias so existing consumer
+     colour and remains supported as a deprecated alias so existing consumer
      overrides keep cascading through. */
   --insytful-semantic-search-field-focus: #35d2c5;
   --insytful-semantic-focus-ring: var(--insytful-semantic-search-field-focus);
+  --insytful-semantic-focus-ring-width: 3px;
+  --insytful-semantic-focus-ring-offset: 4px;
 
   /* Transition */
   --insytful-search-transition-duration: 200ms;
@@ -118,8 +121,8 @@
   background: var(--insytful-btn-close-bg-hover);
 }
 .insytful-search-close:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-search-close svg {
   width: 20px;
@@ -161,24 +164,24 @@
    a button, so it is never delegated to a wrapper. */
 
 .insytful-search-message-input-textarea:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-search-message-input:has(.insytful-search-message-input-bg) .insytful-search-message-input-textarea:focus {
   outline: none;
 }
 .insytful-search-message-input:has(.insytful-search-message-input-textarea:focus) .insytful-search-message-input-bg {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-search-message-input-btn:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-search-error-callout-btn:focus,
 .insytful-search-error-callout-cta:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-sr-only {
   position: absolute;
@@ -248,8 +251,8 @@
   text-decoration: none;
 }
 .insytful-search-message-content a:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 .insytful-search-message-content ul {
   list-style-type: disc;

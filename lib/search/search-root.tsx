@@ -276,10 +276,11 @@ export function SearchPortal({ children }: SearchPortalProps) {
               left, right, bottom: 0,
             }),
         opacity: open ? 1 : 0,
+        visibility: open ? "visible" : "hidden",
         pointerEvents: open ? "auto" : "none",
         transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)${
           isWidget ? ", transform var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)" : ""
-        }`,
+        }, visibility 0s linear ${open ? "0s" : "var(--insytful-search-transition-duration, 200ms)"}`,
       } as React.CSSProperties}
     >
       <div

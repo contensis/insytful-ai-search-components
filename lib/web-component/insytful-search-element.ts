@@ -12,6 +12,7 @@
 
 import css from '../web-component.css?inline';
 import {
+  dialogTransition,
   renderDialog,
   renderUserMessage,
   renderAssistantMessage,
@@ -359,6 +360,8 @@ export class InsytfulSearchElement extends HTMLElement {
       // Show dialog
       dialog.removeAttribute('inert');
       dialog.style.opacity = '1';
+      dialog.style.visibility = 'visible';
+      dialog.style.transition = dialogTransition(true);
       dialog.style.pointerEvents = 'auto';
       dialog.classList.remove('insytful-search-dialog-closed');
       dialog.classList.add('insytful-search-dialog-open');
@@ -393,6 +396,8 @@ export class InsytfulSearchElement extends HTMLElement {
       // Hide dialog
       dialog.setAttribute('inert', '');
       dialog.style.opacity = '0';
+      dialog.style.visibility = 'hidden';
+      dialog.style.transition = dialogTransition(false);
       dialog.style.pointerEvents = 'none';
       dialog.classList.remove('insytful-search-dialog-open');
       dialog.classList.add('insytful-search-dialog-closed');

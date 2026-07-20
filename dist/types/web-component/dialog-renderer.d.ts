@@ -58,6 +58,15 @@ export interface DialogElements {
     /** Gradient shimmer behind the input card (AI mode, empty state) */
     inputGradient: HTMLDivElement;
 }
+/**
+ * Transition for the dialog overlay's open/close fade.
+ *
+ * visibility (not just opacity/inert) is required so contrast scanners and
+ * the a11y tree treat the closed dialog as hidden. The zero-duration
+ * visibility transition is delayed on close so the opacity fade-out plays
+ * before the element is hidden; on open it applies immediately.
+ */
+export declare function dialogTransition(open: boolean): string;
 export declare function renderDialog(titleId: string, descriptionId: string): DialogElements;
 /**
  * Create a user message `<li>` element.

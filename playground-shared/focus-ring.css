@@ -26,6 +26,8 @@
 
 :root {
   --insytful-semantic-focus-ring: #916ee5;
+  --insytful-semantic-focus-ring-width: 3px;
+  --insytful-semantic-focus-ring-offset: 4px;
 }
 
 /* Hero card: ring on the card only when the TEXTAREA inside it has focus.
@@ -37,8 +39,8 @@
 .hero-search-card:has(.hero-search-textarea:focus),
 .hero-search-card:has(.insytful-search-message-input-textarea:focus),
 .insytful-playground-hero-card:has(.insytful-search-message-input-textarea:focus) {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }
 
 /* Suppress the textarea's own focus ring when it is inside a playground
@@ -53,6 +55,6 @@
 
 /* WC bare-HTML send button: own ring (not a wrapped/delegated indicator). */
 .hero-search-send:focus {
-  outline: 2px solid var(--insytful-semantic-focus-ring);
-  outline-offset: 2px;
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
 }

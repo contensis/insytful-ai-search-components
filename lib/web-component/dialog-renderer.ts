@@ -93,6 +93,21 @@ export interface DialogElements {
   inputGradient: HTMLDivElement;
 }
 
+/**
+ * Transition for the dialog overlay's open/close fade.
+ *
+ * visibility (not just opacity/inert) is required so contrast scanners and
+ * the a11y tree treat the closed dialog as hidden. The zero-duration
+ * visibility transition is delayed on close so the opacity fade-out plays
+ * before the element is hidden; on open it applies immediately.
+ */
+export function dialogTransition(open: boolean): string {
+  return (
+    'opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease), ' +
+    `visibility 0s linear ${open ? '0s' : 'var(--insytful-search-transition-duration, 200ms)'}`
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Main render function                                                 */
 /* ------------------------------------------------------------------ */
@@ -125,8 +140,9 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     right: '0',
     bottom: '0',
     opacity: '0',
+    visibility: 'hidden',
     pointerEvents: 'none',
-    transition: 'opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease)',
+    transition: dialogTransition(false),
   });
 
   // --- Close button container (top-right of dialog) ---
