@@ -3,6 +3,14 @@
    in lib/main.css. Only brand overrides and layout tweaks here. */
 @import '../playground-shared/theme.css';
 
+.insytful-playground-hero-card:has(.insytful-search-message-input-textarea:focus) {
+  outline: var(--insytful-semantic-focus-ring-width, 3px) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset, 4px);
+}
+.insytful-playground-hero-card .insytful-search-message-input-textarea:focus {
+  outline: none;
+}
+
 /* Responsive heading adjustments for larger screens */
 @media only screen and (min-width: 1024px) {
   .insytful-search-message-content h2 {
