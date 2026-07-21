@@ -90,6 +90,28 @@ If `searching` is not provided, the default message "Generating response..." is 
 
 **Note:** Message rotation is currently available in React only. Web Component support can be added in a future release if needed.
 
+### reCAPTCHA (React only)
+
+Protect your search endpoint from bots and spam by passing a Google reCAPTCHA v3 site key. When provided, a token is generated for each query and sent as an `X-Recaptcha-Token` header — your backend is responsible for verifying it against Google's [siteverify API](https://developers.google.com/recaptcha/docs/verify).
+
+```tsx
+<InsytfulSearch.Root
+  options={{
+    config: 'your-config',
+    baseUrl: 'https://your-api.com',
+    recaptchaSiteKey: 'your-recaptcha-v3-site-key',
+  }}
+>
+  ...
+</InsytfulSearch.Root>
+```
+
+If `recaptchaSiteKey` is omitted, no reCAPTCHA script is loaded and no token is sent.
+
+Get a site key (and its paired secret key, for your backend to verify tokens) from the [Google reCAPTCHA admin console](https://www.google.com/recaptcha/admin/create) — register a **v3** key type and add the domain(s) your app runs on.
+
+**Note:** reCAPTCHA is currently available in React only. Web Component support can be added in a future release if needed.
+
 ## Web Component
 
 ```html

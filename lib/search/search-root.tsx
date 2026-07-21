@@ -12,7 +12,17 @@ import css from "../main.css?inline";
 
 export type SearchRootProps = {
   children: React.ReactNode;
-  options: { config: string; baseUrl: string };
+  options: { 
+    config: string;
+    baseUrl: string;
+    /**
+     * Optional reCAPTCHA site key for human verification. 
+     * If provided, the search modal will require a successful reCAPTCHA challenge 
+     * before sending any queries to the backend. This can help prevent abuse or 
+     * spam in public-facing applications.
+     */
+    recaptchaSiteKey?: string;
+  };
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -75,7 +85,7 @@ export function SearchRoot({
 
   // Stabilise object props so inline literals don't break context memoisation
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stableOptions = useMemo(() => options, [options.config, options.baseUrl]);
+  const stableOptions = useMemo(() => options, [options.config, options.baseUrl, options.recaptchaSiteKey]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
@@ -96,6 +106,7 @@ export function SearchRoot({
       key={stableOptions.config || "default"}
       config={stableOptions.config || ""}
       baseUrl={stableOptions.baseUrl}
+      recaptchaSiteKey={stableOptions.recaptchaSiteKey}
     >
       <SearchRootInner
         open={open} setOpen={setOpen}
@@ -124,7 +135,7 @@ function SearchRootInner({
   setOpen: (open: boolean) => void;
   titleId: string;
   descriptionId: string;
-  options: { config: string; baseUrl: string };
+  options: { config: string; baseUrl: string; recaptchaSiteKey?: string };
   theme?: string;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
