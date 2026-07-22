@@ -5,6 +5,13 @@ export type SearchRootProps = {
     options: {
         config: string;
         baseUrl: string;
+        /**
+         * Optional reCAPTCHA site key for human verification.
+         * If provided, the search modal will require a successful reCAPTCHA challenge
+         * before sending any queries to the backend. This can help prevent abuse or
+         * spam in public-facing applications.
+         */
+        recaptchaSiteKey?: string;
     };
     open?: boolean;
     defaultOpen?: boolean;
