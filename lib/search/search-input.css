@@ -1,0 +1,159 @@
+/* Search.Input
+   State attributes on the <form>:
+     data-mode="ai|classic"    which icon/placeholder family is active
+     data-embedded             rendered inside a consumer card (no border/ring)
+     data-has-messages         a conversation has started (gradient glow off) */
+
+.insytful-theme .insytful-search-message-input {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: var(--insytful-modal-max-width);
+  margin: 0 auto;
+}
+.insytful-theme .insytful-search-message-input[data-embedded] {
+  max-width: none;
+  margin: 0;
+}
+
+/* Leading icon (magnifier in classic mode, sparkle in AI mode) */
+.insytful-theme .insytful-search-message-input-icon {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  z-index: 20;
+  color: var(--insytful-text-default);
+}
+.insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-icon {
+  top: 14px;
+  left: 0;
+}
+.insytful-theme .insytful-search-message-input-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* AI-mode glow behind the card (modal only) */
+.insytful-theme .insytful-search-message-input-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: var(--insytful-modal-max-width);
+  border-radius: var(--insytful-input-card-radius);
+}
+.insytful-theme .insytful-search-message-input-glow {
+  position: absolute;
+  top: 2px;
+  right: -2px;
+  bottom: -10px;
+  left: -2px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: var(--insytful-input-card-radius);
+  opacity: 0.5;
+  filter: blur(14px);
+  transition: opacity var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+  background: linear-gradient(
+    to bottom,
+    var(--insytful-semantic-search-field-ai-gradient-start),
+    var(--insytful-semantic-search-field-ai-gradient-end)
+  );
+}
+.insytful-theme .insytful-search-message-input[data-has-messages] .insytful-search-message-input-glow {
+  background: none;
+}
+
+/* Textarea */
+.insytful-theme .insytful-search-message-input-textarea {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 62px;
+  max-height: 240px;
+  padding: 16px 64px 16px 48px;
+  resize: none;
+  overflow-y: auto;
+  font-size: 16px; /* also stops iOS Safari zooming the field on focus */
+  border: var(--insytful-input-card-border-width) solid var(--insytful-input-card-border);
+  border-radius: var(--insytful-input-card-radius);
+  background: var(--insytful-input-card-bg);
+  color: var(--insytful-text-default);
+}
+.insytful-theme .insytful-search-message-input-textarea::placeholder {
+  color: var(--insytful-text-muted);
+}
+.insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-textarea {
+  min-height: 48px;
+  padding: 12px 48px 12px 32px;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Send / search button */
+.insytful-theme .insytful-search-message-input-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: var(--insytful-btn-icon-search-bg-default);
+  color: var(--insytful-btn-icon-search-icon);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+.insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-btn {
+  right: 0;
+}
+.insytful-theme .insytful-search-message-input-btn:hover {
+  background: var(--insytful-btn-icon-search-bg-hover);
+}
+.insytful-theme .insytful-search-message-input-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.insytful-theme .insytful-search-message-input-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Focus rings.
+   Layered pattern, ordered for client safety:
+
+   1. Textarea rings itself by default. This is the fallback for embedded
+      mode and classic mode — neither renders the `-bg` wrapper, so without
+      this a client would have no visible focus indicator.
+   2. When the form DOES render an `.insytful-search-message-input-bg`
+      sibling (modal AI mode only), the wrapper rings instead and the
+      textarea's own ring is suppressed.
+   3. A consumer wrapping the embedded input in their own card can ring the
+      card with their own `:has(textarea:focus)` rule — being unlayered it
+      beats everything here.
+
+   The send button always rings on its own; it is never delegated. */
+.insytful-theme .insytful-search-message-input-textarea:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+.insytful-theme .insytful-search-message-input:has(.insytful-search-message-input-bg)
+  .insytful-search-message-input-textarea:focus-visible {
+  outline: none;
+}
+.insytful-theme .insytful-search-message-input:has(.insytful-search-message-input-textarea:focus-visible)
+  .insytful-search-message-input-bg {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+.insytful-theme .insytful-search-message-input-btn:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}

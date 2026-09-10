@@ -38,37 +38,27 @@ function Message({
 
   return (
     <li
-      className={`insytful-search-message flex items-start gap-[24px] w-full max-w-full ${
-        isUser ? "flex-row-reverse" : "flex-row"
-      }`}
-      data-role={message.role} // Used to target user messages for scroll-to-top positioning
+      className="insytful-search-message"
+      data-role={message.role} // Also used to target user messages for scroll-to-top positioning
     >
       {logo && !isUser && (
-        <div className="insytful-search-message-logo insytful-search-message-logo-aside flex-shrink-0 hidden md:block">
+        <div className="insytful-search-message-logo" data-placement="aside">
           {logo}
         </div>
       )}
 
       {isUser ? (
-        <div
-          style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-          className={`insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]`}
-        >
-          {message.content}
-        </div>
+        <div className="insytful-search-message-content-outer">{message.content}</div>
       ) : (
-        <div
-          style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-          className={`insytful-search-message-content-outer w-full text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]`}
-        >
+        <div className="insytful-search-message-content-outer">
           {/* CTA quick actions live ABOVE the answer, OUTSIDE the skeleton/
               content conditional: they render while the skeleton throbs, and
               their DOM position is stable across streaming and error states.
               (Renders null when the message carries no CTAs.) */}
           <SearchCtas ctas={message.ctas} />
-          <div className="insytful-search-message-content-inner flex items-start gap-[12px] md:block md:gap-0">
+          <div className="insytful-search-message-content-inner">
             {logo && (
-              <div className="insytful-search-message-logo insytful-search-message-logo-inline flex-shrink-0 md:hidden">
+              <div className="insytful-search-message-logo" data-placement="inline">
                 {logo}
               </div>
             )}
@@ -84,10 +74,7 @@ function Message({
           </div>
           {!showSkeleton &&
             paragraphs.slice(1).map((p, i) => (
-              <div
-                key={`${i}-${hash(p)}`}
-                className="insytful-search-message-content mt-[8px]"
-              >
+              <div key={`${i}-${hash(p)}`} className="insytful-search-message-content">
                 {renderContent ? renderContent(doShiftHeadings(p)) : p}
               </div>
             ))}
@@ -156,14 +143,10 @@ export function SearchErrorCallout({
   onSwitchClassic?: () => void;
 }) {
   return (
-    <div className="insytful-search-error-callout-inner flex items-start flex-col gap-[12px] p-[16px] border-l-[4px] border-[var(--insytful-callout-error-border)] bg-[var(--insytful-callout-error-bg)] rounded-r-lg max-w-full w-full">
-      <div className="insytful-search-error-callout-content flex-1 gap-[8px] flex flex-col">
-        <p className="insytful-search-error-callout-title font-semibold text-[var(--insytful-callout-error-text)] m-0">
-          {title}
-        </p>
-        <p className="insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0">
-          {text}
-        </p>
+    <div className="insytful-search-error-callout-inner" role="alert">
+      <div className="insytful-search-error-callout-content">
+        <p className="insytful-search-error-callout-title">{title}</p>
+        <p className="insytful-search-error-callout-text">{text}</p>
       </div>
       {cta ? (
         (() => {
@@ -174,7 +157,7 @@ export function SearchErrorCallout({
               {...(isExternal
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
-              className="insytful-search-error-callout-cta inline-flex items-center justify-center rounded-[var(--insytful-callout-error-cta-border-radius)] bg-[var(--insytful-callout-error-cta-bg)] px-[16px] py-[8px] text-[14px] font-medium text-[var(--insytful-callout-error-cta-text)] no-underline transition-opacity hover:opacity-90"
+              className="insytful-search-error-callout-cta"
             >
               {cta.text}
               {isExternal && (
@@ -184,10 +167,7 @@ export function SearchErrorCallout({
           );
         })()
       ) : onSwitchClassic ? (
-        <button
-          onClick={onSwitchClassic}
-          className="insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium"
-        >
+        <button type="button" onClick={onSwitchClassic} className="insytful-search-error-callout-btn">
           Try classic?
         </button>
       ) : null}
@@ -341,19 +321,14 @@ export function SearchMessages({
   if ((!messages || messages.length === 0) && !loading) return null;
 
   return (
-    <div
-      className={`flex-1 min-h-0 relative w-full max-w-full ${className ?? ""}`}
-    >
+    <div className={`insytful-search-messages-container ${className ?? ""}`.trim()}>
       <div
         ref={elContainerRef}
-        className={`overflow-y-auto insytful-search-messages-container-scroll h-full w-full ${
-          showScrollHint
-            ? "[mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_90%,rgba(0,0,0,0.3)_100%)]"
-            : ""
-        }`}
+        className="insytful-search-messages-container-scroll"
+        {...(showScrollHint ? { "data-scroll-hint": "" } : {})}
       >
-        <div className="insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto">
-          <ul className="insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0 list-none">
+        <div className="insytful-search-messages-outer">
+          <ul className="insytful-search-messages-inner">
             {displayMessages.map((message, i) => {
               const isLastMessage = i === displayMessages.length - 1;
               const isLastAssistant =
@@ -384,20 +359,11 @@ export function SearchMessages({
       </div>
 
       {showScrollHint && (
-        <div className="w-full max-w-[var(--insytful-modal-max-width)] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center">
-          <div
-            key={`slide-icon-${messages.length}`}
-            className="insytful-search-messages-icon min-w-[42px] h-[42px] w-[42px] rounded-full border border-gray-200 flex items-center justify-center p-[8px] shadow-[0_2px_8px_0_rgba(0,0,0,0.15)] animate-slide-to-bounce-animate bg-white z-20"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
+        <div className="insytful-search-messages-hint" aria-hidden="true">
+          <div key={`slide-icon-${messages.length}`} className="insytful-search-messages-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" focusable="false">
               <path
-                stroke="#333"
+                stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"

@@ -11,7 +11,7 @@ IMPORTANT: When the developer asks to add a rule, add guidance, add knowledge, a
 
 ## Tags
 
-typescript, react, vite, storybook, tailwindcss, vitest, eslint, npm, ai-search, component-library
+typescript, react, vite, storybook, vitest, eslint, npm, ai-search, component-library
 
 ## Guidance
 

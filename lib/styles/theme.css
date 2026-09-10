@@ -1,0 +1,137 @@
+/* Theme root — tokens and font baseline.
+ *
+ * Only `.insytful-theme` is targeted. Never `:root`: this file is imported
+ * into consumer pages for light-DOM components, and a `:root` rule would
+ * restyle the host document. Inside the Shadow DOM portal the mount element
+ * carries `.insytful-theme`, so the same rule applies there too. */
+
+.insytful-theme {
+  /* Font baseline.
+     Default `1rem` inherits from <html>, so browser text-size preferences
+     (accessibility) flow through. Consumers on hostile hosts that do
+     `html { font-size: 62.5% }` can pin to px via the variable, e.g.
+     `--insytful-base-font-size: 16px`. `em` values in this stylesheet
+     resolve against this base (not against <html>), so this single knob
+     controls scaling for the markdown prose. */
+  font-size: var(--insytful-base-font-size, 1rem);
+  line-height: 1.5;
+  font-family: var(--insytful-font-family);
+  color: var(--insytful-text-default);
+
+  /* Typography */
+  --insytful-font-family: system-ui, -apple-system, sans-serif;
+
+  /* Breakpoint used by the responsive rules below is 768px (Tailwind `md`).
+     Media queries can't read custom properties, so it is repeated inline. */
+
+  /* Text Colors */
+  --insytful-text-default: #333333;
+  --insytful-text-muted: #6c6c6c;
+  --insytful-text-link-default: #1d70b8;
+  --insytful-text-link-hover: #184b76;
+
+  /* Brand Colors */
+  --insytful-brand-primary: #195491;
+
+  /* Modal surface */
+  --insytful-modal-bg: #ffffff;
+  --insytful-modal-max-width: 784px;
+  --insytful-modal-radius: 0px;
+  --insytful-z-index: 999;
+
+  /* Button - Prompt (suggestion chips) */
+  --insytful-btn-prompt-bg-default: #e2eefa;
+  --insytful-btn-prompt-bg-hover: #c8daec;
+  --insytful-btn-prompt-text: #333333;
+  --insytful-btn-prompt-radius: 12px;
+  --insytful-btn-prompt-focus: var(--insytful-semantic-focus-ring);
+
+  /* Input card */
+  --insytful-input-card-bg: #ffffff;
+  --insytful-input-card-radius: 16px;
+  --insytful-input-card-border: var(--insytful-semantic-search-field-stroke);
+  --insytful-input-card-border-width: 1px;
+
+  /* Button - Icon Search */
+  --insytful-btn-icon-search-bg-default: #2e3339;
+  --insytful-btn-icon-search-bg-hover: #3c444d;
+  --insytful-btn-icon-search-bg-disabled: #e7e7e7;
+  --insytful-btn-icon-search-icon: #ffffff;
+
+  /* Button - Close */
+  --insytful-btn-close-bg: transparent;
+  --insytful-btn-close-bg-hover: #f2f2f2;
+  --insytful-btn-close-icon: var(--insytful-text-default);
+  --insytful-btn-close-size: 40px;
+
+  /* Typing indicator + disclaimer (aliased to muted by default; override separately) */
+  --insytful-typing-indicator-text: var(--insytful-text-muted);
+  --insytful-disclaimer-text: var(--insytful-text-muted);
+
+  /* Skeleton loader */
+  --insytful-skeleton-bg: #e8e8e8;
+  --insytful-skeleton-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+
+  /* CTA quick actions (Search.Ctas). Pills above the answer — only `primary`
+     gets the solid fill; `secondary` is a ghost/outline. */
+  --insytful-cta-bar-gap: 8px;
+  --insytful-cta-radius: 9999px;
+  --insytful-cta-label-text: var(--insytful-text-muted);
+  --insytful-cta-primary-bg-default: #2e3339;
+  --insytful-cta-primary-bg-hover: #3c444d;
+  --insytful-cta-primary-text: #ffffff;
+  --insytful-cta-primary-border: transparent;
+  --insytful-cta-secondary-bg-default: transparent;
+  --insytful-cta-secondary-bg-hover: #f2f2f2;
+  --insytful-cta-secondary-text: var(--insytful-text-default);
+  --insytful-cta-secondary-border: #c8cdd3;
+
+  /* Button - Overview "Show more" toggle. Own token family (not aliased to
+     the CTA secondary tokens) since Search.Overview is used standalone. */
+  --insytful-btn-show-more-bg-default: transparent;
+  --insytful-btn-show-more-bg-hover: #f2f2f2;
+  --insytful-btn-show-more-text: var(--insytful-text-default);
+  --insytful-btn-show-more-border: #c8cdd3;
+  --insytful-btn-show-more-radius: 9999px;
+
+  /* Overview surface */
+  --insytful-overview-bg: #ffffff;
+  --insytful-overview-border: #e5e7eb;
+
+  /* Callout Error  */
+  --insytful-callout-error-border: #d93025;
+  --insytful-callout-error-bg: #fce8e6;
+  --insytful-callout-error-text: #333333;
+  --insytful-callout-error-cta-bg: #2e3339;
+  --insytful-callout-error-cta-text: #ffffff;
+  --insytful-callout-error-cta-border-radius: 4px;
+
+  /* Mode switch tabs (Web Component only; React exposes SearchModeSwitch as a
+     render prop and leaves the markup to you) */
+  --insytful-mode-switch-bg: #f2eff8;
+  --insytful-mode-switch-radius: 8px;
+  --insytful-mode-tab-text: #6c6c6c;
+  --insytful-mode-tab-active-bg: #ffffff;
+  --insytful-mode-tab-active-text: #333333;
+
+  /* Semantic - Search Field */
+  --insytful-semantic-search-field-stroke: #333333;
+  --insytful-semantic-search-field-ai-gradient-start: #35d2c5;
+  --insytful-semantic-search-field-ai-gradient-end: #1d70b8;
+
+  /* Semantic - Focus ring.
+     Override --insytful-semantic-focus-ring once to restyle focus colour on
+     all components, and -width/-offset to resize the ring. The old
+     --insytful-semantic-search-field-focus name holds the default colour and
+     remains supported as a deprecated alias. */
+  --insytful-semantic-search-field-focus: #35d2c5;
+  --insytful-semantic-focus-ring: var(--insytful-semantic-search-field-focus);
+  --insytful-semantic-focus-ring-width: 2px;
+  --insytful-semantic-focus-ring-offset: 3px;
+
+  /* Transition */
+  --insytful-search-transition-duration: 200ms;
+  --insytful-search-transition-easing: ease;
+  --insytful-search-transition-duration-dev: 5000ms;
+}
+

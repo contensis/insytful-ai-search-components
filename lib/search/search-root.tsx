@@ -7,8 +7,9 @@ import { SearchProvider, useSearchContext, type SearchContextValue } from "./con
 import { useControllableState } from "./use-controllable-state";
 import { useModalFocusTrap } from "./hooks.util";
 import { useMockFetch } from "../utilities/mock-fetch";
+import { useThemeContext } from "../theme/context";
 
-import css from "../main.css?inline";
+import css from "../styles/index.css?inline";
 
 export type SearchRootProps = {
   children: React.ReactNode;
@@ -26,7 +27,6 @@ export type SearchRootProps = {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  theme?: string;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode?: boolean;
@@ -68,7 +68,7 @@ const useStableId = typeof React.useId === "function"
 export function SearchRoot({
   children, options,
   open: openProp, defaultOpen = false, onOpenChange,
-  theme, renderMarkdown, logo, isDevMode = false, offsets,
+  renderMarkdown, logo, isDevMode = false, offsets,
   onCtaClick,
 }: SearchRootProps) {
   const [open, setOpen] = useControllableState({
@@ -105,7 +105,7 @@ export function SearchRoot({
       <SearchRootInner
         open={open} setOpen={setOpen}
         titleId={titleId} descriptionId={descriptionId}
-        options={stableOptions} theme={theme}
+        options={stableOptions}
         renderMarkdown={renderMarkdown} logo={logo}
         isDevMode={isDevMode} offsets={stableOffsets}
         onCtaClick={stableOnCtaClick}
@@ -121,7 +121,7 @@ SearchRoot.displayName = "Search.Root";
 /** Inner component inside RAGProvider to access conversation context. */
 function SearchRootInner({
   children, open, setOpen, titleId, descriptionId,
-  options, theme, renderMarkdown, logo, isDevMode, offsets,
+  options, renderMarkdown, logo, isDevMode, offsets,
   onCtaClick,
 }: {
   children: React.ReactNode;
@@ -130,7 +130,6 @@ function SearchRootInner({
   titleId: string;
   descriptionId: string;
   options: { config: string; baseUrl: string; recaptchaSiteKey?: string };
-  theme?: string;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode: boolean;
@@ -190,12 +189,12 @@ function SearchRootInner({
     open, onOpenChange: setOpen, titleId, descriptionId, options,
     messages, loading, elapsed, error, onSend: ask, onCtaClick,
     renderMarkdown, logo, isDevMode,
-    theme, offsets, computedOffsetHeight,
+    offsets, computedOffsetHeight,
   }), [
     open, setOpen, titleId, descriptionId, options,
     messages, loading, elapsed, error, ask, onCtaClick,
     renderMarkdown, logo, isDevMode,
-    theme, offsets, computedOffsetHeight,
+    offsets, computedOffsetHeight,
   ]);
 
   return <SearchProvider value={ctx}>{children}</SearchProvider>;
@@ -205,21 +204,39 @@ function SearchRootInner({
 /* Search.Portal                                                        */
 /* ------------------------------------------------------------------ */
 
-export type SearchPortalProps = { children: React.ReactNode };
+export type SearchPortalProps = {
+  children: React.ReactNode;
+  /**
+   * How the dialog is isolated from the host page.
+   *
+   * - `"shadow"` (default) — renders inside a Shadow DOM on document.body and
+   *   carries the library stylesheet in with it. Host CSS cannot reach the
+   *   dialog, which protects the styled modal on hostile client sites. In
+   *   this mode the only way to restyle it is `<Theme css="…">`.
+   * - `"none"` — renders into a plain light-DOM element on document.body.
+   *   Your page stylesheet reaches the dialog, so this is the mode for
+   *   unstyled (no `<Theme>`) or heavily customised use. Import
+   *   `insytful-ai-search-components/style.css` yourself when themed.
+   */
+  isolation?: "shadow" | "none";
+};
 
 /**
- * Search.Portal — renders children into a Shadow DOM dialog on document.body.
+ * Search.Portal — renders children into a dialog on document.body.
  *
- * Uses ReactDOM.createPortal to preserve React context across the boundary.
- * Must be a descendant of Search.Root.
+ * Uses ReactDOM.createPortal to preserve React context across the boundary,
+ * and re-applies the ambient <Theme> on the portal mount (the mount is not a
+ * DOM descendant of the Theme element, so the class must be mirrored onto the
+ * portal mount). Must be a descendant of Search.Root.
  */
-export function SearchPortal({ children }: SearchPortalProps) {
+export function SearchPortal({ children, isolation = "shadow" }: SearchPortalProps) {
   const ctx = useSearchContext("Search.Portal");
-  const { open, titleId, descriptionId, theme, offsets, computedOffsetHeight } = ctx;
+  const { open, titleId, descriptionId, offsets, computedOffsetHeight } = ctx;
+  const theme = useThemeContext();
 
   const { elModalRef } = useModalFocusTrap(ctx.onOpenChange, open);
 
-  // Create Shadow DOM once
+  // Create the portal host once
   const portalId = useStableId("insytful-ai-modal-portal");
   const mountRef = useRef<HTMLDivElement | null>(null);
   const customStyleRef = useRef<HTMLStyleElement | null>(null);
@@ -230,16 +247,22 @@ export function SearchPortal({ children }: SearchPortalProps) {
 
     const portal = document.createElement("div");
     portal.id = portalId;
-    const shadow = portal.attachShadow({ mode: "open" });
+    portal.setAttribute("data-insytful-portal", isolation);
 
-    const baseStyle = document.createElement("style");
-    baseStyle.textContent = css;
     const customStyle = document.createElement("style");
-    if (theme) customStyle.textContent = theme;
     const mount = document.createElement("div");
-    mount.className = "insytful-root";
+    mount.className = "insytful-portal-mount";
 
-    shadow.append(baseStyle, customStyle, mount);
+    if (isolation === "shadow") {
+      const shadow = portal.attachShadow({ mode: "open" });
+      // Base styles ride along inside the shadow root. They are all scoped
+      // under `.insytful-theme`, so without a <Theme> they match nothing.
+      const baseStyle = document.createElement("style");
+      baseStyle.textContent = css;
+      shadow.append(baseStyle, customStyle, mount);
+    } else {
+      portal.append(customStyle, mount);
+    }
     document.body.appendChild(portal);
 
     mountRef.current = mount;
@@ -251,10 +274,14 @@ export function SearchPortal({ children }: SearchPortalProps) {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update theme
+  // Mirror the ambient Theme (class, data attributes, custom CSS) onto the
+  // mount whenever it changes.
   useEffect(() => {
-    if (customStyleRef.current) customStyleRef.current.textContent = theme ?? "";
-  }, [theme]);
+    const mount = mountRef.current;
+    if (!mount) return;
+    mount.className = ["insytful-portal-mount", theme?.className ?? ""].join(" ").trim();
+    if (customStyleRef.current) customStyleRef.current.textContent = theme?.css ?? "";
+  }, [ready, theme]);
 
   // Compute top offset
   const { left = 0, right = 0 } = offsets || {};
@@ -273,10 +300,10 @@ export function SearchPortal({ children }: SearchPortalProps) {
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       {...(!open ? { inert: "" } : {})}
-      className={`insytful-search-dialog-outer fixed flex flex-col bg-[var(--insytful-modal-bg)] overflow-hidden pb-0 ${
-        open ? "insytful-search-dialog-open" : "insytful-search-dialog-closed"
-      }`}
+      className="insytful-search-dialog-outer"
+      data-state={open ? "open" : "closed"}
       style={{
+        position: "fixed",
         zIndex: "var(--insytful-z-index, 999)",
         top: typeof topOffset === "number" ? `${topOffset}px` : topOffset,
         left, right, bottom: 0,
@@ -286,11 +313,7 @@ export function SearchPortal({ children }: SearchPortalProps) {
         transition: `opacity var(--insytful-search-transition-duration, 200ms) var(--insytful-search-transition-easing, ease), visibility 0s linear ${open ? "0s" : "var(--insytful-search-transition-duration, 200ms)"}`,
       } as React.CSSProperties}
     >
-      <div
-        className="insytful-search-dialog-inner px-4 w-full mx-auto flex flex-col h-full justify-start gap-[24px] pt-[32px] min-h-[500px] md:justify-center md:gap-[32px]"
-      >
-        {children}
-      </div>
+      <div className="insytful-search-dialog-inner">{children}</div>
     </div>,
     // eslint-disable-next-line react-hooks/refs
     mountRef.current,

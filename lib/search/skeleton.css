@@ -1,0 +1,36 @@
+/* Loading skeleton shown while an answer streams in. */
+
+.insytful-theme .insytful-search-skeleton-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.insytful-theme .insytful-search-skeleton-bar {
+  width: 100%;
+  height: 1em;
+  border-radius: 4px;
+  background: var(--insytful-skeleton-bg);
+  background-image: var(--insytful-skeleton-shimmer);
+  background-size: 200% 100%;
+  animation: insytful-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+.insytful-theme .insytful-search-skeleton-bar:nth-child(2) {
+  width: 90%;
+}
+.insytful-theme .insytful-search-skeleton-bar:nth-child(3) {
+  width: 70%;
+}
+
+.insytful-theme .insytful-search-skeleton-text {
+  display: inline-block;
+  margin-top: 0.5em;
+  font-size: 0.875em;
+  color: var(--insytful-typing-indicator-text);
+  animation: insytful-rise-in 300ms ease-out;
+}
+
+.insytful-theme .insytful-search-skeleton-dot {
+  animation: insytful-skeleton-dots 1.5s ease-in-out infinite;
+}

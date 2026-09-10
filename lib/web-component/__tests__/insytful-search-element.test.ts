@@ -162,7 +162,7 @@ describe("InsytfulSearchElement CTA streaming", () => {
     document.body.innerHTML = "";
   });
 
-  it("inserts the CTA row once, as a sibling above contentDiv, without touching the skeleton", async () => {
+  it("inserts the CTA row once, above the content-inner wrapper, without touching the skeleton", async () => {
     const run = internalsOf(element)._runConversation("How do I contact you?");
     await settle();
 
@@ -175,8 +175,11 @@ describe("InsytfulSearchElement CTA streaming", () => {
     const contentDiv = contentDivOf(li);
     expect(ctaBars(element)).toHaveLength(1);
 
-    // Row wrapper is the immediate previous sibling of contentDiv
-    const wrapper = contentDiv.previousElementSibling as HTMLElement;
+    // Row wrapper sits directly above the `-content-inner` wrapper that holds
+    // contentDiv — the same DOM position as React's <SearchCtas>
+    const inner = contentDiv.parentElement as HTMLElement;
+    expect(inner.classList.contains("insytful-search-message-content-inner")).toBe(true);
+    const wrapper = inner.previousElementSibling as HTMLElement;
     expect(wrapper.querySelector(`.${CTA_BAR_CLASS}`)).not.toBeNull();
     expect(wrapper.getAttribute("aria-live")).toBe("off");
 
@@ -190,7 +193,7 @@ describe("InsytfulSearchElement CTA streaming", () => {
     expect(contentDiv.querySelector(".insytful-search-skeleton-content")).toBeNull();
     expect(contentDiv.textContent).toContain("Here is how.");
     expect(ctaBars(element)).toHaveLength(1);
-    expect(contentDiv.previousElementSibling).toBe(wrapper);
+    expect(contentDiv.parentElement!.previousElementSibling).toBe(wrapper);
 
     // Finish the stream: message + event carry the sanitized ctas
     const messageListener = vi.fn();

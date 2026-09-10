@@ -2,7 +2,7 @@ import { default as React } from 'react';
 import { Cta, RAGMessage } from '../api/rag.types';
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
- * Follows the Radix UI pattern for compound component context.
+ * Standard compound-component context pattern.
  */
 export declare function createCompoundContext<T>(componentName: string): readonly [React.Provider<T | null>, (consumerName: string) => T, () => T | null];
 export type SearchContextValue = {
@@ -24,7 +24,6 @@ export type SearchContextValue = {
     renderMarkdown?: (markdown: string) => React.ReactNode;
     logo?: React.ReactNode;
     isDevMode: boolean;
-    theme?: string;
     offsets?: {
         top?: number | string;
         left?: number | string;
@@ -33,7 +32,7 @@ export type SearchContextValue = {
     /** Computed height from data-insytful-modal-offset elements */
     computedOffsetHeight: number;
 };
-export declare const SearchProvider: React.Provider<SearchContextValue | null>, useSearchContext: (consumerName: string) => SearchContextValue;
+export declare const SearchProvider: React.Provider<SearchContextValue | null>, useSearchContext: (consumerName: string) => SearchContextValue, useSearchContextSafe: () => SearchContextValue | null;
 export type ModeContextValue = {
     mode: string;
     onSwitchMode: (mode: string) => void;

@@ -3,7 +3,7 @@ import type { Cta, RAGMessage } from "../api/rag.types";
 
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
- * Follows the Radix UI pattern for compound component context.
+ * Standard compound-component context pattern.
  */
 export function createCompoundContext<T>(componentName: string) {
   const Context = createContext<T | null>(null);
@@ -58,7 +58,6 @@ export type SearchContextValue = {
   isDevMode: boolean;
 
   // Portal config
-  theme?: string;
   offsets?: {
     top?: number | string;
     left?: number | string;
@@ -68,7 +67,7 @@ export type SearchContextValue = {
   computedOffsetHeight: number;
 };
 
-export const [SearchProvider, useSearchContext] =
+export const [SearchProvider, useSearchContext, useSearchContextSafe] =
   createCompoundContext<SearchContextValue>("Search.Root");
 
 /* ------------------------------------------------------------------ */
@@ -80,5 +79,4 @@ export type ModeContextValue = {
   onSwitchMode: (mode: string) => void;
 };
 
-export const [ModeProvider, useModeContext, useModeContextSafe] =
-  createCompoundContext<ModeContextValue>("Search.Modes");
+export const [ModeProvider, useModeContext, useModeContextSafe] = createCompoundContext<ModeContextValue>("Search.Modes");

@@ -1,7 +1,7 @@
 /**
  * Vite Build Configuration for Insytful AI Search Components Library
  *
- * Builds a React compound component library (Radix-style):
+ * Builds a React compound component library:
  * - ES modules only
  * - React 17+ compatible (classic JSX runtime)
  * - Externalises react/react-dom (peer dependencies)
@@ -49,6 +49,7 @@ export default defineConfig({
       output: {
         interop: "auto",
         preserveModules: false,
+        assetFileNames: "style.css",
       },
     },
   },

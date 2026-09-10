@@ -2,18 +2,18 @@
    Imported by both React and WC playgrounds.
 
    Why a separate file from theme.css:
-   `playground-shared/theme.css` scopes its overrides to `.insytful-root`, which
+   `playground-shared/theme.css` scopes its overrides to `.insytful-theme`, which
    in both playgrounds is attached to the shadow-DOM mount. The playground
    shell — hero cards and bare-HTML controls — lives in the light DOM and
    inherits only the lib default (`#35d2c5`, teal) from `lib/main.css`'s
-   `:host, :root, .insytful-root` declaration. That produces teal rings on
+   `:host, :root, .insytful-theme` declaration. That produces teal rings on
    light-DOM elements where the playground theme expects purple.
 
    This file sets `--insytful-semantic-focus-ring: #916ee5` on `:root` (light
    DOM) and provides focus rules for the playground hero cards and the WC
    bare-HTML hero controls. The purple value is intentionally duplicated
    here and in `theme.css:15` — the two files target different CSS scopes
-   (light DOM vs `.insytful-root` inside shadow). Do NOT import this file
+   (light DOM vs `.insytful-theme` inside shadow). Do NOT import this file
    into shadow-DOM scope; shadow-side theming flows through the
    `<insytful-search theme="…">` attribute (WC) or `modal-theme.css` which
    imports `theme.css` (React).
@@ -26,8 +26,8 @@
 
 :root {
   --insytful-semantic-focus-ring: #916ee5;
-  --insytful-semantic-focus-ring-width: 3px;
-  --insytful-semantic-focus-ring-offset: 4px;
+  --insytful-semantic-focus-ring-width: 2px;
+  --insytful-semantic-focus-ring-offset: 3px;
 }
 
 /* Hero card: ring on the card only when the TEXTAREA inside it has focus.

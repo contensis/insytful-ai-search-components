@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 
 /**
  * Hook that supports both controlled and uncontrolled state.
- * Follows the Radix UI useControllableState pattern.
+ * Standard controlled/uncontrolled ("controllable state") pattern.
  *
  * - Controlled: pass `prop` + `onChange` (component does not own state)
  * - Uncontrolled: pass `defaultProp` (component owns state, calls onChange on change)

@@ -15,7 +15,7 @@ export function SearchDescription({
   return (
     <p
       id={descriptionId}
-      className={`insytful-search-empty-state-text text-[var(--insytful-text-default)] text-[14px] leading-[24px] font-normal md:text-[20px] md:leading-[32px] text-center ${className ?? ""}`}
+      className={`insytful-search-empty-state-text ${className ?? ""}`.trim()}
     >
       {children}
     </p>

@@ -4,7 +4,7 @@
  * Focus trapping for accessible modal behaviour.
  */
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createFocusTrap } from "focus-trap";
 
 /* ------------------------------------------------------------------ */
@@ -60,3 +60,18 @@ export function useModalFocusTrap(
 
   return { elModalRef };
 }
+
+/* ------------------------------------------------------------------ */
+/* useStableId                                                          */
+/* ------------------------------------------------------------------ */
+
+// useId ships in React 18; fall back to a counter-based stable id for the
+// React 17 peer range (same pattern as search-root.tsx).
+let idCounter = 0;
+export const useStableId =
+  typeof React.useId === "function"
+    ? (prefix: string) => `${prefix}-${React.useId()}`
+    : (prefix: string) => {
+        const [id] = useState(() => `${prefix}-${++idCounter}`);
+        return id;
+      };

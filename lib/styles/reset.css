@@ -1,0 +1,37 @@
+/* Scoped reset. Only elements the library renders are reset, and only by
+   their own hook classes, so wrapping a whole app in <Theme> changes nothing
+   about the host's own markup. Replaces the Tailwind Preflight that used to
+   be injected into the Shadow DOM only (and so made the modal and the
+   light-DOM Overview render differently).
+
+   Imported into the `insytful.reset` sub-layer, BELOW `insytful.components`
+   (see index.css). That is what lets the component rules win: these
+   selectors carry an element type and so out-specify a plain
+   `.insytful-theme .insytful-search-x` rule, but layer order beats
+   specificity. Without the sub-layer every button lost its background. */
+
+.insytful-theme [class*="insytful-search-"],
+.insytful-theme [class*="insytful-search-"]::before,
+.insytful-theme [class*="insytful-search-"]::after {
+  box-sizing: border-box;
+}
+.insytful-theme button[class*="insytful-search-"],
+.insytful-theme textarea[class*="insytful-search-"] {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.insytful-theme button[class*="insytful-search-"] {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: inherit;
+}
+.insytful-theme svg[class*="insytful-search-"],
+.insytful-theme [class*="insytful-search-"] > svg {
+  display: block;
+  vertical-align: middle;
+}

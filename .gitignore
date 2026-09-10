@@ -12,7 +12,7 @@ node_modules
 dist-ssr
 *.local
 storybook-static
-stories/web-component/dist
+stories/web-components/dist
 
 # Editor directories and files
 .vscode/*
@@ -31,3 +31,6 @@ stories/web-component/dist
 .context/
 docs/plans/
 docs/brainstorms/
+
+# npm pack output
+*.tgz

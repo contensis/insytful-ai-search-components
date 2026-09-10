@@ -1,8 +1,5 @@
-/**
- * Custom React Hooks
- *
- * Focus trapping for accessible modal behaviour.
- */
+import { default as React } from 'react';
 export declare function useModalFocusTrap(setOpen: (open: boolean) => void, isOpen: boolean): {
-    elModalRef: import('react').MutableRefObject<HTMLDivElement | null>;
+    elModalRef: React.MutableRefObject<HTMLDivElement | null>;
 };
+export declare const useStableId: (prefix: string) => string;

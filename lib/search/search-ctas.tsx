@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import type { Cta } from "../api/rag.types";
-import { useSearchContext } from "./context";
+import { useSearchContextSafe } from "./context";
 import {
   ctaViewModel,
   CTA_BAR_CLASS,
@@ -16,37 +16,14 @@ export type SearchCtasProps = {
   /** Sanitized CTAs (post-`sanitizeCtas`) to render; nothing renders when absent/empty. */
   ctas?: Cta[];
   className?: string;
+  onCtaClick?: (cta: Cta) => void;
 };
 
-// useId ships in React 18; fall back to a counter-based stable id for the
-// React 17 peer range (same pattern as search-root.tsx).
-let idCounter = 0;
-const useStableId =
-  typeof React.useId === "function"
-    ? (prefix: string) => `${prefix}-${React.useId()}`
-    : (prefix: string) => {
-        const [id] = useState(() => `${prefix}-${++idCounter}`);
-        return id;
-      };
+import { useStableId } from "./hooks.util";
 
 /* ------------------------------------------------------------------ */
 /* Chip                                                                 */
 /* ------------------------------------------------------------------ */
-
-const CHIP_BASE_CLASSES =
-  "inline-flex items-center gap-[6px] min-h-[44px] max-w-full whitespace-normal " +
-  "py-[10px] px-[18px] text-[14px] leading-[24px] font-medium no-underline " +
-  "cursor-pointer transition-colors rounded-[var(--insytful-cta-radius)] " +
-  "border border-solid";
-
-const CHIP_INTENT_CLASSES: Record<Cta["intent"], string> = {
-  primary:
-    "bg-[var(--insytful-cta-primary-bg-default)] hover:bg-[var(--insytful-cta-primary-bg-hover)] " +
-    "text-[var(--insytful-cta-primary-text)] border-[var(--insytful-cta-primary-border)]",
-  secondary:
-    "bg-[var(--insytful-cta-secondary-bg-default)] hover:bg-[var(--insytful-cta-secondary-bg-hover)] " +
-    "text-[var(--insytful-cta-secondary-text)] border-[var(--insytful-cta-secondary-border)]",
-};
 
 function CtaChip({
   cta,
@@ -56,7 +33,10 @@ function CtaChip({
   onCtaClick?: (cta: Cta) => void;
 }) {
   const vm = ctaViewModel(cta);
-  const chipClass = `${vm.classes.btn} ${CHIP_BASE_CLASSES} ${CHIP_INTENT_CLASSES[vm.intent]}`;
+  // `vm.classes.btn` carries the shared hook classes (base + intent variant)
+  // that the Web Component also emits; `data-intent` is what the shipped
+  // stylesheet targets.
+  const chipClass = vm.classes.btn;
 
   // Icon SVG strings are our own constants (lib/shared/cta/icons.ts) — never
   // CMS data — so dangerouslySetInnerHTML is safe here. External-link glyph
@@ -65,9 +45,8 @@ function CtaChip({
   const icon = vm.iconSvg ? (
     <span
       aria-hidden="true"
-      className={`insytful-search-cta-icon inline-flex flex-shrink-0 ${
-        iconTrails ? "mr-[-4px]" : "ml-[-4px]"
-      }`}
+      className="insytful-search-cta-icon"
+      data-position={iconTrails ? "trailing" : "leading"}
       dangerouslySetInnerHTML={{ __html: vm.iconSvg }}
     />
   ) : null;
@@ -91,7 +70,7 @@ function CtaChip({
       executeCta(cta);
     };
     return (
-      <button type="button" className={chipClass} onClick={handleClick}>
+      <button type="button" className={chipClass} data-intent={vm.intent} onClick={handleClick}>
         {content}
       </button>
     );
@@ -118,6 +97,7 @@ function CtaChip({
     <a
       href={vm.href}
       className={chipClass}
+      data-intent={vm.intent}
       onClick={handleClick}
       {...(vm.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
@@ -144,8 +124,10 @@ function CtaChip({
  * `role="group"` labelled by the visible "Quick actions" micro-label, and
  * every chip is a separate tab stop.
  */
-function SearchCtasImpl({ ctas, className }: SearchCtasProps) {
-  const { onCtaClick } = useSearchContext("Search.Ctas");
+function SearchCtasImpl({ ctas, className, onCtaClick }: SearchCtasProps) {
+  const ctx = useSearchContextSafe();
+  const resolvedOnCtaClick = onCtaClick ?? ctx?.onCtaClick;
+
   const labelId = useStableId("insytful-search-cta-label");
 
   // One-shot "N quick actions available" announcement. The role="status"
@@ -167,22 +149,15 @@ function SearchCtasImpl({ ctas, className }: SearchCtasProps) {
   return (
     <div
       aria-live="off"
-      className={`insytful-search-cta-outer mb-[16px] ${className ?? ""}`}
+      className={`insytful-search-cta-outer ${className ?? ""}`.trim()}
     >
       <div ref={statusRef} role="status" className="insytful-sr-only" />
-      <div
-        id={labelId}
-        className={`${CTA_LABEL_CLASS} text-[13px] leading-[20px] mb-[6px] text-[var(--insytful-cta-label-text)]`}
-      >
+      <div id={labelId} className={CTA_LABEL_CLASS}>
         Quick actions
       </div>
-      <div
-        role="group"
-        aria-labelledby={labelId}
-        className={`${CTA_BAR_CLASS} flex flex-wrap gap-[var(--insytful-cta-bar-gap)] max-w-full`}
-      >
+      <div role="group" aria-labelledby={labelId} className={CTA_BAR_CLASS}>
         {ctas.map((cta, i) => (
-          <CtaChip key={i} cta={cta} onCtaClick={onCtaClick} />
+          <CtaChip key={i} cta={cta} onCtaClick={resolvedOnCtaClick} />
         ))}
       </div>
     </div>

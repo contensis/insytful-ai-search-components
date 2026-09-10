@@ -23,11 +23,11 @@ function AnimatedDots({ text }: { text: string }) {
   return (
     <>
       {before}
-      <span className="animate-skeleton-dots">.</span>
-      <span className="animate-skeleton-dots" style={{ animationDelay: "0.2s" }}>
+      <span className="insytful-search-skeleton-dot">.</span>
+      <span className="insytful-search-skeleton-dot" style={{ animationDelay: "0.2s" }}>
         .
       </span>
-      <span className="animate-skeleton-dots" style={{ animationDelay: "0.4s" }}>
+      <span className="insytful-search-skeleton-dot" style={{ animationDelay: "0.4s" }}>
         .
       </span>
       {after}
@@ -58,14 +58,11 @@ export const SearchSkeletonBody = ({
   );
 
   return (
-    <div className="insytful-search-skeleton-content flex flex-col gap-[8px] w-full">
-      <div className="insytful-search-skeleton-bar animate-skeleton-shimmer w-full" />
-      <div className="insytful-search-skeleton-bar animate-skeleton-shimmer w-[90%]" />
-      <div className="insytful-search-skeleton-bar animate-skeleton-shimmer w-[70%]" />
-      <span
-        key={activeMessage}
-        className="insytful-search-skeleton-text insytful-search-skeleton-text-transition"
-      >
+    <div className="insytful-search-skeleton-content">
+      <div className="insytful-search-skeleton-bar" />
+      <div className="insytful-search-skeleton-bar" />
+      <div className="insytful-search-skeleton-bar" />
+      <span key={activeMessage} className="insytful-search-skeleton-text">
         <AnimatedDots text={activeMessage} />
       </span>
     </div>

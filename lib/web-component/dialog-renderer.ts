@@ -3,8 +3,11 @@
  *
  * Mirrors the React component tree (SearchPortal > SearchRoot > Title,
  * Description, Messages, Input, Suggestions, Disclaimer) using plain DOM
- * elements with the same BEM class names and Tailwind utility classes so
- * the shared CSS produces an identical visual result.
+ * elements that emit the SAME hook classes and `data-*` state attributes as
+ * the React components. No presentational classes live here: the element
+ * injects the shared stylesheet (`lib/styles/index.css`) into the shadow
+ * root, so both flavours are styled by one sheet and the `theme` attribute
+ * overrides it exactly like `<Theme css>` does for React.
  */
 
 // Types-only import — adds zero runtime weight to the IIFE bundle.
@@ -20,11 +23,20 @@ import {
 /* SVG icon markup                                                      */
 /* ------------------------------------------------------------------ */
 
-const SPARKLE_ICON = `<svg focusable="false" aria-hidden="true" role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="var(--insytful-text-default)" d="M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z"/></svg>`;
+// Icons carry no fill/stroke of their own: the stylesheet colours them via
+// `fill: currentColor` / `stroke: currentColor`, same as the React icons.
 
-const SEND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill="var(--insytful-btn-icon-search-icon)" d="M15.991 8a1.606 1.606 0 0 0-.543-1.2L7.996.24a.96.96 0 0 0-1.267 1.442l5.758 5.067a.166.166 0 0 1 .046.183.167.167 0 0 1-.156.108H.967a.96.96 0 1 0 0 1.92h11.408a.167.167 0 0 1 .11.292l-5.758 5.067a.96.96 0 1 0 1.267 1.44L15.448 9.2A1.606 1.606 0 0 0 15.99 8Z"/></g><defs><clipPath id="a"><path fill="var(--insytful-btn-icon-search-icon)" d="M0 0h16v16H0z"/></clipPath></defs></svg>`;
+/** Sparkle — AI mode leading icon (mirrors `AiIcon` in search-input.tsx). */
+export const SPARKLE_ICON = `<svg focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z"/></svg>`;
 
-const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+/** Magnifier — classic mode leading icon (mirrors `ClassicIcon`). */
+export const CLASSIC_ICON = `<svg focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.27 18.54c1.613-.001 3.18-.541 4.45-1.535L19.715 21 21 19.715l-3.995-3.995a7.225 7.225 0 0 0 1.535-4.45C18.54 7.26 15.279 4 11.27 4 7.262 4 4 7.261 4 11.27c0 4.008 3.262 7.27 7.27 7.27Zm0-12.723a5.45 5.45 0 1 1 0 10.9 5.45 5.45 0 1 1 0-10.9Z"/></svg>`;
+
+const SEND_ICON = `<svg focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M15.991 8a1.606 1.606 0 0 0-.543-1.2L7.996.24a.96.96 0 0 0-1.267 1.442l5.758 5.067a.166.166 0 0 1 .046.183.167.167 0 0 1-.156.108H.967a.96.96 0 1 0 0 1.92h11.408a.167.167 0 0 1 .11.292l-5.758 5.067a.96.96 0 1 0 1.267 1.44L15.448 9.2A1.606 1.606 0 0 0 15.99 8Z"/></svg>`;
+
+const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+
+const SCROLL_HINT_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" focusable="false" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M19 12l-7 7-7-7"/></svg>`;
 
 /* ------------------------------------------------------------------ */
 /* Helper                                                               */
@@ -66,11 +78,11 @@ export interface DialogElements {
   descriptionSlot: HTMLSlotElement;
   /** Slot for disclaimer text */
   disclaimerSlot: HTMLSlotElement;
-  /** Container for chat messages (populated by Unit 4) */
+  /** `.insytful-search-messages-outer` — holds the list and the scroll spacer */
   messagesContainer: HTMLDivElement;
-  /** Scrolling wrapper inside messages */
+  /** `.insytful-search-messages-container-scroll` — the scrolling element */
   messagesScroll: HTMLDivElement;
-  /** The outer wrapper around messagesScroll (controls visibility) */
+  /** `.insytful-search-messages-container` — outer wrapper (controls visibility) */
   messagesOuter: HTMLDivElement;
   /** The <ul> inside messagesContainer that holds message <li> elements */
   messagesList: HTMLUListElement;
@@ -78,27 +90,25 @@ export interface DialogElements {
   scrollSpacer: HTMLDivElement;
   /** Scroll hint arrow shown when content overflows */
   scrollHint: HTMLDivElement;
-  /** The empty-state wrapper (title + description + suggestions) */
+  /** Unstyled wrapper around logo, title and description; hidden once a conversation starts */
   emptyState: HTMLDivElement;
-  /** Container for suggestion chips (populated by Unit 5) */
+  /** `.insytful-search-suggestions-outer` — chips are rendered inside */
   suggestionsContainer: HTMLDivElement;
-  /** Wrapper around the input card — exposed so `order` can be toggled for suggestions-position="below" */
-  inputCardOuter: HTMLDivElement;
   /** Container for the close button; button is appended only when <insytful-close> exists */
   closeButtonContainer: HTMLDivElement;
-  /** The input form */
+  /** The input <form> — carries `data-mode` / `data-has-messages` */
   inputForm: HTMLFormElement;
+  /** Leading icon wrapper — swapped between sparkle and magnifier by mode */
+  inputIcon: HTMLDivElement;
   /** The textarea element */
   textarea: HTMLTextAreaElement;
   /** The send button */
   sendButton: HTMLButtonElement;
-  /** Container for mode switch tabs (populated by Unit 5) */
+  /** Container for mode switch tabs (empty when no modes are configured) */
   modeSwitchContainer: HTMLDivElement;
-  /** The input card wrapper (textarea + mode switch) */
-  inputCard: HTMLDivElement;
-  /** Disclaimer wrapper at the bottom */
-  disclaimerWrapper: HTMLDivElement;
-  /** Gradient shimmer behind the input card (AI mode, empty state) */
+  /** `.insytful-search-disclaimer-inner` */
+  disclaimerInner: HTMLDivElement;
+  /** `.insytful-search-message-input-bg` — glow behind the field (AI mode only) */
   inputGradient: HTMLDivElement;
 }
 
@@ -123,7 +133,9 @@ export function dialogTransition(open: boolean): string {
 
 export function renderDialog(titleId: string, descriptionId: string): DialogElements {
   // --- Root container (no dialog role — that goes on dialogOuter) ---
-  const root = el('div', {}, 'insytful-root');
+  // `.insytful-theme` scopes the shared stylesheet, exactly like <Theme>.
+  // `insytful-root` is a deprecated alias kept for 4.x `theme` CSS; remove in 5.0.
+  const root = el('div', {}, 'insytful-theme insytful-root');
 
   // --- Trigger slot (light DOM projection) ---
   const triggerSlot = document.createElement('slot');
@@ -140,8 +152,11 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     'aria-labelledby': titleId,
     'aria-describedby': descriptionId,
     'inert': '',
-  }, 'insytful-search-dialog-outer fixed flex flex-col bg-[var(--insytful-modal-bg)] overflow-hidden pb-0 insytful-search-dialog-closed');
+    'data-state': 'closed',
+  }, 'insytful-search-dialog-outer');
 
+  // Position, offsets and the open/close fade are per-instance (mirrors
+  // SearchRoot, which sets the same properties inline).
   Object.assign(dialogOuter.style, {
     zIndex: 'var(--insytful-z-index, 999)',
     top: '0px',
@@ -159,34 +174,27 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
   const closeButtonContainer = el('div', { 'data-insytful-close-container': '' });
 
   // --- Dialog inner ---
-  const dialogInner = el('div', {},
-    'insytful-search-dialog-inner min-h-[500px] px-4 w-full mx-auto flex flex-col h-full justify-start md:justify-center gap-[24px] md:gap-[32px] pt-[32px]',
-  );
+  const dialogInner = el('div', {}, 'insytful-search-dialog-inner');
 
-  // --- Empty state (title + description) ---
-  const emptyState = el('div', {},
-    'insytful-search-empty-state flex flex-col items-center gap-[8px] md:gap-[16px] md:mt-auto px-4',
-  );
+  // --- Empty state (logo + title + description) ---
+  // Plain grouping element with no styles of its own: spacing comes from the
+  // title/description rules, as it does in React.
+  const emptyState = el('div', {}, 'insytful-search-empty-state');
 
-  // Logo slot
   const logoSlot = document.createElement('slot');
   logoSlot.name = 'logo';
   emptyState.appendChild(logoSlot);
 
-  // Title slot — wrapped in an <h1> for semantics
-  const titleWrapper = el('h1', { 'id': titleId },
-    'insytful-search-empty-state-title text-[var(--insytful-text-default)] text-[24px] leading-[32px] font-bold md:text-[56px] md:leading-[64px] text-center',
-  );
+  // Title slot — wrapped in an <h1> that carries the Search.Title hook class
+  const titleWrapper = el('h1', { 'id': titleId }, 'insytful-search-empty-state-title');
   const titleSlot = document.createElement('slot');
   titleSlot.name = 'title';
   titleSlot.textContent = 'How can we help?'; // default fallback
   titleWrapper.appendChild(titleSlot);
   emptyState.appendChild(titleWrapper);
 
-  // Description slot — wrapped in a <p> for semantics
-  const descWrapper = el('p', { 'id': descriptionId },
-    'insytful-search-empty-state-text text-[var(--insytful-text-default)] text-[14px] leading-[24px] font-normal md:text-[20px] md:leading-[32px] text-center',
-  );
+  // Description slot — wrapped in a <p> that carries the Search.Description hook class
+  const descWrapper = el('p', { 'id': descriptionId }, 'insytful-search-empty-state-text');
   const descriptionSlot = document.createElement('slot');
   descriptionSlot.name = 'description';
   descWrapper.appendChild(descriptionSlot);
@@ -194,126 +202,84 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
 
   dialogInner.appendChild(emptyState);
 
-  // --- Messages container (Unit 4 populates content) ---
-  const messagesOuter = el('div', {},
-    'flex-1 min-h-0 relative w-full max-w-full',
-  );
+  // --- Messages (mirrors Search.Messages) ---
+  const messagesOuter = el('div', {}, 'insytful-search-messages-container');
   messagesOuter.style.display = 'none'; // hidden until messages exist
 
-  const messagesScroll = el('div', {},
-    'overflow-y-auto insytful-search-messages-container-scroll h-full w-full',
-  );
+  const messagesScroll = el('div', {}, 'insytful-search-messages-container-scroll');
 
-  const messagesContainer = el('div', {},
-    'insytful-search-messages-outer w-full max-w-[var(--insytful-modal-max-width)] mx-auto',
-  );
+  const messagesContainer = el('div', {}, 'insytful-search-messages-outer');
 
   const messagesList = el('ul', {
     'aria-live': 'polite',
     'aria-atomic': 'false',
-  }, 'insytful-search-messages-inner flex flex-col gap-[32px] max-w-full w-full p-0 m-0');
-  messagesList.style.listStyle = 'none';
+  }, 'insytful-search-messages-inner');
   messagesContainer.appendChild(messagesList);
 
   // Scroll spacer: expanded when user sends a follow-up so their message
   // can scroll to the top, collapses when response finishes loading.
-  const scrollSpacer = el('div', { 'aria-hidden': 'true' },
-    'insytful-search-scroll-spacer',
-  );
+  const scrollSpacer = el('div', { 'aria-hidden': 'true' }, 'insytful-search-scroll-spacer');
   scrollSpacer.style.height = '0px';
   messagesContainer.appendChild(scrollSpacer);
 
   messagesScroll.appendChild(messagesContainer);
 
   // Scroll hint — shown when content overflows and user hasn't reached bottom
-  const scrollHint = el('div', {},
-    'w-full max-w-[var(--insytful-modal-max-width)] mx-auto absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col justify-center items-center',
-  );
+  const scrollHint = el('div', { 'aria-hidden': 'true' }, 'insytful-search-messages-hint');
   scrollHint.style.display = 'none';
-  scrollHint.innerHTML = `<div class="insytful-search-messages-icon min-w-[42px] h-[42px] w-[42px] rounded-full border border-gray-200 flex items-center justify-center p-[8px] shadow-[0_2px_8px_0_rgba(0,0,0,0.15)] animate-slide-to-bounce-animate bg-white z-20"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M19 12l-7 7-7-7"/></svg></div>`;
+  const scrollHintIcon = el('div', {}, 'insytful-search-messages-icon');
+  scrollHintIcon.innerHTML = SCROLL_HINT_ICON;
+  scrollHint.appendChild(scrollHintIcon);
 
   messagesOuter.appendChild(messagesScroll);
   messagesOuter.appendChild(scrollHint);
   dialogInner.appendChild(messagesOuter);
 
-  // --- Suggestions container (Unit 5 populates chips) ---
-  const suggestionsContainer = el('div', {},
-    'insytful-search-suggestions-outer w-full overflow-hidden self-stretch',
-  );
+  // --- Suggestions (mirrors Search.Suggestions; chips rendered by the element) ---
+  const suggestionsContainer = el('div', { 'data-position': 'above' }, 'insytful-search-suggestions-outer');
   suggestionsContainer.style.display = 'none'; // hidden until suggestions exist
   dialogInner.appendChild(suggestionsContainer);
 
-  // --- Input area ---
-  const inputCardOuter = el('div', {}, 'px-4 relative group');
+  // --- Input (mirrors Search.Input; state lives on the <form>) ---
+  const inputForm = el('form', { 'data-mode': 'ai' }, 'insytful-search-message-input');
 
-  // Gradient shimmer — visible in AI mode empty state only
-  const inputGradient = el('div', {},
-    'insytful-search-message-input-bg absolute inset-0 h-full w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] group-focus-within:opacity-60',
-  );
-  const inputGradientInner = el('div', {
-    'aria-hidden': 'true',
-  }, 'pointer-events-none absolute inset-x-[-2px] top-[2px] -bottom-[10px] rounded-[var(--insytful-input-card-radius)] opacity-50 blur-[14px] transition-opacity z-0 bg-gradient-to-b from-[var(--insytful-semantic-search-field-ai-gradient-start)] to-[var(--insytful-semantic-search-field-ai-gradient-end)]');
-  inputGradient.appendChild(inputGradientInner);
-  inputCardOuter.appendChild(inputGradient);
-
-  const inputCard = el('div', {},
-    'insytful-search-input-card relative z-10 w-full max-w-[var(--insytful-modal-max-width)] mx-auto rounded-[var(--insytful-input-card-radius)] border border-[var(--insytful-input-card-border)] bg-[var(--insytful-input-card-bg)] overflow-hidden px-[12px] pb-[12px] pt-[12px]',
-  );
-
-  const inputForm = el('form', {},
-    'insytful-search-message-input w-full relative flex',
-  );
-
-  // Sparkle icon
-  const inputIcon = el('div', {},
-    'insytful-search-message-input-icon absolute top-[14px] left-0 z-20',
-  );
+  const inputIcon = el('div', {}, 'insytful-search-message-input-icon');
   inputIcon.innerHTML = SPARKLE_ICON;
   inputForm.appendChild(inputIcon);
 
-  // Textarea
+  // Glow behind the field — AI mode only (React omits it in classic mode)
+  const inputGradient = el('div', {}, 'insytful-search-message-input-bg');
+  const inputGlow = el('div', { 'aria-hidden': 'true' }, 'insytful-search-message-input-glow');
+  inputGradient.appendChild(inputGlow);
+  inputForm.appendChild(inputGradient);
+
   const textarea = el('textarea', {
     'rows': '1',
     'placeholder': 'Ask a question',
     'aria-label': 'Ask a question',
-  }, 'insytful-search-message-input-textarea relative z-10 w-full resize-none bg-[var(--insytful-input-card-bg)] max-h-[240px] overflow-y-auto py-[12px] min-h-[48px] border-0 rounded-none pr-[48px] pl-[32px]');
-
+  }, 'insytful-search-message-input-textarea');
   inputForm.appendChild(textarea);
 
-  // Send button
   const sendButton = el('button', {
     'type': 'submit',
     'aria-label': 'Send message',
-  }, 'insytful-search-message-input-btn z-20 absolute right-0 top-1/2 -translate-y-1/2 w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[var(--insytful-btn-icon-search-bg-default)] text-white border-none cursor-pointer hover:bg-[var(--insytful-btn-icon-search-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50');
-
+  }, 'insytful-search-message-input-btn');
   sendButton.innerHTML = SEND_ICON;
   inputForm.appendChild(sendButton);
 
-  inputCard.appendChild(inputForm);
+  dialogInner.appendChild(inputForm);
 
-  // Mode switch container (Unit 5 populates tabs)
-  const modeSwitchContainer = el('div', {},
-    'insytful-search-mode-switch',
-  );
-  inputCard.appendChild(modeSwitchContainer);
+  // Mode switch (WC-only UI; React exposes SearchModeSwitch as a render prop).
+  // Styled by lib/search/search-modes.css; `:empty` hides it when unused.
+  const modeSwitchContainer = el('div', {}, 'insytful-search-mode-switch');
+  dialogInner.appendChild(modeSwitchContainer);
 
-  inputCardOuter.appendChild(inputCard);
-  dialogInner.appendChild(inputCardOuter);
-
-  // --- Disclaimer ---
-  const disclaimerWrapper = el('div', {},
-    'mt-auto pb-[24px] p-4',
-  );
-
-  const disclaimerInner = el('div', {},
-    'insytful-search-disclaimer-inner text-sm leading-6 font-normal text-center text-[var(--insytful-disclaimer-text)]',
-  );
-
+  // --- Disclaimer (mirrors Search.Disclaimer) ---
+  const disclaimerInner = el('div', {}, 'insytful-search-disclaimer-inner');
   const disclaimerSlot = document.createElement('slot');
   disclaimerSlot.name = 'disclaimer';
   disclaimerInner.appendChild(disclaimerSlot);
-  disclaimerWrapper.appendChild(disclaimerInner);
-  dialogInner.appendChild(disclaimerWrapper);
+  dialogInner.appendChild(disclaimerInner);
 
   // --- Assemble ---
   dialogOuter.appendChild(closeButtonContainer);
@@ -337,14 +303,13 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
     scrollHint,
     emptyState,
     suggestionsContainer,
-    inputCardOuter,
     closeButtonContainer,
     inputForm,
+    inputIcon,
     textarea,
     sendButton,
     modeSwitchContainer,
-    inputCard,
-    disclaimerWrapper,
+    disclaimerInner,
     inputGradient,
   };
 }
@@ -353,28 +318,22 @@ export function renderDialog(titleId: string, descriptionId: string): DialogElem
 /* Message rendering helpers                                            */
 /* ------------------------------------------------------------------ */
 
-/** Create a wrapper div for an avatar image. */
-function createAvatarNode(avatarHTML: string, className: string): HTMLDivElement {
-  const node = el('div', {}, className);
+/** Create the avatar wrapper. `placement` matches `data-placement` in React. */
+function createAvatarNode(avatarHTML: string, placement: 'aside' | 'inline'): HTMLDivElement {
+  const node = el('div', { 'data-placement': placement }, 'insytful-search-message-logo');
   node.innerHTML = avatarHTML;
   return node;
 }
 
 /**
  * Create a user message `<li>` element.
- * Matches the React `<Message>` component styling for role === "user".
+ * Same markup as the React `<Message>` for role === "user".
  */
 export function renderUserMessage(content: string): HTMLLIElement {
   // data-role='user' is used to target user messages for scroll-to-top positioning
-  const li = el('li', { 'data-role': 'user' },
-    'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row-reverse',
-  );
+  const li = el('li', { 'data-role': 'user' }, 'insytful-search-message');
 
-  const bubble = el('div', {},
-    'insytful-search-message-content-outer text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] flex flex-col justify-center items-end px-[16px] py-[12px] gap-[10px] bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-text-default)]',
-  );
-  bubble.style.overflowWrap = 'anywhere';
-  bubble.style.wordBreak = 'break-word';
+  const bubble = el('div', {}, 'insytful-search-message-content-outer');
   bubble.textContent = content;
 
   li.appendChild(bubble);
@@ -382,46 +341,37 @@ export function renderUserMessage(content: string): HTMLLIElement {
 }
 
 /**
- * Create an assistant message `<li>` element with an inner content div
- * that can be updated during streaming.
+ * Create an assistant message `<li>` with an inner content div that can be
+ * updated during streaming.
  *
- * Returns both the `<li>` and the content `<div>` so the caller can
- * update `contentDiv.innerHTML` as chunks arrive.
+ * Tree (identical to the React `<Message>` for role === "assistant"):
+ *   li > [logo data-placement=aside] + outer > inner > [logo data-placement=inline] + content
+ * The stylesheet shows the aside logo on desktop and the inline one on mobile.
+ *
+ * Returns the `<li>`, the streaming target `contentDiv`, and `inner` so the
+ * caller can insert the CTA row above it (a sibling inside `outer`).
  */
 export function renderAssistantMessage(avatarHTML?: string | null): {
   li: HTMLLIElement;
   contentDiv: HTMLDivElement;
+  inner: HTMLDivElement;
 } {
   // data-role='assistant' is used to identify assistant messages in the DOM
-  const li = el('li', { 'data-role': 'assistant' },
-    'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
-  );
+  const li = el('li', { 'data-role': 'assistant' }, 'insytful-search-message');
 
-  // Desktop avatar — visible md+ as a sibling of the content bubble
-  if (avatarHTML) {
-    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-message-logo flex-shrink-0 hidden md:block'));
-  }
+  if (avatarHTML) li.appendChild(createAvatarNode(avatarHTML, 'aside'));
 
-  const outer = el('div', {},
-    'insytful-search-message-content-outer w-full text-[1em] md:text-[1.25em] leading-[2] rounded-[16px] text-[var(--insytful-text-default)]',
-  );
-  outer.style.overflowWrap = 'anywhere';
-  outer.style.wordBreak = 'break-word';
+  const outer = el('div', {}, 'insytful-search-message-content-outer');
+  const inner = el('div', {}, 'insytful-search-message-content-inner');
 
-  // Mobile avatar — floated left so first paragraph wraps around it,
-  // subsequent content flows full-width once past the avatar height.
-  if (avatarHTML) {
-    outer.appendChild(createAvatarNode(avatarHTML, 'insytful-search-message-logo flex-shrink-0 md:hidden float-left mr-[12px]'));
-  }
+  if (avatarHTML) inner.appendChild(createAvatarNode(avatarHTML, 'inline'));
 
-  const contentDiv = el('div', {},
-    'insytful-search-message-content',
-  );
-
-  outer.appendChild(contentDiv);
+  const contentDiv = el('div', {}, 'insytful-search-message-content');
+  inner.appendChild(contentDiv);
+  outer.appendChild(inner);
   li.appendChild(outer);
 
-  return { li, contentDiv };
+  return { li, contentDiv, inner };
 }
 
 /**
@@ -429,104 +379,21 @@ export function renderAssistantMessage(avatarHTML?: string | null): {
  * Mirrors React's SearchSkeletonBody — renders inside an assistant message slot.
  */
 export function renderSkeletonBody(searchingText = 'Generating response...'): HTMLDivElement {
-  const content = el('div', {},
-    'insytful-search-skeleton-content flex flex-col gap-[8px] w-full',
-  );
+  const content = el('div', {}, 'insytful-search-skeleton-content');
 
-  const bar1 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-full',
-  );
-  const bar2 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[90%]',
-  );
-  const bar3 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[70%]',
-  );
+  for (let i = 0; i < 3; i++) {
+    content.appendChild(el('div', {}, 'insytful-search-skeleton-bar'));
+  }
 
-  content.appendChild(bar1);
-  content.appendChild(bar2);
-  content.appendChild(bar3);
-
-  const text = document.createElement('span');
-  text.className = 'insytful-search-skeleton-text text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px]';
+  const text = el('span', {}, 'insytful-search-skeleton-text');
   text.textContent = searchingText;
   content.appendChild(text);
 
   return content;
 }
 
-/**
- * Create a typing indicator `<li>` with animated dots.
- * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
- */
-export function renderTypingIndicator(avatarHTML?: string | null, text = 'Searching'): HTMLLIElement {
-  const li = el('li', {},
-    'insytful-search-typing-indicator flex items-start gap-[12px] md:gap-[24px]',
-  );
-
-  if (avatarHTML) {
-    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-typing-indicator-logo flex-shrink-0'));
-  }
-
-  const txt = el('div', {},
-    'insytful-search-typing-indicator-txt text-[1em] md:text-[1.25em] leading-[2] text-[var(--insytful-typing-indicator-text)]',
-  );
-
-  const span = document.createElement('span');
-  span.textContent = text;
-
-  const dots = document.createElement('span');
-  dots.className = 'after:animate-dot-animate';
-
-  span.appendChild(dots);
-  txt.appendChild(span);
-  li.appendChild(txt);
-
-  return li;
-}
-
-/**
- * Create a skeleton loader `<li>` with animated shimmer bars.
- * Uses the `animate-skeleton-shimmer` Tailwind utility (skeleton-shimmer keyframe).
- */
-export function renderSkeletonLoader(avatarHTML?: string | null): HTMLLIElement {
-  const li = el('li', {},
-    'insytful-search-skeleton flex items-start gap-[12px] md:gap-[24px]',
-  );
-
-  if (avatarHTML) {
-    li.appendChild(createAvatarNode(avatarHTML, 'insytful-search-skeleton-logo flex-shrink-0'));
-  }
-
-  const content = el('div', {},
-    'insytful-search-skeleton-content flex-1 flex flex-col gap-[8px]',
-  );
-
-  const bar1 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-full',
-  );
-  const bar2 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[90%]',
-  );
-  const bar3 = el('div', {},
-    'insytful-search-skeleton-bar animate-skeleton-shimmer w-[70%]',
-  );
-
-  content.appendChild(bar1);
-  content.appendChild(bar2);
-  content.appendChild(bar3);
-
-  const text = document.createElement('span');
-  text.textContent = 'Generating response...';
-  content.appendChild(text);
-
-  li.appendChild(content);
-
-  return li;
-}
-
 /* ------------------------------------------------------------------ */
-/* Suggestion chip & mode switch helpers                                */
+/* Close button, suggestion chip & mode switch helpers                  */
 /* ------------------------------------------------------------------ */
 
 /**
@@ -551,15 +418,13 @@ export function renderCloseButton(
 }
 
 /**
- * Create a suggestion chip button.
- * Matches the React `SearchSuggestions` component styling from search-suggestions.tsx.
+ * Create a suggestion chip. Same markup as one item of React's
+ * `SearchSuggestions` (search-suggestions.tsx).
  */
 export function renderSuggestionChip(text: string, onClick: () => void): HTMLLIElement {
   const li = el('li', {}, 'insytful-search-suggestions-item');
 
-  const btn = el('button', { 'type': 'button' },
-    'insytful-search-suggestions-item-btn bg-[var(--insytful-btn-prompt-bg-default)] text-[var(--insytful-btn-prompt-text)] whitespace-nowrap transition-colors hover:bg-[var(--insytful-btn-prompt-bg-hover)] py-[8px] px-[8px] md:py-[12px] md:px-[16px] text-[14px] md:text-[18px] leading-[24px] rounded-[var(--insytful-btn-prompt-radius)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--insytful-btn-prompt-focus)]',
-  );
+  const btn = el('button', { 'type': 'button' }, 'insytful-search-suggestions-item-btn');
   btn.textContent = text;
   btn.addEventListener('click', onClick);
 
@@ -568,27 +433,21 @@ export function renderSuggestionChip(text: string, onClick: () => void): HTMLLIE
 }
 
 /**
- * Create mode switch tabs.
- * Matches the React `SwitchModeTabs` styling from the playground app.tsx.
+ * Create mode switch tabs. The active tab carries `data-active`; see
+ * lib/search/search-modes.css for the default look and tokens.
  */
 export function renderModeSwitchTabs(
   modes: Array<{ name: string; label: string }>,
   activeMode: string,
   onSwitch: (mode: string) => void,
 ): HTMLDivElement {
-  const wrapper = el('div', {},
-    'insytful-search-mode-switch-tabs inline-flex gap-[2px] p-[4px] rounded-[8px] bg-[#F2EFF8]',
-  );
+  const wrapper = el('div', { 'role': 'group', 'aria-label': 'Search mode' }, 'insytful-search-mode-switch-tabs');
 
   for (const mode of modes) {
     const isActive = mode.name === activeMode;
-    const btn = el('button', { 'type': 'button' },
-      `insytful-search-mode-tab py-[4px] px-[12px] rounded-[4px] text-[13px] md:text-[14px] transition-colors border cursor-pointer ${
-        isActive
-          ? 'insytful-search-mode-tab-active border-none bg-white text-[#333] font-medium'
-          : 'border-transparent text-gray-500 hover:text-[#333]'
-      }`,
-    );
+    const attrs: Record<string, string> = { 'type': 'button', 'aria-pressed': String(isActive) };
+    if (isActive) attrs['data-active'] = '';
+    const btn = el('button', attrs, 'insytful-search-mode-tab');
     btn.textContent = mode.label;
     btn.addEventListener('click', () => onSwitch(mode.name));
 
@@ -604,7 +463,7 @@ export function renderModeSwitchTabs(
 
 /**
  * Create an error callout `<li>` element.
- * Matches the React `SearchErrorCallout` component styling.
+ * The callout markup matches React's `SearchErrorCallout`.
  */
 export function renderErrorMessage(
   message: string,
@@ -614,37 +473,21 @@ export function renderErrorMessage(
     cta?: { text: string; path: string; target?: string; rel?: string };
   },
 ): HTMLLIElement {
-  const li = el('li', {},
-    'insytful-search-message flex items-start gap-[24px] w-full max-w-full flex-row',
-  );
+  const li = el('li', { 'data-role': 'assistant' }, 'insytful-search-message');
 
-  const callout = el('div', {},
-    'insytful-search-error-callout-inner flex items-start flex-col gap-[12px] p-[16px] border-l-[4px] border-[var(--insytful-callout-error-border)] bg-[var(--insytful-callout-error-bg)] rounded-r-lg max-w-full w-full',
-  );
+  const callout = el('div', { 'role': 'alert' }, 'insytful-search-error-callout-inner');
 
-  const content = el('div', {},
-    'insytful-search-error-callout-content flex-1 gap-[8px] flex flex-col',
-  );
+  const content = el('div', {}, 'insytful-search-error-callout-content');
 
-  const title = el('p', {},
-    'insytful-search-error-callout-title font-semibold text-[var(--insytful-callout-error-text)] m-0',
-  );
+  const title = el('p', {}, 'insytful-search-error-callout-title');
   title.textContent = opts?.title ?? 'Something went wrong';
 
-  const text = el('p', {},
-    'insytful-search-error-callout-text text-[var(--insytful-callout-error-text)] m-0',
-  );
+  const text = el('p', {}, 'insytful-search-error-callout-text');
   text.textContent = message;
 
   content.appendChild(title);
   content.appendChild(text);
   callout.appendChild(content);
-
-  const btnClass =
-    'insytful-search-error-callout-btn underline text-[var(--insytful-callout-error-text)] hover:text-[var(--insytful-callout-error-text)]/80 hover:no-underline text-[14px] font-medium';
-
-  const ctaClass =
-    'insytful-search-error-callout-cta inline-flex items-center justify-center rounded-[var(--insytful-callout-error-cta-border-radius)] bg-[var(--insytful-callout-error-cta-bg)] px-[16px] py-[8px] text-[14px] font-medium text-[var(--insytful-callout-error-cta-text)] no-underline transition-opacity hover:opacity-90';
 
   if (opts?.cta) {
     const cta = opts.cta;
@@ -656,7 +499,7 @@ export function renderErrorMessage(
     if (target) linkAttrs.target = target;
     if (rel) linkAttrs.rel = rel;
 
-    const link = el('a', linkAttrs, ctaClass);
+    const link = el('a', linkAttrs, 'insytful-search-error-callout-cta');
     link.textContent = cta.text;
     if (isExternal) {
       const srOnly = el('span', {}, 'insytful-sr-only');
@@ -665,7 +508,7 @@ export function renderErrorMessage(
     }
     callout.appendChild(link);
   } else if (onSwitchClassic) {
-    const btn = el('button', { type: 'button' }, btnClass);
+    const btn = el('button', { type: 'button' }, 'insytful-search-error-callout-btn');
     btn.textContent = 'Try classic?';
     btn.addEventListener('click', onSwitchClassic);
     callout.appendChild(btn);
@@ -680,36 +523,10 @@ export function renderErrorMessage(
 /* CTA quick-actions bar                                                */
 /* ------------------------------------------------------------------ */
 
-/* Tailwind utility strings for the CTA markup — kept identical to
-   search-ctas.tsx so both flavours emit the same class attributes. They MUST
-   also live in this file: the WC Tailwind content glob (tailwind.config.wc.js)
-   only scans lib/web-component.ts + lib/web-component/**; classes written in
-   lib/shared/ would silently produce no CSS. The stable
-   `insytful-search-cta-*` hook classes come from the shared view model so
-   React/WC parity is structural. Focus-visible ring, icon sizing, and
-   entrance animation live in web-component.css. */
-
-const CTA_LABEL_UTILITIES =
-  'text-[13px] leading-[20px] mb-[6px] text-[var(--insytful-cta-label-text)]';
-
-const CTA_BAR_UTILITIES =
-  'flex flex-wrap gap-[var(--insytful-cta-bar-gap)] max-w-full';
-
-const CTA_CHIP_BASE_CLASSES =
-  'inline-flex items-center gap-[6px] min-h-[44px] max-w-full whitespace-normal ' +
-  'py-[10px] px-[18px] text-[14px] leading-[24px] font-medium no-underline ' +
-  'cursor-pointer transition-colors rounded-[var(--insytful-cta-radius)] ' +
-  'border border-solid';
-
-/** Intent variants — only `primary` gets the solid fill (§9 hierarchy rule). */
-const CTA_CHIP_INTENT_CLASSES: Record<Cta['intent'], string> = {
-  primary:
-    'bg-[var(--insytful-cta-primary-bg-default)] hover:bg-[var(--insytful-cta-primary-bg-hover)] ' +
-    'text-[var(--insytful-cta-primary-text)] border-[var(--insytful-cta-primary-border)]',
-  secondary:
-    'bg-[var(--insytful-cta-secondary-bg-default)] hover:bg-[var(--insytful-cta-secondary-bg-hover)] ' +
-    'text-[var(--insytful-cta-secondary-text)] border-[var(--insytful-cta-secondary-border)]',
-};
+/* Hook classes come from the shared view model so React/WC parity is
+   structural; `data-intent` / `data-position` are what the shared stylesheet
+   (lib/search/search-ctas.css) keys on. The `-primary`/`-secondary` variant
+   classes in `vm.classes.btn` are kept for 4.x consumers' own CSS. */
 
 /** Module counter for unique `aria-labelledby` ids (no React.useId here). */
 let ctaLabelIdCounter = 0;
@@ -721,16 +538,15 @@ let ctaLabelIdCounter = 0;
  */
 function renderCtaChip(cta: Cta, onCtaClick: (cta: Cta) => void): HTMLElement {
   const vm = ctaViewModel(cta);
-  const chipClass = `${vm.classes.btn} ${CTA_CHIP_BASE_CLASSES} ${CTA_CHIP_INTENT_CLASSES[vm.intent]}`;
 
   let chip: HTMLAnchorElement | HTMLButtonElement;
   if (vm.element === 'a') {
-    const attrs: Record<string, string> = { href: vm.href ?? '' };
+    const attrs: Record<string, string> = { href: vm.href ?? '', 'data-intent': vm.intent };
     if (vm.newTab) {
       attrs.target = '_blank';
       attrs.rel = 'noopener noreferrer';
     }
-    chip = el('a', attrs, chipClass);
+    chip = el('a', attrs, vm.classes.btn);
 
     // Anchors (call/email/link): native navigation is the default path — it
     // preserves middle-click, copy-link, long-press, and OS handler choice.
@@ -751,7 +567,7 @@ function renderCtaChip(cta: Cta, onCtaClick: (cta: Cta) => void): HTMLElement {
   } else {
     // `event` CTAs have no native action — executeCta dispatches the
     // CMS-named bus event (or a registered override) plus `insytful-cta`.
-    chip = el('button', { type: 'button' }, chipClass);
+    chip = el('button', { type: 'button', 'data-intent': vm.intent }, vm.classes.btn);
     chip.addEventListener('click', () => {
       onCtaClick(cta);
       executeCta(cta);
@@ -766,8 +582,8 @@ function renderCtaChip(cta: Cta, onCtaClick: (cta: Cta) => void): HTMLElement {
   if (vm.iconSvg) {
     iconSpan = el(
       'span',
-      { 'aria-hidden': 'true' },
-      `insytful-search-cta-icon inline-flex flex-shrink-0 ${iconTrails ? 'mr-[-4px]' : 'ml-[-4px]'}`,
+      { 'aria-hidden': 'true', 'data-position': iconTrails ? 'trailing' : 'leading' },
+      'insytful-search-cta-icon',
     );
     iconSpan.innerHTML = vm.iconSvg;
   }
@@ -802,15 +618,16 @@ function renderCtaChip(cta: Cta, onCtaClick: (cta: Cta) => void): HTMLElement {
  *   micro-label (`aria-labelledby`, unique id via a module counter);
  * - every chip is a separate tab stop — no roving tabindex.
  *
- * The caller inserts the returned element as a SIBLING of the assistant
- * message's content div (above it), so streaming innerHTML rewrites cannot
- * destroy the row or its keyboard focus.
+ * The caller inserts the returned element inside the assistant message's
+ * `-content-outer`, ABOVE the `-content-inner` wrapper, so streaming
+ * innerHTML rewrites of the content div cannot destroy the row or its
+ * keyboard focus.
  */
 export function renderCtaBar(
   ctas: Cta[],
   opts: { onCtaClick(cta: Cta): void },
 ): HTMLElement {
-  const wrapper = el('div', { 'aria-live': 'off' }, 'insytful-search-cta-outer mb-[16px]');
+  const wrapper = el('div', { 'aria-live': 'off' }, 'insytful-search-cta-outer');
 
   // One-shot availability cue for screen readers (see A11y notes above).
   // The node mounts empty and the text lands on a macrotask, so screen
@@ -823,14 +640,14 @@ export function renderCtaBar(
   }, 0);
 
   const labelId = `insytful-search-cta-label-${++ctaLabelIdCounter}`;
-  const label = el('div', { id: labelId }, `${CTA_LABEL_CLASS} ${CTA_LABEL_UTILITIES}`);
+  const label = el('div', { id: labelId }, CTA_LABEL_CLASS);
   label.textContent = 'Quick actions';
   wrapper.appendChild(label);
 
   const bar = el('div', {
     'role': 'group',
     'aria-labelledby': labelId,
-  }, `${CTA_BAR_CLASS} ${CTA_BAR_UTILITIES}`);
+  }, CTA_BAR_CLASS);
 
   for (const cta of ctas) {
     bar.appendChild(renderCtaChip(cta, opts.onCtaClick));

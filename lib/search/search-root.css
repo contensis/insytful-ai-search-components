@@ -1,0 +1,50 @@
+/* Search.Root / Search.Portal — dialog shell. Position, offsets, z-index and the open/close
+   transition are inline (they are computed per instance); everything visual
+   lives here. State is exposed as `data-state="open|closed"`. */
+
+.insytful-theme .insytful-search-dialog-outer {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 0;
+  background: var(--insytful-modal-bg);
+  border-radius: var(--insytful-modal-radius);
+}
+
+.insytful-theme .insytful-search-dialog-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 32px 16px 24px;
+}
+
+@media (min-width: 768px) {
+  .insytful-theme .insytful-search-dialog-inner {
+    justify-content: center;
+    gap: 32px;
+  }
+}
+
+/* Increase dialog padding when a close button is present so content clears it.
+   Close button: top 12px + 40px height = 52px bottom edge; 60px gives 8px clearance. */
+.insytful-theme .insytful-search-dialog-outer:has(.insytful-search-close) .insytful-search-dialog-inner {
+  padding-top: 60px;
+}
+
+/* Suggestions below input — reorder the flex column via :has().
+   `:has()` is supported in all current evergreen browsers (Chrome 105+,
+   Safari 15.4+, Firefox 121+) — same baseline as our Shadow DOM requirement. */
+.insytful-theme .insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position="below"])
+  > .insytful-search-message-input {
+  order: 1;
+}
+.insytful-theme .insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position="below"])
+  > .insytful-search-disclaimer-inner {
+  order: 3;
+}

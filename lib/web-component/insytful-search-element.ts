@@ -10,7 +10,10 @@
  *     as observed attributes
  */
 
-import css from '../web-component.css?inline';
+// The SAME stylesheet the React <Theme>/Search.Portal ship. Everything in it
+// sits in the `insytful` cascade layer, so the unlayered `theme` attribute
+// CSS always wins — the WC equivalent of `<Theme css>`.
+import css from '../styles/index.css?inline';
 import {
   dialogTransition,
   renderDialog,
@@ -22,6 +25,8 @@ import {
   renderModeSwitchTabs,
   renderCloseButton,
   renderCtaBar,
+  SPARKLE_ICON,
+  CLASSIC_ICON,
   type DialogElements,
 } from './dialog-renderer';
 import { RAGClient } from './rag-client';
@@ -127,60 +132,33 @@ export class InsytfulSearchElement extends HTMLElement {
     // Attach open shadow root
     this._shadow = this.attachShadow({ mode: 'open' });
 
-    // Inject base CSS
+    // Inject the shared stylesheet (layered; see import note above)
     const baseStyle = document.createElement('style');
     baseStyle.textContent = css;
     this._shadow.appendChild(baseStyle);
 
-    // Inject theme CSS (updated via attribute)
+    // Inject theme CSS (updated via attribute). Appended after the base
+    // sheet and unlayered, so it overrides any default at any specificity.
     this._themeStyle = document.createElement('style');
     const themeAttr = this.getAttribute('theme');
     if (themeAttr) this._themeStyle.textContent = themeAttr;
     this._shadow.appendChild(this._themeStyle);
 
-    // Inject ::slotted() rules for projected content
+    // Slotted content inherits from its styled wrapper (the <h1>/<p>/<div>
+    // carrying the Search.Title/Description/Disclaimer hook classes) instead
+    // of bringing the host page's element defaults with it.
     const slottedStyle = document.createElement('style');
     slottedStyle.textContent = `
-      /* Ensure the custom element takes up space in the layout */
       :host {
         display: block;
       }
-
-      /* Style projected slot content to match React component defaults */
-      ::slotted([slot="title"]) {
-        color: var(--insytful-text-default);
-        font-size: 24px;
-        line-height: 32px;
-        font-weight: bold;
-        text-align: center;
-        margin: 0;
-      }
-      @media (min-width: 768px) {
-        ::slotted([slot="title"]) {
-          font-size: 56px;
-          line-height: 64px;
-        }
-      }
-      ::slotted([slot="description"]) {
-        color: var(--insytful-text-default);
-        font-size: 14px;
-        line-height: 24px;
-        font-weight: normal;
-        text-align: center;
-        margin: 0;
-      }
-      @media (min-width: 768px) {
-        ::slotted([slot="description"]) {
-          font-size: 20px;
-          line-height: 32px;
-        }
-      }
+      ::slotted([slot="title"]),
+      ::slotted([slot="description"]),
       ::slotted([slot="disclaimer"]) {
-        font-size: 14px;
-        line-height: 24px;
-        font-weight: normal;
-        text-align: center;
-        color: var(--insytful-disclaimer-text);
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        text-align: inherit;
       }
     `;
     this._shadow.appendChild(slottedStyle);
@@ -365,8 +343,7 @@ export class InsytfulSearchElement extends HTMLElement {
       dialog.style.visibility = 'visible';
       dialog.style.transition = dialogTransition(true);
       dialog.style.pointerEvents = 'auto';
-      dialog.classList.remove('insytful-search-dialog-closed');
-      dialog.classList.add('insytful-search-dialog-open');
+      dialog.setAttribute('data-state', 'open');
 
       // Update offset
       this._measureOffset();
@@ -401,8 +378,7 @@ export class InsytfulSearchElement extends HTMLElement {
       dialog.style.visibility = 'hidden';
       dialog.style.transition = dialogTransition(false);
       dialog.style.pointerEvents = 'none';
-      dialog.classList.remove('insytful-search-dialog-open');
-      dialog.classList.add('insytful-search-dialog-closed');
+      dialog.setAttribute('data-state', 'closed');
 
       // Restore body scroll
       // (mirrors SearchRootInner lines 124-128)
@@ -546,19 +522,18 @@ export class InsytfulSearchElement extends HTMLElement {
     // while previous stream is still active)
     const generation = ++this._conversationGeneration;
 
-    const { messagesList, messagesOuter, emptyState, sendButton, messagesScroll, scrollSpacer } = this._elements;
+    const { messagesList, messagesOuter, emptyState, sendButton, messagesScroll, scrollSpacer, inputForm } = this._elements;
 
     // --- Add user message ---
     this._messages.push({ role: 'user', content: query });
     const userLi = renderUserMessage(query);
     messagesList.appendChild(userLi);
 
-    // Show messages container, hide empty state and input gradient
+    // Show messages container, hide empty state; `data-has-messages` turns the
+    // input glow off via the stylesheet (same attribute React sets).
     messagesOuter.style.display = '';
     emptyState.style.display = 'none';
-    if (this._elements.inputGradient) {
-      this._elements.inputGradient.style.display = 'none';
-    }
+    inputForm.setAttribute('data-has-messages', '');
 
     // Reset scroll state for new question
     this._hasReachedBottom = false;
@@ -583,7 +558,7 @@ export class InsytfulSearchElement extends HTMLElement {
     sendButton.disabled = true;
 
     // Create assistant message with skeleton body inside
-    const { li: assistantLi, contentDiv } = renderAssistantMessage(this._avatarHTML);
+    const { li: assistantLi, contentDiv, inner: contentInner } = renderAssistantMessage(this._avatarHTML);
     const skeletonBody = renderSkeletonBody(this.searchingText);
     contentDiv.appendChild(skeletonBody);
 
@@ -618,10 +593,11 @@ export class InsytfulSearchElement extends HTMLElement {
         if (isStale()) break;
 
         if (ev.kind === 'ctas') {
-          // Insert the CTA row once per stream, as a SIBLING of contentDiv
-          // (above it) so per-chunk innerHTML rewrites of contentDiv can't
-          // destroy the row or its keyboard focus. Never touches the token
-          // accumulator — a cta-first stream keeps its skeleton visible.
+          // Insert the CTA row once per stream, above the `-content-inner`
+          // wrapper (same DOM position as React) so per-chunk innerHTML
+          // rewrites of contentDiv can't destroy the row or its keyboard
+          // focus. Never touches the token accumulator — a cta-first stream
+          // keeps its skeleton visible.
           if (!ctaRow) {
             ctas = ev.ctas;
             ctaRow = renderCtaBar(ev.ctas, {
@@ -633,7 +609,7 @@ export class InsytfulSearchElement extends HTMLElement {
                 }));
               },
             });
-            contentDiv.parentElement?.insertBefore(ctaRow, contentDiv);
+            contentInner.parentElement?.insertBefore(ctaRow, contentInner);
           }
           continue;
         }
@@ -845,14 +821,9 @@ export class InsytfulSearchElement extends HTMLElement {
 
     scrollHint.style.display = showHint ? '' : 'none';
 
-    // Apply mask gradient when hint is showing
-    if (showHint) {
-      scroller.style.maskImage = 'linear-gradient(to bottom, black 0%, black 90%, rgba(0,0,0,0.3) 100%)';
-      scroller.style.webkitMaskImage = 'linear-gradient(to bottom, black 0%, black 90%, rgba(0,0,0,0.3) 100%)';
-    } else {
-      scroller.style.maskImage = '';
-      scroller.style.webkitMaskImage = '';
-    }
+    // `data-scroll-hint` applies the bottom fade mask via the stylesheet
+    if (showHint) scroller.setAttribute('data-scroll-hint', '');
+    else scroller.removeAttribute('data-scroll-hint');
   }
 
   /* ---------------------------------------------------------------- */
@@ -942,7 +913,7 @@ export class InsytfulSearchElement extends HTMLElement {
 
     // Build the suggestions list matching React SearchSuggestions structure
     const ul = document.createElement('ul');
-    ul.className = 'insytful-search-suggestions-inner flex gap-[16px] w-full min-w-0 flex-wrap justify-center p-0 m-0 list-none';
+    ul.className = 'insytful-search-suggestions-inner';
 
     for (const text of this._suggestions) {
       const chip = renderSuggestionChip(text, () => this._handleSend(text));
@@ -991,6 +962,7 @@ export class InsytfulSearchElement extends HTMLElement {
     // Default mode: first mode without a `path` attribute, or "ai" if none exists
     const defaultMode = this._modes.find((m) => !m.path);
     this._currentMode = defaultMode ? defaultMode.name : 'ai';
+    this._updateInputMode();
 
     // Render mode switch tabs if 2+ modes
     if (this._modes.length >= 2) {
@@ -1064,8 +1036,8 @@ export class InsytfulSearchElement extends HTMLElement {
     if (mode === this._currentMode) return;
     this._currentMode = mode;
 
-    // Toggle input gradient — visible only in AI mode with no messages
-    this._updateInputGradient();
+    // Reflect the mode on the form (icon + glow follow via the stylesheet)
+    this._updateInputMode();
 
     // Re-render tabs to update active state
     this._renderModeTabs();
@@ -1078,13 +1050,18 @@ export class InsytfulSearchElement extends HTMLElement {
     }));
   }
 
-  /** Show the input gradient in AI mode with no messages, hide otherwise. */
-  private _updateInputGradient(): void {
-    const gradient = this._elements?.inputGradient;
-    if (!gradient) return;
-    const isClassic = this._modes.find(m => m.name === this._currentMode)?.path;
-    const show = !isClassic && this._messages.length === 0;
-    gradient.style.display = show ? '' : 'none';
+  /**
+   * Reflect the active mode on the input form, mirroring Search.Input:
+   * `data-mode="ai|classic"`, the leading icon swaps between sparkle and
+   * magnifier, and the glow wrapper only exists in AI mode.
+   */
+  private _updateInputMode(): void {
+    const els = this._elements;
+    if (!els) return;
+    const isClassic = Boolean(this._modes.find(m => m.name === this._currentMode)?.path);
+    els.inputForm.setAttribute('data-mode', isClassic ? 'classic' : 'ai');
+    els.inputIcon.innerHTML = isClassic ? CLASSIC_ICON : SPARKLE_ICON;
+    els.inputGradient.style.display = isClassic ? 'none' : '';
   }
 
   /* ---------------------------------------------------------------- */
@@ -1148,28 +1125,18 @@ export class InsytfulSearchElement extends HTMLElement {
   /* ---------------------------------------------------------------- */
 
   /**
-   * Apply `order:` CSS to the suggestions container and input-card wrapper
-   * based on the `suggestions-position` attribute. Uses inline styles directly
-   * rather than CSS sibling rules so the behaviour is independent of where the
-   * elements sit in `dialogInner`'s flex children.
+   * Reflect `suggestions-position` exactly as React's Search.Suggestions does:
+   * `data-position` on the suggestions wrapper plus `order: 2` inline on it;
+   * the stylesheet's `:has()` rules then move the input (and mode switch) to
+   * `order: 1` and the disclaimer to `order: 3`.
    */
   private _applySuggestionsPosition(): void {
     const suggestions = this._elements?.suggestionsContainer;
-    const inputCardOuter = this._elements?.inputCardOuter;
-    const disclaimer = this._elements?.disclaimerWrapper;
-    if (!suggestions || !inputCardOuter || !disclaimer) return;
+    if (!suggestions) return;
 
-    const position = this.getAttribute('suggestions-position');
-    if (position === 'below') {
-      // Keep disclaimer visually last — bump it past the reordered input/suggestions
-      inputCardOuter.style.order = '1';
-      suggestions.style.order = '2';
-      disclaimer.style.order = '3';
-    } else {
-      inputCardOuter.style.order = '';
-      suggestions.style.order = '';
-      disclaimer.style.order = '';
-    }
+    const below = this.getAttribute('suggestions-position') === 'below';
+    suggestions.setAttribute('data-position', below ? 'below' : 'above');
+    suggestions.style.order = below ? '2' : '';
   }
 
   /**

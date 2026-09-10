@@ -8,9 +8,6 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  css: {
-    postcss: "./postcss.config.wc.js",
-  },
   server: {
     host: true,
     open: "/playground-wc/index.html",

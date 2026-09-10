@@ -5,8 +5,8 @@
  * is structural instead of prose-enforced. Pure: no DOM access, no state.
  *
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
- * access; logic-only (hook classes below are public CSS hooks styled in
- * `main.css`/`web-component.css`, not Tailwind utilities) — importable by
+ * access; logic-only (hook classes below are public CSS hooks styled once in
+ * `lib/search/search-ctas.css`, which both renderers ship) — importable by
  * both entry points.
  */
 import type { Cta, CtaIntent } from "../../api/rag.types";

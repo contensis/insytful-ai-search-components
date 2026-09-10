@@ -1,5 +1,6 @@
 export declare const useRAGResponseContext: () => {
     response: string;
+    ctas: import('./rag.types').Cta[];
     loading: boolean;
     elapsed: number;
     error: string | null;

@@ -1,6 +1,6 @@
 export { SearchRoot as Root, SearchPortal as Portal } from './search-root';
 export type { SearchRootProps, SearchPortalProps } from './search-root';
-export { useSearchContext, useModeContext, useModeContextSafe } from './context';
+export { useSearchContext, useModeContext, useModeContextSafe, useSearchContextSafe } from './context';
 export { SearchTrigger as Trigger } from './search-trigger';
 export type { SearchTriggerProps } from './search-trigger';
 export { SearchClose as Close } from './search-close';
@@ -19,5 +19,7 @@ export { SearchSuggestions as Suggestions } from './search-suggestions';
 export type { SearchSuggestionsProps } from './search-suggestions';
 export { SearchDisclaimer as Disclaimer } from './search-disclaimer';
 export type { SearchDisclaimerProps } from './search-disclaimer';
+export { SearchOverview as Overview } from './ai-overview';
+export type { SearchOverviewProp } from './ai-overview';
 export { SearchModes as Modes, SearchMode as Mode, SearchModeSwitch as ModeSwitch, } from './search-modes';
 export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps, } from './search-modes';

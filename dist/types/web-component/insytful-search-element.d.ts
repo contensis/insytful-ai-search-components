@@ -114,8 +114,12 @@ export declare class InsytfulSearchElement extends HTMLElement {
      * Switch the active mode and re-render tabs.
      */
     private _switchMode;
-    /** Show the input gradient in AI mode with no messages, hide otherwise. */
-    private _updateInputGradient;
+    /**
+     * Reflect the active mode on the input form, mirroring Search.Input:
+     * `data-mode="ai|classic"`, the leading icon swaps between sparkle and
+     * magnifier, and the glow wrapper only exists in AI mode.
+     */
+    private _updateInputMode;
     /**
      * One-time parse of an avatar element from the light DOM.
      * Accepts `<img slot="avatar" ...>` or any element with `slot="avatar"`.
@@ -135,10 +139,10 @@ export declare class InsytfulSearchElement extends HTMLElement {
      */
     private _parseCloseButton;
     /**
-     * Apply `order:` CSS to the suggestions container and input-card wrapper
-     * based on the `suggestions-position` attribute. Uses inline styles directly
-     * rather than CSS sibling rules so the behaviour is independent of where the
-     * elements sit in `dialogInner`'s flex children.
+     * Reflect `suggestions-position` exactly as React's Search.Suggestions does:
+     * `data-position` on the suggestions wrapper plus `order: 2` inline on it;
+     * the stylesheet's `:has()` rules then move the input (and mode switch) to
+     * `order: 1` and the disclaimer to `order: 3`.
      */
     private _applySuggestionsPosition;
     /**

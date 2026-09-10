@@ -1,0 +1,54 @@
+/* Insytful AI Search — shipped stylesheet (manifest).
+ *
+ * Everything lives in the `insytful` cascade layer and is scoped under
+ * `.insytful-theme` (see lib/theme/theme.tsx). Two consequences:
+ *
+ *   1. Components rendered outside <Theme> are unstyled: no rule matches.
+ *   2. Any unlayered consumer CSS beats these rules regardless of
+ *      specificity, so host styles are never clobbered and overrides never
+ *      need `!important`.
+ *
+ * Layout: cross-cutting CSS (tokens, reset, sr-only, prose, keyframes) lives
+ * in this folder. Per-component CSS sits next to its component in
+ * `lib/search/`, same basename (`search-ctas.tsx` ↔ `search-ctas.css`).
+ * Components do NOT import their own CSS — this file is the single ordered
+ * entry, because source order still breaks specificity ties inside a layer
+ * and the Shadow DOM portal needs the whole sheet as one `?inline` string.
+ * Add a new component's stylesheet here.
+ *
+ * Browser baseline is the same as `:has()`, which the library already
+ * requires: Chrome 105+, Safari 15.4+, Firefox 121+. Keep files flat (no
+ * native nesting) — nesting support landed after that baseline.
+ */
+
+/* Sub-layers, lowest priority first. The reset uses element-qualified
+   selectors (`button[class*=…]`) that out-specify component rules, so it
+   sits in its own lower layer: layer order beats specificity, and component
+   rules win without having to be written more specifically. Consumer CSS is
+   unlayered and beats all of `insytful`. */
+@layer insytful.reset, insytful.components;
+
+/* Reset */
+@import "./reset.css" layer(insytful.reset);
+
+/* Cross-cutting */
+@import "./theme.css" layer(insytful.components);
+@import "./utilities.css" layer(insytful.components);
+
+/* Components */
+@import "../search/search-root.css" layer(insytful.components);
+@import "../search/search-close.css" layer(insytful.components);
+@import "../search/search-title.css" layer(insytful.components);
+@import "../search/search-description.css" layer(insytful.components);
+@import "../search/search-disclaimer.css" layer(insytful.components);
+@import "../search/search-input.css" layer(insytful.components);
+@import "../search/search-suggestions.css" layer(insytful.components);
+@import "../search/search-modes.css" layer(insytful.components);
+@import "../search/search-messages.css" layer(insytful.components);
+@import "../search/search-ctas.css" layer(insytful.components);
+@import "../search/skeleton.css" layer(insytful.components);
+@import "../search/ai-overview.css" layer(insytful.components);
+
+/* Shared by messages + overview, and keyframes used across components */
+@import "./prose.css" layer(insytful.components);
+@import "./motion.css" layer(insytful.components);

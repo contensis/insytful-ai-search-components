@@ -1,0 +1,61 @@
+/* Mode switch tabs — rendered by the Web Component under the input when two
+   or more <insytful-mode> children are configured. React ships
+   SearchModeSwitch as a render prop with no markup, so there is nothing for
+   these rules to match there unless you reuse the hook classes yourself.
+   State: the active tab carries `data-active` (and `aria-pressed="true"`). */
+
+.insytful-theme .insytful-search-mode-switch {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--insytful-modal-max-width);
+  margin: 0 auto;
+}
+/* An empty container must not take part in the dialog column's gap */
+.insytful-theme .insytful-search-mode-switch:empty {
+  display: none;
+}
+
+.insytful-theme .insytful-search-mode-switch-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--insytful-mode-switch-radius);
+  background: var(--insytful-mode-switch-bg);
+}
+
+.insytful-theme .insytful-search-mode-tab {
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--insytful-mode-tab-text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing),
+    background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-mode-tab:hover {
+  color: var(--insytful-mode-tab-active-text);
+}
+.insytful-theme .insytful-search-mode-tab[data-active] {
+  background: var(--insytful-mode-tab-active-bg);
+  color: var(--insytful-mode-tab-active-text);
+  font-weight: 500;
+}
+.insytful-theme .insytful-search-mode-tab:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+
+/* Follow the input when suggestions sit below it (see search-root.css) */
+.insytful-theme .insytful-search-dialog-inner:has(.insytful-search-suggestions-outer[data-position="below"])
+  > .insytful-search-mode-switch {
+  order: 1;
+}
+
+@media (min-width: 768px) {
+  .insytful-theme .insytful-search-mode-tab {
+    font-size: 14px;
+  }
+}

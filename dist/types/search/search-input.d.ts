@@ -8,6 +8,12 @@ export type SearchInputProps = {
     /** Called with the query on submit — use to open the modal, navigate, etc. */
     onSubmit?: (query: string) => void;
 };
+/**
+ * Search.Input — the question box.
+ *
+ * State is exposed as data attributes on the <form> for styling:
+ * `data-mode="ai|classic"`, `data-embedded`, `data-has-messages`.
+ */
 export declare function SearchInput({ className, embedded, placeholder, onSubmit }: SearchInputProps): React.JSX.Element;
 export declare namespace SearchInput {
     var displayName: string;

@@ -1,0 +1,14 @@
+/* Visually hidden text. Deliberately NOT scoped under `.insytful-theme`:
+   hiding screen-reader-only text is structural, not a theme choice, and an
+   unstyled consumer must not see "(opens in a new tab)" rendered inline. */
+.insytful-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

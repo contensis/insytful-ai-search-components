@@ -1,0 +1,16 @@
+/* Search.Description */
+
+.insytful-theme .insytful-search-empty-state-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 400;
+  text-align: center;
+  color: var(--insytful-text-default);
+}
+
+@media (min-width: 768px) {
+  .insytful-theme .insytful-search-empty-state-text {
+    font-size: 18px;
+  }
+}

@@ -1,7 +1,9 @@
 import { useCallback, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { ctasFromFrameData } from "../shared/cta/validation";
 import { readSSEFrames } from "../shared/sse";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
+import type { Cta } from "../api/rag.types";
 
 const history = false;
 const stream = true;
@@ -13,6 +15,7 @@ export const useRAGResponse = (
 ) => {
   const [response, setResponse] = useState<string>(""); // accumulated streamed text
   const [loading, setLoading] = useState(false);
+  const [ctas, setCtas] = useState<Cta[]>([]); // accumulated CTAs
   const [error, setError] = useState<string | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -23,6 +26,7 @@ export const useRAGResponse = (
    * @param question - The user’s question.
    * @param sections - Optional list of section slugs to scope the question.
    * @returns A promise that resolves when the request completes.
+   * @throws An error if the request fails.
    */
   const ask = useCallback(
     async (question: string, sections?: string[]) => {
@@ -40,6 +44,7 @@ export const useRAGResponse = (
       setLoading(true);
       setError(null);
       setElapsed(0);
+      setCtas([]);
       setResponse("");
 
       try {
@@ -102,8 +107,8 @@ export const useRAGResponse = (
               return;
             }
             case "cta": {
-              // TODO(Phase 3): CTAs are ignored by the non-conversation hook in v1.
-              // See docs/plans/2026-07-14-001-feat-cta-quick-actions-above-answers-plan.md
+              const ctas = ctasFromFrameData(frame.data);
+              if (ctas.length > 0) setCtas(ctas);
               break;
             }
             case "message": {
@@ -134,5 +139,5 @@ export const useRAGResponse = (
     [config, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
-  return { response, loading, elapsed, error, ask };
+  return { response, ctas, loading, elapsed, error, ask };
 };

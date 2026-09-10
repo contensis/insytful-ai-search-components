@@ -1,7 +1,7 @@
 {
   "name": "insytful-ai-search-components",
-  "description": "An accessible, AI-powered search modal component library built with React, TypeScript, and Tailwind CSS",
-  "version": "3.2.0",
+  "description": "An accessible, AI-powered search modal component library built with React and TypeScript",
+  "version": "4.0.0",
   "author": "Zengenti",
   "license": "MIT",
   "repository": {
@@ -19,13 +19,14 @@
     "search",
     "modal",
     "compound-components",
-    "tailwind",
     "typescript",
     "accessibility"
   ],
   "type": "module",
   "files": [
     "dist",
+    "style.css",
+    "style.css.d.ts",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
@@ -34,6 +35,10 @@
   "module": "./dist/insytful-ai-search-components.js",
   "types": "./dist/types/main.d.ts",
   "exports": {
+    "./style.css": {
+      "types": "./style.css.d.ts",
+      "default": "./style.css"
+    },
     ".": {
       "types": "./dist/types/main.d.ts",
       "import": "./dist/insytful-ai-search-components.js",
@@ -44,7 +49,9 @@
     }
   },
   "sideEffects": [
-    "./dist/insytful-search.js"
+    "./dist/insytful-search.js",
+    "./style.css",
+    "./dist/style.css"
   ],
   "scripts": {
     "dev": "npm run storybook",
@@ -54,10 +61,11 @@
     "prebuild-storybook": "npm run build:wc:storybook",
     "build-storybook": "storybook build",
     "build:wc:storybook": "vite build --config vite.config.wc-storybook.ts",
-    "prebuild": "rimraf dist",
-    "build": "tsc -b && vite build",
+    "prebuild": "rimraf dist style.css",
+    "build": "tsc -b && vite build && npm run copy:css",
     "build:wc": "vite build --config vite.config.wc.ts",
-    "build:all": "rimraf dist && tsc -b && vite build && vite build --config vite.config.wc.ts",
+    "build:all": "rimraf dist style.css && tsc -b && vite build && npm run copy:css && vite build --config vite.config.wc.ts",
+    "copy:css": "node -e \"require('fs').copyFileSync('dist/style.css','style.css')\"",
     "pack:test": "npm run build:wc && node scripts/pack-test.mjs",
     "lint": "eslint .",
     "test": "vitest run",
@@ -104,7 +112,6 @@
     "rehype-external-links": "^3.0.0",
     "rimraf": "^6.1.2",
     "storybook": "^10.4.6",
-    "tailwindcss": "^3.4.19",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.1",

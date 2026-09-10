@@ -4,7 +4,7 @@ export type SearchCloseProps = {
     asChild?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 /**
- * Search.Close — Radix-style close button. Place inside `Search.Portal`.
+ * Search.Close — close button. Place inside `Search.Portal`.
  *
  * Renders a `<button>` by default (styled via `.insytful-search-close` and
  * `--insytful-btn-close-*` tokens). Use `asChild` to merge the click handler

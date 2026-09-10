@@ -4,6 +4,7 @@ export type SearchCtasProps = {
     /** Sanitized CTAs (post-`sanitizeCtas`) to render; nothing renders when absent/empty. */
     ctas?: Cta[];
     className?: string;
+    onCtaClick?: (cta: Cta) => void;
 };
 /**
  * Search.Ctas — renders the CTA quick-actions row above an assistant answer.
@@ -19,7 +20,7 @@ export type SearchCtasProps = {
  * `role="group"` labelled by the visible "Quick actions" micro-label, and
  * every chip is a separate tab stop.
  */
-declare function SearchCtasImpl({ ctas, className }: SearchCtasProps): React.JSX.Element | null;
+declare function SearchCtasImpl({ ctas, className, onCtaClick }: SearchCtasProps): React.JSX.Element | null;
 /** Memoized: `ctas` arrays are frozen per message, so re-renders during
  *  streaming are free. */
 export declare const SearchCtas: React.MemoExoticComponent<typeof SearchCtasImpl>;

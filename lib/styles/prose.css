@@ -1,0 +1,149 @@
+/* Default markdown prose styles for AI responses.
+   Uses `em` (not `rem` or `px`) so sizing scales with the single
+   `--insytful-base-font-size` variable defined on `.insytful-theme`.
+   — `rem` was avoided because it resolves against the host document's
+     <html>, which we don't control and which some client sites override
+     with `html { font-size: 62.5% }`.
+   — `px` was avoided because it ignores the end user's browser
+     text-size preferences (accessibility).
+   Border widths and border-radii stay in `px` — they're visual design
+   tokens, not typography, and shouldn't scale with font-size. */
+
+.insytful-theme .insytful-search-message-content,
+.insytful-theme .insytful-search-overview-content {
+  overflow-wrap: anywhere;
+}
+
+.insytful-theme .insytful-search-message-content h1,
+.insytful-theme .insytful-search-overview-content h1,
+.insytful-theme .insytful-search-message-content h2,
+.insytful-theme .insytful-search-overview-content h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.333;
+  color: var(--insytful-text-default);
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+.insytful-theme .insytful-search-message-content h3,
+.insytful-theme .insytful-search-overview-content h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--insytful-text-default);
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+}
+.insytful-theme .insytful-search-message-content h4,
+.insytful-theme .insytful-search-overview-content h4 {
+  font-size: 1.125em;
+  font-weight: 600;
+  line-height: 1.333;
+  color: var(--insytful-text-default);
+  margin-top: 0.875em;
+  margin-bottom: 0.5em;
+}
+.insytful-theme .insytful-search-message-content h5,
+.insytful-theme .insytful-search-overview-content h5,
+.insytful-theme .insytful-search-message-content h6,
+.insytful-theme .insytful-search-overview-content h6 {
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--insytful-text-default);
+  margin-top: 0.875em;
+  margin-bottom: 0.5em;
+}
+.insytful-theme .insytful-search-message-content p,
+.insytful-theme .insytful-search-overview-content p {
+  margin-top: 0;
+  margin-bottom: 1em;
+  line-height: 1.75;
+  color: var(--insytful-text-default);
+}
+.insytful-theme .insytful-search-message-content a,
+.insytful-theme .insytful-search-overview-content a {
+  color: var(--insytful-text-link-default);
+  text-decoration: underline;
+  font-weight: 500;
+}
+.insytful-theme .insytful-search-message-content a:hover,
+.insytful-theme .insytful-search-overview-content a:hover {
+  color: var(--insytful-text-link-hover);
+  text-decoration: none;
+}
+.insytful-theme .insytful-search-message-content a:focus-visible,
+.insytful-theme .insytful-search-overview-content a:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+.insytful-theme .insytful-search-message-content ul,
+.insytful-theme .insytful-search-overview-content ul {
+  list-style-type: disc;
+  margin: 0 0 1em 1.5em;
+  padding: 0;
+}
+.insytful-theme .insytful-search-message-content ol,
+.insytful-theme .insytful-search-overview-content ol {
+  list-style-type: decimal;
+  margin: 0 0 1em 1.5em;
+  padding: 0;
+}
+.insytful-theme .insytful-search-message-content li,
+.insytful-theme .insytful-search-overview-content li {
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+  padding-left: 0.25em;
+}
+.insytful-theme .insytful-search-message-content strong,
+.insytful-theme .insytful-search-overview-content strong {
+  font-weight: 700;
+}
+.insytful-theme .insytful-search-message-content em,
+.insytful-theme .insytful-search-overview-content em {
+  font-style: italic;
+}
+.insytful-theme .insytful-search-message-content code,
+.insytful-theme .insytful-search-overview-content code {
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+.insytful-theme .insytful-search-message-content pre,
+.insytful-theme .insytful-search-overview-content pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+.insytful-theme .insytful-search-message-content pre code,
+.insytful-theme .insytful-search-overview-content pre code {
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+.insytful-theme .insytful-search-message-content blockquote,
+.insytful-theme .insytful-search-overview-content blockquote {
+  border-left: 4px solid var(--insytful-brand-primary);
+  padding: 0.75em 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: var(--insytful-text-muted);
+  background-color: #f7fafc;
+  border-radius: 0 4px 4px 0;
+}
+.insytful-theme .insytful-search-message-content blockquote p,
+.insytful-theme .insytful-search-overview-content blockquote p {
+  margin: 0;
+}
+.insytful-theme .insytful-search-message-content hr,
+.insytful-theme .insytful-search-overview-content hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}

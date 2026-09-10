@@ -1,0 +1,86 @@
+/* Search.Ctas — quick-action chips above an answer.
+   Intent is `data-intent="primary|secondary"` on each chip; icon placement is
+   `data-position="leading|trailing"` on the icon span. Intents set local
+   custom properties and the base rule reads them, so states are written once. */
+
+.insytful-theme .insytful-search-cta-outer {
+  margin-bottom: 16px;
+}
+
+.insytful-theme .insytful-search-cta-label {
+  margin-bottom: 6px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--insytful-cta-label-text);
+}
+
+.insytful-theme .insytful-search-cta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--insytful-cta-bar-gap);
+  max-width: 100%;
+}
+
+.insytful-theme .insytful-search-cta-btn {
+  --_bg: var(--insytful-cta-secondary-bg-default);
+  --_bg-hover: var(--insytful-cta-secondary-bg-hover);
+  --_text: var(--insytful-cta-secondary-text);
+  --_border: var(--insytful-cta-secondary-border);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px; /* WCAG 2.5.8 target size, comfortably */
+  max-width: 100%;
+  padding: 10px 18px;
+  border: 1px solid var(--_border);
+  border-radius: var(--insytful-cta-radius);
+  background: var(--_bg);
+  color: var(--_text);
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+  animation: insytful-rise-in 300ms ease-out backwards;
+}
+.insytful-theme .insytful-search-cta-btn[data-intent="primary"] {
+  --_bg: var(--insytful-cta-primary-bg-default);
+  --_bg-hover: var(--insytful-cta-primary-bg-hover);
+  --_text: var(--insytful-cta-primary-text);
+  --_border: var(--insytful-cta-primary-border);
+}
+.insytful-theme .insytful-search-cta-btn:hover {
+  background: var(--_bg-hover);
+}
+.insytful-theme .insytful-search-cta-btn:focus-visible {
+  outline: 2px solid var(--insytful-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.insytful-theme .insytful-search-cta-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.insytful-theme .insytful-search-cta-icon[data-position="leading"] {
+  margin-left: -4px;
+}
+.insytful-theme .insytful-search-cta-icon[data-position="trailing"] {
+  margin-right: -4px;
+}
+.insytful-theme .insytful-search-cta-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Entrance stagger, 40ms per chip, CSS-only. */
+.insytful-theme .insytful-search-cta-bar > :nth-child(2) { animation-delay: 40ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(3) { animation-delay: 80ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(4) { animation-delay: 120ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(5) { animation-delay: 160ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(6) { animation-delay: 200ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(7) { animation-delay: 240ms; }
+.insytful-theme .insytful-search-cta-bar > :nth-child(8) { animation-delay: 280ms; }

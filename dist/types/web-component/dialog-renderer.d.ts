@@ -1,4 +1,8 @@
 import { Cta } from '../api/rag.types';
+/** Sparkle — AI mode leading icon (mirrors `AiIcon` in search-input.tsx). */
+export declare const SPARKLE_ICON = "<svg focusable=\"false\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z\"/></svg>";
+/** Magnifier — classic mode leading icon (mirrors `ClassicIcon`). */
+export declare const CLASSIC_ICON = "<svg focusable=\"false\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M11.27 18.54c1.613-.001 3.18-.541 4.45-1.535L19.715 21 21 19.715l-3.995-3.995a7.225 7.225 0 0 0 1.535-4.45C18.54 7.26 15.279 4 11.27 4 7.262 4 4 7.261 4 11.27c0 4.008 3.262 7.27 7.27 7.27Zm0-12.723a5.45 5.45 0 1 1 0 10.9 5.45 5.45 0 1 1 0-10.9Z\"/></svg>";
 export interface DialogElements {
     /** The outermost container appended to the shadow root */
     root: HTMLDivElement;
@@ -16,11 +20,11 @@ export interface DialogElements {
     descriptionSlot: HTMLSlotElement;
     /** Slot for disclaimer text */
     disclaimerSlot: HTMLSlotElement;
-    /** Container for chat messages (populated by Unit 4) */
+    /** `.insytful-search-messages-outer` — holds the list and the scroll spacer */
     messagesContainer: HTMLDivElement;
-    /** Scrolling wrapper inside messages */
+    /** `.insytful-search-messages-container-scroll` — the scrolling element */
     messagesScroll: HTMLDivElement;
-    /** The outer wrapper around messagesScroll (controls visibility) */
+    /** `.insytful-search-messages-container` — outer wrapper (controls visibility) */
     messagesOuter: HTMLDivElement;
     /** The <ul> inside messagesContainer that holds message <li> elements */
     messagesList: HTMLUListElement;
@@ -28,27 +32,25 @@ export interface DialogElements {
     scrollSpacer: HTMLDivElement;
     /** Scroll hint arrow shown when content overflows */
     scrollHint: HTMLDivElement;
-    /** The empty-state wrapper (title + description + suggestions) */
+    /** Unstyled wrapper around logo, title and description; hidden once a conversation starts */
     emptyState: HTMLDivElement;
-    /** Container for suggestion chips (populated by Unit 5) */
+    /** `.insytful-search-suggestions-outer` — chips are rendered inside */
     suggestionsContainer: HTMLDivElement;
-    /** Wrapper around the input card — exposed so `order` can be toggled for suggestions-position="below" */
-    inputCardOuter: HTMLDivElement;
     /** Container for the close button; button is appended only when <insytful-close> exists */
     closeButtonContainer: HTMLDivElement;
-    /** The input form */
+    /** The input <form> — carries `data-mode` / `data-has-messages` */
     inputForm: HTMLFormElement;
+    /** Leading icon wrapper — swapped between sparkle and magnifier by mode */
+    inputIcon: HTMLDivElement;
     /** The textarea element */
     textarea: HTMLTextAreaElement;
     /** The send button */
     sendButton: HTMLButtonElement;
-    /** Container for mode switch tabs (populated by Unit 5) */
+    /** Container for mode switch tabs (empty when no modes are configured) */
     modeSwitchContainer: HTMLDivElement;
-    /** The input card wrapper (textarea + mode switch) */
-    inputCard: HTMLDivElement;
-    /** Disclaimer wrapper at the bottom */
-    disclaimerWrapper: HTMLDivElement;
-    /** Gradient shimmer behind the input card (AI mode, empty state) */
+    /** `.insytful-search-disclaimer-inner` */
+    disclaimerInner: HTMLDivElement;
+    /** `.insytful-search-message-input-bg` — glow behind the field (AI mode only) */
     inputGradient: HTMLDivElement;
 }
 /**
@@ -63,35 +65,30 @@ export declare function dialogTransition(open: boolean): string;
 export declare function renderDialog(titleId: string, descriptionId: string): DialogElements;
 /**
  * Create a user message `<li>` element.
- * Matches the React `<Message>` component styling for role === "user".
+ * Same markup as the React `<Message>` for role === "user".
  */
 export declare function renderUserMessage(content: string): HTMLLIElement;
 /**
- * Create an assistant message `<li>` element with an inner content div
- * that can be updated during streaming.
+ * Create an assistant message `<li>` with an inner content div that can be
+ * updated during streaming.
  *
- * Returns both the `<li>` and the content `<div>` so the caller can
- * update `contentDiv.innerHTML` as chunks arrive.
+ * Tree (identical to the React `<Message>` for role === "assistant"):
+ *   li > [logo data-placement=aside] + outer > inner > [logo data-placement=inline] + content
+ * The stylesheet shows the aside logo on desktop and the inline one on mobile.
+ *
+ * Returns the `<li>`, the streaming target `contentDiv`, and `inner` so the
+ * caller can insert the CTA row above it (a sibling inside `outer`).
  */
 export declare function renderAssistantMessage(avatarHTML?: string | null): {
     li: HTMLLIElement;
     contentDiv: HTMLDivElement;
+    inner: HTMLDivElement;
 };
 /**
  * Create skeleton body content (just the inner content, no <li> wrapper).
  * Mirrors React's SearchSkeletonBody — renders inside an assistant message slot.
  */
 export declare function renderSkeletonBody(searchingText?: string): HTMLDivElement;
-/**
- * Create a typing indicator `<li>` with animated dots.
- * Uses the `after:animate-dot-animate` Tailwind utility (dot-animate keyframe).
- */
-export declare function renderTypingIndicator(avatarHTML?: string | null, text?: string): HTMLLIElement;
-/**
- * Create a skeleton loader `<li>` with animated shimmer bars.
- * Uses the `animate-skeleton-shimmer` Tailwind utility (skeleton-shimmer keyframe).
- */
-export declare function renderSkeletonLoader(avatarHTML?: string | null): HTMLLIElement;
 /**
  * Create a close-button element. Placed absolutely inside `dialogOuter`, so
  * the focus trap automatically includes it. `innerHTML` is raw markup; the
@@ -101,13 +98,13 @@ export declare function renderSkeletonLoader(avatarHTML?: string | null): HTMLLI
  */
 export declare function renderCloseButton(innerHTML: string | null, onClick: () => void, ariaLabel?: string): HTMLButtonElement;
 /**
- * Create a suggestion chip button.
- * Matches the React `SearchSuggestions` component styling from search-suggestions.tsx.
+ * Create a suggestion chip. Same markup as one item of React's
+ * `SearchSuggestions` (search-suggestions.tsx).
  */
 export declare function renderSuggestionChip(text: string, onClick: () => void): HTMLLIElement;
 /**
- * Create mode switch tabs.
- * Matches the React `SwitchModeTabs` styling from the playground app.tsx.
+ * Create mode switch tabs. The active tab carries `data-active`; see
+ * lib/search/search-modes.css for the default look and tokens.
  */
 export declare function renderModeSwitchTabs(modes: Array<{
     name: string;
@@ -115,7 +112,7 @@ export declare function renderModeSwitchTabs(modes: Array<{
 }>, activeMode: string, onSwitch: (mode: string) => void): HTMLDivElement;
 /**
  * Create an error callout `<li>` element.
- * Matches the React `SearchErrorCallout` component styling.
+ * The callout markup matches React's `SearchErrorCallout`.
  */
 export declare function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null, opts?: {
     title?: string;
@@ -140,9 +137,10 @@ export declare function renderErrorMessage(message: string, onSwitchClassic?: ((
  *   micro-label (`aria-labelledby`, unique id via a module counter);
  * - every chip is a separate tab stop — no roving tabindex.
  *
- * The caller inserts the returned element as a SIBLING of the assistant
- * message's content div (above it), so streaming innerHTML rewrites cannot
- * destroy the row or its keyboard focus.
+ * The caller inserts the returned element inside the assistant message's
+ * `-content-outer`, ABOVE the `-content-inner` wrapper, so streaming
+ * innerHTML rewrites of the content div cannot destroy the row or its
+ * keyboard focus.
  */
 export declare function renderCtaBar(ctas: Cta[], opts: {
     onCtaClick(cta: Cta): void;

@@ -1,0 +1,75 @@
+/* Search.Overview — standalone AI answer (light DOM).
+   State attributes on the root:
+     data-overflowing   answer is taller than the collapsed height
+     data-expanded      "Show more" has been pressed */
+
+.insytful-theme .insytful-search-overview {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--insytful-overview-border);
+}
+
+.insytful-theme .insytful-search-overview-body {
+  position: relative;
+  margin-top: 16px;
+}
+
+.insytful-theme .insytful-search-overview-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.insytful-theme .insytful-search-overview-heading > h1,
+.insytful-theme .insytful-search-overview-heading > h2,
+.insytful-theme .insytful-search-overview-heading > h3,
+.insytful-theme .insytful-search-overview-heading > h4,
+.insytful-theme .insytful-search-overview-heading > h5,
+.insytful-theme .insytful-search-overview-heading > h6 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+.insytful-theme .insytful-search-overview-icon {
+  display: inline-flex;
+}
+
+.insytful-theme .insytful-search-overview-fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 80px;
+  pointer-events: none;
+  background: linear-gradient(transparent, var(--insytful-overview-bg));
+}
+
+.insytful-theme .insytful-search-overview-show-more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  border: 1px solid var(--insytful-btn-show-more-border);
+  border-radius: var(--insytful-btn-show-more-radius);
+  background: var(--insytful-btn-show-more-bg-default);
+  color: var(--insytful-btn-show-more-text);
+  font-family: var(--insytful-font-family);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-overview-show-more:hover {
+  background: var(--insytful-btn-show-more-bg-hover);
+}
+.insytful-theme .insytful-search-overview-show-more:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+
+.insytful-theme .insytful-search-overview-error {
+  margin-top: 16px;
+}
