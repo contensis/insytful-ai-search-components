@@ -13,8 +13,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import { cssConfig } from "./scripts/postcss-low-specificity";
 
 export default defineConfig({
+  css: cssConfig,
   plugins: [
     react({ jsxRuntime: "classic" }),
     dts({

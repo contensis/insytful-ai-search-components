@@ -10,9 +10,11 @@ import { THEME_CLASS, ThemeContext, type ThemeContextValue } from "./context";
  *
  *   - Without a <Theme> ancestor nothing matches: components are unstyled
  *     and you style them yourself against the hooks.
- *   - With a <Theme> ancestor they pick up the default look. Every rule sits
- *     in the `insytful` cascade layer, so any unlayered consumer CSS wins
- *     regardless of specificity.
+ *   - With a <Theme> ancestor they pick up the default look. Every rule is
+ *     built at low specificity (ancestors wrapped in `:where()`, see
+ *     lib/styles/index.css), so a consumer override against the hook class
+ *     ties and wins on source order, while host resets (`* { padding: 0 }`)
+ *     and bare element rules can't strip the components' layout.
  *
  * Portalled content (Search.Portal) is not a DOM descendant of this element,
  * so the portal reads ThemeContext and re-applies the theme on its mount.

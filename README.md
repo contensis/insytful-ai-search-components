@@ -47,6 +47,33 @@ export function App() {
 Components are unstyled without `<Theme>`. `InsytfulSearch.Overview` renders a
 standalone answer above search results, without a modal.
 
+### `Search.Overview`
+
+```tsx
+<InsytfulSearch.Overview
+  term={searchTerm}
+  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  type="conversational"
+  renderMarkdown={renderMarkdown}
+  disclaimer="AI generated answers may not always be accurate."
+/>
+```
+
+- `type` — `"keyword"` (default) is a single answer behind Show more.
+  `"conversational"` keeps a thread: expanding reveals a follow-up input and
+  each follow-up renders beneath the first answer.
+- `expanded` / `onExpandedChange` — controlled expansion. Leave both off to
+  keep the built-in toggle; pass them when the host owns the state (e.g. per
+  tab).
+- `collapsible` — `"auto"` (default) clips a collapsed answer only when it
+  overflows the teaser height; `true` always does; `false` never does. The
+  skeleton and errors are never clipped.
+- `disclaimer` — small print under the answer.
+
+Also: `heading`, `hLevel`, `icon`, `searching`, `error`, `onCtaClick`,
+`placeholder`, `isDevMode`, `className`, `style`. Root state attributes:
+`data-overflowing`, `data-expanded`, `data-conversational`, `data-error`.
+
 - [React guide](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-reacttsx-implementation)
 - [Theming](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-theming)
 
@@ -62,6 +89,26 @@ standalone answer above search results, without a modal.
 ```
 
 - [Web Component guide](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-classic-contensis-implementation)
+
+## Sticky headers and banners
+
+Mark any sticky or fixed host chrome with `data-insytful-offset`:
+
+```html
+<header data-insytful-offset>…</header>
+<div class="cookie-banner" data-insytful-offset>…</div>
+```
+
+The library sums the rendered heights of those elements and keeps the sum
+live with a `ResizeObserver`, so breakpoints and banners that appear or
+dismiss need no extra code. Both flavours use it:
+
+- The modal (`Search.Root` / `<insytful-search>`) is pushed down by that
+  height so it opens below the header.
+- `Search.Overview` keeps a follow-up question clear of the header when it
+  scrolls the question to the top of the page, leaving a 16px gap below it.
+
+`data-insytful-modal-offset` still works as a deprecated alias until 5.0.
 
 ## Quick action CTAs (calls-to-action)
 
@@ -216,7 +263,7 @@ Storybook runs both flavours against a mocked API, so no backend is needed.
 
 ## Browser support
 
-Chromium 105+, Safari 15.4+, Firefox 121+ (Shadow DOM, `:has()`, `@layer`).
+Chromium 105+, Safari 15.4+, Firefox 121+ (Shadow DOM, `:has()`, `:where()`).
 Client-side rendering only.
 
 ## Licence

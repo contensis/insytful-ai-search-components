@@ -4,6 +4,7 @@ import { useSearchContext } from "./context";
 import { hash } from "../utilities/hash.util";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { SearchCtas } from "./search-ctas";
+import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -13,7 +14,7 @@ function doShiftHeadings(markdown: string): string {
   return markdown.replace(/^(#{1,5})\s/gm, (_match, hashes: string) => `${hashes}# `);
 }
 
-type MessageProps = {
+export type MessageProps = {
   message: RAGMessage;
   logo?: React.ReactNode;
   renderContent?: (content: string) => React.ReactNode;
@@ -22,7 +23,7 @@ type MessageProps = {
   searching?: SearchSkeletonProps['messages'];
 }
 
-function Message({
+export function Message({
   message,
   logo,
   renderContent,
@@ -82,47 +83,6 @@ function Message({
       )}
     </li>
   );
-}
-
-/* ------------------------------------------------------------------ */
-/* Scroll helper                                                        */
-/* ------------------------------------------------------------------ */
-
-/**
- * Scroll a message element to the top of the chat viewport.
- *
- * Uses scrollTo on the container ref (not scrollIntoView) to avoid
- * scrolling parent containers in the Shadow DOM portal.
- *
- * Temporarily expands a spacer div via direct DOM manipulation so the
- * browser has enough scrollHeight to position the message at the top.
- * The spacer is collapsed later when the response finishes loading.
- */
-function scrollMessageToTop(
-  scroller: HTMLDivElement,
-  messageEl: HTMLElement,
-  spacer: HTMLDivElement,
-) {
-  // Expand spacer instantly (no transition) so the browser has room to
-  // scroll the message to the top. Direct DOM manipulation — immediate.
-  spacer.style.transition = "none";
-  spacer.style.height = `${scroller.clientHeight}px`;
-
-  // Double-rAF: the first frame lets the browser process any pending
-  // attribute changes (e.g. `inert` removal) and layout shifts (e.g.
-  // dialog top-offset re-render). The second frame guarantees the
-  // layout is fully settled before we measure positions and scroll.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const msgRect = messageEl.getBoundingClientRect();
-      const scrollerRect = scroller.getBoundingClientRect();
-      const targetTop = scroller.scrollTop + (msgRect.top - scrollerRect.top);
-      scroller.scrollTo({
-        top: targetTop,
-        behavior: "smooth",
-      });
-    });
-  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -283,13 +243,7 @@ export function SearchMessages({
 
         // Follow-up question: scroll the user's message to the top of the container
         if (prevMessageCountRef.current > 0 && scroller && elSpacerRef.current) {
-          const userMessages = scroller.querySelectorAll(
-            ".insytful-search-message[data-role='user']",
-          );
-          const userMsgEl = userMessages[
-            userMessages.length - 1
-          ] as HTMLElement | null;
-
+          const userMsgEl = lastUserMessageEl(scroller);
           if (userMsgEl) {
             efLastProgrammaticScrollRef.current = Date.now();
             scrollMessageToTop(scroller, userMsgEl, elSpacerRef.current);

@@ -1,25 +1,70 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { RAGProvider, useRAGResponseContext, type Cta } from "../api";
+import {
+  RAGProvider,
+  useRAGConversationContext,
+  useRAGResponseContext,
+  type Cta,
+  type RAGMessage,
+} from "../api";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { useMockFetch } from "../utilities/mock-fetch";
 import { SearchCtas } from "./search-ctas";
-import { SearchErrorCallout, type SearchErrorCalloutCta } from "./search-messages";
+import { Message, SearchErrorCallout, type SearchErrorCalloutCta } from "./search-messages";
+import { SearchInput } from "./search-input";
 import { useStableId } from "./hooks.util";
+import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
+import { observeOffsetHeight } from "../utilities/offset-elements";
+
+/**
+ * "keyword" (default) is a single answer with a Show more toggle.
+ * "conversational" keeps a thread: expanding the answer reveals a follow-up
+ * input and each follow-up renders beneath the first answer.
+ */
+export type SearchOverviewType = "keyword" | "conversational";
 
 export type SearchOverviewProp = {
   className?: string;
+  type?: SearchOverviewType;
   icon?: React.ReactNode;
   heading?: string;
   hLevel?: number;
   options: { config: string; baseUrl: string; recaptchaSiteKey?: string };
   term: string;
-  action?: () => void;
+  /** Controlled expansion. When set, the component no longer owns the
+   *  expanded state and reports every change via `onExpandedChange`. */
+  expanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
+  /** Whether a collapsed overview clips to the teaser height with a Show more
+   *  toggle. "auto" (default) does so only when the answer overflows that
+   *  height; `true` always does (e.g. a results tab that wants a way into the
+   *  AI view even for a short answer); `false` never does. */
+  collapsible?: "auto" | boolean;
   isDevMode?: boolean;
   searching?: SearchSkeletonProps["messages"];
   style?: React.CSSProperties;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   onCtaClick?: (cta: Cta) => void;
   error?: { title?: string; text?: string; cta?: SearchErrorCalloutCta };
+  /** Placeholder for the follow-up input (conversational only). */
+  placeholder?: string;
+  /** Small print rendered under the answer (and thread). */
+  disclaimer?: React.ReactNode;
+};
+
+/** What the body needs from either RAG hook. */
+type OverviewViewModel = {
+  response: string | null;
+  ctas?: Cta[];
+  loading: boolean;
+  elapsed: number;
+  error: string | null;
+};
+
+type BodyProps = SearchOverviewProp & {
+  vm: OverviewViewModel;
+  followUps?: RAGMessage[];
+  isThreadLoading?: boolean;
+  onFollowUp?: (question: string) => void;
 };
 
 /**
@@ -27,28 +72,60 @@ export type SearchOverviewProp = {
  *
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
- * State attributes on the root: `data-overflowing`, `data-expanded`.
+ * State attributes on the root: `data-overflowing`, `data-expanded`,
+ * `data-conversational`.
+ *
+ * Expansion is uncontrolled by default. Pass `expanded` (with
+ * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
+ * conversational instance mounted across tabs and only expands it on the AI
+ * tab: the thread and input render only while expanded.
  */
 export const SearchOverview = ({
   className,
+  type = "keyword",
   isDevMode = false,
   icon,
   heading = "AI Overview",
   hLevel = 2,
   term,
-  action,
+  expanded,
+  onExpandedChange,
+  collapsible,
   options,
   searching,
   error,
   renderMarkdown,
   onCtaClick,
   style,
+  placeholder,
+  disclaimer,
 }: SearchOverviewProp) => {
   const stableOptions = useMemo(
     () => options,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [options.config, options.baseUrl, options.recaptchaSiteKey],
   );
+
+  const innerProps: SearchOverviewProp = {
+    className,
+    type,
+    isDevMode,
+    icon,
+    heading,
+    hLevel,
+    term,
+    expanded,
+    onExpandedChange,
+    collapsible,
+    options: stableOptions,
+    searching,
+    error,
+    renderMarkdown,
+    onCtaClick,
+    style,
+    placeholder,
+    disclaimer,
+    };
 
   return (
     <RAGProvider
@@ -57,51 +134,112 @@ export const SearchOverview = ({
       baseUrl={stableOptions.baseUrl}
       recaptchaSiteKey={stableOptions.recaptchaSiteKey}
     >
-      <SearchOverviewInner
-        className={className}
-        isDevMode={isDevMode}
-        onCtaClick={onCtaClick}
-        icon={icon}
-        heading={heading}
-        hLevel={hLevel}
-        style={style}
-        term={term}
-        action={action}
-        searching={searching}
-        error={error}
-        options={stableOptions}
-        renderMarkdown={renderMarkdown}
-      />
+      {type === "conversational" ? (
+        // Keyed on term so a new search starts a new thread.
+        <SearchOverviewConversational key={term} {...innerProps} />
+      ) : (
+        <SearchOverviewKeyword {...innerProps} />
+      )}
     </RAGProvider>
   );
 };
 
-/** Collapsed height, in px, before the "Show more" toggle appears. */
-const COLLAPSED_HEIGHT = 200;
+/** Single-answer variant: `history: false`, no thread. */
+const SearchOverviewKeyword = (props: SearchOverviewProp) => {
+  const { ask, ...ctx } = useRAGResponseContext();
+  useMockFetch(props.isDevMode, props.options.baseUrl);
+  useEffect(() => {
+    if (props.term) ask(props.term);
+  }, [ask, props.term]);
+  return <SearchOverviewBody {...props} vm={ctx} />;
+};
 
-const SearchOverviewInner = ({
+/**
+ * Conversational variant: the first answer is shown as the overview body and
+ * later turns render as a thread. Message 0 is the user's search term (not
+ * shown — it's already in the search box), message 1 is the first answer.
+ */
+const SearchOverviewConversational = (props: SearchOverviewProp) => {
+  const { messages, loading, elapsed, error, ask } = useRAGConversationContext();
+  useMockFetch(props.isDevMode, props.options.baseUrl);
+  useEffect(() => {
+    if (props.term) ask(props.term);
+  }, [ask, props.term]);
+
+  const first = messages[1];
+  const followUps = messages.slice(2);
+  const vm: OverviewViewModel = {
+    response: first?.content || null,
+    ctas: first?.ctas,
+    // Only the first answer drives the body's skeleton; follow-ups show
+    // their own inside the thread.
+    loading: loading && followUps.length === 0,
+    elapsed,
+    error,
+  };
+
+  return (
+    <SearchOverviewBody
+      {...props}
+      vm={vm}
+      followUps={followUps}
+      isThreadLoading={loading}
+      onFollowUp={(q) => void ask(q)}
+    />
+  );
+};
+
+/** Collapsed height, in px, before the "Show more" toggle appears. */
+const COLLAPSED_HEIGHT = 400;
+/** Gap, in px, between the sticky host chrome (`data-insytful-offset`) and a
+ *  follow-up question scrolled to the top of the viewport. */
+const SCROLL_MARGIN = 16;
+
+const SearchOverviewBody = ({
   className,
+  type = "keyword",
   icon,
   heading = "AI Overview",
   hLevel = 2,
-  term,
-  action,
+  expanded,
+  onExpandedChange,
+  collapsible = "auto",
   searching,
-  isDevMode,
-  options,
   renderMarkdown,
   onCtaClick,
   error,
   style,
-}: SearchOverviewProp) => {
-  const [isExpanded, setExpanded] = React.useState(false);
+  placeholder,
+  vm,
+  followUps = [],
+  isThreadLoading = false,
+  onFollowUp,
+  disclaimer,
+}: BodyProps) => {
+  // Expansion is uncontrolled by default; a consumer that passes `expanded`
+  // takes ownership (e.g. to collapse the overview when it switches tabs).
+  const [internalExpanded, setInternalExpanded] = React.useState(false);
+  const isControlled = expanded !== undefined;
+  const isExpanded = isControlled ? expanded : internalExpanded;
+  const setExpanded = (next: boolean) => {
+    if (!isControlled) setInternalExpanded(next);
+    onExpandedChange?.(next);
+  };
+  const [isOverflowing, setOverflowing] = React.useState(false);
+  const elResponseRef = useRef<HTMLDivElement>(null);
+  const threadRef = useRef<HTMLUListElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
+  const followUpsRef = useRef<HTMLDivElement>(null);
+  const prevFollowUpCountRef = useRef(0);
 
-  const ctx = useRAGResponseContext();
-  const { ask } = ctx;
-
-  useMockFetch(isDevMode, options.baseUrl);
-
-  const doShowSkeleton = ctx.loading && !ctx.response && !ctx.error;
+  const isConversational = type === "conversational";
+  const hasFollowUps = followUps.length > 0;
+  const doShowSkeleton = vm.loading && !vm.response && !vm.error;
+  // Host override, else the measured answer height decides. Never clip before
+  // there is an answer: the skeleton and any error render at natural height,
+  // and the teaser only applies once there is something to preview.
+  const isCollapsible = collapsible === "auto" ? isOverflowing : collapsible;
+  const isCollapsed = isCollapsible && !isExpanded && !!vm.response;
 
   const bodyId = useStableId("insytful-search-overview-body");
 
@@ -117,48 +255,103 @@ const SearchOverviewInner = ({
   useEffect(() => {
     const el = statusRef.current;
     if (!el) return;
-    if (ctx.loading) {
+    if (vm.loading) {
       hasAnnouncedReadyRef.current = false;
       el.textContent = loadingText;
-    } else if (ctx.response && !hasAnnouncedReadyRef.current) {
+    } else if (vm.response && !hasAnnouncedReadyRef.current) {
       hasAnnouncedReadyRef.current = true;
       el.textContent = `${heading || "AI overview"} ready`;
     }
-  }, [ctx.loading, ctx.response, heading, loadingText]);
+  }, [vm.loading, vm.response, heading, loadingText]);
 
-  const onToggle = () => {
-    setExpanded((prev) => {
-      if (!prev && action) action();
-      return !prev;
-    });
-  };
-
-  useEffect(() => {
-    if (term) ask(term);
-  }, [ask, term]);
-
-  const [isOverflowing, setOverflowing] = React.useState(false);
-  const elResponseRef = useRef<HTMLDivElement>(null);
+  const onToggle = () => setExpanded(!isExpanded);
 
   // DOM measurement after commit is exactly what useLayoutEffect is for: the
   // collapsed/expanded decision needs the rendered scrollHeight, which can't
-  // be derived during render. The single setState is bounded (no cascade).
+  // be derived during render. Kept live rather than measured once: a webfont
+  // swap, CTA chips arriving or a viewport resize after the last token would
+  // otherwise leave the flag stale. The content element is observed rather
+  // than the body, whose height is pinned while collapsed (scrollHeight still
+  // reports the full content height then). Measuring is idempotent, so
+  // re-running on expand/collapse can't loop.
   useLayoutEffect(() => {
-    const elResponseHeight = elResponseRef.current?.scrollHeight || 0;
+    const body = elResponseRef.current;
+    if (!body) return;
+    const measure = () => setOverflowing(body.scrollHeight > COLLAPSED_HEIGHT);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOverflowing(elResponseHeight > COLLAPSED_HEIGHT);
-  }, [ctx.response]);
+    measure();
+    const content = body.querySelector(".insytful-search-overview-content");
+    if (!content || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, [vm.response, isExpanded, isConversational]);
 
-  const isCollapsed = isOverflowing && !isExpanded;
   const Heading = `h${hLevel}` as keyof React.JSX.IntrinsicElements;
+
+  // Keyword: the toggle only exists when the answer overflows. Conversational:
+  // always offer a way into the thread, and stop offering "Show less" once a
+  // follow-up has been sent (collapsing would hide the input mid-conversation).
+  const hasToggle = !doShowSkeleton && !!vm.response && (isConversational ? !isExpanded : isCollapsible);
+
+  const isLastFollowUp = followUps[followUps.length - 1];
+
+  // Sticky host chrome (header, banners) marked data-insytful-offset — the
+  // same attribute Search.Root uses to push the modal down. Measured live so
+  // breakpoint changes are picked up; only needed once the thread is open.
+  const [hostOffset, setHostOffset] = React.useState(0);
+  useEffect(() => {
+    if (!isConversational || !isExpanded) return;
+    return observeOffsetHeight(setHostOffset);
+  }, [isConversational, isExpanded]);
+
+  // New follow-up question: scroll it to the top of the viewport, as the modal
+  // does inside its own scroller. The page is the scroller here, so the
+  // spacer gives it a viewport of room below the question before the reply
+  // has streamed in.
+  useEffect(() => {
+    const count = followUps.length;
+    const last = followUps[count - 1];
+    if (count > prevFollowUpCountRef.current && last?.role === "user") {
+      const el = threadRef.current && lastUserMessageEl(threadRef.current);
+      if (el && spacerRef.current) {
+        scrollMessageToTop(window, el, spacerRef.current, hostOffset + SCROLL_MARGIN);
+      }
+    }
+    prevFollowUpCountRef.current = count;
+  }, [followUps, hostOffset]);
+
+  // On expand, stretch the follow-ups block to the bottom of the viewport so
+  // the overview runs past the fold even for a short answer, giving the sticky
+  // input something to pin against. Follow-ups and the spacer grow it further.
+  // Measured after layout so the expanded answer height is known.
+  useEffect(() => {
+    const block = followUpsRef.current;
+    if (!isConversational || !isExpanded || !block) return;
+    const frame = requestAnimationFrame(() => {
+      const top = block.getBoundingClientRect().top;
+      block.style.minHeight = `${Math.max(0, window.innerHeight - top)}px`;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isConversational, isExpanded]);
+
+  // Reply finished: let the spacer ease closed (its CSS transition) so the
+  // page doesn't end on a screen of blank space.
+  useEffect(() => {
+    const spacer = spacerRef.current;
+    if (!spacer || isThreadLoading) return;
+    spacer.style.transition = "";
+    spacer.style.height = "0px";
+  }, [isThreadLoading]);
 
   return (
     <div
       className={`insytful-search-overview ${className ?? ""}`.trim()}
       style={style}
-      {...(ctx.error ? { "data-error": "" } : {})}
+      {...(vm.error ? { "data-error": "" } : {})}
       {...(isOverflowing ? { "data-overflowing": "" } : {})}
       {...(isExpanded ? { "data-expanded": "" } : {})}
+      {...(isConversational ? { "data-conversational": "" } : {})}
     >
       <div ref={statusRef} role="status" className="insytful-sr-only" />
       <div
@@ -180,20 +373,20 @@ const SearchOverviewInner = ({
             <Heading>{heading}</Heading>
           </div>
         )}
-        <SearchCtas ctas={ctx.ctas} onCtaClick={onCtaClick} />
+        <SearchCtas ctas={vm.ctas} onCtaClick={onCtaClick} />
         {doShowSkeleton && (
-          <SearchSkeletonBody elapsed={ctx.elapsed} messages={searching || []} />
+          <SearchSkeletonBody elapsed={vm.elapsed} messages={searching || []} />
         )}
-        {renderMarkdown && ctx.response && (
+        {renderMarkdown && vm.response && (
           <div className="insytful-search-overview-content">
-            {renderMarkdown(ctx.response)}
+            {renderMarkdown(vm.response)}
           </div>
         )}
-        {ctx.error && (
+        {vm.error && (
           <div className="insytful-search-overview-error">
             <SearchErrorCallout
               title={error?.title ?? "Error"}
-              text={error?.text ?? ctx.error ?? "We couldn't generate an overview right now."}
+              text={error?.text ?? vm.error ?? "We couldn't generate an overview right now."}
               cta={error?.cta}
             />
           </div>
@@ -202,7 +395,7 @@ const SearchOverviewInner = ({
           <div className="insytful-search-overview-fade" aria-hidden="true" />
         )}
       </div>
-      {!doShowSkeleton && ctx.response && isOverflowing && (
+      {hasToggle && (
         // Stays mounted as a toggle so focus is never dropped when the
         // collapsed state changes.
         <button
@@ -218,6 +411,55 @@ const SearchOverviewInner = ({
           </span>
         </button>
       )}
+      {isConversational && isExpanded && (
+        <div className="insytful-search-overview-followups" ref={followUpsRef}>
+          {hasFollowUps && (
+            <ul className="insytful-search-overview-thread" ref={threadRef}>
+              {followUps.map((message, i) =>
+                message.role === "user" ? (
+                  <Message key={i} message={message} />
+                ) : (
+                  // Assistant follow-ups use the SAME markup as the first
+                  // answer (whole markdown, unshifted headings, CTAs above) so
+                  // consumer prose styles apply identically. The shared
+                  // <Message> is modal-flavoured: it demotes headings a level
+                  // and splits the reply per paragraph.
+                  <li key={i} className="insytful-search-message" data-role="assistant">
+                    <div className="insytful-search-message-content-outer">
+                      <SearchCtas ctas={message.ctas} onCtaClick={onCtaClick} />
+                      {isThreadLoading && message === isLastFollowUp && !message.content ? (
+                        <SearchSkeletonBody elapsed={vm.elapsed} messages={searching || []} />
+                      ) : (
+                        renderMarkdown &&
+                        message.content && (
+                          <div className="insytful-search-overview-content">
+                            {renderMarkdown(message.content)}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </li>
+                ),
+              )}
+            </ul>
+          )}
+          <div ref={spacerRef} className="insytful-search-overview-spacer" aria-hidden="true" />
+        </div>
+      )}
+      {isConversational && isExpanded && (
+        // A direct child of the root so `position: sticky` is contained by the
+        // whole overview, not just the follow-ups block: the input pins to the
+        // viewport bottom whenever the overview runs past the fold — including
+        // while the first answer is still streaming.
+        <SearchInput
+          embedded
+          className="insytful-search-overview-input"
+          placeholder={placeholder ?? "Ask a follow-up question"}
+          disabled={isThreadLoading}
+          onSubmit={onFollowUp}
+        />
+      )}
+      {disclaimer && <div className="insytful-search-overview-disclaimer">{disclaimer}</div>}
     </div>
   );
 };

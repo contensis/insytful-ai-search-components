@@ -8,8 +8,10 @@
 
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import { cssConfig } from "./scripts/postcss-low-specificity";
 
 export default defineConfig({
+  css: cssConfig,
   build: {
     lib: {
       entry: resolve(__dirname, "lib/web-component.ts"),

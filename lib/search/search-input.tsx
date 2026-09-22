@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSearchContext, useModeContextSafe } from "./context";
+import { useSearchContextSafe, useModeContextSafe } from "./context";
 
 export type SearchInputProps = {
   className?: string;
@@ -7,8 +7,12 @@ export type SearchInputProps = {
   embedded?: boolean;
   /** Placeholder text override */
   placeholder?: string;
-  /** Called with the query on submit — use to open the modal, navigate, etc. */
+  /** Called with the query on submit — use to open the modal, navigate, etc.
+   *  Required when rendered outside Search.Root (e.g. inside Search.Overview). */
   onSubmit?: (query: string) => void;
+  /** Disable while a request is in flight. Only read outside Search.Root;
+   *  inside Root the context's `loading` wins. */
+  disabled?: boolean;
 };
 
 function ClassicIcon() {
@@ -41,13 +45,22 @@ function SendIcon() {
  * State is exposed as data attributes on the <form> for styling:
  * `data-mode="ai|classic"`, `data-embedded`, `data-has-messages`.
  */
-export function SearchInput({ className, embedded = false, placeholder, onSubmit }: SearchInputProps) {
-  const { onSend, loading, messages } = useSearchContext("Search.Input");
+export function SearchInput({
+  className,
+  embedded = false,
+  placeholder,
+  onSubmit,
+  disabled = false,
+}: SearchInputProps) {
+  // Optional so the input can live outside Search.Root (Search.Overview
+  // renders it for follow-ups). Without Root, `onSubmit` is the only sink.
+  const searchCtx = useSearchContextSafe();
+  const loading = searchCtx ? searchCtx.loading : disabled;
   const ctx = useModeContextSafe();
   const isClassic = ctx ? ctx.mode !== "ai" : false;
 
   const [input, setInput] = useState("");
-  const hasMessages = messages.length > 0;
+  const hasMessages = (searchCtx?.messages.length ?? 0) > 0;
 
   const handleSend = async () => {
     const trimmed = input.trim();
@@ -61,8 +74,10 @@ export function SearchInput({ className, embedded = false, placeholder, onSubmit
       return;
     }
 
+    if (!searchCtx) return; // no Root and no onSubmit: nowhere to send it
+
     try {
-      await onSend(trimmed);
+      await searchCtx.onSend(trimmed);
     } catch {
       setInput(trimmed);
     }

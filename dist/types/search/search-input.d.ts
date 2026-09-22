@@ -5,8 +5,12 @@ export type SearchInputProps = {
     embedded?: boolean;
     /** Placeholder text override */
     placeholder?: string;
-    /** Called with the query on submit — use to open the modal, navigate, etc. */
+    /** Called with the query on submit — use to open the modal, navigate, etc.
+     *  Required when rendered outside Search.Root (e.g. inside Search.Overview). */
     onSubmit?: (query: string) => void;
+    /** Disable while a request is in flight. Only read outside Search.Root;
+     *  inside Root the context's `loading` wins. */
+    disabled?: boolean;
 };
 /**
  * Search.Input — the question box.
@@ -14,7 +18,7 @@ export type SearchInputProps = {
  * State is exposed as data attributes on the <form> for styling:
  * `data-mode="ai|classic"`, `data-embedded`, `data-has-messages`.
  */
-export declare function SearchInput({ className, embedded, placeholder, onSubmit }: SearchInputProps): React.JSX.Element;
+export declare function SearchInput({ className, embedded, placeholder, onSubmit, disabled, }: SearchInputProps): React.JSX.Element;
 export declare namespace SearchInput {
     var displayName: string;
 }

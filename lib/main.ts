@@ -21,8 +21,9 @@
  * their `insytful-search-*` hook classes and `data-*` state attributes for
  * you to style. See README → Styling.
  *
- * Every shipped rule sits in the `insytful` cascade layer and is scoped under
- * `.insytful-theme`, so your own unlayered CSS always wins.
+ * Every shipped rule is scoped under `.insytful-theme` and weighs a single
+ * hook class, so an override written against that class (`.insytful-search-x`)
+ * wins on source order — no `!important`.
  */
 
 // Shipped stylesheet. Emitted as `style.css` by the build; `Search.Portal`
@@ -44,6 +45,7 @@ export type { SearchTriggerProps } from "./search/search-trigger";
 export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps } from "./search/search-modes";
 export type { SearchSuggestionsProps } from "./search/search-suggestions";
 export type { SearchCtasProps } from "./search/search-ctas";
+export type { SearchOverviewProp, SearchOverviewType } from "./search/ai-overview";
 
 // RAG hooks — used internally by Search.Root, also available standalone
 export {

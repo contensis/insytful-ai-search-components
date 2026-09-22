@@ -46,11 +46,15 @@
 }
 
 .insytful-theme .insytful-search-overview-show-more {
+  max-width: 100%;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border: 1px solid var(--insytful-btn-show-more-border);
   border-radius: var(--insytful-btn-show-more-radius);
   background: var(--insytful-btn-show-more-bg-default);
@@ -72,4 +76,42 @@
 
 .insytful-theme .insytful-search-overview-error {
   margin-top: 16px;
+}
+
+/* Conversational: thread + follow-up input revealed once expanded */
+.insytful-theme .insytful-search-overview-followups {
+  margin-top: 32px;
+}
+
+.insytful-theme .insytful-search-overview-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+/* Grows to a viewport while a follow-up streams so the question can be
+   scrolled to the top; eases closed when the reply finishes. */
+.insytful-theme .insytful-search-overview-spacer {
+  height: 0;
+  transition: height var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+
+/* Follow-up input pins to the viewport bottom while the thread runs past the
+   fold (the spacer above it supplies the height); settles under the last
+   message once the reply finishes and the spacer closes. */
+.insytful-theme .insytful-search-overview-input {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 12px 0 16px;
+  background: var(--insytful-overview-bg);
+}
+
+.insytful-theme .insytful-search-overview-disclaimer {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--insytful-disclaimer-text);
 }

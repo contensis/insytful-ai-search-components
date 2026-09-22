@@ -6,8 +6,10 @@
  */
 
 import { defineConfig } from "vite";
+import { cssConfig } from "./scripts/postcss-low-specificity";
 
 export default defineConfig({
+  css: cssConfig,
   server: {
     host: true,
     open: "/playground-wc/index.html",

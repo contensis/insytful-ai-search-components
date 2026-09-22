@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InsytfulSearch, Theme } from "../../lib/main";
+import type { SearchOverviewType } from "../../lib/main";
 import { renderMarkdown, useFailingFetch, options } from "../helpers";
 
 // Story-only CSS: the brand font, plus the demo search form that sits outside
@@ -31,10 +32,17 @@ const css = `
 function OverviewPage({
   isDevMode = false,
   openWith = "",
+  type = "keyword",
+  disclaimer,
+  collapsible,
 }: {
   isDevMode?: boolean;
   /** Pre-fill the form and fetch an overview for this term on load. */
   openWith?: string;
+  /** "conversational" reveals a follow-up input when the answer is expanded. */
+  type?: SearchOverviewType;
+  disclaimer?: React.ReactNode;
+  collapsible?: "auto" | boolean;
 }) {
   const [draft, setDraft] = useState(openWith);
   const [term, setTerm] = useState(openWith);
@@ -61,16 +69,20 @@ function OverviewPage({
 
       {term && (
           <InsytfulSearch.Overview
+            type={type}
             term={term}
             options={options}
             isDevMode={isDevMode}
             renderMarkdown={renderMarkdown}
+            disclaimer={disclaimer}
+            collapsible={collapsible}
             error={{
               title: "We couldn't generate an overview",
               text: "The rest of your search results are unaffected.",
               cta: { text: "Visit the help centre", path: "https://www.example.com/help" },
             }}
           />
+
       )}
     </div>
     </Theme>
@@ -89,3 +101,11 @@ type Story = StoryObj;
 export const DefaultState: Story = { render: () => <OverviewPage isDevMode /> };
 
 export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
+
+/**
+ * Expand the answer ("Show more" / "Continue the conversation") to reveal the
+ * follow-up input. Each follow-up renders beneath the first answer.
+ */
+export const ConversationalState: Story = {
+  render: () => <OverviewPage isDevMode type="conversational" openWith="How do I apply?" />,
+};

@@ -91,6 +91,7 @@ function WebComponentStory({
         api-uri={options.baseUrl}
         project-id={options.config}
         theme={theme}
+        suggestions-position="below"
         {...(devMode ? { "dev-mode": "" } : {})}
       >
         <Children />

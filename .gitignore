@@ -34,3 +34,4 @@ docs/brainstorms/
 
 # npm pack output
 *.tgz
+tsconfig.app.tsbuildinfo

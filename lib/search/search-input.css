@@ -19,14 +19,17 @@
 /* Leading icon (magnifier in classic mode, sparkle in AI mode) */
 .insytful-theme .insytful-search-message-input-icon {
   position: absolute;
-  top: 18px;
+  top: 50%;
   left: 16px;
   z-index: 20;
+  display: flex;
+  align-items: center;
   color: var(--insytful-text-default);
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 .insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-icon {
-  top: 14px;
-  left: 0;
+  left: 8px;
 }
 .insytful-theme .insytful-search-message-input-icon svg {
   width: 24px;
@@ -86,15 +89,14 @@
 }
 .insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-textarea {
   min-height: 48px;
-  padding: 12px 48px 12px 32px;
-  border: 0;
-  border-radius: 0;
+  padding: 12px 54px 12px 38px;
+  border-radius: 8px;
 }
 
 /* Send / search button */
 .insytful-theme .insytful-search-message-input-btn {
   position: absolute;
-  top: 50%;
+  top: 48%;
   right: 8px;
   z-index: 20;
   display: flex;
@@ -111,7 +113,7 @@
   transform: translateY(-50%);
 }
 .insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-btn {
-  right: 0;
+  right: 8px;
 }
 .insytful-theme .insytful-search-message-input-btn:hover {
   background: var(--insytful-btn-icon-search-bg-hover);
@@ -136,8 +138,8 @@
       sibling (modal AI mode only), the wrapper rings instead and the
       textarea's own ring is suppressed.
    3. A consumer wrapping the embedded input in their own card can ring the
-      card with their own `:has(textarea:focus)` rule — being unlayered it
-      beats everything here.
+      card with their own `:has(textarea:focus)` rule — with one class it
+      ties, and consumer CSS comes later, so it beats everything here.
 
    The send button always rings on its own; it is never delegated. */
 .insytful-theme .insytful-search-message-input-textarea:focus-visible {

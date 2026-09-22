@@ -1,5 +1,15 @@
 import { default as React } from 'react';
+import { RAGMessage } from '../api/rag.types';
 import { SearchSkeletonProps } from './skeleton';
+export type MessageProps = {
+    message: RAGMessage;
+    logo?: React.ReactNode;
+    renderContent?: (content: string) => React.ReactNode;
+    showSkeleton?: boolean;
+    elapsed?: SearchSkeletonProps["elapsed"];
+    searching?: SearchSkeletonProps['messages'];
+};
+export declare function Message({ message, logo, renderContent, showSkeleton, elapsed, searching, }: MessageProps): React.JSX.Element;
 export type SearchErrorCalloutCta = {
     text: string;
     path: string;

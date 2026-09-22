@@ -4,34 +4,35 @@
    be injected into the Shadow DOM only (and so made the modal and the
    light-DOM Overview render differently).
 
-   Imported into the `insytful.reset` sub-layer, BELOW `insytful.components`
-   (see index.css). That is what lets the component rules win: these
-   selectors carry an element type and so out-specify a plain
-   `.insytful-theme .insytful-search-x` rule, but layer order beats
-   specificity. Without the sub-layer every button lost its background. */
+   Every selector is wrapped in `:where()` BY HAND, so these rules weigh
+   nothing (0,0,0 — pseudo-elements add their own 0,0,1). That is what lets
+   the component rules win: a reset selector carries an element type and
+   would otherwise out-specify a plain `.insytful-search-x` rule, and every
+   button would lose its background. The build's low-specificity step leaves
+   selectors that already contain `:where(` alone. */
 
-.insytful-theme [class*="insytful-search-"],
-.insytful-theme [class*="insytful-search-"]::before,
-.insytful-theme [class*="insytful-search-"]::after {
+:where(.insytful-theme [class*="insytful-search-"]),
+:where(.insytful-theme [class*="insytful-search-"])::before,
+:where(.insytful-theme [class*="insytful-search-"])::after{
   box-sizing: border-box;
 }
-.insytful-theme button[class*="insytful-search-"],
-.insytful-theme textarea[class*="insytful-search-"] {
+:where(.insytful-theme button[class*="insytful-search-"]),
+:where(.insytful-theme textarea[class*="insytful-search-"]) {
   font: inherit;
   color: inherit;
   margin: 0;
   -webkit-appearance: none;
   appearance: none;
 }
-.insytful-theme button[class*="insytful-search-"] {
+:where(.insytful-theme button[class*="insytful-search-"]) {
   background: none;
   border: 0;
   padding: 0;
   cursor: pointer;
   text-align: inherit;
 }
-.insytful-theme svg[class*="insytful-search-"],
-.insytful-theme [class*="insytful-search-"] > svg {
+:where(.insytful-theme svg[class*="insytful-search-"]),
+:where(.insytful-theme [class*="insytful-search-"] > svg) {
   display: block;
   vertical-align: middle;
 }

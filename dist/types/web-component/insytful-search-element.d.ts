@@ -6,7 +6,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _elements;
     private _shadow;
     private _themeStyle;
-    private _resizeObserver;
+    private _stopOffsetObserver;
     private _triggerClickHandler;
     private _offsetHeight;
     private _focusTrap;

@@ -10,6 +10,7 @@ import { useMockFetch } from "../utilities/mock-fetch";
 import { useThemeContext } from "../theme/context";
 
 import css from "../styles/index.css?inline";
+import { observeOffsetHeight } from "../utilities/offset-elements";
 
 export type SearchRootProps = {
   children: React.ReactNode;
@@ -168,21 +169,12 @@ function SearchRootInner({
     };
   }, [open]);
 
-  // Offset measurement — the full-bleed modal can be pushed down below a
-  // sticky header via data-insytful-modal-offset elements.
+  // Offset measurement — the full-bleed modal is pushed down below sticky
+  // host chrome marked with data-insytful-offset (see utilities/offset-elements).
   const [computedOffsetHeight, setComputedOffsetHeight] = useState(0);
   useEffect(() => {
     if (typeof window === "undefined" || !open) return;
-    const els = document.querySelectorAll("[data-insytful-modal-offset]");
-    const calc = () => {
-      let h = 0;
-      els.forEach((el) => (h += (el as HTMLElement).offsetHeight));
-      setComputedOffsetHeight(h);
-    };
-    calc();
-    const ro = new ResizeObserver(calc);
-    els.forEach((el) => ro.observe(el));
-    return () => ro.disconnect();
+    return observeOffsetHeight(setComputedOffsetHeight);
   }, [open]);
 
   const ctx: SearchContextValue = useMemo(() => ({

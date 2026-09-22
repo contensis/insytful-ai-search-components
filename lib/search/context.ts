@@ -63,7 +63,7 @@ export type SearchContextValue = {
     left?: number | string;
     right?: number | string;
   };
-  /** Computed height from data-insytful-modal-offset elements */
+  /** Live summed height of `data-insytful-offset` host elements (sticky header etc.) */
   computedOffsetHeight: number;
 };
 

@@ -4,7 +4,7 @@ export declare const THEME_CLASS = "insytful-theme";
 export type ThemeContextValue = {
     /** Class the portal must place on its mount element. */
     className: string;
-    /** Raw CSS injected inside the portal (unlayered, so it wins). */
+    /** Raw CSS injected inside the portal, after the base sheet (so it wins ties). */
     css?: string;
 };
 export declare const ThemeContext: import('react').Context<ThemeContextValue | null>;

@@ -10,10 +10,12 @@
  *     as observed attributes
  */
 
-// The SAME stylesheet the React <Theme>/Search.Portal ship. Everything in it
-// sits in the `insytful` cascade layer, so the unlayered `theme` attribute
-// CSS always wins — the WC equivalent of `<Theme css>`.
+// The SAME stylesheet the React <Theme>/Search.Portal ship. It is built at
+// low specificity (one hook class per rule), and the `theme` attribute CSS is
+// appended after it, so a `theme` rule against a hook class wins — the WC
+// equivalent of `<Theme css>`.
 import css from '../styles/index.css?inline';
+import { getOffsetElements, measureOffsetHeight, observeOffsetHeight } from '../utilities/offset-elements';
 import {
   dialogTransition,
   renderDialog,
@@ -58,7 +60,7 @@ export class InsytfulSearchElement extends HTMLElement {
   private _elements: DialogElements | null = null;
   private _shadow: ShadowRoot | null = null;
   private _themeStyle: HTMLStyleElement | null = null;
-  private _resizeObserver: ResizeObserver | null = null;
+  private _stopOffsetObserver: (() => void) | null = null;
   private _triggerClickHandler: ((e: Event) => void) | null = null;
   private _offsetHeight = 0;
 
@@ -132,13 +134,13 @@ export class InsytfulSearchElement extends HTMLElement {
     // Attach open shadow root
     this._shadow = this.attachShadow({ mode: 'open' });
 
-    // Inject the shared stylesheet (layered; see import note above)
+    // Inject the shared stylesheet (low specificity; see import note above)
     const baseStyle = document.createElement('style');
     baseStyle.textContent = css;
     this._shadow.appendChild(baseStyle);
 
     // Inject theme CSS (updated via attribute). Appended after the base
-    // sheet and unlayered, so it overrides any default at any specificity.
+    // sheet, so at equal specificity (one hook class) it overrides the default.
     this._themeStyle = document.createElement('style');
     const themeAttr = this.getAttribute('theme');
     if (themeAttr) this._themeStyle.textContent = themeAttr;
@@ -241,9 +243,9 @@ export class InsytfulSearchElement extends HTMLElement {
     this._previousActiveElement = null;
 
     // Clean up ResizeObservers
-    if (this._resizeObserver) {
-      this._resizeObserver.disconnect();
-      this._resizeObserver = null;
+    if (this._stopOffsetObserver) {
+      this._stopOffsetObserver();
+      this._stopOffsetObserver = null;
     }
     if (this._messagesResizeObserver) {
       this._messagesResizeObserver.disconnect();
@@ -831,31 +833,16 @@ export class InsytfulSearchElement extends HTMLElement {
   /* ---------------------------------------------------------------- */
 
   private _setupOffsetMeasurement(): void {
-    // Query elements with the offset marker attribute
-    // (mirrors SearchRootInner lines 138-149)
-    const measure = () => {
-      const els = document.querySelectorAll('[data-insytful-modal-offset]');
-      let h = 0;
-      els.forEach((el) => (h += (el as HTMLElement).offsetHeight));
+    // Sticky host chrome marked with data-insytful-offset, same as Search.Root.
+    // Measured now and on every resize of those elements.
+    this._stopOffsetObserver = observeOffsetHeight((h) => {
       this._offsetHeight = h;
       this._applyOffset();
-    };
-
-    measure();
-
-    // Observe offset elements for size changes
-    const els = document.querySelectorAll('[data-insytful-modal-offset]');
-    if (els.length > 0) {
-      this._resizeObserver = new ResizeObserver(measure);
-      els.forEach((el) => this._resizeObserver!.observe(el));
-    }
+    });
   }
 
   private _measureOffset(): void {
-    const els = document.querySelectorAll('[data-insytful-modal-offset]');
-    let h = 0;
-    els.forEach((el) => (h += (el as HTMLElement).offsetHeight));
-    this._offsetHeight = h;
+    this._offsetHeight = measureOffsetHeight(getOffsetElements());
     this._applyOffset();
   }
 
