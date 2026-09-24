@@ -1,0 +1,56 @@
+/* Feedback row: report link + helpful / unhelpful vote */
+.insytful-theme .insytful-search-overview-feedback {
+  font-size: 14px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  
+  gap: 8px;
+}
+
+.insytful-theme .insytful-search-overview-feedback-report {
+  color: var(--insytful-text-link-default);
+  text-decoration: underline;
+}
+
+.insytful-theme .insytful-search-overview-feedback-report:hover {
+  color: var(--insytful-text-link-hover);
+}
+
+.insytful-theme .insytful-search-overview-feedback-report:focus-visible,
+.insytful-theme .insytful-search-overview-feedback-vote:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+
+.insytful-theme .insytful-search-overview-feedback-votes {
+  display: flex;
+  gap: 4px;
+}
+
+.insytful-theme .insytful-search-overview-feedback-vote {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 0;
+  border-radius: 99px;
+  background: none;
+  color: var(--insytful-text-default);
+  cursor: pointer;
+}
+
+.insytful-theme .insytful-search-overview-feedback-vote:hover {
+  background: var(--insytful-btn-show-more-bg-hover);
+}
+
+.insytful-theme .insytful-search-overview-feedback-vote[aria-pressed="true"] {
+  color: var(--insytful-text-link-default);
+}
+
+.insytful-theme .insytful-search-overview-feedback-vote:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -6,6 +6,17 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input.toString();
 
+    // Vote API: accept every vote, so dev mode never reaches the real API.
+    if (url.startsWith(baseUrl) && /\/sessions\/.+\/vote$/.test(url)) {
+      const body = init?.method === 'DELETE'
+        ? { ok: true, retracted: true }
+        : { ok: true, vote: { ...JSON.parse(String(init?.body ?? '{}')), updatedAt: new Date().toISOString() } };
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     if (url.startsWith(baseUrl)) {
       const chunks = [
         '# Heading 1\n\n',
@@ -139,14 +150,18 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
             await new Promise(res => setTimeout(res, 30));
           }
 
-          controller.enqueue(encoder.encode(`event: done\ndata: {}\n\n`));
+          // `mid` makes the answer voteable (see lib/shared/vote.ts). Unique per
+          // answer; not crypto.randomUUID(), which is missing on plain-http
+          // non-localhost origins (e.g. Storybook opened via a LAN IP).
+          const mid = `mock-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          controller.enqueue(encoder.encode(`event: done\ndata: ${JSON.stringify({ mid })}\n\n`));
           controller.close();
         },
       });
 
       return new Response(stream, {
         status: 200,
-        headers: { 'Content-Type': 'text/event-stream' },
+        headers: { 'Content-Type': 'text/event-stream', 'X-Session-Id': 's_mocksession0001' },
       });
     }
 

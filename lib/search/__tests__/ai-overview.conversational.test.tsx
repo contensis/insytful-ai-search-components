@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { RAGMessage } from "../../api";
 
 // Drive both variants through controllable RAG contexts instead of the network.
@@ -378,5 +378,158 @@ describe("Search.Overview collapsible", () => {
     );
     expect(document.querySelector(".insytful-search-overview")!.hasAttribute("data-overflowing")).toBe(true);
     expect(screen.getByRole("button", { name: /show more of the response/i })).toBeTruthy();
+  });
+});
+
+describe("Search.Overview feedback", () => {
+  const mid = "5f0f4b0e-0000-4000-8000-000000000001";
+  const sid = "s_testsession0001";
+  const voteUrl = `https://api.example.com/sessions/cfg/${sid}/${mid}/vote`;
+
+  /** First answer carrying the vote ids from its `done` frame. */
+  const votableAnswer = (content = "First answer", answerMid = mid): RAGMessage[] =>
+    firstAnswer(content).map((m) => (m.role === "assistant" ? { ...m, mid: answerMid, sid } : m));
+
+  /** Stubs the vote API with one status for every call. */
+  const stubVoteApi = (status = 200) => {
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ ok: status < 400 }), { status }));
+    vi.stubGlobal("fetch", fetchMock);
+    return fetchMock;
+  };
+
+  const status = () => document.querySelector(".insytful-search-overview-feedback-status")!.textContent;
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("renders nothing without the prop", () => {
+    conversationCtx.messages = votableAnswer();
+    renderConversational();
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+  });
+
+  it("stays hidden while generating and on the collapsed teaser", () => {
+    conversationCtx.messages = [{ role: "user", content: "q" }];
+    conversationCtx.loading = true;
+    const { unmount } = renderConversational({ feedback: {} });
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+    unmount();
+
+    conversationCtx.loading = false;
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: {}, collapsible: true });
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /show more of the response/i }));
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeTruthy();
+  });
+
+  it("shows the report link but no vote buttons when the answer has no mid", () => {
+    conversationCtx.messages = firstAnswer();
+    renderConversational({ feedback: { report: { text: "Report an error", href: "/report" } }, expanded: true });
+    expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
+  });
+
+  it("PUTs the vote, then reports it and announces thanks", async () => {
+    const fetchMock = stubVoteApi();
+    conversationCtx.messages = votableAnswer("The answer");
+    const onVote = vi.fn();
+    renderConversational({ feedback: { onVote }, expanded: true });
+    const helpful = screen.getByRole("button", { name: "Helpful" });
+    expect(helpful.getAttribute("aria-pressed")).toBe("false");
+
+    fireEvent.click(helpful);
+    expect(helpful.getAttribute("aria-pressed")).toBe("true"); // optimistic
+    await waitFor(() => expect(onVote).toHaveBeenCalledWith("helpful", { mid }));
+    expect(fetchMock).toHaveBeenCalledWith(voteUrl, expect.objectContaining({
+      method: "PUT",
+      body: JSON.stringify({ rating: "helpful" }),
+    }));
+    expect(status()).toBe("Thanks for your feedback");
+  });
+
+  it("changes the vote with the other button and retracts it with the pressed one", async () => {
+    const fetchMock = stubVoteApi();
+    conversationCtx.messages = votableAnswer();
+    const onVote = vi.fn();
+    renderConversational({ feedback: { onVote }, expanded: true });
+    const helpful = screen.getByRole("button", { name: "Helpful" });
+    const unhelpful = screen.getByRole("button", { name: "Unhelpful" });
+
+    fireEvent.click(helpful);
+    await waitFor(() => expect(onVote).toHaveBeenCalledTimes(1));
+    fireEvent.click(unhelpful);
+    await waitFor(() => expect(onVote).toHaveBeenLastCalledWith("unhelpful", expect.anything()));
+    expect(helpful.getAttribute("aria-pressed")).toBe("false");
+    expect(unhelpful.getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(unhelpful);
+    await waitFor(() => expect(onVote).toHaveBeenLastCalledWith(null, expect.anything()));
+    expect(fetchMock).toHaveBeenLastCalledWith(voteUrl, { method: "DELETE" });
+    expect(unhelpful.getAttribute("aria-pressed")).toBe("false");
+    expect(status()).toBe("Feedback removed");
+  });
+
+  it("ignores clicks while a vote is in flight", async () => {
+    const fetchMock = stubVoteApi();
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: {}, expanded: true });
+    const helpful = screen.getByRole("button", { name: "Helpful" });
+
+    fireEvent.click(helpful);
+    expect((helpful as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Unhelpful" }));
+    await waitFor(() => expect((helpful as HTMLButtonElement).disabled).toBe(false));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("rolls back and announces the failure on a retryable error", async () => {
+    stubVoteApi(429);
+    conversationCtx.messages = votableAnswer();
+    const onVote = vi.fn();
+    renderConversational({ feedback: { onVote }, expanded: true });
+
+    fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
+    await waitFor(() => expect(status()).toBe("Couldn't send your feedback, please try again"));
+    expect(screen.getByRole("button", { name: "Helpful" }).getAttribute("aria-pressed")).toBe("false");
+    expect(onVote).not.toHaveBeenCalled();
+  });
+
+  it("hides the vote buttons when the answer can't be voted on (404)", async () => {
+    stubVoteApi(404);
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: {}, expanded: true });
+
+    fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull());
+  });
+
+  it("clears the vote when a new answer arrives", async () => {
+    stubVoteApi();
+    conversationCtx.messages = votableAnswer("First");
+    const { rerender } = renderConversational({ feedback: {}, expanded: true });
+    fireEvent.click(screen.getByRole("button", { name: "Unhelpful" }));
+    await waitFor(() => expect(status()).toBe("Thanks for your feedback"));
+
+    conversationCtx.messages = votableAnswer("Second", "5f0f4b0e-0000-4000-8000-000000000002");
+    rerender(
+      <SearchOverview type="conversational" term="q" options={options} renderMarkdown={renderMarkdown} feedback={{}} expanded />,
+    );
+    expect(screen.getByRole("button", { name: "Unhelpful" }).getAttribute("aria-pressed")).toBe("false");
+    expect(status()).toBe("");
+  });
+
+  it("renders the report link, marking a new-tab link for screen readers", async () => {
+    stubVoteApi();
+    conversationCtx.messages = votableAnswer();
+    renderConversational({
+      feedback: { report: { text: "Report an error", href: "/report", newTab: true }, helpful: "Yes", unhelpful: "No", thanks: "Cheers" },
+      expanded: true,
+    });
+    const link = screen.getByRole("link", { name: /report an error \(opens in a new tab\)/i });
+    expect(link.getAttribute("href")).toBe("/report");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+    fireEvent.click(screen.getByRole("button", { name: "Yes" }));
+    await waitFor(() => expect(status()).toBe("Cheers"));
   });
 });

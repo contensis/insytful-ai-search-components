@@ -5,6 +5,8 @@ import { hash } from "../utilities/hash.util";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { SearchCtas } from "./search-ctas";
 import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
+import { FeedbackReporting, type SearchOverviewFeedback } from "./feedback-reporting";
+import { useVoteState, type VoteStateHandle } from "./vote-state";
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -21,6 +23,18 @@ export type MessageProps = {
   showSkeleton?: boolean;
   elapsed?: SearchSkeletonProps["elapsed"];
   searching?: SearchSkeletonProps['messages'];
+  /** Report link + helpful / unhelpful vote under a finished answer. */
+  feedback?: SearchOverviewFeedback;
+  /** Where votes are sent; needed alongside `feedback` for the vote buttons. */
+  voteOptions?: { config: string; baseUrl: string };
+  /** This answer is still streaming: no feedback row yet. */
+  isStreaming?: boolean;
+  /** This answer failed: no footer. */
+  isFailed?: boolean;
+  /** Shared vote state (see useVoteState), so votes survive a remount. */
+  voteState?: VoteStateHandle;
+  /** Shown below the feedback row. */
+  disclaimer?: React.ReactNode;
 }
 
 export function Message({
@@ -30,6 +44,12 @@ export function Message({
   showSkeleton,
   elapsed,
   searching,
+  feedback,
+  voteOptions,
+  isStreaming,
+  isFailed,
+  voteState,
+  disclaimer,
 }: MessageProps) {
   const isUser = message.role === "user";
   const paragraphs = useMemo(
@@ -79,6 +99,22 @@ export function Message({
                 {renderContent ? renderContent(doShiftHeadings(p)) : p}
               </div>
             ))}
+          {(feedback || disclaimer) && !showSkeleton && !isStreaming && !isFailed && message.content && (
+            <div className="insytful-search-message-footer">
+              {feedback && (
+                <FeedbackReporting
+                  feedback={feedback}
+                  target={
+                    voteOptions && message.mid && message.sid
+                      ? { mid: message.mid, sid: message.sid, ...voteOptions }
+                      : undefined
+                  }
+                  voteState={voteState}
+                />
+              )}
+              {disclaimer && <div className="insytful-search-message-disclaimer">{disclaimer}</div>}
+            </div>
+          )}
         </div>
       )}
     </li>
@@ -142,17 +178,25 @@ export function SearchErrorCallout({
 export type SearchMessagesProps = {
   className?: string;
   searching?: SearchSkeletonProps['messages'];
+  /** Report link + helpful / unhelpful vote under each finished answer. */
+  feedback?: SearchOverviewFeedback;
+  /** Rendered below each finished answer's feedback row. Use instead of
+   *  Search.Disclaimer, not alongside it. */
+  disclaimer?: React.ReactNode;
   children?: React.ReactNode;
 };
 
 export function SearchMessages({
   className,
   searching,
+  feedback,
+  disclaimer,
   children,
 }: SearchMessagesProps) {
-  const { messages, loading, elapsed, error, renderMarkdown, logo, open } =
+  const { messages, loading, elapsed, error, renderMarkdown, logo, open, options } =
     useSearchContext("Search.Messages");
 
+  const voteState = useVoteState();
   const elContainerRef = useRef<HTMLDivElement>(null);
   const elSpacerRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setOverflowing] = useState(false);
@@ -301,6 +345,12 @@ export function SearchMessages({
                   showSkeleton={isLastAssistant && showSkeleton}
                   elapsed={elapsed}
                   searching={searching}
+                  feedback={feedback}
+                  voteOptions={options}
+                  isStreaming={isLastAssistant && loading}
+                  isFailed={isLastAssistant && !!error}
+                  voteState={voteState}
+                  disclaimer={disclaimer}
                 />
               );
             })}

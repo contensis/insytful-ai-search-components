@@ -110,8 +110,16 @@
   background: var(--insytful-overview-bg);
 }
 
+.insytful-theme .insytful-search-overview-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--insytful-overview-border);
+}
+
 .insytful-theme .insytful-search-overview-disclaimer {
-  margin-top: 16px;
   font-size: 14px;
   color: var(--insytful-disclaimer-text);
 }

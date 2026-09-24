@@ -14,6 +14,8 @@ import { SearchInput } from "./search-input";
 import { useStableId } from "./hooks.util";
 import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
 import { observeOffsetHeight } from "../utilities/offset-elements";
+import { FeedbackReporting, type SearchOverviewFeedback } from "./feedback-reporting";
+import { useVoteState } from "./vote-state";
 
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
@@ -49,10 +51,13 @@ export type SearchOverviewProp = {
   placeholder?: string;
   /** Small print rendered under the answer (and thread). */
   disclaimer?: React.ReactNode;
+  /** Helpful / unhelpful vote and report link under the answer. */
+  feedback?: SearchOverviewFeedback;
 };
 
 /** What the body needs from either RAG hook. */
 type OverviewViewModel = {
+  ids?: { sid: string; mid: string };
   response: string | null;
   ctas?: Cta[];
   loading: boolean;
@@ -99,6 +104,7 @@ export const SearchOverview = ({
   style,
   placeholder,
   disclaimer,
+  feedback,
 }: SearchOverviewProp) => {
   const stableOptions = useMemo(
     () => options,
@@ -125,7 +131,8 @@ export const SearchOverview = ({
     style,
     placeholder,
     disclaimer,
-    };
+    feedback,
+  };
 
   return (
     <RAGProvider
@@ -151,7 +158,7 @@ const SearchOverviewKeyword = (props: SearchOverviewProp) => {
   useEffect(() => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
-  return <SearchOverviewBody {...props} vm={ctx} />;
+  return <SearchOverviewBody {...props} vm={{ ...ctx, ids: ctx.answerIds ?? undefined }} />;
 };
 
 /**
@@ -168,7 +175,9 @@ const SearchOverviewConversational = (props: SearchOverviewProp) => {
 
   const first = messages[1];
   const followUps = messages.slice(2);
+  // mid = message id and sid = session id
   const vm: OverviewViewModel = {
+    ids: first?.mid && first?.sid ? { mid: first.mid, sid: first.sid } : undefined,
     response: first?.content || null,
     ctas: first?.ctas,
     // Only the first answer drives the body's skeleton; follow-ups show
@@ -215,6 +224,8 @@ const SearchOverviewBody = ({
   isThreadLoading = false,
   onFollowUp,
   disclaimer,
+  feedback,
+  options,
 }: BodyProps) => {
   // Expansion is uncontrolled by default; a consumer that passes `expanded`
   // takes ownership (e.g. to collapse the overview when it switches tabs).
@@ -240,6 +251,13 @@ const SearchOverviewBody = ({
   // and the teaser only applies once there is something to preview.
   const isCollapsible = collapsible === "auto" ? isOverflowing : collapsible;
   const isCollapsed = isCollapsible && !isExpanded && !!vm.response;
+
+  const hasFeedback = !!feedback && !doShowSkeleton && !!vm.response && !isCollapsed;
+  // The first answer failed (an error with no follow-ups yet): no footer for it.
+  const isFirstFailed = !!vm.error && followUps.length === 0;
+  // Owned here, not by each row: follow-ups unmount while collapsed, and
+  // there is no read endpoint to recover a vote.
+  const voteState = useVoteState();
 
   const bodyId = useStableId("insytful-search-overview-body");
 
@@ -382,6 +400,19 @@ const SearchOverviewBody = ({
             {renderMarkdown(vm.response)}
           </div>
         )}
+        {!vm.loading && !isFirstFailed && (disclaimer || feedback) && (
+          <div className="insytful-search-overview-footer">
+            {feedback && (
+              <FeedbackReporting
+                feedback={feedback}
+                hidden={!hasFeedback}
+                target={vm.ids && { ...vm.ids, baseUrl: options.baseUrl, config: options.config }}
+                voteState={voteState}
+              />
+            )}
+            {disclaimer && <div className="insytful-search-overview-disclaimer">{disclaimer}</div>}
+          </div>
+        )}
         {vm.error && (
           <div className="insytful-search-overview-error">
             <SearchErrorCallout
@@ -415,19 +446,23 @@ const SearchOverviewBody = ({
         <div className="insytful-search-overview-followups" ref={followUpsRef}>
           {hasFollowUps && (
             <ul className="insytful-search-overview-thread" ref={threadRef}>
-              {followUps.map((message, i) =>
-                message.role === "user" ? (
-                  <Message key={i} message={message} />
-                ) : (
-                  // Assistant follow-ups use the SAME markup as the first
-                  // answer (whole markdown, unshifted headings, CTAs above) so
-                  // consumer prose styles apply identically. The shared
-                  // <Message> is modal-flavoured: it demotes headings a level
-                  // and splits the reply per paragraph.
+              {followUps.map((message, i) => {
+                if (message.role === "user") return <Message key={i} message={message} />;
+
+                const isStreaming = isThreadLoading && message === isLastFollowUp;
+                const isFailed = !!vm.error && message === isLastFollowUp;
+                const hasFooter = (feedback || disclaimer) && !isStreaming && !isFailed && !!message.content;
+
+                // Assistant follow-ups use the SAME markup as the first
+                // answer (whole markdown, unshifted headings, CTAs above) so
+                // consumer prose styles apply identically. The shared
+                // <Message> is modal-flavoured: it demotes headings a level
+                // and splits the reply per paragraph.
+                return (
                   <li key={i} className="insytful-search-message" data-role="assistant">
                     <div className="insytful-search-message-content-outer">
                       <SearchCtas ctas={message.ctas} onCtaClick={onCtaClick} />
-                      {isThreadLoading && message === isLastFollowUp && !message.content ? (
+                      {isStreaming && !message.content ? (
                         <SearchSkeletonBody elapsed={vm.elapsed} messages={searching || []} />
                       ) : (
                         renderMarkdown &&
@@ -437,10 +472,27 @@ const SearchOverviewBody = ({
                           </div>
                         )
                       )}
+                      {/* Each follow-up votes on its own `mid`; same footer as a modal answer. */}
+                      {hasFooter && (
+                        <div className="insytful-search-message-footer">
+                          {feedback && (
+                            <FeedbackReporting
+                              feedback={feedback}
+                              target={
+                                message.mid && message.sid
+                                  ? { mid: message.mid, sid: message.sid, baseUrl: options.baseUrl, config: options.config }
+                                  : undefined
+                              }
+                              voteState={voteState}
+                            />
+                          )}
+                          {disclaimer && <div className="insytful-search-message-disclaimer">{disclaimer}</div>}
+                        </div>
+                      )}
                     </div>
                   </li>
-                ),
-              )}
+                );
+              })}
             </ul>
           )}
           <div ref={spacerRef} className="insytful-search-overview-spacer" aria-hidden="true" />
@@ -459,7 +511,6 @@ const SearchOverviewBody = ({
           onSubmit={onFollowUp}
         />
       )}
-      {disclaimer && <div className="insytful-search-overview-disclaimer">{disclaimer}</div>}
     </div>
   );
 };

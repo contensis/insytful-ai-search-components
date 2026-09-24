@@ -98,6 +98,10 @@
   --insytful-overview-bg: #ffffff;
   --insytful-overview-border: #e5e7eb;
 
+  /* Divider above the footer (feedback row, disclaimer) under a modal answer
+     or an Overview follow-up */
+  --insytful-message-footer-border: #e5e7eb;
+
   /* Callout Error  */
   --insytful-callout-error-border: #d93025;
   --insytful-callout-error-bg: #fce8e6;

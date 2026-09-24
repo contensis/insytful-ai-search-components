@@ -9,6 +9,7 @@ export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps } from '.
 export type { SearchSuggestionsProps } from './search/search-suggestions';
 export type { SearchCtasProps } from './search/search-ctas';
 export type { SearchOverviewProp, SearchOverviewType } from './search/ai-overview';
+export type { SearchOverviewFeedback, SearchOverviewVote } from './search/feedback-reporting';
 export { RAGProvider, useRAGResponse, useRAGResponseContext, useRAGConversation, useRAGConversationContext, } from './api';
 export type { RAGMessage, Cta, CtaIntent, CtaCall, CtaEmail, CtaLink, CtaEvent, } from './api';
 export { sanitizeCtas, registerCtaHandler, executeCta, getInsytfulAISearchEvents, } from './shared/cta';

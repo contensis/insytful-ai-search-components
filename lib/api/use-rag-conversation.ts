@@ -6,6 +6,8 @@ import { readSSEFrames } from "../shared/sse";
 // so hook-only consumers tree-shake the handlers/bus modules out.
 import { ctasFromFrameData } from "../shared/cta/validation";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
+import { debug } from "../shared/debug";
+import { midFromDoneData } from "../shared/vote";
 
 export const useRAGConversation = (
   config: string,
@@ -138,6 +140,13 @@ export const useRAGConversation = (
         for await (const frame of readSSEFrames(response.body, signal)) {
           switch (frame.event) {
             case "done": {
+              const mid = midFromDoneData(frame.data);
+              // This answer's session, captured now: a later request can overwrite
+              // the stored id before the user votes.
+              const answerSid = response.headers.get("X-Session-Id") ?? sid ?? undefined;
+
+              debug("stream", mid ? "answer ids" : "done without mid, voting hidden", { mid, sid: answerSid });
+              if (mid && answerSid) patchAssistant({ mid, sid: answerSid });
               setLoading(false);
               setElapsed(0);
               return;

@@ -47,6 +47,22 @@ export function App() {
 Components are unstyled without `<Theme>`. `InsytfulSearch.Overview` renders a
 standalone answer above search results, without a modal.
 
+### `Search.Messages`
+
+```tsx
+<InsytfulSearch.Messages
+  feedback={{ report: { text: 'Report an error', href: '/report' } }}
+  disclaimer="AI generated answers may not always be accurate."
+/>
+```
+
+- `feedback` — a report link and Helpful / Unhelpful vote under each finished
+  answer. Answers the API didn't treat as substantive show the report link only.
+  See [Feedback](#feedback) for the options.
+- `disclaimer` — small print under each finished answer, below the feedback
+  row. Use it instead of `<InsytfulSearch.Disclaimer>`, not alongside it, or the
+  disclaimer shows twice.
+
 ### `Search.Overview`
 
 ```tsx
@@ -55,6 +71,7 @@ standalone answer above search results, without a modal.
   options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
   type="conversational"
   renderMarkdown={renderMarkdown}
+  feedback={{ report: { text: 'Report an error', href: '/report' } }}
   disclaimer="AI generated answers may not always be accurate."
 />
 ```
@@ -68,11 +85,42 @@ standalone answer above search results, without a modal.
 - `collapsible` — `"auto"` (default) clips a collapsed answer only when it
   overflows the teaser height; `true` always does; `false` never does. The
   skeleton and errors are never clipped.
-- `disclaimer` — small print under the answer.
+- `feedback` — a report link and Helpful / Unhelpful vote under the answer, and
+  under each follow-up in `"conversational"` mode. Each answer is voted on
+  separately; answers the API didn't treat as substantive show the report link
+  only. The row is hidden while the answer is collapsed. See
+  [Feedback](#feedback) for the options.
+- `disclaimer` — small print under the answer, below the feedback row. In
+  `"conversational"` mode it also appears under each follow-up.
 
 Also: `heading`, `hLevel`, `icon`, `searching`, `error`, `onCtaClick`,
 `placeholder`, `isDevMode`, `className`, `style`. Root state attributes:
 `data-overflowing`, `data-expanded`, `data-conversational`, `data-error`.
+
+### Feedback
+
+`feedback` on `Search.Overview` and `Search.Messages` takes the same object:
+
+```tsx
+feedback={{
+  report: { text: 'Report an error', href: '/report', newTab: true },
+  onVote: (vote, { mid }) => analytics.track('ai_vote', { vote, mid }),
+}}
+```
+
+- `report` — optional link before the vote buttons. `newTab` opens it in a new
+  tab and adds screen-reader text saying so.
+- `onVote` — called after the API accepts a vote, with `"helpful"`,
+  `"unhelpful"` or `null` (retracted) and the answer's `mid`. For host
+  analytics; the components send the vote themselves.
+- `helpful` / `unhelpful` — button contents. Default to thumb icons with
+  visually hidden labels.
+- `thanks` — announced to screen readers once a vote is cast. Defaults to
+  "Thanks for your feedback".
+
+Clicking the other button changes the vote; clicking the pressed one retracts
+it. If the vote window has closed, or the answer can't be voted on, the buttons
+are hidden for that answer.
 
 - [React guide](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-reacttsx-implementation)
 - [Theming](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-theming)

@@ -27,4 +27,7 @@ export type RAGMessage = {
   content: string;
   /** CTAs attached to the assistant message they arrived with (D1: per-message, persistent). */
   ctas?: Cta[];
+  /** Vote ids; `mid` only arrives for substantive answers. */
+  mid?: string;
+  sid?: string;
 };

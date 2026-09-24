@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
-import type { SearchOverviewType } from "../../lib/main";
+import type { SearchOverviewFeedback, SearchOverviewType } from "../../lib/main";
 import { renderMarkdown, useFailingFetch, options } from "../helpers";
+
+const feedback: SearchOverviewFeedback = {
+  report: { text: "Report an error", href: "https://www.example.com/report", newTab: true },
+  onVote: fn().mockName("onVote"),
+};
 
 // Story-only CSS: the brand font, plus the demo search form that sits outside
 // the component. Overview spacing and prose headings are library defaults now.
@@ -35,6 +41,7 @@ function OverviewPage({
   type = "keyword",
   disclaimer,
   collapsible,
+  feedback,
 }: {
   isDevMode?: boolean;
   /** Pre-fill the form and fetch an overview for this term on load. */
@@ -43,6 +50,7 @@ function OverviewPage({
   type?: SearchOverviewType;
   disclaimer?: React.ReactNode;
   collapsible?: "auto" | boolean;
+  feedback?: SearchOverviewFeedback;
 }) {
   const [draft, setDraft] = useState(openWith);
   const [term, setTerm] = useState(openWith);
@@ -76,6 +84,7 @@ function OverviewPage({
             renderMarkdown={renderMarkdown}
             disclaimer={disclaimer}
             collapsible={collapsible}
+            feedback={feedback}
             error={{
               title: "We couldn't generate an overview",
               text: "The rest of your search results are unaffected.",
@@ -108,4 +117,24 @@ export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
  */
 export const ConversationalState: Story = {
   render: () => <OverviewPage isDevMode type="conversational" openWith="How do I apply?" />,
+};
+
+/**
+ * Once the answer has arrived, a feedback row appears under it: a "Report an
+ * error" link and Helpful / Unhelpful buttons. Clicking the other button
+ * changes the vote, clicking the pressed one retracts it, and a status message
+ * is announced. Dev mode answers the vote API with a mock; accepted votes are
+ * logged in the Actions panel. The row is hidden on the collapsed teaser and appears once
+ * the answer is expanded via Show more.
+ */
+export const FeedbackState: Story = {
+  render: () => (
+    <OverviewPage
+      isDevMode
+      type="conversational"
+      openWith="How do I apply?"
+      feedback={feedback}
+      disclaimer="AI generated answers may not always be accurate. Please verify information."
+    />
+  ),
 };

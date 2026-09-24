@@ -6,4 +6,8 @@ export declare const useRAGResponse: (config: string, baseUrl: string, recaptcha
     elapsed: number;
     error: string | null;
     ask: (question: string, sections?: string[]) => Promise<void>;
+    answerIds: {
+        sid: string;
+        mid: string;
+    } | null;
 };

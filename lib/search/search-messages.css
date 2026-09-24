@@ -94,6 +94,22 @@
   margin-top: 8px;
 }
 
+/* Footer under a finished answer: feedback row, then the disclaimer. */
+.insytful-theme .insytful-search-message-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--insytful-message-footer-border);
+}
+
+.insytful-theme .insytful-search-message-disclaimer {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--insytful-disclaimer-text);
+}
+
 /* Scroll hint arrow */
 .insytful-theme .insytful-search-messages-hint {
   position: absolute;

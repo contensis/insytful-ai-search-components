@@ -2,6 +2,7 @@ import { default as React } from 'react';
 import { Cta } from '../api';
 import { SearchSkeletonProps } from './skeleton';
 import { SearchErrorCalloutCta } from './search-messages';
+import { SearchOverviewFeedback } from './feedback-reporting';
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
  * "conversational" keeps a thread: expanding the answer reveals a follow-up
@@ -43,6 +44,8 @@ export type SearchOverviewProp = {
     placeholder?: string;
     /** Small print rendered under the answer (and thread). */
     disclaimer?: React.ReactNode;
+    /** Helpful / unhelpful vote and report link under the answer. */
+    feedback?: SearchOverviewFeedback;
 };
 /**
  * Search.Overview — standalone AI answer rendered in the light DOM.
@@ -58,6 +61,6 @@ export type SearchOverviewProp = {
  * tab: the thread and input render only while expanded.
  */
 export declare const SearchOverview: {
-    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, options, searching, error, renderMarkdown, onCtaClick, style, placeholder, disclaimer, }: SearchOverviewProp): React.JSX.Element;
+    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, options, searching, error, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
     displayName: string;
 };

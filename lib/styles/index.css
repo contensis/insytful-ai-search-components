@@ -62,6 +62,7 @@
 @import "../search/search-ctas.css";
 @import "../search/skeleton.css";
 @import "../search/ai-overview.css";
+@import "../search/feedback-reporting.css";
 
 /* Shared by messages + overview, and keyframes used across components */
 @import "./prose.css";

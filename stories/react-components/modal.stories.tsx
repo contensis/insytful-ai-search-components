@@ -1,6 +1,8 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
+import type { SearchOverviewFeedback } from "../../lib/main";
 import { renderMarkdown, useFailingFetch, options } from "../helpers";
 
 // Story-only CSS, passed through <Theme css> so it also reaches the Shadow DOM
@@ -44,7 +46,16 @@ const OpenWith = ({ query }: { query: string }) => {
   return null;
 };
 
-const DialogContent = ({ openWith }: { openWith?: string }) => {
+const disclaimer =
+  "AI generated answers may not always be accurate. Please verify information.";
+
+const DialogContent = ({
+  openWith,
+  feedback,
+}: {
+  openWith?: string;
+  feedback?: SearchOverviewFeedback;
+}) => {
   const { messages, error } = InsytfulSearch.useSearchContext("DialogContent");
 
   return (
@@ -70,7 +81,10 @@ const DialogContent = ({ openWith }: { openWith?: string }) => {
           />
         </>
       )}
-      <InsytfulSearch.Messages />
+      <InsytfulSearch.Messages
+        feedback={feedback}
+        disclaimer={feedback ? disclaimer : undefined}
+      />
       {error && (
         <InsytfulSearch.ErrorCallout
           title="Something went wrong"
@@ -84,10 +98,9 @@ const DialogContent = ({ openWith }: { openWith?: string }) => {
       {messages && messages.length > 0 && (
         <>
           <InsytfulSearch.Input placeholder="Type your question here..." />
-          <InsytfulSearch.Disclaimer>
-            AI generated answers may not always be accurate. Please verify
-            information.
-          </InsytfulSearch.Disclaimer>
+          {!feedback && (
+            <InsytfulSearch.Disclaimer>{disclaimer}</InsytfulSearch.Disclaimer>
+          )}
         </>
       )}
     </>
@@ -97,8 +110,10 @@ const DialogContent = ({ openWith }: { openWith?: string }) => {
 const ModalStory = ({
   isDevMode = false,
   openWith,
+  feedback,
 }: {
   isDevMode?: boolean;
+  feedback?: SearchOverviewFeedback;
   /** Open the modal and send this query straight away. */
   openWith?: string;
 }) => {
@@ -134,7 +149,7 @@ const ModalStory = ({
           </InsytfulSearch.Trigger>
         </div>
         <InsytfulSearch.Portal>
-          <DialogContent openWith={openWith} />
+          <DialogContent openWith={openWith} feedback={feedback} />
         </InsytfulSearch.Portal>
       </InsytfulSearch.Root>
     </Theme>
@@ -152,3 +167,22 @@ type Story = StoryObj<typeof ModalStory>;
 
 export const DefaultState: Story = { render: () => <ModalStory isDevMode /> };
 export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
+
+/**
+ * Report link and Helpful / Unhelpful vote under each finished answer. Each
+ * answer votes on its own `mid`, so follow-ups get their own row and earlier
+ * votes are kept. Dev mode answers the vote API with a mock; accepted votes are
+ * logged in the Actions panel.
+ */
+export const FeedbackState: Story = {
+  render: () => (
+    <ModalStory
+      isDevMode
+      openWith="How do I apply?"
+      feedback={{
+        report: { text: "Report an error", href: "https://www.example.com/report", newTab: true },
+        onVote: fn().mockName("onVote"),
+      }}
+    />
+  ),
+};

@@ -42,6 +42,49 @@ describe("useRAGResponse", () => {
     expect(result.current.loading).toBe(false);
   });
 
+  it("ignores a superseded ask(): its late done frame can't set the vote ids", async () => {
+    const sid = "s_streamsession01";
+    const doneWith = (mid: string) => `event: done\ndata: ${JSON.stringify({ mid })}\n\n`;
+    let releaseFirst!: () => void;
+    const firstResponse = new Promise<ReturnType<typeof mockFetchResponse>>((resolve) => {
+      releaseFirst = () =>
+        resolve(
+          mockFetchResponse({
+            headers: { "X-Session-Id": sid },
+            chunks: [sseDataFrame("old answer"), doneWith("old-mid")],
+          }),
+        );
+    });
+    const fetchMock = vi
+      .fn()
+      .mockReturnValueOnce(firstResponse)
+      .mockResolvedValueOnce(
+        mockFetchResponse({
+          headers: { "X-Session-Id": sid },
+          chunks: [sseDataFrame("new answer"), doneWith("new-mid")],
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+
+    let first!: Promise<void>;
+    await act(async () => {
+      first = result.current.ask("old question");
+      await result.current.ask("new question");
+    });
+    // The old request only now finishes, after the new answer is shown.
+    await act(async () => {
+      releaseFirst();
+      await first;
+    });
+
+    expect(fetchMock.mock.calls[0][1].signal.aborted).toBe(true);
+    expect(result.current.response).toBe("new answer");
+    expect(result.current.answerIds).toEqual({ sid, mid: "new-mid" });
+    expect(result.current.loading).toBe(false);
+  });
+
   it("stops accumulating once an event: done frame is received", async () => {
     stubFetch(async () =>
       mockFetchResponse({

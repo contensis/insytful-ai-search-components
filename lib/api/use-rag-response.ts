@@ -1,7 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { ctasFromFrameData } from "../shared/cta/validation";
 import { readSSEFrames } from "../shared/sse";
+import { debug } from "../shared/debug";
+import { midFromDoneData } from "../shared/vote";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 import type { Cta } from "../api/rag.types";
 
@@ -17,9 +19,19 @@ export const useRAGResponse = (
   const [loading, setLoading] = useState(false);
   const [ctas, setCtas] = useState<Cta[]>([]); // accumulated CTAs
   const [error, setError] = useState<string | null>(null);
+  // Vote ids for the current answer; `mid` only arrives for substantive answers.
+  const [answerIds, setAnswerIds] = useState<{ sid: string; mid: string } | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const { elapsed, setElapsed } = useElapsedTime(loading);
+
+  // One AbortController per ask(); a newer ask() (or unmount) aborts the
+  // previous stream so its late frames can't touch state. Without this, an
+  // old answer's `done` frame could set answerIds while a newer answer is
+  // shown, and the vote would go to the wrong answer.
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   /**
    * Asks a question and returns a response.
    *
@@ -30,6 +42,12 @@ export const useRAGResponse = (
    */
   const ask = useCallback(
     async (question: string, sections?: string[]) => {
+      // Supersede any in-flight request before doing anything else.
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const { signal } = controller;
+
       let recaptchaToken: string | null = null;
       if (recaptchaSiteKey) {
         try {
@@ -40,12 +58,14 @@ export const useRAGResponse = (
           console.warn("reCAPTCHA skipped: no provider found");
         }
       }
+      if (signal.aborted) return; // superseded while awaiting reCAPTCHA
 
       setLoading(true);
       setError(null);
       setElapsed(0);
       setCtas([]);
       setResponse("");
+      setAnswerIds(null);
 
       try {
         // POST body — the API moved off query-string params, so there is no
@@ -76,6 +96,7 @@ export const useRAGResponse = (
           method: "POST",
           headers,
           body: JSON.stringify(body),
+          signal,
         });
 
         if (!payload.ok) {
@@ -99,9 +120,16 @@ export const useRAGResponse = (
 
         if (!payload.body) throw new Error("No payload body");
 
-        for await (const frame of readSSEFrames(payload.body)) {
+        for await (const frame of readSSEFrames(payload.body, signal)) {
           switch (frame.event) {
             case "done": {
+              const mid = midFromDoneData(frame.data);
+              // This answer's session, captured now: a later request can overwrite
+              // the stored id before the user votes.
+              const answerSid = payload.headers.get("X-Session-Id") ?? sid ?? undefined;
+
+              debug("stream", mid ? "answer ids" : "done without mid, voting hidden", { mid, sid: answerSid });
+              if (mid && answerSid) setAnswerIds({ sid: answerSid, mid });
               setLoading(false);
               setElapsed(0);
               return;
@@ -123,9 +151,12 @@ export const useRAGResponse = (
           }
         }
 
+        if (signal.aborted) return; // superseded — the newer ask() owns state now
         setLoading(false);
         setElapsed(0);
       } catch (err) {
+        // An abort is expected (superseded or unmounted), never an error state.
+        if (signal.aborted) return;
         const errorMessage =
           err instanceof Error && err.message
             ? err.message
@@ -139,5 +170,5 @@ export const useRAGResponse = (
     [config, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
-  return { response, ctas, loading, elapsed, error, ask };
+  return { response, ctas, loading, elapsed, error, ask, answerIds };
 };

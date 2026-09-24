@@ -21,5 +21,6 @@ export { SearchDisclaimer as Disclaimer } from './search-disclaimer';
 export type { SearchDisclaimerProps } from './search-disclaimer';
 export { SearchOverview as Overview } from './ai-overview';
 export type { SearchOverviewProp, SearchOverviewType } from './ai-overview';
+export type { SearchOverviewFeedback, SearchOverviewVote } from './feedback-reporting';
 export { SearchModes as Modes, SearchMode as Mode, SearchModeSwitch as ModeSwitch, } from './search-modes';
 export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps, } from './search-modes';

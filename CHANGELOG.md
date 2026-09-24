@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.2.0 — 2026-09-24
+
+### Added
+
+- **Answer feedback for `Search.Overview` and `Search.Messages`.** A new `feedback` prop adds a row under each finished answer. The row has an optional report link and Helpful / Unhelpful buttons, and votes go to the AI Search vote API (`PUT` / `DELETE` `/sessions/:config/:sid/:mid/vote`). Clicking the other button changes the vote and clicking the pressed one retracts it. The UI updates straight away and rolls back if the request fails. A 400/404 (not eligible, or past the 7-day window) hides the buttons for that answer. Answers the API didn't treat as substantive (no `mid` in the `done` frame) show only the report link. Options: `report` (`{ text, href, newTab? }`), `onVote(vote, { mid })` for host analytics, `helpful` / `unhelpful` button contents, and `thanks` for the screen-reader announcement. In the conversational Overview and the modal, each answer and follow-up gets its own row and votes on its own `mid`. Votes are kept when the Overview collapses and re-expands. `SearchOverviewFeedback` and `SearchOverviewVote` are exported from the package root. React only; the Web Component doesn't have it yet.
+- **`Search.Messages` accepts `disclaimer`**, shown under each finished answer below the feedback row. Use it instead of `<Search.Disclaimer>`, not alongside it.
+- New hook classes: `insytful-search-overview-footer`, `insytful-search-message-footer`, `insytful-search-message-disclaimer`, and the feedback row's `insytful-search-overview-feedback`, `-feedback-report`, `-feedback-votes`, `-feedback-vote[data-vote]`, `-feedback-status`. New token: `--insytful-message-footer-border`.
+- **Opt-in debug logging.** `localStorage.setItem("insytful:debug", "1")` (kept across reloads) or `window.INSYTFUL_DEBUG = true` (this page only) logs answer ids and vote requests with `console.debug`, prefixed `[Insytful:…]`. Enable the console's Verbose level to see them.
+- `RAGMessage` has optional `mid` and `sid`, set on assistant messages from the `done` frame and the `X-Session-Id` header. `useRAGResponse` returns `answerIds` (`{ sid, mid } | null`).
+
+### Changed
+
+- **`Search.Overview`'s `disclaimer` has moved into a footer under the answer**, below the feedback row and above a divider. It used to be at the very end of the Overview. It now waits until the answer has finished, is clipped with the answer while collapsed, and isn't shown when the answer errors. In `"conversational"` mode it also appears under each follow-up.
+
+### Fixed
+
+- **A superseded keyword `Search.Overview` request no longer touches the newer answer.** `useRAGResponse` now aborts the previous request when `ask()` is called again or the component unmounts, as `useRAGConversation` already did. A slow earlier stream could previously append its text to the new answer, and now also set its `mid`, so a vote would have gone to the wrong answer.
+
 ## 4.0.0 — 2026-09-10
 
 ### Migrating from 3.x

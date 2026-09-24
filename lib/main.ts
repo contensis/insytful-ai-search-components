@@ -46,6 +46,7 @@ export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps } from ".
 export type { SearchSuggestionsProps } from "./search/search-suggestions";
 export type { SearchCtasProps } from "./search/search-ctas";
 export type { SearchOverviewProp, SearchOverviewType } from "./search/ai-overview";
+export type { SearchOverviewFeedback, SearchOverviewVote } from "./search/feedback-reporting";
 
 // RAG hooks — used internally by Search.Root, also available standalone
 export {
