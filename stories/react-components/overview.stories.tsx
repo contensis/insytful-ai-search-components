@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
 import type { SearchOverviewFeedback, SearchOverviewType } from "../../lib/main";
-import { renderMarkdown, useFailingFetch, options } from "../helpers";
+import { renderMarkdown, useFailingFetch, usePendingFetch, options } from "../helpers";
 
 const feedback: SearchOverviewFeedback = {
   report: { text: "Report an error", href: "https://www.example.com/report", newTab: true },
@@ -33,6 +33,11 @@ const css = `
     width: 100%;
     margin-top: 8px;
   }
+
+  .sb-insytful-results {
+    font-family: 'Nunito Sans';
+    margin-top: 24px;
+  }
 `;
 
 function OverviewPage({
@@ -41,6 +46,7 @@ function OverviewPage({
   type = "keyword",
   disclaimer,
   collapsible,
+  reserve,
   feedback,
 }: {
   isDevMode?: boolean;
@@ -50,6 +56,8 @@ function OverviewPage({
   type?: SearchOverviewType;
   disclaimer?: React.ReactNode;
   collapsible?: "auto" | boolean;
+  /** Left unset, the component's default (on) applies. */
+  reserve?: boolean | number;
   feedback?: SearchOverviewFeedback;
 }) {
   const [draft, setDraft] = useState(openWith);
@@ -84,6 +92,7 @@ function OverviewPage({
             renderMarkdown={renderMarkdown}
             disclaimer={disclaimer}
             collapsible={collapsible}
+            reserve={reserve}
             feedback={feedback}
             error={{
               title: "We couldn't generate an overview",
@@ -103,13 +112,30 @@ function ErrorStateDemo() {
   return <OverviewPage openWith="How do I apply?" />;
 }
 
+function LoadingStateDemo({ type }: { type?: SearchOverviewType }) {
+  usePendingFetch();
+  return <OverviewPage type={type} openWith="How do I apply?" />;
+}
+
 const meta: Meta = { title: "React/Overview" };
 export default meta;
 type Story = StoryObj;
 
-export const DefaultState: Story = { render: () => <OverviewPage isDevMode /> };
+const disclaimer = "AI generated answers may not always be accurate. Please verify information.";
+
+/** The disclaimer sits under each finished answer, as in the feedback story. */
+export const DefaultState: Story = {
+  render: () => <OverviewPage isDevMode disclaimer={disclaimer} />,
+};
 
 export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
+
+/**
+ * The answer never arrives, so the overview stays on its loading skeleton:
+ * for checking the skeleton fills the reserved teaser box and the results
+ * below sit where they will once the answer loads.
+ */
+export const LoadingState: Story = { render: () => <LoadingStateDemo /> };
 
 /**
  * Expand the answer ("Show more" / "Continue the conversation") to reveal the
@@ -134,7 +160,7 @@ export const FeedbackState: Story = {
       type="conversational"
       openWith="How do I apply?"
       feedback={feedback}
-      disclaimer="AI generated answers may not always be accurate. Please verify information."
+      disclaimer={disclaimer}
     />
   ),
 };

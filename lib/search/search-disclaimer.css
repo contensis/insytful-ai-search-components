@@ -7,3 +7,13 @@
   text-align: center;
   color: var(--insytful-disclaimer-text);
 }
+
+/* Hidden while the latest answer has failed: the disclaimer describes
+   answers, and there isn't one. React: the host renders Search.ErrorCallout
+   in the dialog while `error` is set and it goes when the next question is
+   sent. Web Component: failed answers stay in the thread as error messages,
+   so only the last message counts; the next question brings it back. */
+.insytful-theme .insytful-search-dialog-inner:has(> .insytful-search-error-callout-inner) .insytful-search-disclaimer-inner,
+.insytful-theme .insytful-search-dialog-inner:has(.insytful-search-messages-inner > .insytful-search-message:last-child .insytful-search-error-callout-inner) .insytful-search-disclaimer-inner {
+  display: none;
+}

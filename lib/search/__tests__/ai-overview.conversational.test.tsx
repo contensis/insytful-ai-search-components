@@ -331,7 +331,7 @@ describe("Search.Overview collapsible", () => {
     conversationCtx.messages = firstAnswer();
     renderConversational({ collapsible: true });
     const body = document.querySelector<HTMLElement>(".insytful-search-overview-body")!;
-    expect(body.style.height).toBe("400px");
+    expect(body.style.height).toBe("220px");
     expect(screen.getByRole("button", { name: /show more of the response/i })).toBeTruthy();
     expect(screen.queryByRole("textbox")).toBeNull();
   });
@@ -418,6 +418,8 @@ describe("Search.Overview feedback", () => {
     conversationCtx.messages = votableAnswer();
     renderConversational({ feedback: {}, collapsible: true });
     expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+    // No disclaimer either, so no empty footer box.
+    expect(document.querySelector(".insytful-search-overview-footer")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /show more of the response/i }));
     expect(document.querySelector(".insytful-search-overview-feedback")).toBeTruthy();
   });
@@ -475,11 +477,37 @@ describe("Search.Overview feedback", () => {
     renderConversational({ feedback: {}, expanded: true });
     const helpful = screen.getByRole("button", { name: "Helpful" });
 
+    helpful.focus();
     fireEvent.click(helpful);
-    expect((helpful as HTMLButtonElement).disabled).toBe(true);
+    // aria-disabled, not disabled: a disabled button would drop keyboard focus.
+    expect(helpful.getAttribute("aria-disabled")).toBe("true");
+    expect(document.activeElement).toBe(helpful);
     fireEvent.click(screen.getByRole("button", { name: "Unhelpful" }));
-    await waitFor(() => expect((helpful as HTMLButtonElement).disabled).toBe(false));
+    await waitFor(() => expect(helpful.getAttribute("aria-disabled")).toBe("false"));
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("rolls back and announces the failure on a network error", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new TypeError("Failed to fetch"); }));
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: {}, expanded: true });
+
+    fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
+    await waitFor(() => expect(status()).toBe("Couldn't send your feedback, please try again"));
+    expect(screen.getByRole("button", { name: "Helpful" }).getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("keeps the vote when the host's onVote throws", async () => {
+    stubVoteApi();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: { onVote: () => { throw new Error("analytics down"); } }, expanded: true });
+
+    fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
+    await waitFor(() => expect(status()).toBe("Thanks for your feedback"));
+    expect(screen.getByRole("button", { name: "Helpful" }).getAttribute("aria-pressed")).toBe("true");
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it("rolls back and announces the failure on a retryable error", async () => {
@@ -501,6 +529,31 @@ describe("Search.Overview feedback", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
     await waitFor(() => expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull());
+    expect(status()).toBe("Feedback isn't available for this answer");
+  });
+
+  it("moves focus to the report link when the focused vote button is removed", async () => {
+    stubVoteApi(404);
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: { report: { text: "Report an error", href: "/report" } }, expanded: true });
+    const helpful = screen.getByRole("button", { name: "Helpful" });
+
+    helpful.focus();
+    fireEvent.click(helpful);
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull());
+    expect(document.activeElement).toBe(screen.getByRole("link", { name: "Report an error" }));
+  });
+
+  it("moves focus to the row when there's no report link", async () => {
+    stubVoteApi(404);
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: {}, expanded: true });
+    const helpful = screen.getByRole("button", { name: "Helpful" });
+
+    helpful.focus();
+    fireEvent.click(helpful);
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull());
+    expect(document.activeElement).toBe(document.querySelector(".insytful-search-overview-feedback"));
   });
 
   it("clears the vote when a new answer arrives", async () => {

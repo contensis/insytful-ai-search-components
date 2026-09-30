@@ -1,6 +1,7 @@
 /* Feedback row: report link + helpful / unhelpful vote */
 .insytful-theme .insytful-search-overview-feedback {
   font-size: 14px;
+  outline: none; /* only focused programmatically (tabIndex -1) */
 
   display: flex;
   flex-wrap: wrap;
@@ -50,7 +51,7 @@
   color: var(--insytful-text-link-default);
 }
 
-.insytful-theme .insytful-search-overview-feedback-vote:disabled {
+.insytful-theme .insytful-search-overview-feedback-vote[aria-disabled="true"] {
   opacity: 0.5;
   cursor: default;
 }

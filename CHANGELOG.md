@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.3.0 — 2026-09-30
+
+### Added
+
+- **`Search.Overview` accepts `reserve`** (`boolean | number`, default `true`). While the Overview is collapsed it takes up the teaser's full height from the first frame, so the page below doesn't jump while the answer loads and streams. `true` uses the default 220px teaser. A number (px) sets the teaser height as well, which also changes the clip height and the overflow threshold. `false` sizes the Overview to its content, as before. The height is set on the root as `--insytful-overview-collapsed-height`. An errored Overview doesn't reserve space.
+- **Answer-shaped loading skeleton for the Overview.** While `reserve` is on, the first answer's skeleton is an intro, a divider and bulleted items, and it fills the reserved box and clips the overflow. It has no visible "Generating response…" text; loading is still announced through the Overview's status region. `SearchSkeletonBody` takes an optional `items` count for this layout. Without it, you get the three-bar skeleton as before. New hook classes: `insytful-search-skeleton-fill`, `-skeleton-intro`, `-skeleton-divider`, `-skeleton-list`, `-skeleton-item`.
+- New state attributes on the Overview root: `data-loading` (first answer requested, nothing streamed yet) and `data-streaming` (first answer streaming in).
+
+### Changed
+
+- **The Overview's default teaser is 220px** (was 400px), and **it reserves that height by default**. With a short answer, the collapsed Overview now leaves white space under it. Pass `reserve={false}` to size it to its content; the teaser still clips at 220px.
+- **The modal's `<Search.Disclaimer>` is hidden while the latest answer has failed**, because there's no answer for it to describe. In React it comes back when the error callout goes. In the Web Component, failed answers stay in the thread, so it's hidden while the last message is an error and comes back with the next question.
+- **Feedback votes use `aria-disabled` rather than `disabled` while a vote is being sent**, so the pressed button keeps focus. The `-feedback-vote` dimmed style now keys off `[aria-disabled="true"]`.
+- When a 400/404 hides the vote buttons, the status now says "Feedback isn't available for this answer".
+
+### Fixed
+
+- **Web Component modal: the loading skeleton filled the message width again on narrow screens** (below 768px). It had shrunk to the width of its "Generating response…" text. On narrow screens, message content now fills the row beside the inline logo in both React and the Web Component, and can't push wider than the modal.
+- **Focus isn't lost when a 400/404 removes the vote buttons.** It moves to the report link, or to the feedback row if there isn't one.
+- An `onVote` callback that throws no longer causes an unhandled rejection. The error is logged and the vote still stands.
+- A collapsed Overview with `feedback` but no `disclaimer` no longer renders an empty bordered footer.
+
 ## 4.2.0 — 2026-09-24
 
 ### Added

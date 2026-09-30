@@ -2,7 +2,7 @@ import React from "react";
 
 export type SearchOverviewVote = "helpful" | "unhelpful";
 
-type VoteStatus = "thanks" | "removed" | "failed";
+type VoteStatus = "thanks" | "removed" | "failed" | "unavailable";
 
 /** One answer's vote, keyed on its `mid` in VoteState. */
 export type VoteEntry = {

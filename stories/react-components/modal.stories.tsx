@@ -81,10 +81,9 @@ const DialogContent = ({
           />
         </>
       )}
-      <InsytfulSearch.Messages
-        feedback={feedback}
-        disclaimer={feedback ? disclaimer : undefined}
-      />
+      {/* The disclaimer goes under each finished answer (not failed ones), as
+          in the feedback story, rather than fixed under the input. */}
+      <InsytfulSearch.Messages feedback={feedback} disclaimer={disclaimer} />
       {error && (
         <InsytfulSearch.ErrorCallout
           title="Something went wrong"
@@ -98,9 +97,6 @@ const DialogContent = ({
       {messages && messages.length > 0 && (
         <>
           <InsytfulSearch.Input placeholder="Type your question here..." />
-          {!feedback && (
-            <InsytfulSearch.Disclaimer>{disclaimer}</InsytfulSearch.Disclaimer>
-          )}
         </>
       )}
     </>

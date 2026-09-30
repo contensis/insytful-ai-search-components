@@ -30,6 +30,15 @@ export type SearchOverviewProp = {
      *  height; `true` always does (e.g. a results tab that wants a way into the
      *  AI view even for a short answer); `false` never does. */
     collapsible?: "auto" | boolean;
+    /** Hold the collapsed teaser's footprint from the first frame, so the page
+     *  below doesn't jump as the answer loads and streams: the body is never
+     *  shorter than the teaser while collapsed. The Show more toggle still
+     *  appears with the answer, below the box.
+     *  `true` (default) uses a 220px teaser; a number (px) sets the teaser
+     *  height too; `false` lets the overview size to its content (the old
+     *  behaviour) and avoids white space under a short answer. The height is
+     *  exposed on the root as `--insytful-overview-collapsed-height`. */
+    reserve?: boolean | number;
     isDevMode?: boolean;
     searching?: SearchSkeletonProps["messages"];
     style?: React.CSSProperties;
@@ -52,8 +61,8 @@ export type SearchOverviewProp = {
  *
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
- * State attributes on the root: `data-overflowing`, `data-expanded`,
- * `data-conversational`.
+ * State attributes on the root: `data-loading`, `data-streaming`,
+ * `data-overflowing`, `data-expanded`, `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -61,6 +70,6 @@ export type SearchOverviewProp = {
  * tab: the thread and input render only while expanded.
  */
 export declare const SearchOverview: {
-    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, options, searching, error, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
+    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, error, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
     displayName: string;
 };

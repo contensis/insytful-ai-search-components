@@ -41,6 +41,15 @@ export type SearchOverviewProp = {
    *  height; `true` always does (e.g. a results tab that wants a way into the
    *  AI view even for a short answer); `false` never does. */
   collapsible?: "auto" | boolean;
+  /** Hold the collapsed teaser's footprint from the first frame, so the page
+   *  below doesn't jump as the answer loads and streams: the body is never
+   *  shorter than the teaser while collapsed. The Show more toggle still
+   *  appears with the answer, below the box.
+   *  `true` (default) uses a 220px teaser; a number (px) sets the teaser
+   *  height too; `false` lets the overview size to its content (the old
+   *  behaviour) and avoids white space under a short answer. The height is
+   *  exposed on the root as `--insytful-overview-collapsed-height`. */
+  reserve?: boolean | number;
   isDevMode?: boolean;
   searching?: SearchSkeletonProps["messages"];
   style?: React.CSSProperties;
@@ -77,8 +86,8 @@ type BodyProps = SearchOverviewProp & {
  *
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
- * State attributes on the root: `data-overflowing`, `data-expanded`,
- * `data-conversational`.
+ * State attributes on the root: `data-loading`, `data-streaming`,
+ * `data-overflowing`, `data-expanded`, `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -96,6 +105,7 @@ export const SearchOverview = ({
   expanded,
   onExpandedChange,
   collapsible,
+  reserve,
   options,
   searching,
   error,
@@ -123,6 +133,7 @@ export const SearchOverview = ({
     expanded,
     onExpandedChange,
     collapsible,
+    reserve,
     options: stableOptions,
     searching,
     error,
@@ -198,8 +209,8 @@ const SearchOverviewConversational = (props: SearchOverviewProp) => {
   );
 };
 
-/** Collapsed height, in px, before the "Show more" toggle appears. */
-const COLLAPSED_HEIGHT = 400;
+/** Default collapsed height, in px, before the "Show more" toggle appears. */
+const COLLAPSED_HEIGHT = 220;
 /** Gap, in px, between the sticky host chrome (`data-insytful-offset`) and a
  *  follow-up question scrolled to the top of the viewport. */
 const SCROLL_MARGIN = 16;
@@ -213,6 +224,7 @@ const SearchOverviewBody = ({
   expanded,
   onExpandedChange,
   collapsible = "auto",
+  reserve = true,
   searching,
   renderMarkdown,
   onCtaClick,
@@ -243,6 +255,7 @@ const SearchOverviewBody = ({
   const followUpsRef = useRef<HTMLDivElement>(null);
   const prevFollowUpCountRef = useRef(0);
 
+  const collapsedHeight = typeof reserve === "number" ? reserve : COLLAPSED_HEIGHT;
   const isConversational = type === "conversational";
   const hasFollowUps = followUps.length > 0;
   const doShowSkeleton = vm.loading && !vm.response && !vm.error;
@@ -251,6 +264,10 @@ const SearchOverviewBody = ({
   // and the teaser only applies once there is something to preview.
   const isCollapsible = collapsible === "auto" ? isOverflowing : collapsible;
   const isCollapsed = isCollapsible && !isExpanded && !!vm.response;
+  const isAnswerStreaming = vm.loading && !!vm.response;
+  // Collapsed and not failed: the teaser's footprint is held throughout, so
+  // loading, streaming and the finished answer all take the same space.
+  const isHoldingSpace = reserve !== false && !isExpanded && !vm.error;
 
   const hasFeedback = !!feedback && !doShowSkeleton && !!vm.response && !isCollapsed;
   // The first answer failed (an error with no follow-ups yet): no footer for it.
@@ -295,7 +312,8 @@ const SearchOverviewBody = ({
   useLayoutEffect(() => {
     const body = elResponseRef.current;
     if (!body) return;
-    const measure = () => setOverflowing(body.scrollHeight > COLLAPSED_HEIGHT);
+    // Strict: a reserved min-height makes scrollHeight at least collapsedHeight.
+    const measure = () => setOverflowing(body.scrollHeight > collapsedHeight);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     measure();
     const content = body.querySelector(".insytful-search-overview-content");
@@ -303,7 +321,7 @@ const SearchOverviewBody = ({
     const ro = new ResizeObserver(measure);
     ro.observe(content);
     return () => ro.disconnect();
-  }, [vm.response, isExpanded, isConversational]);
+  }, [vm.response, isExpanded, isConversational, collapsedHeight]);
 
   const Heading = `h${hLevel}` as keyof React.JSX.IntrinsicElements;
 
@@ -365,7 +383,9 @@ const SearchOverviewBody = ({
   return (
     <div
       className={`insytful-search-overview ${className ?? ""}`.trim()}
-      style={style}
+      style={{ "--insytful-overview-collapsed-height": `${collapsedHeight}px`, ...style } as React.CSSProperties}
+      {...(doShowSkeleton ? { "data-loading": "" } : {})}
+      {...(isAnswerStreaming ? { "data-streaming": "" } : {})}
       {...(vm.error ? { "data-error": "" } : {})}
       {...(isOverflowing ? { "data-overflowing": "" } : {})}
       {...(isExpanded ? { "data-expanded": "" } : {})}
@@ -376,7 +396,10 @@ const SearchOverviewBody = ({
         id={bodyId}
         className="insytful-search-overview-body"
         style={{
-          height: isCollapsed ? `${COLLAPSED_HEIGHT}px` : "auto",
+          // Inline rather than in the stylesheet so an unthemed overview
+          // still clips and holds its space.
+          height: isCollapsed ? `${collapsedHeight}px` : "auto",
+          minHeight: isHoldingSpace ? `${collapsedHeight}px` : undefined,
           overflow: isCollapsed ? "hidden" : "visible",
         }}
         ref={elResponseRef}
@@ -393,14 +416,25 @@ const SearchOverviewBody = ({
         )}
         <SearchCtas ctas={vm.ctas} onCtaClick={onCtaClick} />
         {doShowSkeleton && (
-          <SearchSkeletonBody elapsed={vm.elapsed} messages={searching || []} />
+          <SearchSkeletonBody
+            elapsed={vm.elapsed}
+            messages={searching || []}
+            // Holding the teaser's space: an answer-shaped skeleton (intro,
+            // divider, two bulleted items) that fills the box and clips the
+            // overflow.
+            // Loading is announced by the status region above, so the
+            // skeleton drops its visible message.
+            items={isHoldingSpace ? 2 : undefined}
+          />
         )}
         {renderMarkdown && vm.response && (
           <div className="insytful-search-overview-content">
             {renderMarkdown(vm.response)}
           </div>
         )}
-        {!vm.loading && !isFirstFailed && (disclaimer || feedback) && (
+        {/* The feedback row is hidden while collapsed; without a disclaimer the
+            footer would be an empty bordered box. */}
+        {!vm.loading && !isFirstFailed && (disclaimer || hasFeedback) && (
           <div className="insytful-search-overview-footer">
             {feedback && (
               <FeedbackReporting

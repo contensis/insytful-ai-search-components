@@ -90,6 +90,14 @@
   gap: 12px;
 }
 
+/* Below 768px the inner row is flex (inline logo + content): let the content
+   fill it. Otherwise it shrinks to fit, and the Web Component's skeleton,
+   which renders inside the content, shrank to the loading text's width. */
+.insytful-theme .insytful-search-message-content-inner > .insytful-search-message-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .insytful-theme .insytful-search-message-content + .insytful-search-message-content {
   margin-top: 8px;
 }

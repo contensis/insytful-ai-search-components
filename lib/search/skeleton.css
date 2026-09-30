@@ -9,7 +9,7 @@
 
 .insytful-theme .insytful-search-skeleton-bar {
   width: 100%;
-  height: 1em;
+  height: 16px;
   border-radius: 4px;
   background: var(--insytful-skeleton-bg);
   background-image: var(--insytful-skeleton-shimmer);
@@ -21,6 +21,86 @@
 }
 .insytful-theme .insytful-search-skeleton-bar:nth-child(3) {
   width: 70%;
+}
+
+/* `items` set: an answer-shaped skeleton (intro, divider, bulleted items)
+   that grows to fill its container and clips what doesn't fit. A zero
+   height keeps the extra items out of the container's own sizing, so the
+   reserved box decides the height, not the item count. Every bar gets an
+   explicit width here, overriding the three-bar :nth-child widths above. */
+.insytful-theme .insytful-search-skeleton-fill {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  gap: 10px;
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.insytful-theme .insytful-search-skeleton-fill .insytful-search-skeleton-bar {
+  flex-shrink: 0;
+  height: 16px;
+}
+
+.insytful-theme .insytful-search-skeleton-intro,
+.insytful-theme .insytful-search-skeleton-item {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 6px;
+}
+.insytful-theme .insytful-search-skeleton-intro > .insytful-search-skeleton-bar:nth-child(1) {
+  width: 100%;
+}
+.insytful-theme .insytful-search-skeleton-intro > .insytful-search-skeleton-bar:nth-child(2) {
+  width: 92%;
+}
+.insytful-theme .insytful-search-skeleton-intro > .insytful-search-skeleton-bar:nth-child(3) {
+  width: 70%;
+}
+
+.insytful-theme .insytful-search-skeleton-divider {
+  flex-shrink: 0;
+  height: 1px;
+  background: var(--insytful-overview-border);
+}
+
+.insytful-theme .insytful-search-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.insytful-theme .insytful-search-skeleton-item {
+  position: relative;
+  padding-left: 26px;
+}
+/* Bullet, centred on the first bar. */
+.insytful-theme .insytful-search-skeleton-item::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--insytful-skeleton-bg);
+}
+/* Alternate item widths so the list doesn't read as a block. */
+.insytful-theme .insytful-search-skeleton-item:nth-child(odd) > .insytful-search-skeleton-bar:nth-child(1) {
+  width: 88%;
+}
+.insytful-theme .insytful-search-skeleton-item:nth-child(odd) > .insytful-search-skeleton-bar:nth-child(2) {
+  width: 62%;
+}
+.insytful-theme .insytful-search-skeleton-item:nth-child(even) > .insytful-search-skeleton-bar:nth-child(1) {
+  width: 93%;
+}
+.insytful-theme .insytful-search-skeleton-item:nth-child(even) > .insytful-search-skeleton-bar:nth-child(2) {
+  width: 72%;
 }
 
 .insytful-theme .insytful-search-skeleton-text {

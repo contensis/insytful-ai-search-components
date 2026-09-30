@@ -53,11 +53,22 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
   const localVoteState = useVoteState();
   const [votes, setVotes] = voteState ?? localVoteState;
   const [pending, setPending] = React.useState(false);
+  const rowRef = React.useRef<HTMLDivElement>(null);
+  const reportRef = React.useRef<HTMLAnchorElement>(null);
+  // Set when a 400/404 removes the buttons while one had focus: move focus to
+  // the report link (or the row) so it isn't dropped to <body>.
+  const restoreFocusRef = React.useRef(false);
   const current = target ? votes[target.mid] : undefined;
   const vote = current?.vote ?? null;
   const isVotingAllowed = !!target && !current?.ineligible;
 
   const setEntry = (mid: string, entry: VoteEntry) => setVotes((prev) => ({ ...prev, [mid]: entry }));
+
+  React.useLayoutEffect(() => {
+    if (isVotingAllowed || !restoreFocusRef.current) return;
+    restoreFocusRef.current = false;
+    (reportRef.current ?? rowRef.current)?.focus();
+  }, [isVotingAllowed]);
 
   const castVote = async (clicked: SearchOverviewVote) => {
     if (!target || pending) return;
@@ -72,19 +83,30 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
     debug("vote", "result", { mid, ...result });
     if (result.ok) {
       setEntry(mid, { vote: next, status: next ? "thanks" : "removed" });
-      feedback.onVote?.(next, { mid });
+      try {
+        feedback.onVote?.(next, { mid });
+      } catch (err) {
+        // A host analytics bug mustn't surface as an unhandled rejection.
+        console.error("Search feedback onVote threw", err);
+      }
       return;
     }
     // Roll back; a 400/404 means the vote window closed or it isn't eligible.
-    setEntry(mid, { vote: prev, status: result.retryable ? "failed" : null, ineligible: !result.retryable });
+    if (!result.retryable) restoreFocusRef.current = !!rowRef.current?.contains(document.activeElement);
+    setEntry(mid, {
+      vote: prev,
+      status: result.retryable ? "failed" : "unavailable",
+      ineligible: !result.retryable,
+    });
   };
 
   if (hidden) return null;
 
   return (
-    <div className="insytful-search-overview-feedback">
+    <div className="insytful-search-overview-feedback" ref={rowRef} tabIndex={-1}>
       {feedback.report && (
         <a
+          ref={reportRef}
           className="insytful-search-overview-feedback-report"
           href={feedback.report.href}
           {...(feedback.report.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -105,7 +127,7 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
             className="insytful-search-overview-feedback-vote"
             data-vote="helpful"
             aria-pressed={vote === "helpful"}
-            disabled={pending}
+            aria-disabled={pending}
             onClick={() => castVote("helpful")}
           >
             {feedback.helpful ?? (
@@ -120,7 +142,7 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
             className="insytful-search-overview-feedback-vote"
             data-vote="unhelpful"
             aria-pressed={vote === "unhelpful"}
-            disabled={pending}
+            aria-disabled={pending}
             onClick={() => castVote("unhelpful")}
           >
             {feedback.unhelpful ?? (
@@ -136,6 +158,7 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
         {current?.status === "thanks" && (feedback.thanks ?? "Thanks for your feedback")}
         {current?.status === "removed" && "Feedback removed"}
         {current?.status === "failed" && "Couldn't send your feedback, please try again"}
+        {current?.status === "unavailable" && "Feedback isn't available for this answer"}
       </div>
     </div>
   );
