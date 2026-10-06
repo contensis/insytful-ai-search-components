@@ -102,3 +102,34 @@ describe("useSearchConfigSafe / useResolvedSearchConfig", () => {
     expect(Provider).toBe(SearchConfigProvider);
   });
 });
+
+describe("nested SearchConfigProvider", () => {
+  it("wraps in GoogleReCaptchaProvider once when the outer provider has the same key", () => {
+    googleReCaptchaProvider.mockClear();
+    render(
+      <SearchConfigProvider config="outer" baseUrl="https://api.example.com" recaptchaSiteKey="site-key">
+        <SearchConfigProvider config="inner" baseUrl="https://api.example.com" recaptchaSiteKey="site-key">
+          <div>content</div>
+        </SearchConfigProvider>
+      </SearchConfigProvider>
+    );
+
+    expect(googleReCaptchaProvider).toHaveBeenCalledTimes(1);
+  });
+
+  it("wraps again when the inner provider has a different key", () => {
+    googleReCaptchaProvider.mockClear();
+    render(
+      <SearchConfigProvider config="outer" baseUrl="https://api.example.com" recaptchaSiteKey="outer-key">
+        <SearchConfigProvider config="inner" baseUrl="https://api.example.com" recaptchaSiteKey="inner-key">
+          <div>content</div>
+        </SearchConfigProvider>
+      </SearchConfigProvider>
+    );
+
+    expect(googleReCaptchaProvider).toHaveBeenCalledTimes(2);
+    expect(googleReCaptchaProvider).toHaveBeenLastCalledWith(
+      expect.objectContaining({ reCaptchaKey: "inner-key" })
+    );
+  });
+});

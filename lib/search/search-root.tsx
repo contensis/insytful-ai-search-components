@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { SearchConfigProvider, useAIConversationContext } from "../api";
+import {
+  SearchConfigProvider,
+  useAIConversationContext,
+  useResolvedSearchConfig,
+  type SearchConfig,
+} from "../api";
 import type { Cta } from "../api/types";
 
 import { SearchRootProvider, useSearchContext, type SearchContextValue } from "./context";
@@ -15,17 +20,8 @@ import { observeOffsetHeight } from "../utilities/offset-elements";
 
 export type SearchRootProps = {
   children: React.ReactNode;
-  options: { 
-    config: string;
-    baseUrl: string;
-    /**
-     * Optional reCAPTCHA site key for human verification. 
-     * If provided, the search modal will require a successful reCAPTCHA challenge 
-     * before sending any queries to the backend. This can help prevent abuse or 
-     * spam in public-facing applications.
-     */
-    recaptchaSiteKey?: string;
-  };
+  /** Connection config. Omit it inside `InsytfulSearch.Provider` to use the provider's. */
+  options?: SearchConfig;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -79,15 +75,16 @@ export function SearchRoot({
   const titleId = useStableId("insytful-search-heading");
   const descriptionId = useStableId("insytful-search-description");
 
+  const resolved = useResolvedSearchConfig(options);
   // Stabilise object props so inline literals don't break context memoisation
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stableOptions = useMemo(() => options, [options.config, options.baseUrl, options.recaptchaSiteKey]);
+  const opts = useMemo(() => resolved, [resolved.config, resolved.baseUrl, resolved.recaptchaSiteKey]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
   // Hold the latest onCtaClick in a ref behind a stable wrapper so host
   // inline lambdas don't invalidate the memoised context on every render
-  // (same intent as the stableOptions pattern above).
+  // (same intent as the opts pattern above).
   const onCtaClickRef = useRef(onCtaClick);
   useEffect(() => {
     onCtaClickRef.current = onCtaClick;
@@ -99,15 +96,15 @@ export function SearchRoot({
 
   return (
     <SearchConfigProvider
-      key={stableOptions.config || "default"}
-      config={stableOptions.config || ""}
-      baseUrl={stableOptions.baseUrl}
-      recaptchaSiteKey={stableOptions.recaptchaSiteKey}
+      key={opts.config || "default"}
+      config={opts.config || ""}
+      baseUrl={opts.baseUrl}
+      recaptchaSiteKey={opts.recaptchaSiteKey}
     >
       <SearchRootInner
         open={open} setOpen={setOpen}
         titleId={titleId} descriptionId={descriptionId}
-        options={stableOptions}
+        options={opts}
         renderMarkdown={renderMarkdown} logo={logo}
         isDevMode={isDevMode} offsets={stableOffsets}
         onCtaClick={stableOnCtaClick}

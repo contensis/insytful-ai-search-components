@@ -5,6 +5,8 @@ import {
   useAIResponseContext,
   type Cta,
   type AIMessage,
+  useResolvedSearchConfig,
+  type SearchConfig,
 } from "../api";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { useMockFetch } from "../utilities/mock-fetch";
@@ -30,7 +32,8 @@ export type SearchOverviewProp = {
   icon?: React.ReactNode;
   heading?: string;
   hLevel?: number;
-  options: { config: string; baseUrl: string; recaptchaSiteKey?: string };
+  /** Connection config. Omit it inside `InsytfulSearch.Provider` to use the provider's. */
+  options?: SearchConfig;
   term: string;
   /** Controlled expansion. When set, the component no longer owns the
    *  expanded state and reports every change via `onExpandedChange`. */
@@ -74,7 +77,9 @@ type OverviewViewModel = {
   error: string | null;
 };
 
-type BodyProps = SearchOverviewProp & {
+type ResolvedOverviewProps = Omit<SearchOverviewProp, "options"> & { options: SearchConfig };
+
+type BodyProps = ResolvedOverviewProps & {
   vm: OverviewViewModel;
   followUps?: AIMessage[];
   isThreadLoading?: boolean;
@@ -116,13 +121,14 @@ export const SearchOverview = ({
   disclaimer,
   feedback,
 }: SearchOverviewProp) => {
-  const stableOptions = useMemo(
-    () => options,
+  const resolved = useResolvedSearchConfig(options);
+  const opts = useMemo(
+    () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [options.config, options.baseUrl, options.recaptchaSiteKey],
+    [resolved.config, resolved.baseUrl, resolved.recaptchaSiteKey],
   );
 
-  const innerProps: SearchOverviewProp = {
+  const innerProps: ResolvedOverviewProps = {
     className,
     type,
     isDevMode,
@@ -134,7 +140,7 @@ export const SearchOverview = ({
     onExpandedChange,
     collapsible,
     reserve,
-    options: stableOptions,
+    options: opts,
     searching,
     error,
     renderMarkdown,
@@ -147,10 +153,10 @@ export const SearchOverview = ({
 
   return (
     <SearchConfigProvider
-      key={stableOptions.config || "default"}
-      config={stableOptions.config || ""}
-      baseUrl={stableOptions.baseUrl}
-      recaptchaSiteKey={stableOptions.recaptchaSiteKey}
+      key={opts.config || "default"}
+      config={opts.config || ""}
+      baseUrl={opts.baseUrl}
+      recaptchaSiteKey={opts.recaptchaSiteKey}
     >
       {type === "conversational" ? (
         // Keyed on term so a new search starts a new thread.
@@ -163,7 +169,7 @@ export const SearchOverview = ({
 };
 
 /** Single-answer variant: `history: false`, no thread. */
-const SearchOverviewKeyword = (props: SearchOverviewProp) => {
+const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
   const { ask, ...ctx } = useAIResponseContext();
   useMockFetch(props.isDevMode, props.options.baseUrl);
   useEffect(() => {
@@ -177,7 +183,7 @@ const SearchOverviewKeyword = (props: SearchOverviewProp) => {
  * later turns render as a thread. Message 0 is the user's search term (not
  * shown — it's already in the search box), message 1 is the first answer.
  */
-const SearchOverviewConversational = (props: SearchOverviewProp) => {
+const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
   const { messages, loading, elapsed, error, ask } = useAIConversationContext();
   useMockFetch(props.isDevMode, props.options.baseUrl);
   useEffect(() => {

@@ -4,6 +4,10 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 export type SearchConfig = {
   config: string;
   baseUrl: string;
+  /**
+   * Optional reCAPTCHA site key for human verification. When set, every query
+   * needs a successful reCAPTCHA challenge before it reaches the backend.
+   */
   recaptchaSiteKey?: string;
 };
 
@@ -25,14 +29,16 @@ export const SearchConfigProvider = ({
   baseUrl: string;
   recaptchaSiteKey?: string;
 }) => {
+  const parent = useContext(SearchConfigContext);
   const content = (
     <SearchConfigContext.Provider value={{ config, baseUrl, recaptchaSiteKey }}>
       {children}
     </SearchConfigContext.Provider>
   );
 
-  // only wrap in GoogleReCaptchaProvider if the site key exists
-  if (recaptchaSiteKey) {
+  // only wrap in GoogleReCaptchaProvider if the site key exists and an outer
+  // provider (e.g. InsytfulSearch.Provider around an Overview) hasn't already
+  if (recaptchaSiteKey && parent?.recaptchaSiteKey !== recaptchaSiteKey) {
     return (
       <GoogleReCaptchaProvider
         reCaptchaKey={recaptchaSiteKey}
