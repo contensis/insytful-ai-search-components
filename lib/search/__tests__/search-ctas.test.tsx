@@ -5,7 +5,7 @@ import type { Cta } from "../../api/rag.types";
 import { sanitizeCtas } from "../../shared/cta/validation";
 import { registerCtaHandler } from "../../shared/cta/handlers";
 import { getInsytfulAISearchEvents } from "../../shared/cta/bus";
-import { SearchProvider, type SearchContextValue } from "../context";
+import { SearchRootProvider, type SearchContextValue } from "../context";
 import { SearchCtas, type SearchCtasProps } from "../search-ctas";
 
 function makeCtx(overrides: Partial<SearchContextValue> = {}): SearchContextValue {
@@ -31,9 +31,9 @@ function renderCtas(
   ctxOverrides: Partial<SearchContextValue> = {},
 ) {
   return render(
-    <SearchProvider value={makeCtx(ctxOverrides)}>
+    <SearchRootProvider value={makeCtx(ctxOverrides)}>
       <SearchCtas {...props} />
-    </SearchProvider>,
+    </SearchRootProvider>,
   );
 }
 

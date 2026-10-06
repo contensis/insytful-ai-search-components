@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import {
   ModeProvider,
+  SearchRootProvider,
   useModeContext,
   useSearchContext,
 } from "./context";
@@ -140,15 +141,12 @@ function ClassicModeOverride({
   );
 
   return (
-    <SearchOverrideProvider value={overriddenCtx}>
+    <SearchRootProvider value={overriddenCtx}>
       {children}
-    </SearchOverrideProvider>
+    </SearchRootProvider>
   );
 }
 
-// We need the raw Provider to create a nested override
-// Import the createCompoundContext result's Provider
-import { SearchProvider as SearchOverrideProvider } from "./context";
 
 /* ------------------------------------------------------------------ */
 /* Search.ModeSwitch — renders mode switch UI                          */

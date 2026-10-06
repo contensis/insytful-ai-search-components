@@ -3,7 +3,7 @@ import React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { RAGMessage } from "../../api/rag.types";
 import { sanitizeCtas } from "../../shared/cta/validation";
-import { SearchProvider, type SearchContextValue } from "../context";
+import { SearchRootProvider, type SearchContextValue } from "../context";
 import { SearchMessages } from "../search-messages";
 
 class ResizeObserverStub {
@@ -32,15 +32,15 @@ function makeCtx(overrides: Partial<SearchContextValue> = {}): SearchContextValu
 
 function renderMessages(ctxOverrides: Partial<SearchContextValue>) {
   const view = render(
-    <SearchProvider value={makeCtx(ctxOverrides)}>
+    <SearchRootProvider value={makeCtx(ctxOverrides)}>
       <SearchMessages />
-    </SearchProvider>,
+    </SearchRootProvider>,
   );
   const rerenderMessages = (nextOverrides: Partial<SearchContextValue>) =>
     view.rerender(
-      <SearchProvider value={makeCtx(nextOverrides)}>
+      <SearchRootProvider value={makeCtx(nextOverrides)}>
         <SearchMessages />
-      </SearchProvider>,
+      </SearchRootProvider>,
     );
   return { ...view, rerenderMessages };
 }

@@ -67,7 +67,7 @@ export type SearchContextValue = {
   computedOffsetHeight: number;
 };
 
-export const [SearchProvider, useSearchContext, useSearchContextSafe] =
+export const [SearchRootProvider, useSearchContext, useSearchContextSafe] =
   createCompoundContext<SearchContextValue>("Search.Root");
 
 /* ------------------------------------------------------------------ */

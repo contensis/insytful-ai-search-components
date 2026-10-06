@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { RAGProvider, useRAGConversationContext } from "../api";
 import type { Cta } from "../api/rag.types";
 
-import { SearchProvider, useSearchContext, type SearchContextValue } from "./context";
+import { SearchRootProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
 import { useModalFocusTrap } from "./hooks.util";
 import { useMockFetch } from "../utilities/mock-fetch";
@@ -189,7 +189,7 @@ function SearchRootInner({
     offsets, computedOffsetHeight,
   ]);
 
-  return <SearchProvider value={ctx}>{children}</SearchProvider>;
+  return <SearchRootProvider value={ctx}>{children}</SearchRootProvider>;
 }
 
 /* ------------------------------------------------------------------ */
