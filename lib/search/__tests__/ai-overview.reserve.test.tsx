@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import type { RAGMessage } from "../../api";
+import type { AIMessage } from "../../api";
 
-// Drive both variants through controllable RAG contexts instead of the network.
+// Drive both variants through controllable AI contexts instead of the network.
 const responseCtx = {
   response: null as string | null,
   ctas: [],
@@ -14,7 +14,7 @@ const responseCtx = {
 };
 
 const conversationCtx = {
-  messages: [] as RAGMessage[],
+  messages: [] as AIMessage[],
   loading: false,
   elapsed: 0,
   error: null as string | null,
@@ -25,9 +25,9 @@ vi.mock("../../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api")>();
   return {
     ...actual,
-    RAGProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    useRAGResponseContext: () => responseCtx,
-    useRAGConversationContext: () => conversationCtx,
+    SearchConfigProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useAIResponseContext: () => responseCtx,
+    useAIConversationContext: () => conversationCtx,
   };
 });
 

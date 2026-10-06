@@ -1,8 +1,8 @@
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
-import { RAGProvider } from "../rag-context";
-import { useRAGConversationContext, useRAGResponseContext } from "../use-rag-with-context";
+import { SearchConfigProvider } from "../search-config";
+import { useAIConversationContext, useAIResponseContext } from "../use-ai-with-context";
 import { mockFetchResponse, requestBody, sseDataFrame, stubFetch } from "./sse-test-helpers";
 
 vi.mock("react-google-recaptcha-v3", () => ({
@@ -12,13 +12,13 @@ vi.mock("react-google-recaptcha-v3", () => ({
 
 function wrapperFor(config: string, baseUrl: string) {
   return ({ children }: { children: React.ReactNode }) => (
-    <RAGProvider config={config} baseUrl={baseUrl}>
+    <SearchConfigProvider config={config} baseUrl={baseUrl}>
       {children}
-    </RAGProvider>
+    </SearchConfigProvider>
   );
 }
 
-describe("useRAGResponseContext / useRAGConversationContext", () => {
+describe("useAIResponseContext / useAIConversationContext", () => {
   beforeEach(() => {
     localStorage.clear();
   });
@@ -27,10 +27,10 @@ describe("useRAGResponseContext / useRAGConversationContext", () => {
     vi.unstubAllGlobals();
   });
 
-  it("useRAGResponseContext sends requests using the RAGProvider's config and baseUrl", async () => {
+  it("useAIResponseContext sends requests using the SearchConfigProvider's config and baseUrl", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [sseDataFrame("answer")] }));
 
-    const { result } = renderHook(() => useRAGResponseContext(), {
+    const { result } = renderHook(() => useAIResponseContext(), {
       wrapper: wrapperFor("ctx-config", "https://ctx.example.com"),
     });
 
@@ -43,10 +43,10 @@ describe("useRAGResponseContext / useRAGConversationContext", () => {
     expect(result.current.response).toBe("answer");
   });
 
-  it("useRAGConversationContext sends requests using the RAGProvider's config and baseUrl", async () => {
+  it("useAIConversationContext sends requests using the SearchConfigProvider's config and baseUrl", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [sseDataFrame("answer")] }));
 
-    const { result } = renderHook(() => useRAGConversationContext(), {
+    const { result } = renderHook(() => useAIConversationContext(), {
       wrapper: wrapperFor("ctx-config", "https://ctx.example.com"),
     });
 
@@ -62,10 +62,10 @@ describe("useRAGResponseContext / useRAGConversationContext", () => {
     ]);
   });
 
-  it("throws when used outside of RAGProvider", () => {
+  it("throws when used outside of SearchConfigProvider", () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(() => renderHook(() => useRAGResponseContext())).toThrow(
-      "useRAGConfig must be used within RAGProvider"
+    expect(() => renderHook(() => useAIResponseContext())).toThrow(
+      "useSearchConfig must be used within <InsytfulSearch.Provider>"
     );
     consoleError.mockRestore();
   });

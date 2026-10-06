@@ -9,7 +9,7 @@
  * `lib/search/search-ctas.css`, which both renderers ship) — importable by
  * both entry points.
  */
-import type { Cta, CtaIntent } from "../../api/rag.types";
+import type { Cta, CtaIntent } from "../../api/types";
 import { buildMailtoHref } from "./handlers";
 import { getCtaIcon } from "./icons";
 

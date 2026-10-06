@@ -7,7 +7,7 @@
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
  * access; logic-only (no Tailwind classes) — importable by both entry points.
  */
-import type { Cta, CtaIntent } from "../../api/rag.types";
+import type { Cta, CtaIntent } from "../../api/types";
 
 /** Maximum CTAs kept per call — guards against CMS-driven layout abuse. */
 const MAX_CTAS = 8;

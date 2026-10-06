@@ -2,7 +2,7 @@
 
 AI-powered search for the web, in two flavours: **React components** and a
 standalone **Web Component**. Both share the same design, theming and Insytful
-RAG API integration.
+AI Search API integration.
 
 Full documentation: <https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/insytful-ai-search-overview>
 
@@ -160,7 +160,7 @@ dismiss need no extra code. Both flavours use it:
 
 ## Quick action CTAs (calls-to-action)
 
-The Insytful RAG API can send calls-to-action with an answer. They are
+The Insytful AI Search API can send calls-to-action with an answer. They are
 configured per site in the CMS and selected server-side per query. The
 components render them as a "Quick actions" row above the answer, visible while
 it streams.

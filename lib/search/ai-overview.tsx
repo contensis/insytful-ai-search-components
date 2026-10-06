@@ -1,10 +1,10 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import {
-  RAGProvider,
-  useRAGConversationContext,
-  useRAGResponseContext,
+  SearchConfigProvider,
+  useAIConversationContext,
+  useAIResponseContext,
   type Cta,
-  type RAGMessage,
+  type AIMessage,
 } from "../api";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { useMockFetch } from "../utilities/mock-fetch";
@@ -64,7 +64,7 @@ export type SearchOverviewProp = {
   feedback?: SearchOverviewFeedback;
 };
 
-/** What the body needs from either RAG hook. */
+/** What the body needs from either AI hook. */
 type OverviewViewModel = {
   ids?: { sid: string; mid: string };
   response: string | null;
@@ -76,7 +76,7 @@ type OverviewViewModel = {
 
 type BodyProps = SearchOverviewProp & {
   vm: OverviewViewModel;
-  followUps?: RAGMessage[];
+  followUps?: AIMessage[];
   isThreadLoading?: boolean;
   onFollowUp?: (question: string) => void;
 };
@@ -146,7 +146,7 @@ export const SearchOverview = ({
   };
 
   return (
-    <RAGProvider
+    <SearchConfigProvider
       key={stableOptions.config || "default"}
       config={stableOptions.config || ""}
       baseUrl={stableOptions.baseUrl}
@@ -158,13 +158,13 @@ export const SearchOverview = ({
       ) : (
         <SearchOverviewKeyword {...innerProps} />
       )}
-    </RAGProvider>
+    </SearchConfigProvider>
   );
 };
 
 /** Single-answer variant: `history: false`, no thread. */
 const SearchOverviewKeyword = (props: SearchOverviewProp) => {
-  const { ask, ...ctx } = useRAGResponseContext();
+  const { ask, ...ctx } = useAIResponseContext();
   useMockFetch(props.isDevMode, props.options.baseUrl);
   useEffect(() => {
     if (props.term) ask(props.term);
@@ -178,7 +178,7 @@ const SearchOverviewKeyword = (props: SearchOverviewProp) => {
  * shown — it's already in the search box), message 1 is the first answer.
  */
 const SearchOverviewConversational = (props: SearchOverviewProp) => {
-  const { messages, loading, elapsed, error, ask } = useRAGConversationContext();
+  const { messages, loading, elapsed, error, ask } = useAIConversationContext();
   useMockFetch(props.isDevMode, props.options.baseUrl);
   useEffect(() => {
     if (props.term) ask(props.term);

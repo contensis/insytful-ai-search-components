@@ -7,7 +7,7 @@ import { useSearchContext } from "../context";
 import type { SearchOverviewFeedback } from "../feedback-reporting";
 
 //
-// End to end through Search.Root's real RAGProvider: each streamed answer in
+// End to end through Search.Root's real SearchConfigProvider: each streamed answer in
 // the modal thread gets its own feedback row, voting against the
 // `X-Session-Id` header and that answer's `mid` from its `done` frame. The
 // modal counterpart of ai-overview.feedback-stream.test.tsx.

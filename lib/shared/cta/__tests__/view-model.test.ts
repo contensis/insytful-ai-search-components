@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { CtaEvent, CtaLink } from "../../../api/rag.types";
+import type { CtaEvent, CtaLink } from "../../../api/types";
 import {
   CTA_BAR_CLASS,
   CTA_BTN_CLASS,

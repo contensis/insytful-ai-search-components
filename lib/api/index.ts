@@ -1,20 +1,21 @@
 // Provider
-export { RAGProvider } from "./rag-context";
+export { SearchConfigProvider, useSearchConfigSafe, useResolvedSearchConfig } from "./search-config";
+export type { SearchConfig } from "./search-config";
 
 // withContext
-export { useRAGResponseContext, useRAGConversationContext } from "./use-rag-with-context";
+export { useAIResponseContext, useAIConversationContext } from "./use-ai-with-context";
 
 // withoutContext
-export { useRAGResponse } from "./use-rag-response";
-export { useRAGConversation } from "./use-rag-conversation";
+export { useAIResponse } from "./use-ai-response";
+export { useAIConversation } from "./use-ai-conversation";
 
 // Types
 export type {
-  RAGMessage,
+  AIMessage,
   Cta,
   CtaIntent,
   CtaCall,
   CtaEmail,
   CtaLink,
   CtaEvent,
-} from "./rag.types";
+} from "./types";

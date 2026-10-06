@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import type { Cta } from "../../api/rag.types";
+import type { Cta } from "../../api/types";
 import { sanitizeCtas } from "../../shared/cta/validation";
 import { registerCtaHandler } from "../../shared/cta/handlers";
 import { getInsytfulAISearchEvents } from "../../shared/cta/bus";

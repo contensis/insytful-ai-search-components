@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
-import type { RAGMessage } from "../../api/rag.types";
+import type { AIMessage } from "../../api/types";
 import { sanitizeCtas } from "../../shared/cta/validation";
 import { SearchRootProvider, type SearchContextValue } from "../context";
 import { SearchMessages } from "../search-messages";
@@ -63,7 +63,7 @@ describe("Search.Messages — CTA bar integration", () => {
   });
 
   it("renders the CTA bar while the skeleton is still visible (cta frame before tokens)", () => {
-    const messages: RAGMessage[] = [
+    const messages: AIMessage[] = [
       { role: "user", content: "How do I contact you?" },
       { role: "assistant", content: "", ctas },
     ];
@@ -77,7 +77,7 @@ describe("Search.Messages — CTA bar integration", () => {
   });
 
   it("keeps focus on a CTA chip across a token update (stable message keys)", () => {
-    const base: RAGMessage[] = [
+    const base: AIMessage[] = [
       { role: "user", content: "How do I contact you?" },
       { role: "assistant", content: "You can reach us", ctas },
     ];
@@ -102,7 +102,7 @@ describe("Search.Messages — CTA bar integration", () => {
   });
 
   it("keeps the CTA bar visible when the stream errors", () => {
-    const messages: RAGMessage[] = [
+    const messages: AIMessage[] = [
       { role: "user", content: "How do I contact you?" },
       { role: "assistant", content: "Partial answ", ctas },
     ];

@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import type { RAGMessage } from "../../api";
+import type { AIMessage } from "../../api";
 
-// Drive both variants through controllable RAG contexts instead of the network.
+// Drive both variants through controllable AI contexts instead of the network.
 const responseCtx = {
   response: null as string | null,
   ctas: [],
@@ -14,7 +14,7 @@ const responseCtx = {
 };
 
 const conversationCtx = {
-  messages: [] as RAGMessage[],
+  messages: [] as AIMessage[],
   loading: false,
   elapsed: 0,
   error: null as string | null,
@@ -25,9 +25,9 @@ vi.mock("../../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api")>();
   return {
     ...actual,
-    RAGProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    useRAGResponseContext: () => responseCtx,
-    useRAGConversationContext: () => conversationCtx,
+    SearchConfigProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useAIResponseContext: () => responseCtx,
+    useAIConversationContext: () => conversationCtx,
   };
 });
 
@@ -37,7 +37,7 @@ const options = { config: "cfg", baseUrl: "https://api.example.com" };
 const renderMarkdown = (md: string) => <p>{md}</p>;
 
 /** A thread with the search term and its first answer. */
-const firstAnswer = (content = "First answer"): RAGMessage[] => [
+const firstAnswer = (content = "First answer"): AIMessage[] => [
   { role: "user", content: "q" },
   { role: "assistant", content },
 ];
@@ -387,7 +387,7 @@ describe("Search.Overview feedback", () => {
   const voteUrl = `https://api.example.com/sessions/cfg/${sid}/${mid}/vote`;
 
   /** First answer carrying the vote ids from its `done` frame. */
-  const votableAnswer = (content = "First answer", answerMid = mid): RAGMessage[] =>
+  const votableAnswer = (content = "First answer", answerMid = mid): AIMessage[] =>
     firstAnswer(content).map((m) => (m.role === "assistant" ? { ...m, mid: answerMid, sid } : m));
 
   /** Stubs the vote API with one status for every call. */

@@ -31,9 +31,9 @@ import {
   CLASSIC_ICON,
   type DialogElements,
 } from './dialog-renderer';
-import { RAGClient } from './rag-client';
+import { AIClient } from './ai-client';
 // Types-only import — adds zero runtime weight to the IIFE bundle.
-import type { Cta, RAGMessage } from '../api/rag.types';
+import type { Cta, AIMessage } from '../api/types';
 import { renderMarkdown as defaultRenderMarkdown } from './markdown';
 import { createMockFetch } from './mock-sse';
 import { setupFocusTrap, type FocusTrap } from './focus-trap-setup';
@@ -77,11 +77,11 @@ export class InsytfulSearchElement extends HTMLElement {
   private _titleId = '';
   private _descriptionId = '';
 
-  /* RAG client — lazily created from attributes */
-  private _ragClient: RAGClient | null = null;
+  /* AI client — lazily created from attributes */
+  private _aiClient: AIClient | null = null;
 
-  /* Conversation state (mirrors useRAGConversation's RAGMessage[] state) */
-  private _messages: RAGMessage[] = [];
+  /* Conversation state (mirrors useAIConversation's AIMessage[] state) */
+  private _messages: AIMessage[] = [];
   private _isLoading = false;
   private _abortController: AbortController | null = null;
   private _conversationGeneration = 0;
@@ -123,9 +123,9 @@ export class InsytfulSearchElement extends HTMLElement {
   /* ---------------------------------------------------------------- */
 
   connectedCallback(): void {
-    // Clear any stale RAG session so each page load starts fresh
+    // Clear any stale AI session so each page load starts fresh
     // (mirrors search-root.tsx top-level side-effect)
-    RAGClient.clearSession();
+    AIClient.clearSession();
 
     // Generate stable IDs for this instance
     this._titleId = uniqueId('insytful-search-heading');
@@ -181,8 +181,8 @@ export class InsytfulSearchElement extends HTMLElement {
     // --- Offset measurement ---
     this._setupOffsetMeasurement();
 
-    // --- Build RAG client from attributes ---
-    this._buildRAGClient();
+    // --- Build AI client from attributes ---
+    this._buildAIClient();
 
     // --- Parse suggestion chips from light DOM children ---
     this._parseSuggestions();
@@ -215,12 +215,12 @@ export class InsytfulSearchElement extends HTMLElement {
       case 'api-uri':
       case 'project-id':
       case 'sections':
-        // Rebuild RAG client when connection attributes change
-        this._buildRAGClient();
+        // Rebuild AI client when connection attributes change
+        this._buildAIClient();
         break;
       case 'dev-mode':
-        // Rebuild RAG client to inject/remove mock fetch
-        this._buildRAGClient();
+        // Rebuild AI client to inject/remove mock fetch
+        this._buildAIClient();
         break;
       case 'suggestions-position':
         this._applySuggestionsPosition();
@@ -268,7 +268,7 @@ export class InsytfulSearchElement extends HTMLElement {
     this._elements = null;
     this._shadow = null;
     this._themeStyle = null;
-    this._ragClient = null;
+    this._aiClient = null;
   }
 
   /* ---------------------------------------------------------------- */
@@ -302,9 +302,9 @@ export class InsytfulSearchElement extends HTMLElement {
     this._setOpen(!this._isOpen);
   }
 
-  /** Access the RAG client for sending queries. */
-  get ragClient(): RAGClient | null {
-    return this._ragClient;
+  /** Access the AI client for sending queries. */
+  get aiClient(): AIClient | null {
+    return this._aiClient;
   }
 
   /** Access internal dialog elements (for unit 4/5 extensions). */
@@ -517,7 +517,7 @@ export class InsytfulSearchElement extends HTMLElement {
   /* ---------------------------------------------------------------- */
 
   private async _runConversation(query: string): Promise<void> {
-    if (!this._elements || !this._ragClient) return;
+    if (!this._elements || !this._aiClient) return;
 
     // Increment generation so stale finally blocks from aborted streams
     // don't stomp our loading state (fixes race when user sends follow-up
@@ -584,7 +584,7 @@ export class InsytfulSearchElement extends HTMLElement {
       generation !== this._conversationGeneration || signal.aborted;
 
     try {
-      const generator = this._ragClient.ask(query, signal);
+      const generator = this._aiClient.ask(query, signal);
 
       // Replace skeleton body with real content on first non-empty chunk
       let firstChunk = true;
@@ -644,7 +644,7 @@ export class InsytfulSearchElement extends HTMLElement {
       }
 
       // Finalize assistant message (ctas attached per-message, D1)
-      const message: RAGMessage = ctas
+      const message: AIMessage = ctas
         ? { role: 'assistant', content: streamingContent, ctas }
         : { role: 'assistant', content: streamingContent };
       this._messages.push(message);
@@ -853,21 +853,21 @@ export class InsytfulSearchElement extends HTMLElement {
   }
 
   /* ---------------------------------------------------------------- */
-  /* Private — RAG client                                               */
+  /* Private — AI client                                               */
   /* ---------------------------------------------------------------- */
 
-  private _buildRAGClient(): void {
+  private _buildAIClient(): void {
     const baseUrl = this.getAttribute('api-uri');
     const projectId = this.getAttribute('project-id');
 
     if (!baseUrl || !projectId) {
-      this._ragClient = null;
+      this._aiClient = null;
       return;
     }
 
     const isDevMode = this.hasAttribute('dev-mode');
 
-    this._ragClient = new RAGClient({
+    this._aiClient = new AIClient({
       baseUrl,
       projectId,
       sections: this.getAttribute('sections') ?? undefined,

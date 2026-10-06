@@ -1,6 +1,8 @@
 export { SearchRoot as Root, SearchPortal as Portal } from "./search-root";
 export type { SearchRootProps, SearchPortalProps } from "./search-root";
 
+export { SearchConfigProvider as Provider } from "../api";
+
 export { useSearchContext, useModeContext, useModeContextSafe, useSearchContextSafe } from "./context";
 
 export { SearchTrigger as Trigger } from "./search-trigger";

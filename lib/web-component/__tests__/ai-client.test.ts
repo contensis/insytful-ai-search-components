@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MockInstance } from "vitest";
-import { RAGClient, type RAGStreamEvent } from "../rag-client";
+import { AIClient, type AIStreamEvent } from "../ai-client";
 
 /* ------------------------------------------------------------------ */
 /* Local SSE frame helpers                                              */
@@ -39,16 +39,16 @@ function sseResponse(frames: string[]): Response {
   });
 }
 
-function clientFor(frames: string[]): RAGClient {
-  return new RAGClient({
+function clientFor(frames: string[]): AIClient {
+  return new AIClient({
     baseUrl: "https://api.test",
     projectId: "proj",
     fetchFn: (async () => sseResponse(frames)) as typeof fetch,
   });
 }
 
-async function collect(client: RAGClient, question = "q"): Promise<RAGStreamEvent[]> {
-  const events: RAGStreamEvent[] = [];
+async function collect(client: AIClient, question = "q"): Promise<AIStreamEvent[]> {
+  const events: AIStreamEvent[] = [];
   for await (const ev of client.ask(question)) {
     events.push(ev);
   }
@@ -57,7 +57,7 @@ async function collect(client: RAGClient, question = "q"): Promise<RAGStreamEven
 
 /* ------------------------------------------------------------------ */
 
-describe("RAGClient.ask", () => {
+describe("AIClient.ask", () => {
   let warnSpy: MockInstance;
 
   beforeEach(() => {
@@ -71,7 +71,7 @@ describe("RAGClient.ask", () => {
 
   it("POSTs a JSON body to the bare query-collection endpoint", async () => {
     const fetchFn = vi.fn(async () => sseResponse([sseDoneFrame()]));
-    const client = new RAGClient({
+    const client = new AIClient({
       baseUrl: "https://api.test",
       projectId: "proj",
       sections: "faq,docs",

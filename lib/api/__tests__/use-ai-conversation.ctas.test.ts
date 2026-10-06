@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import type { Cta } from "../rag.types";
-import { useRAGConversation } from "../use-rag-conversation";
+import type { Cta } from "../types";
+import { useAIConversation } from "../use-ai-conversation";
 import {
   mockFetchResponse,
   sseCtaFrame,
@@ -91,7 +91,7 @@ function controlledSSEBody() {
   };
 }
 
-describe("useRAGConversation — CTA frames", () => {
+describe("useAIConversation — CTA frames", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.mocked(useGoogleReCaptcha).mockReturnValue({ executeRecaptcha: undefined });
@@ -116,7 +116,7 @@ describe("useRAGConversation — CTA frames", () => {
     );
 
     const { result } = renderHook(() =>
-      useRAGConversation("my-config", "https://api.example.com"),
+      useAIConversation("my-config", "https://api.example.com"),
     );
 
     await act(async () => {
@@ -137,7 +137,7 @@ describe("useRAGConversation — CTA frames", () => {
       }),
     );
     const { result } = renderHook(() =>
-      useRAGConversation("my-config", "https://api.example.com"),
+      useAIConversation("my-config", "https://api.example.com"),
     );
 
     await act(async () => {
@@ -174,7 +174,7 @@ describe("useRAGConversation — CTA frames", () => {
     });
 
     const { result } = renderHook(() =>
-      useRAGConversation("my-config", "https://api.example.com"),
+      useAIConversation("my-config", "https://api.example.com"),
     );
 
     let firstAsk!: Promise<void>;
@@ -226,7 +226,7 @@ describe("useRAGConversation — CTA frames", () => {
     );
 
     const { result } = renderHook(() =>
-      useRAGConversation("my-config", "https://api.example.com"),
+      useAIConversation("my-config", "https://api.example.com"),
     );
 
     await act(async () => {
@@ -251,7 +251,7 @@ describe("useRAGConversation — CTA frames", () => {
     );
 
     const { result } = renderHook(() =>
-      useRAGConversation("my-config", "https://api.example.com"),
+      useAIConversation("my-config", "https://api.example.com"),
     );
 
     await act(async () => {

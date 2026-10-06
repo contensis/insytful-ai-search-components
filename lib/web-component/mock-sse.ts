@@ -1,9 +1,9 @@
 /**
  * Mock SSE fetch for dev-mode testing.
  *
- * Returns a fetch-compatible function that intercepts RAG API requests
+ * Returns a fetch-compatible function that intercepts AI Search API requests
  * and streams mock SSE chunks. Does NOT patch `window.fetch` — the
- * returned function is injected into the RAG client constructor instead.
+ * returned function is injected into the AI client constructor instead.
  *
  * Mock chunks are copied from lib/utilities/mock-fetch.ts.
  */
@@ -114,7 +114,7 @@ const MOCK_CHUNKS = [
 ];
 
 /**
- * One of each CTA type, mixed intents — mirrors what the RAG API sends in
+ * One of each CTA type, mixed intents — mirrors what the AI Search API sends in
  * its `event: cta` frame so dev mode exercises the full CTA bar.
  * Copied from lib/utilities/mock-fetch.ts.
  */

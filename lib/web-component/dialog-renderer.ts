@@ -11,7 +11,7 @@
  */
 
 // Types-only import — adds zero runtime weight to the IIFE bundle.
-import type { Cta } from '../api/rag.types';
+import type { Cta } from '../api/types';
 import { ctaViewModel, CTA_BAR_CLASS, CTA_LABEL_CLASS } from '../shared/cta/view-model';
 import {
   executeCta,

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { RAGProvider, useRAGConversationContext } from "../api";
-import type { Cta } from "../api/rag.types";
+import { SearchConfigProvider, useAIConversationContext } from "../api";
+import type { Cta } from "../api/types";
 
 import { SearchRootProvider, useSearchContext, type SearchContextValue } from "./context";
 import { useControllableState } from "./use-controllable-state";
 import { useModalFocusTrap } from "./hooks.util";
 import { useMockFetch } from "../utilities/mock-fetch";
 import { useThemeContext } from "../theme/context";
+import { SESSION_STORAGE_KEY } from "../shared/session";
 
 import css from "../styles/index.css?inline";
 import { observeOffsetHeight } from "../utilities/offset-elements";
@@ -44,11 +45,11 @@ export type SearchRootProps = {
   };
 };
 
-// Clear any stale RAG session so each page load starts a fresh conversation.
+// Clear any stale AI session so each page load starts a fresh conversation.
 // The session ID is read lazily by lib/api only when ask() is called,
 // so this always runs before any session ID is consumed.
 if (typeof window !== "undefined") {
-  try { localStorage.removeItem("rag-session-id"); } catch { /* restricted env */ }
+  try { localStorage.removeItem(SESSION_STORAGE_KEY); } catch { /* restricted env */ }
 }
 
 let idCounter = 0;
@@ -97,7 +98,7 @@ export function SearchRoot({
   );
 
   return (
-    <RAGProvider
+    <SearchConfigProvider
       key={stableOptions.config || "default"}
       config={stableOptions.config || ""}
       baseUrl={stableOptions.baseUrl}
@@ -113,13 +114,13 @@ export function SearchRoot({
       >
         {children}
       </SearchRootInner>
-    </RAGProvider>
+    </SearchConfigProvider>
   );
 }
 
 SearchRoot.displayName = "Search.Root";
 
-/** Inner component inside RAGProvider to access conversation context. */
+/** Inner component inside SearchConfigProvider to access conversation context. */
 function SearchRootInner({
   children, open, setOpen, titleId, descriptionId,
   options, renderMarkdown, logo, isDevMode, offsets,
@@ -137,7 +138,7 @@ function SearchRootInner({
   offsets?: SearchRootProps["offsets"];
   onCtaClick?: (cta: Cta) => void;
 }) {
-  const { messages, loading, elapsed, error, ask } = useRAGConversationContext();
+  const { messages, loading, elapsed, error, ask } = useAIConversationContext();
 
   // Auto-enable mock fetch when isDevMode is true
   useMockFetch(isDevMode, options.baseUrl);

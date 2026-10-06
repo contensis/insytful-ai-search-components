@@ -1,9 +1,8 @@
 import { readSSEFrames } from '../shared/sse';
 import { ctasFromFrameData } from '../shared/cta/validation';
 // Types-only import — adds zero runtime weight to the IIFE bundle.
-import type { Cta } from '../api/rag.types';
-
-const SESSION_KEY = 'rag-session-id';
+import type { Cta } from '../api/types';
+import { SESSION_STORAGE_KEY } from '../shared/session';
 
 /**
  * One event from a streamed `ask()` response.
@@ -12,13 +11,13 @@ const SESSION_KEY = 'rag-session-id';
  * payload holds objects with their own `type` field — reusing the name would
  * be a readability trap.
  */
-export type RAGStreamEvent =
+export type AIStreamEvent =
   /** One streamed answer token. */
   | { kind: 'token'; content: string }
   /** The sanitized CTAs for this answer (yielded only when non-empty). */
   | { kind: 'ctas'; ctas: Cta[] };
 
-export interface RAGClientConfig {
+export interface AIClientConfig {
   baseUrl: string;
   projectId: string;
   sections?: string;
@@ -26,13 +25,13 @@ export interface RAGClientConfig {
   fetchFn?: typeof fetch;
 }
 
-export class RAGClient {
+export class AIClient {
   private baseUrl: string;
   private projectId: string;
   private sections?: string;
   private fetchFn: typeof fetch;
 
-  constructor(config: RAGClientConfig) {
+  constructor(config: AIClientConfig) {
     this.baseUrl = config.baseUrl;
     this.projectId = config.projectId;
     this.sections = config.sections;
@@ -40,7 +39,7 @@ export class RAGClient {
   }
 
   /**
-   * Send a question to the RAG API and yield {@link RAGStreamEvent} objects
+   * Send a question to the AI Search API and yield {@link AIStreamEvent} objects
    * as Server-Sent Events arrive.
    *
    * BREAKING CHANGE (v3.0.0): `ask()` previously yielded plain content
@@ -50,7 +49,7 @@ export class RAGClient {
    * - `{ kind: "token", content: string }` — one streamed answer chunk
    * - `{ kind: "ctas", ctas: Cta[] }` — sanitized CTAs (only when non-empty)
    *
-   * Migration for existing `ragClient` consumers:
+   * Migration for existing `aiClient` consumers:
    * ```ts
    * let answer = "";
    * for await (const ev of client.ask(question)) {
@@ -64,7 +63,7 @@ export class RAGClient {
   async *ask(
     question: string,
     signal?: AbortSignal,
-  ): AsyncGenerator<RAGStreamEvent, void, void> {
+  ): AsyncGenerator<AIStreamEvent, void, void> {
     // POST body — the API moved off query-string params, so there is no
     // URL length ceiling on `question` and no encoding to get wrong.
     const body: Record<string, unknown> = {
@@ -83,7 +82,7 @@ export class RAGClient {
       'Content-Type': 'application/json',
     });
 
-    const sid = localStorage.getItem(SESSION_KEY);
+    const sid = localStorage.getItem(SESSION_STORAGE_KEY);
     if (sid) {
       headers.append('X-Session-Id', sid);
     }
@@ -117,7 +116,7 @@ export class RAGClient {
     // Persist session ID from response headers
     const newSid = response.headers.get('X-Session-Id');
     if (newSid) {
-      localStorage.setItem(SESSION_KEY, newSid);
+      localStorage.setItem(SESSION_STORAGE_KEY, newSid);
     }
 
     if (!response.body) {
@@ -125,7 +124,7 @@ export class RAGClient {
     }
 
     // readSSEFrames owns decoding, abort checks, and reader cleanup
-    // (mirrors the useRAGConversation / useRAGResponse stream loops).
+    // (mirrors the useAIConversation / useAIResponse stream loops).
     for await (const frame of readSSEFrames(response.body, signal)) {
       switch (frame.event) {
         case 'done': {
@@ -133,7 +132,7 @@ export class RAGClient {
         }
         case 'cta': {
           // ctasFromFrameData owns the wire shape ({"ctas":[...]}) and
-          // malformed-JSON handling — shared with useRAGConversation.
+          // malformed-JSON handling — shared with useAIConversation.
           const ctas = ctasFromFrameData(frame.data);
           if (ctas.length > 0) {
             yield { kind: 'ctas', ctas };
@@ -157,6 +156,6 @@ export class RAGClient {
 
   /** Remove the stored session ID from localStorage. */
   static clearSession(): void {
-    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(SESSION_STORAGE_KEY);
   }
 }

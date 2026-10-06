@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+**Breaking:** the old "RAG" names have been removed. See *Removed* below for the replacements.
+
+### Added
+
+- **`InsytfulSearch.Provider`** shares `config`, `baseUrl` and `recaptchaSiteKey` with everything below it. It replaces `RAGProvider`, and the `SearchConfig` type is exported from the package root.
+
+### Removed
+
+- **"RAG" names are gone from the public API.** Rename them as follows:
+
+  | Removed | Use |
+  |---|---|
+  | `RAGProvider` | `InsytfulSearch.Provider` |
+  | `useRAGResponse` / `useRAGResponseContext` | `useAIResponse` / `useAIResponseContext` |
+  | `useRAGConversation` / `useRAGConversationContext` | `useAIConversation` / `useAIConversationContext` |
+  | `RAGMessage` | `AIMessage` |
+  | Web Component: `element.ragClient` | `element.aiClient` |
+  | Web Component: `RAGStreamEvent` type | `AIStreamEvent` |
+
+### Changed
+
+- The session ID is now stored under the `insytful-session-id` localStorage key (was `rag-session-id`). The React components and the Web Component already clear it on every page load, so the only effect is that a session in progress when the new version deploys starts again.
+- The error thrown by the context hooks outside a provider now names `<InsytfulSearch.Provider>`.
+
 ## 4.3.0 — 2026-09-30
 
 ### Added

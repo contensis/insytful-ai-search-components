@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-li
 import { SearchOverview } from "../ai-overview";
 
 //
-// End to end through the real RAGProvider: a streamed SSE answer (the same
+// End to end through the real SearchConfigProvider: a streamed SSE answer (the same
 // frame shape as lib/utilities/mock-fetch.ts) must end with the feedback row
 // visible and voteable, with the vote addressed by the `X-Session-Id` header
 // and the `mid` from the `done` frame. Guards against the row being gated on

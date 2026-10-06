@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import type { Cta } from "../api/rag.types";
+import type { Cta } from "../api/types";
 import { useSearchContextSafe } from "./context";
 import {
   ctaViewModel,

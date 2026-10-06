@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import type { Cta, RAGMessage } from "../api/rag.types";
+import type { Cta, AIMessage } from "../api/types";
 
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
@@ -38,11 +38,11 @@ export type SearchContextValue = {
   titleId: string;
   descriptionId: string;
 
-  // RAG config
+  // Search config
   options: { config: string; baseUrl: string };
 
-  // Conversation state (from RAGProvider)
-  messages: RAGMessage[];
+  // Conversation state (from useAIConversationContext)
+  messages: AIMessage[];
   loading: boolean;
   elapsed: number;
   error?: string | null;

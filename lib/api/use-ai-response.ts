@@ -1,28 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import type { RAGMessage } from "./rag.types";
-import { readSSEFrames } from "../shared/sse";
-// Imported from the validation module directly (not the `shared/cta` barrel)
-// so hook-only consumers tree-shake the handlers/bus modules out.
 import { ctasFromFrameData } from "../shared/cta/validation";
-import { useElapsedTime } from "../utilities/use-elapsed-time";
+import { readSSEFrames } from "../shared/sse";
 import { debug } from "../shared/debug";
 import { midFromDoneData } from "../shared/vote";
+import { SESSION_STORAGE_KEY } from "../shared/session";
+import { useElapsedTime } from "../utilities/use-elapsed-time";
+import type { Cta } from "./types";
 
-export const useRAGConversation = (
+const history = false;
+const stream = true;
+
+export const useAIResponse = (
   config: string,
   baseUrl: string,
   recaptchaSiteKey?: string,
 ) => {
-  const [messages, setMessages] = useState<RAGMessage[]>([]);
+  const [response, setResponse] = useState<string>(""); // accumulated streamed text
   const [loading, setLoading] = useState(false);
+  const [ctas, setCtas] = useState<Cta[]>([]); // accumulated CTAs
   const [error, setError] = useState<string | null>(null);
+  // Vote ids for the current answer; `mid` only arrives for substantive answers.
+  const [answerIds, setAnswerIds] = useState<{ sid: string; mid: string } | null>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const { elapsed, setElapsed } = useElapsedTime(loading);
 
   // One AbortController per ask(); a newer ask() (or unmount) aborts the
-  // previous in-flight stream so its late frames can never touch state.
+  // previous stream so its late frames can't touch state. Without this, an
+  // old answer's `done` frame could set answerIds while a newer answer is
+  // shown, and the vote would go to the wrong answer.
   const abortRef = useRef<AbortController | null>(null);
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -32,6 +39,7 @@ export const useRAGConversation = (
    * @param question - The user’s question.
    * @param sections - Optional list of section slugs to scope the question.
    * @returns A promise that resolves when the request completes.
+   * @throws An error if the request fails.
    */
   const ask = useCallback(
     async (question: string, sections?: string[]) => {
@@ -53,11 +61,12 @@ export const useRAGConversation = (
       }
       if (signal.aborted) return; // superseded while awaiting reCAPTCHA
 
-      // add the user’s message immediately
-      setMessages((prev) => [...prev, { role: "user", content: question }]);
       setLoading(true);
-      setElapsed(0);
       setError(null);
+      setElapsed(0);
+      setCtas([]);
+      setResponse("");
+      setAnswerIds(null);
 
       try {
         // POST body — the API moved off query-string params, so there is no
@@ -65,8 +74,8 @@ export const useRAGConversation = (
         const body: Record<string, unknown> = {
           question,
           config,
-          history: true,
-          stream: true,
+          history,
+          stream,
         };
 
         if (sections && sections?.length >= 1) {
@@ -81,90 +90,60 @@ export const useRAGConversation = (
         // only include token if we generated one
         if (recaptchaToken) headers.append("X-Recaptcha-Token", recaptchaToken);
 
-        const sid = localStorage.getItem("rag-session-id");
+        const sid = localStorage.getItem(SESSION_STORAGE_KEY);
         if (sid) headers.append("X-Session-Id", sid);
 
-        const response = await fetch(`${baseUrl}/query-collection`, {
+        const payload = await fetch(`${baseUrl}/query-collection`, {
           method: "POST",
           headers,
           body: JSON.stringify(body),
           signal,
         });
 
-        if (!response.ok) {
-          let message = `Request failed (${response.status})`;
+        if (!payload.ok) {
+          let message = `Request failed (${payload.status})`;
           try {
-            const json = await response.json();
+            const json = await payload.json();
             message = json?.message ?? message;
           } catch {
-            // fallback if not JSON
-            const text = await response.text();
+            const text = await payload.text();
             if (text) message = text;
           }
           throw new Error(message);
         }
 
-        if (response.headers.has("X-Session-Id")) {
+        if (payload.headers.has("X-Session-Id")) {
           localStorage.setItem(
-            "rag-session-id",
-            response.headers.get("X-Session-Id")!,
+            SESSION_STORAGE_KEY,
+            payload.headers.get("X-Session-Id")!,
           );
         }
 
-        if (!response.body) throw new Error("No response body");
+        if (!payload.body) throw new Error("No payload body");
 
-        let assistantMsg = ""; // accumulate assistant’s message
-
-        // Add a placeholder assistant message we’ll update while streaming.
-        // Its INDEX is captured here in ask()'s closure — every write (tokens
-        // and CTAs) goes through it, never `updated[updated.length - 1]`, so
-        // a slow stream's late frames can never land on a follow-up's message.
-        let assistantIndex = -1;
-        setMessages((prev) => {
-          assistantIndex = prev.length;
-          return [...prev, { role: "assistant", content: "" }];
-        });
-
-        /** Patches THIS ask()'s assistant message by its captured index,
-         *  spreading the previous value so `content` and `ctas` writes
-         *  never clobber each other. */
-        const patchAssistant = (patch: Partial<RAGMessage>) => {
-          setMessages((prev) => {
-            if (assistantIndex < 0 || assistantIndex >= prev.length) return prev;
-            const updated = [...prev];
-            updated[assistantIndex] = { ...updated[assistantIndex], ...patch };
-            return updated;
-          });
-        };
-
-        for await (const frame of readSSEFrames(response.body, signal)) {
+        for await (const frame of readSSEFrames(payload.body, signal)) {
           switch (frame.event) {
             case "done": {
               const mid = midFromDoneData(frame.data);
               // This answer's session, captured now: a later request can overwrite
               // the stored id before the user votes.
-              const answerSid = response.headers.get("X-Session-Id") ?? sid ?? undefined;
+              const answerSid = payload.headers.get("X-Session-Id") ?? sid ?? undefined;
 
               debug("stream", mid ? "answer ids" : "done without mid, voting hidden", { mid, sid: answerSid });
-              if (mid && answerSid) patchAssistant({ mid, sid: answerSid });
+              if (mid && answerSid) setAnswerIds({ sid: answerSid, mid });
               setLoading(false);
               setElapsed(0);
               return;
             }
             case "cta": {
-              // ctasFromFrameData owns the wire shape ({"ctas":[...]}) and
-              // malformed-JSON handling — shared with RAGClient.ask().
               const ctas = ctasFromFrameData(frame.data);
-              if (ctas.length > 0) patchAssistant({ ctas });
+              if (ctas.length > 0) setCtas(ctas);
               break;
             }
             case "message": {
               try {
                 const json = JSON.parse(frame.data);
-                if (json?.content) {
-                  assistantMsg += json.content;
-                  patchAssistant({ content: assistantMsg });
-                }
+                if (json?.content) setResponse((prev) => prev + json.content);
               } catch (parseErr) {
                 console.error("Failed to parse SSE chunk", parseErr, frame.data);
               }
@@ -177,8 +156,7 @@ export const useRAGConversation = (
         setLoading(false);
         setElapsed(0);
       } catch (err) {
-        // An abort is expected (a newer ask() superseded this one, or the
-        // hook unmounted) — never surface it as an error state.
+        // An abort is expected (superseded or unmounted), never an error state.
         if (signal.aborted) return;
         const errorMessage =
           err instanceof Error && err.message
@@ -186,12 +164,12 @@ export const useRAGConversation = (
             : "Something went wrong";
         console.error(err);
         setError(errorMessage);
-        setLoading(false);
         setElapsed(0);
+        setLoading(false);
       }
     },
     [config, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
-  return { messages, loading, error, elapsed, ask };
+  return { response, ctas, loading, elapsed, error, ask, answerIds };
 };

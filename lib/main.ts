@@ -48,16 +48,17 @@ export type { SearchCtasProps } from "./search/search-ctas";
 export type { SearchOverviewProp, SearchOverviewType } from "./search/ai-overview";
 export type { SearchOverviewFeedback, SearchOverviewVote } from "./search/feedback-reporting";
 
-// RAG hooks — used internally by Search.Root, also available standalone
+// AI hooks — used internally by Search.Root, also available standalone.
+// Wrap them in <InsytfulSearch.Provider> for the context-reading variants.
 export {
-  RAGProvider,
-  useRAGResponse,
-  useRAGResponseContext,
-  useRAGConversation,
-  useRAGConversationContext,
+  useAIResponse,
+  useAIResponseContext,
+  useAIConversation,
+  useAIConversationContext,
 } from "./api";
 export type {
-  RAGMessage,
+  SearchConfig,
+  AIMessage,
   Cta,
   CtaIntent,
   CtaCall,

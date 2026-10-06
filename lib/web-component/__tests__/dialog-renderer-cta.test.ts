@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MockInstance } from "vitest";
-import type { Cta, CtaCall, CtaEmail, CtaEvent, CtaLink } from "../../api/rag.types";
+import type { Cta, CtaCall, CtaEmail, CtaEvent, CtaLink } from "../../api/types";
 import { registerCtaHandler } from "../../shared/cta/handlers";
 import { getInsytfulAISearchEvents } from "../../shared/cta/bus";
 import {

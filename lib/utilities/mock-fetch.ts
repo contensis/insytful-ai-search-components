@@ -123,7 +123,7 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
         '\n',
       ];
 
-      // One of each CTA type, mixed intents — mirrors what the RAG API sends
+      // One of each CTA type, mixed intents — mirrors what the AI Search API sends
       // in its `event: cta` frame so dev mode exercises the full CTA bar.
       const ctas = [
         { type: 'link', label: 'Contact Us', url: 'https://example.com/contact', intent: 'primary', newTab: false },

@@ -6,7 +6,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MockInstance } from "vitest";
-import type { RAGMessage } from "../../api/rag.types";
+import type { AIMessage } from "../../api/types";
 import { CTA_BAR_CLASS } from "../../shared/cta/view-model";
 import { InsytfulSearchElement } from "../insytful-search-element";
 
@@ -35,7 +35,7 @@ if (!customElements.get("insytful-search")) {
 const sseDataFrame = (content: string): string =>
   `data: ${JSON.stringify({ content })}\n\n`;
 
-// Wire contract: `{"ctas":[...]}`, not a bare array (see rag-client.test.ts).
+// Wire contract: `{"ctas":[...]}`, not a bare array (see ai-client.test.ts).
 const sseCtaFrame = (ctas: unknown[]): string =>
   `event: cta\ndata: ${JSON.stringify({ ctas })}\n\n`;
 
@@ -96,7 +96,7 @@ function installMockFetch(): MockStream[] {
 interface ElementInternals {
   _runConversation(query: string): Promise<void>;
   _handleSend(text?: string): void;
-  _messages: RAGMessage[];
+  _messages: AIMessage[];
 }
 
 const internalsOf = (el: InsytfulSearchElement): ElementInternals =>

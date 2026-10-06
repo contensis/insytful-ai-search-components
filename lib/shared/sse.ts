@@ -1,6 +1,6 @@
 /**
  * Shared SSE decoding — flavour-agnostic, used by both the React hooks and
- * the Web Component's RAGClient.
+ * the Web Component's AIClient.
  *
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
  * access; logic-only (no Tailwind classes) — importable by both entry points.
@@ -39,7 +39,7 @@ const SPACE = 32;
  *
  * Deliberate deviations from WHATWG §9.2.6 (documented and tested):
  * - a frame with an explicit `event:` name but no `data:` lines IS dispatched
- *   with `data: ""` — the RAG API's `done` terminator may arrive dataless and
+ *   with `data: ""` — the AI Search API's `done` terminator may arrive dataless and
  *   must never be dropped
  * - a final unterminated frame is flushed at end of stream, not discarded
  *

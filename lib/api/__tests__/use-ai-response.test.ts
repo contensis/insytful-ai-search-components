@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { useRAGResponse } from "../use-rag-response";
+import { useAIResponse } from "../use-ai-response";
+import { SESSION_STORAGE_KEY } from "../../shared/session";
 import {
   mockExecuteRecaptcha,
   mockFetchResponse,
@@ -15,7 +16,7 @@ vi.mock("react-google-recaptcha-v3", () => ({
   useGoogleReCaptcha: vi.fn(() => ({ executeRecaptcha: undefined })),
 }));
 
-describe("useRAGResponse", () => {
+describe("useAIResponse", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.mocked(useGoogleReCaptcha).mockReturnValue({ executeRecaptcha: undefined });
@@ -31,7 +32,7 @@ describe("useRAGResponse", () => {
       mockFetchResponse({ chunks: [sseDataFrame("Hello "), sseDataFrame("world")] })
     );
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("What is this?");
@@ -66,7 +67,7 @@ describe("useRAGResponse", () => {
       );
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     let first!: Promise<void>;
     await act(async () => {
@@ -92,7 +93,7 @@ describe("useRAGResponse", () => {
       })
     );
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -105,7 +106,7 @@ describe("useRAGResponse", () => {
   it("POSTs a JSON body to the bare query-collection endpoint", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -126,7 +127,7 @@ describe("useRAGResponse", () => {
   it("serializes the sections param when provided", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question", ["faq", "docs"]);
@@ -138,7 +139,7 @@ describe("useRAGResponse", () => {
   it("omits the sections param when none are provided", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -148,12 +149,12 @@ describe("useRAGResponse", () => {
   });
 
   it("round-trips the session id via localStorage and the X-Session-Id header", async () => {
-    localStorage.setItem("rag-session-id", "existing-session");
+    localStorage.setItem(SESSION_STORAGE_KEY, "existing-session");
     const fetchMock = stubFetch(async () =>
       mockFetchResponse({ headers: { "X-Session-Id": "new-session" }, chunks: [] })
     );
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -161,7 +162,7 @@ describe("useRAGResponse", () => {
 
     const requestHeaders = fetchMock.mock.calls[0][1]!.headers as Headers;
     expect(requestHeaders.get("X-Session-Id")).toBe("existing-session");
-    expect(localStorage.getItem("rag-session-id")).toBe("new-session");
+    expect(localStorage.getItem(SESSION_STORAGE_KEY)).toBe("new-session");
   });
 
   it("surfaces the JSON error message when the request fails", async () => {
@@ -169,7 +170,7 @@ describe("useRAGResponse", () => {
       mockFetchResponse({ ok: false, status: 500, json: async () => ({ message: "Boom" }) })
     );
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -191,7 +192,7 @@ describe("useRAGResponse", () => {
       })
     );
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -203,7 +204,7 @@ describe("useRAGResponse", () => {
   it("errors out when the response has no body", async () => {
     stubFetch(async () => mockFetchResponse({ body: null }));
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -217,7 +218,7 @@ describe("useRAGResponse", () => {
     vi.mocked(useGoogleReCaptcha).mockReturnValue({ executeRecaptcha });
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
-    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+    const { result } = renderHook(() => useAIResponse("my-config", "https://api.example.com"));
 
     await act(async () => {
       await result.current.ask("question");
@@ -234,7 +235,7 @@ describe("useRAGResponse", () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
     const { result } = renderHook(() =>
-      useRAGResponse("my-config", "https://api.example.com", "site-key")
+      useAIResponse("my-config", "https://api.example.com", "site-key")
     );
 
     await act(async () => {
@@ -252,7 +253,7 @@ describe("useRAGResponse", () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
     const { result } = renderHook(() =>
-      useRAGResponse("my-config", "https://api.example.com", "site-key")
+      useAIResponse("my-config", "https://api.example.com", "site-key")
     );
 
     await act(async () => {

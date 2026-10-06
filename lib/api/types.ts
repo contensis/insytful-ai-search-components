@@ -22,7 +22,7 @@ export type CtaLink = Extract<Cta, { type: "link" }>;
 /** An `event`-type CTA — dispatches a CMS-named event on the shared bus. */
 export type CtaEvent = Extract<Cta, { type: "event" }>;
 
-export type RAGMessage = {
+export type AIMessage = {
   role: "user" | "assistant";
   content: string;
   /** CTAs attached to the assistant message they arrived with (D1: per-message, persistent). */

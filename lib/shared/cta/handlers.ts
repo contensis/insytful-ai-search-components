@@ -11,7 +11,7 @@
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
  * access; logic-only (no Tailwind classes) — importable by both entry points.
  */
-import type { Cta, CtaEmail } from "../../api/rag.types";
+import type { Cta, CtaEmail } from "../../api/types";
 import { getInsytfulAISearchEvents } from "./bus";
 import { normalizeHttpUrl } from "./validation";
 

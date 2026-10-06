@@ -23,5 +23,5 @@ export type {
   CtaLink,
   CtaEvent,
   CtaIntent,
-} from './api/rag.types';
-export type { RAGStreamEvent } from './web-component/rag-client';
+} from './api/types';
+export type { AIStreamEvent } from './web-component/ai-client';

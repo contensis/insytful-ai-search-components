@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 
-// Drive the Overview through a controllable RAG context instead of the network.
-const ragCtx = {
+// Drive the Overview through a controllable AI context instead of the network.
+const aiCtx = {
   response: null as string | null,
   ctas: [],
   loading: false,
@@ -16,8 +16,8 @@ vi.mock("../../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api")>();
   return {
     ...actual,
-    RAGProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    useRAGResponseContext: () => ragCtx,
+    SearchConfigProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useAIResponseContext: () => aiCtx,
   };
 });
 
@@ -39,16 +39,16 @@ function mockScrollHeight(px: number) {
 }
 
 beforeEach(() => {
-  ragCtx.response = null;
-  ragCtx.loading = false;
-  ragCtx.error = null;
+  aiCtx.response = null;
+  aiCtx.loading = false;
+  aiCtx.error = null;
   mockScrollHeight(1000);
 });
 afterEach(cleanup);
 
 describe("Search.Overview accessibility", () => {
   it("keeps the toggle mounted, wires aria-expanded/aria-controls, and flips to Show less", () => {
-    ragCtx.response = "Answer";
+    aiCtx.response = "Answer";
     render(<SearchOverview term="q" options={options} renderMarkdown={renderMarkdown} />);
 
     const btn = screen.getByRole("button", { name: /show more of the response/i });
@@ -68,7 +68,7 @@ describe("Search.Overview accessibility", () => {
   });
 
   it("expands when keyboard focus lands inside the clipped body", () => {
-    ragCtx.response = "Answer";
+    aiCtx.response = "Answer";
     render(<SearchOverview term="q" options={options} renderMarkdown={renderMarkdown} />);
 
     const btn = screen.getByRole("button", { name: /show more/i });
@@ -83,7 +83,7 @@ describe("Search.Overview accessibility", () => {
   });
 
   it("announces loading and then a single 'ready' via role=status", () => {
-    ragCtx.loading = true;
+    aiCtx.loading = true;
     const { rerender } = render(
       <SearchOverview
         term="q"
@@ -95,19 +95,19 @@ describe("Search.Overview accessibility", () => {
     const status = screen.getByRole("status");
     expect(status.textContent).toBe("Thinking...");
 
-    ragCtx.loading = false;
-    ragCtx.response = "Answer";
+    aiCtx.loading = false;
+    aiCtx.response = "Answer";
     rerender(<SearchOverview term="q" options={options} renderMarkdown={renderMarkdown} />);
     expect(status.textContent).toBe("AI Overview ready");
 
     // Further re-renders with the same finished response don't re-announce.
-    ragCtx.response = "Answer (edited)";
+    aiCtx.response = "Answer (edited)";
     rerender(<SearchOverview term="q" options={options} renderMarkdown={renderMarkdown} />);
     expect(status.textContent).toBe("AI Overview ready");
   });
 
   it("does not announce errors via status (the callout's role=alert covers them)", () => {
-    ragCtx.error = "boom";
+    aiCtx.error = "boom";
     render(<SearchOverview term="q" options={options} renderMarkdown={renderMarkdown} />);
     expect(screen.getByRole("status").textContent).toBe("");
     expect(screen.getByRole("alert")).toBeTruthy();
