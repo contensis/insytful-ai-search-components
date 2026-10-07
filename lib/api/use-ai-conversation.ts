@@ -91,6 +91,9 @@ export const useAIConversation = (
           body: JSON.stringify(body),
           signal,
         });
+        // A fetch that ignores the signal (e.g. dev mode's mock) still resolves
+        // after a newer ask(); stop before adding a placeholder answer.
+        if (signal.aborted) return;
 
         if (!response.ok) {
           let message = `Request failed (${response.status})`;

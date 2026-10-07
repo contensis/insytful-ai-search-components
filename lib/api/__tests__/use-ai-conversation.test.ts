@@ -67,6 +67,22 @@ describe("useAIConversation", () => {
     ]);
   });
 
+  it("a superseded ask() whose fetch ignores the signal adds no assistant message", async () => {
+    // Like dev mode's mock: resolves even after the request was aborted.
+    stubFetch(async () => mockFetchResponse({ chunks: [sseDataFrame("Answer")] }));
+    const { result } = renderHook(() => useAIConversation("my-config", "https://api.example.com"));
+
+    await act(async () => {
+      const first = result.current.ask("term");
+      const second = result.current.ask("term");
+      await Promise.all([first, second]);
+    });
+
+    expect(result.current.messages.filter((m) => m.role === "assistant")).toEqual([
+      { role: "assistant", content: "Answer" },
+    ]);
+  });
+
   it("POSTs a JSON body to the bare query-collection endpoint", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
     const { result } = renderHook(() => useAIConversation("my-config", "https://api.example.com"));

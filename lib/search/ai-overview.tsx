@@ -180,8 +180,8 @@ const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
 
 /**
  * Conversational variant: the first answer is shown as the overview body and
- * later turns render as a thread. Message 0 is the user's search term (not
- * shown — it's already in the search box), message 1 is the first answer.
+ * later turns render as a thread. The user's search term comes first (not
+ * shown — it's already in the search box), then the first answer.
  */
 const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
   const { messages, loading, elapsed, error, ask } = useAIConversationContext();
@@ -190,8 +190,12 @@ const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
 
-  const first = messages[1];
-  const followUps = messages.slice(2);
+  // The first answer is the first assistant message, not messages[1]: under
+  // StrictMode the mount effect asks twice, and the cancelled ask leaves its
+  // user message behind ([user, user, assistant]).
+  const firstIndex = messages.findIndex((m) => m.role === "assistant");
+  const first = firstIndex >= 0 ? messages[firstIndex] : undefined;
+  const followUps = firstIndex >= 0 ? messages.slice(firstIndex + 1) : [];
   // mid = message id and sid = session id
   const vm: OverviewViewModel = {
     ids: first?.mid && first?.sid ? { mid: first.mid, sid: first.sid } : undefined,

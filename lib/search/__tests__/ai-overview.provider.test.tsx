@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import React from "react";
+import React, { StrictMode } from "react";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { SearchConfigProvider } from "../../api";
 import { SearchOverview } from "../ai-overview";
@@ -77,6 +77,24 @@ describe("Search.Overview config resolution", () => {
       config: prop.config,
     });
   });
+
+  // StrictMode runs the mount effect twice; the cancelled first ask leaves its
+  // user message in the thread, so the answer isn't at messages[1].
+  it.each(["keyword", "conversational"] as const)(
+    "%s: shows the answer, not the search term, under StrictMode",
+    async (type) => {
+      stubFetch();
+      const { container } = render(
+        <StrictMode>
+          <SearchOverview type={type} term="my term" options={prop} renderMarkdown={(md) => <p>{md}</p>} />
+        </StrictMode>,
+      );
+
+      await waitFor(() => expect(screen.getByText("Answer.")).toBeTruthy());
+      const body = container.querySelector(".insytful-search-overview-content");
+      expect(body?.textContent).toBe("Answer.");
+    },
+  );
 
   it("throws when there are no options and no provider", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
