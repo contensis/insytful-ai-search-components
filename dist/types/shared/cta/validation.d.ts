@@ -1,4 +1,4 @@
-import { Cta } from '../../api/rag.types';
+import { Cta } from '../../api/types';
 /**
  * Normalizes a raw URL string to a safe absolute `http:`/`https:` href, or
  * `null` when it fails to parse or carries any other scheme.

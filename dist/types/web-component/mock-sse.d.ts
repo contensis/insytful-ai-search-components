@@ -1,9 +1,9 @@
 /**
  * Mock SSE fetch for dev-mode testing.
  *
- * Returns a fetch-compatible function that intercepts RAG API requests
+ * Returns a fetch-compatible function that intercepts AI Search API requests
  * and streams mock SSE chunks. Does NOT patch `window.fetch` — the
- * returned function is injected into the RAG client constructor instead.
+ * returned function is injected into the AI client constructor instead.
  *
  * Mock chunks are copied from lib/utilities/mock-fetch.ts.
  */

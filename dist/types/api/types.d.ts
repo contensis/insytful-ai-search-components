@@ -51,7 +51,7 @@ export type CtaLink = Extract<Cta, {
 export type CtaEvent = Extract<Cta, {
     type: "event";
 }>;
-export type RAGMessage = {
+export type AIMessage = {
     role: "user" | "assistant";
     content: string;
     /** CTAs attached to the assistant message they arrived with (D1: per-message, persistent). */

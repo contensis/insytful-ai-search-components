@@ -1,5 +1,5 @@
 import { default as React } from 'react';
-import { Cta, RAGMessage } from '../api/rag.types';
+import { Cta, AIMessage } from '../api/types';
 /**
  * Creates a scoped context with a hook that throws if used outside the provider.
  * Standard compound-component context pattern.
@@ -14,7 +14,7 @@ export type SearchContextValue = {
         config: string;
         baseUrl: string;
     };
-    messages: RAGMessage[];
+    messages: AIMessage[];
     loading: boolean;
     elapsed: number;
     error?: string | null;
@@ -32,7 +32,7 @@ export type SearchContextValue = {
     /** Live summed height of `data-insytful-offset` host elements (sticky header etc.) */
     computedOffsetHeight: number;
 };
-export declare const SearchProvider: React.Provider<SearchContextValue | null>, useSearchContext: (consumerName: string) => SearchContextValue, useSearchContextSafe: () => SearchContextValue | null;
+export declare const SearchRootProvider: React.Provider<SearchContextValue | null>, useSearchContext: (consumerName: string) => SearchContextValue, useSearchContextSafe: () => SearchContextValue | null;
 export type ModeContextValue = {
     mode: string;
     onSwitchMode: (mode: string) => void;

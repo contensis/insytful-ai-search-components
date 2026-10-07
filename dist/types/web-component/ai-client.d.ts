@@ -1,4 +1,4 @@
-import { Cta } from '../api/rag.types';
+import { Cta } from '../api/types';
 /**
  * One event from a streamed `ask()` response.
  *
@@ -6,7 +6,7 @@ import { Cta } from '../api/rag.types';
  * payload holds objects with their own `type` field — reusing the name would
  * be a readability trap.
  */
-export type RAGStreamEvent = 
+export type AIStreamEvent = 
 /** One streamed answer token. */
 {
     kind: 'token';
@@ -17,21 +17,21 @@ export type RAGStreamEvent =
     kind: 'ctas';
     ctas: Cta[];
 };
-export interface RAGClientConfig {
+export interface AIClientConfig {
     baseUrl: string;
     projectId: string;
     sections?: string;
     /** Optional custom fetch function (e.g. mock for dev-mode). Defaults to window.fetch. */
     fetchFn?: typeof fetch;
 }
-export declare class RAGClient {
+export declare class AIClient {
     private baseUrl;
     private projectId;
     private sections?;
     private fetchFn;
-    constructor(config: RAGClientConfig);
+    constructor(config: AIClientConfig);
     /**
-     * Send a question to the RAG API and yield {@link RAGStreamEvent} objects
+     * Send a question to the AI Search API and yield {@link AIStreamEvent} objects
      * as Server-Sent Events arrive.
      *
      * BREAKING CHANGE (v3.0.0): `ask()` previously yielded plain content
@@ -41,7 +41,7 @@ export declare class RAGClient {
      * - `{ kind: "token", content: string }` — one streamed answer chunk
      * - `{ kind: "ctas", ctas: Cta[] }` — sanitized CTAs (only when non-empty)
      *
-     * Migration for existing `ragClient` consumers:
+     * Migration for existing `aiClient` consumers:
      * ```ts
      * let answer = "";
      * for await (const ev of client.ask(question)) {
@@ -52,7 +52,7 @@ export declare class RAGClient {
      * Malformed `cta` frame JSON logs a `[Insytful]` warn and is skipped —
      * streaming continues (never fail an answer over a decoration).
      */
-    ask(question: string, signal?: AbortSignal): AsyncGenerator<RAGStreamEvent, void, void>;
+    ask(question: string, signal?: AbortSignal): AsyncGenerator<AIStreamEvent, void, void>;
     /** Remove the stored session ID from localStorage. */
     static clearSession(): void;
 }

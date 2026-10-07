@@ -1,4 +1,4 @@
-import { Cta, CtaIntent } from '../../api/rag.types';
+import { Cta, CtaIntent } from '../../api/types';
 /** Hook class for the CTA row container (`role="group"`). */
 export declare const CTA_BAR_CLASS = "insytful-search-cta-bar";
 /** Hook class for the visible "Quick actions" micro-label above the row. */

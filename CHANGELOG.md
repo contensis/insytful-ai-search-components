@@ -1,12 +1,39 @@
 # Changelog
 
-## Unreleased
+## 5.0.0-beta.0 — 2026-10-07
+
+A beta. Install it with `npm install insytful-ai-search-components@beta`; `^4` ranges won't pick it up.
 
 **Breaking:** the old "RAG" names have been removed. See *Removed* below for the replacements.
 
 ### Added
 
 - **`InsytfulSearch.Provider`** shares `config`, `baseUrl` and `recaptchaSiteKey` with everything below it. It replaces `RAGProvider`, and the `SearchConfig` type is exported from the package root.
+- **`Search.Overview` and `Search.Root` read their config from `InsytfulSearch.Provider`** when `options` is omitted. `options` still wins when both are set. With neither, they throw "Pass `options` or wrap in <InsytfulSearch.Provider>".
+- **`InsytfulSearch.Keyword`: keyword search results.** It searches for `term` (`POST {baseUrl}/search`) and shows the results as a list of cards, with pagination below when there's more than one page. Takes `options` or reads them from `InsytfulSearch.Provider`, like the Overview.
+  - **Every state has a default you can replace.** `renderHit(hit, index)` (default: the result card below), `renderLoading` (three card-shaped skeletons), `renderError(error)` (the error callout, with a general message) and `renderEmpty` (nothing).
+  - **Errors:** branch on `error.code` in your own `renderError`. It's the API's code (e.g. `index_not_built`, `keyword_search_disabled`), or `network_error` when no usable response came back. The default callout doesn't show the API's message, which can be technical.
+  - **The default card** shows the image (left, or on top below 768px), the title as a link to `canonicalUrl` (or `url`), the publish date ("28 September 2026", in UTC, hidden when missing or invalid) and the snippet with the term in `<mark>`, falling back to the escaped description. The whole card is clickable. `hLevel` sets its heading level (default 3). Classes: `insytful-search-result-card` and its `-image`, `-body`, `-title`, `-link`, `-date` and `-snippet` parts.
+  - **Pagination** shows Previous, the first and last pages, the current page with one either side, and an ellipsis for skipped pages (e.g. 1 … 4 5 6 … 40), then Next. Pages are buttons; the current one has `aria-current="page"`. After a page change, the view scrolls to the top of the results and focus moves there. Classes: `insytful-search-pagination`, `-pagination-list`, `-pagination-item` (with `data-active`, `data-ellipsis` or `data-direction="previous|next"`) and `-pagination-link`.
+  - **Hook classes** on the list: `insytful-search-keyword`, `-keyword-list`, `-keyword-item`. State attributes on the root: `data-loading`, `data-error` (the error code) and `data-empty`, plus `aria-busy` while loading. Skeleton classes: `insytful-search-skeleton-card`, `-skeleton-card-image`, `-skeleton-card-body`.
+  - **`card.snippet` is HTML** with only `<mark>`, escaped by the API, so it's safe for `dangerouslySetInnerHTML` in your own card.
+  - **`isDevMode`** answers with 25 mock results over 3 pages for any term, with the term marked in each snippet, and makes no request. Like the Overview's dev mode, it stores a mock session id.
+  - Facets aren't rendered yet.
+- **`useKeywordSearch(config, baseUrl)`**, the hook behind it, returns `{ results, pagination, loading, error, search }`. `search(query, page?, pageSize?)` fetches a 1-based page (default 1) of `pageSize` results (default 10). A newer `search()` (or unmounting) cancels the one in flight. It shares the AI hooks' session id. Exported with the `KeywordSearchHit`, `KeywordResultCard`, `KeywordHighlights`, `KeywordPagination`, `KeywordSearchResponse`, `KeywordSearchError` and `KeywordSearchProps` types.
+- **`SearchErrorCalloutProps` and `SearchErrorCalloutCta` types**, for `InsytfulSearch.ErrorCallout`.
+- **New theme variables**, so more of the defaults can be restyled from the theme:
+
+  | Variables | For |
+  |---|---|
+  | `--insytful-result-card-bg`, `-border`, `-title`, `-title-hover`, `-date`, `-radius`, `-image-width` | the keyword result card (and its skeleton) |
+  | `--insytful-pagination-link`, `-link-hover`, `-item-bg-hover`, `-current-bg`, `-current-text`, `-gap`, `-radius`, `-item-size` | keyword pagination |
+  | `--insytful-prose-code-bg`, `-code-border`, `-pre-bg`, `-pre-text`, `-quote-bg`, `-quote-border` | code and quotes in answers (were fixed colours) |
+  | `--insytful-message-user-bg`, `--insytful-message-radius` | the user's question bubble (was `--insytful-btn-prompt-bg-default` and a fixed 8px) |
+  | `--insytful-scroll-hint-bg`, `--insytful-scroll-hint-border` | the modal's scroll-hint arrow (were fixed colours) |
+  | `--insytful-feedback-vote-bg-hover` | the Helpful / Unhelpful buttons' hover (was `--insytful-btn-show-more-bg-hover`) |
+  | `--insytful-callout-error-radius`, `--insytful-mode-tab-radius`, `--insytful-btn-icon-search-radius` | corners that were fixed |
+
+  Their defaults match the old look, except where *Changed* says otherwise.
 
 ### Removed
 
@@ -21,10 +48,29 @@
   | Web Component: `element.ragClient` | `element.aiClient` |
   | Web Component: `RAGStreamEvent` type | `AIStreamEvent` |
 
+- **Two theme variables that did nothing:** `--insytful-btn-icon-search-bg-disabled` and `--insytful-search-transition-duration-dev`. Nothing read them, so setting them had no effect.
+
 ### Changed
 
 - The session ID is now stored under the `insytful-session-id` localStorage key (was `rag-session-id`). The React components and the Web Component already clear it on every page load, so the only effect is that a session in progress when the new version deploys starts again.
 - The error thrown by the context hooks outside a provider now names `<InsytfulSearch.Provider>`.
+- **Some default corners are smaller**, which you'll see on every site that doesn't set them in its theme:
+
+  | Variable | Was | Now |
+  |---|---|---|
+  | `--insytful-modal-radius` | `0px` | `4px` |
+  | `--insytful-input-card-radius` | `16px` | `8px` |
+  | `--insytful-btn-prompt-radius` (suggestions) | `12px` | `4px` |
+  | `--insytful-mode-switch-radius` | `8px` | `4px` |
+
+  Set the old values in your theme to keep the old look.
+- **Links in answers keep their underline on hover**; it gets thicker instead of disappearing. The feedback "report" link does the same, and both fade their colour on hover.
+- **Loading skeletons:** the bullets in the Overview's answer-shaped skeleton are square, and the animated dots after the loading text no longer animate under `prefers-reduced-motion`.
+- `InsytfulSearch.ErrorCallout` moved to its own file. Its markup, classes and props are unchanged.
+
+### Fixed
+
+- **The conversational `Search.Overview` showed the search term instead of the answer under `<React.StrictMode>`** (development only). StrictMode runs the mount effect twice, and the cancelled first question stayed in the thread, so the answer ended up in the follow-ups, hidden until the Overview was expanded. The Overview now takes the first answer by role, and `useAIConversation` no longer adds an answer for a request that was cancelled while its response was arriving.
 
 ## 4.3.0 — 2026-09-30
 

@@ -1,10 +1,10 @@
 import { default as React } from 'react';
-import { RAGMessage } from '../api/rag.types';
+import { AIMessage } from '../api/types';
 import { SearchSkeletonProps } from './skeleton';
 import { SearchOverviewFeedback } from './feedback-reporting';
 import { VoteStateHandle } from './vote-state';
 export type MessageProps = {
-    message: RAGMessage;
+    message: AIMessage;
     logo?: React.ReactNode;
     renderContent?: (content: string) => React.ReactNode;
     showSkeleton?: boolean;
@@ -27,16 +27,6 @@ export type MessageProps = {
     disclaimer?: React.ReactNode;
 };
 export declare function Message({ message, logo, renderContent, showSkeleton, elapsed, searching, feedback, voteOptions, isStreaming, isFailed, voteState, disclaimer, }: MessageProps): React.JSX.Element;
-export type SearchErrorCalloutCta = {
-    text: string;
-    path: string;
-};
-export declare function SearchErrorCallout({ title, text, cta, onSwitchClassic, }: {
-    title?: string;
-    text?: string;
-    cta?: SearchErrorCalloutCta;
-    onSwitchClassic?: () => void;
-}): React.JSX.Element;
 export type SearchMessagesProps = {
     className?: string;
     searching?: SearchSkeletonProps['messages'];

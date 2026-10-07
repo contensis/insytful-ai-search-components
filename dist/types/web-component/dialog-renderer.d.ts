@@ -1,4 +1,4 @@
-import { Cta } from '../api/rag.types';
+import { Cta } from '../api/types';
 /** Sparkle — AI mode leading icon (mirrors `AiIcon` in search-input.tsx). */
 export declare const SPARKLE_ICON = "<svg focusable=\"false\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M10.6 9.6 9 15 7.4 9.6 2 8l5.4-1.6L9 1l1.6 5.4L16 8l-5.4 1.6Zm6.4 4.6 4-2.2-2.2 4 2.2 4-4-2.2-4 2.2 2.2-4-2.2-4 4 2.2ZM10 16l-1.7 3 1.7 3-3-1.7L4 22l1.7-3L4 16l3 1.7 3-1.7Z\"/></svg>";
 /** Magnifier — classic mode leading icon (mirrors `ClassicIcon`). */
@@ -112,7 +112,7 @@ export declare function renderModeSwitchTabs(modes: Array<{
 }>, activeMode: string, onSwitch: (mode: string) => void): HTMLDivElement;
 /**
  * Create an error callout `<li>` element.
- * The callout markup matches React's `SearchErrorCallout`.
+ * The callout markup matches React's `SearchErrorCallout` (search/search-error-callout.tsx).
  */
 export declare function renderErrorMessage(message: string, onSwitchClassic?: (() => void) | null, opts?: {
     title?: string;

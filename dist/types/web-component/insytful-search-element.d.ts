@@ -1,5 +1,5 @@
 import { DialogElements } from './dialog-renderer';
-import { RAGClient } from './rag-client';
+import { AIClient } from './ai-client';
 export declare class InsytfulSearchElement extends HTMLElement {
     static observedAttributes: string[];
     private _isOpen;
@@ -16,7 +16,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _prevScrollY;
     private _titleId;
     private _descriptionId;
-    private _ragClient;
+    private _aiClient;
     private _messages;
     private _isLoading;
     private _abortController;
@@ -49,8 +49,8 @@ export declare class InsytfulSearchElement extends HTMLElement {
     close(): void;
     /** Toggle the dialog open/closed. */
     toggle(): void;
-    /** Access the RAG client for sending queries. */
-    get ragClient(): RAGClient | null;
+    /** Access the AI client for sending queries. */
+    get aiClient(): AIClient | null;
     /** Access internal dialog elements (for unit 4/5 extensions). */
     get dialogElements(): DialogElements | null;
     private _setOpen;
@@ -79,7 +79,7 @@ export declare class InsytfulSearchElement extends HTMLElement {
     private _setupOffsetMeasurement;
     private _measureOffset;
     private _applyOffset;
-    private _buildRAGClient;
+    private _buildAIClient;
     /**
      * One-time parse of `<insytful-suggestion>` child elements.
      * CMS content is server-rendered so children are present at mount time.

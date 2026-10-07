@@ -1,4 +1,4 @@
-import { Cta, CtaEmail } from '../../api/rag.types';
+import { Cta, CtaEmail } from '../../api/types';
 /** Per-variant handler signatures, keyed on the closed `Cta["type"]` union. */
 export type CtaHandlerMap = {
     [K in Cta["type"]]: (cta: Extract<Cta, {

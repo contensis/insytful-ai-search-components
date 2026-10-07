@@ -25,7 +25,7 @@ export interface SSEFrame {
  *
  * Deliberate deviations from WHATWG §9.2.6 (documented and tested):
  * - a frame with an explicit `event:` name but no `data:` lines IS dispatched
- *   with `data: ""` — the RAG API's `done` terminator may arrive dataless and
+ *   with `data: ""` — the AI Search API's `done` terminator may arrive dataless and
  *   must never be dropped
  * - a final unterminated frame is flushed at end of stream, not discarded
  *

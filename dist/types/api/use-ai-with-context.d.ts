@@ -1,6 +1,6 @@
-export declare const useRAGResponseContext: () => {
+export declare const useAIResponseContext: () => {
     response: string;
-    ctas: import('./rag.types').Cta[];
+    ctas: import('./types').Cta[];
     loading: boolean;
     elapsed: number;
     error: string | null;
@@ -10,8 +10,8 @@ export declare const useRAGResponseContext: () => {
         mid: string;
     } | null;
 };
-export declare const useRAGConversationContext: () => {
-    messages: import('./rag.types').RAGMessage[];
+export declare const useAIConversationContext: () => {
+    messages: import('./types').AIMessage[];
     loading: boolean;
     error: string | null;
     elapsed: number;

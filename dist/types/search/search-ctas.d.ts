@@ -1,5 +1,5 @@
 import { default as React } from 'react';
-import { Cta } from '../api/rag.types';
+import { Cta } from '../api/types';
 export type SearchCtasProps = {
     /** Sanitized CTAs (post-`sanitizeCtas`) to render; nothing renders when absent/empty. */
     ctas?: Cta[];

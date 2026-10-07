@@ -1,7 +1,7 @@
 import { default as React } from 'react';
-import { Cta } from '../api';
+import { Cta, SearchConfig } from '../api';
 import { SearchSkeletonProps } from './skeleton';
-import { SearchErrorCalloutCta } from './search-messages';
+import { SearchErrorCalloutCta } from './search-error-callout';
 import { SearchOverviewFeedback } from './feedback-reporting';
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
@@ -15,11 +15,8 @@ export type SearchOverviewProp = {
     icon?: React.ReactNode;
     heading?: string;
     hLevel?: number;
-    options: {
-        config: string;
-        baseUrl: string;
-        recaptchaSiteKey?: string;
-    };
+    /** Connection config. Omit it inside `InsytfulSearch.Provider` to use the provider's. */
+    options?: SearchConfig;
     term: string;
     /** Controlled expansion. When set, the component no longer owns the
      *  expanded state and reports every change via `onExpandedChange`. */

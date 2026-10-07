@@ -1,5 +1,5 @@
-import { Cta } from '../api/rag.types';
-export declare const useRAGResponse: (config: string, baseUrl: string, recaptchaSiteKey?: string) => {
+import { Cta } from './types';
+export declare const useAIResponse: (config: string, baseUrl: string, recaptchaSiteKey?: string) => {
     response: string;
     ctas: Cta[];
     loading: boolean;
