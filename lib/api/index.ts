@@ -9,6 +9,17 @@ export { useAIResponseContext, useAIConversationContext } from "./use-ai-with-co
 export { useAIResponse } from "./use-ai-response";
 export { useAIConversation } from "./use-ai-conversation";
 
+// Keyword search
+export { useKeywordSearch } from "./use-keyword-search";
+export type {
+  KeywordSearchHit,
+  KeywordResultCard,
+  KeywordHighlights,
+  KeywordPagination,
+  KeywordSearchResponse,
+  KeywordSearchError,
+} from "./use-keyword-search";
+
 // Types
 export type {
   AIMessage,

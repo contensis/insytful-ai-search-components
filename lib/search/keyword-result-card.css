@@ -1,0 +1,82 @@
+/* Keyword result card — the default `renderHit`, laid out horizontally:
+   image on the left, title link, date and snippet on the right. Stacks
+   (image on top) below 768px. The title link's ::after covers the card, so
+   the whole card is the click target, and the focus ring is drawn on the
+   card for the same reason. The card clips its own corners, so the image
+   needs no radius in either layout (the outline isn't clipped). */
+
+.insytful-theme .insytful-search-result-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--insytful-result-card-border);
+  border-radius: var(--insytful-result-card-radius);
+  background: var(--insytful-result-card-bg);
+}
+.insytful-theme .insytful-search-result-card:has(.insytful-search-result-card-link:focus-visible) {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}
+
+.insytful-theme .insytful-search-result-card-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.insytful-theme .insytful-search-result-card-body {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+}
+
+.insytful-theme .insytful-search-result-card-title {
+  margin: 0 0 5px;
+  font-size: 1.1875em;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.insytful-theme .insytful-search-result-card-link {
+  color: var(--insytful-result-card-title);
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, 0.0625rem);
+  text-underline-offset: 0.15em;
+  transition: color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-result-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+/* Hovering anywhere on the card reads as hovering the link. */
+.insytful-theme .insytful-search-result-card:hover .insytful-search-result-card-link {
+  color: var(--insytful-result-card-title-hover);
+  text-decoration-thickness: max(3px, 0.1875rem);
+}
+.insytful-theme .insytful-search-result-card-link:focus-visible {
+  outline: none;
+}
+
+.insytful-theme .insytful-search-result-card-date {
+  margin: 0 0 10px;
+  font-size: 0.875em;
+  color: var(--insytful-result-card-date);
+}
+
+.insytful-theme .insytful-search-result-card-snippet {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .insytful-theme .insytful-search-result-card {
+    flex-direction: row;
+  }
+  .insytful-theme .insytful-search-result-card-image {
+    flex: 0 0 var(--insytful-result-card-image-width);
+    width: var(--insytful-result-card-image-width);
+    aspect-ratio: auto; /* stretches to the body's height */
+  }
+}

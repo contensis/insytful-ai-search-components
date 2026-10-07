@@ -11,7 +11,8 @@ import {
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { useMockFetch } from "../utilities/mock-fetch";
 import { SearchCtas } from "./search-ctas";
-import { Message, SearchErrorCallout, type SearchErrorCalloutCta } from "./search-messages";
+import { Message } from "./search-messages";
+import { SearchErrorCallout, type SearchErrorCalloutCta } from "./search-error-callout";
 import { SearchInput } from "./search-input";
 import { useStableId } from "./hooks.util";
 import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
@@ -324,7 +325,6 @@ const SearchOverviewBody = ({
     if (!body) return;
     // Strict: a reserved min-height makes scrollHeight at least collapsedHeight.
     const measure = () => setOverflowing(body.scrollHeight > collapsedHeight);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     measure();
     const content = body.querySelector(".insytful-search-overview-content");
     if (!content || typeof ResizeObserver === "undefined") return;

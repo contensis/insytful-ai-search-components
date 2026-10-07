@@ -88,10 +88,6 @@ const DialogContent = ({
         <InsytfulSearch.ErrorCallout
           title="Something went wrong"
           text="We couldn't reach the search service. Please try again."
-          cta={{
-            text: "Visit the help centre",
-            path: "https://www.example.com/help",
-          }}
         />
       )}
       {messages && messages.length > 0 && (

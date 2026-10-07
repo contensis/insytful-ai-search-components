@@ -36,27 +36,27 @@
   /* Modal surface */
   --insytful-modal-bg: #ffffff;
   --insytful-modal-max-width: 784px;
-  --insytful-modal-radius: 0px;
+  --insytful-modal-radius: 4px;
   --insytful-z-index: 999;
 
   /* Button - Prompt (suggestion chips) */
   --insytful-btn-prompt-bg-default: #e2eefa;
   --insytful-btn-prompt-bg-hover: #c8daec;
   --insytful-btn-prompt-text: #333333;
-  --insytful-btn-prompt-radius: 12px;
+  --insytful-btn-prompt-radius: 4px;
   --insytful-btn-prompt-focus: var(--insytful-semantic-focus-ring);
 
   /* Input card */
   --insytful-input-card-bg: #ffffff;
-  --insytful-input-card-radius: 16px;
+  --insytful-input-card-radius: 8px;
   --insytful-input-card-border: var(--insytful-semantic-search-field-stroke);
   --insytful-input-card-border-width: 1px;
 
   /* Button - Icon Search */
   --insytful-btn-icon-search-bg-default: #2e3339;
   --insytful-btn-icon-search-bg-hover: #3c444d;
-  --insytful-btn-icon-search-bg-disabled: #e7e7e7;
   --insytful-btn-icon-search-icon: #ffffff;
+  --insytful-btn-icon-search-radius: 9999px;
 
   /* Button - Close */
   --insytful-btn-close-bg: transparent;
@@ -102,6 +102,42 @@
      or an Overview follow-up */
   --insytful-message-footer-border: #e5e7eb;
 
+  /* Prose in answers: inline code, code blocks and blockquotes */
+  --insytful-prose-code-bg: #f7fafc;
+  --insytful-prose-code-border: #e2e8f0;
+  --insytful-prose-pre-bg: #2d3748;
+  --insytful-prose-pre-text: #e2e8f0;
+  --insytful-prose-quote-bg: #f7fafc;
+  --insytful-prose-quote-border: var(--insytful-brand-primary);
+
+  /* Messages: the user's question bubble, and the scroll-hint arrow button */
+  --insytful-message-user-bg: #e2eefa;
+  --insytful-message-radius: 8px;
+  --insytful-scroll-hint-bg: #ffffff;
+  --insytful-scroll-hint-border: #e5e7eb;
+
+  /* Answer feedback: helpful / unhelpful vote buttons */
+  --insytful-feedback-vote-bg-hover: #f2f2f2;
+
+  /* Keyword result card: bordered card, link-coloured title */
+  --insytful-result-card-bg: #ffffff;
+  --insytful-result-card-border: #e8e8e8;
+  --insytful-result-card-title: var(--insytful-text-link-default);
+  --insytful-result-card-title-hover: var(--insytful-text-link-hover);
+  --insytful-result-card-date: var(--insytful-text-muted);
+  --insytful-result-card-radius: 4px;
+  --insytful-result-card-image-width: 200px;
+
+  /* Keyword pagination: link-coloured page links, the current page a filled box */
+  --insytful-pagination-link: var(--insytful-text-link-default);
+  --insytful-pagination-link-hover: var(--insytful-text-link-hover);
+  --insytful-pagination-item-bg-hover: #f2f2f2;
+  --insytful-pagination-current-bg: var(--insytful-text-link-default);
+  --insytful-pagination-current-text: #ffffff;
+  --insytful-pagination-gap: 8px;
+  --insytful-pagination-radius: 4px;
+  --insytful-pagination-item-size: 45px; /* min width and height of a page box */
+
   /* Callout Error  */
   --insytful-callout-error-border: #d93025;
   --insytful-callout-error-bg: #fce8e6;
@@ -109,14 +145,16 @@
   --insytful-callout-error-cta-bg: #2e3339;
   --insytful-callout-error-cta-text: #ffffff;
   --insytful-callout-error-cta-border-radius: 4px;
+  --insytful-callout-error-radius: 4px; /* right-hand corners; the left is the coloured bar */
 
   /* Mode switch tabs (Web Component only; React exposes SearchModeSwitch as a
      render prop and leaves the markup to you) */
   --insytful-mode-switch-bg: #f2eff8;
-  --insytful-mode-switch-radius: 8px;
+  --insytful-mode-switch-radius: 4px;
   --insytful-mode-tab-text: #6c6c6c;
   --insytful-mode-tab-active-bg: #ffffff;
   --insytful-mode-tab-active-text: #333333;
+  --insytful-mode-tab-radius: 4px;
 
   /* Semantic - Search Field */
   --insytful-semantic-search-field-stroke: #333333;
@@ -136,6 +174,5 @@
   /* Transition */
   --insytful-search-transition-duration: 200ms;
   --insytful-search-transition-easing: ease;
-  --insytful-search-transition-duration-dev: 5000ms;
 }
 

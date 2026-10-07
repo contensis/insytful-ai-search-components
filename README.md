@@ -97,6 +97,33 @@ Also: `heading`, `hLevel`, `icon`, `searching`, `error`, `onCtaClick`,
 `placeholder`, `isDevMode`, `className`, `style`. Root state attributes:
 `data-overflowing`, `data-expanded`, `data-conversational`, `data-error`.
 
+### `Search.Keyword`
+
+Keyword search results: a list of result cards, with pagination when there's
+more than one page.
+
+```tsx
+<InsytfulSearch.Keyword
+  term={searchTerm}
+  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  renderEmpty={() => <p>No results for “{searchTerm}”.</p>}
+/>
+```
+
+- `renderHit(hit, index)` — your own card. Defaults to the library's result
+  card; `hLevel` sets its heading level (default 3). `hit.card.snippet` is HTML
+  with only `<mark>`, escaped by the API.
+- `renderError(error)` — defaults to `Search.ErrorCallout` with a general
+  message. Branch on `error.code` (e.g. `index_not_built`) for your own.
+- `renderLoading` — defaults to card-shaped skeletons. `renderEmpty` renders
+  nothing by default.
+- `options` can be left off inside `InsytfulSearch.Provider`, as with
+  `Search.Overview`.
+
+Also: `isDevMode`, `className`. Root state attributes: `data-loading`,
+`data-error` (the error code), `data-empty`. For a fully custom UI, use the
+`useKeywordSearch(config, baseUrl)` hook.
+
 ### Feedback
 
 `feedback` on `Search.Overview` and `Search.Messages` takes the same object:

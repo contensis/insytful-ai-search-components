@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { mockKeywordResponse, mockResults } from './mock-keyword-search';
 
 const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => void) => {
   const originalFetch = window.fetch;
@@ -15,6 +16,14 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Keyword search: the requested page of 25 results for the posted term
+    // (3 pages at the hook's default page size of 10). Before the catch-all
+    // below, which answers every other request with the AI stream.
+    if (url.startsWith(baseUrl) && /\/search$/.test(url)) {
+      const { q = '', page = 1, pageSize = 10 } = JSON.parse(String(init?.body ?? '{}'));
+      return mockKeywordResponse(mockResults(q, 25, page, pageSize), { signal: init?.signal });
     }
 
     if (url.startsWith(baseUrl)) {

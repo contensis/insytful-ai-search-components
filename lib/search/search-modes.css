@@ -27,7 +27,7 @@
 .insytful-theme .insytful-search-mode-tab {
   padding: 4px 12px;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: var(--insytful-mode-tab-radius);
   background: transparent;
   color: var(--insytful-mode-tab-text);
   font-size: 13px;

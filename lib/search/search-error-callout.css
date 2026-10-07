@@ -1,0 +1,72 @@
+/* Search.ErrorCallout — the shared error state (Overview, modal, Web Component). */
+
+.insytful-theme .insytful-search-error-callout-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--insytful-modal-max-width);
+  margin: 0 auto;
+  padding: 16px;
+  border-left: 4px solid var(--insytful-callout-error-border);
+  border-radius: 0 var(--insytful-callout-error-radius) var(--insytful-callout-error-radius) 0;
+  background: var(--insytful-callout-error-bg);
+  color: var(--insytful-callout-error-text);
+}
+
+.insytful-theme .insytful-search-error-callout-content {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insytful-theme .insytful-search-error-callout-title,
+.insytful-theme .insytful-search-error-callout-text {
+  margin: 0;
+  color: var(--insytful-callout-error-text);
+}
+.insytful-theme .insytful-search-error-callout-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.insytful-theme .insytful-search-error-callout-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: var(--insytful-callout-error-cta-border-radius);
+  background: var(--insytful-callout-error-cta-bg);
+  color: var(--insytful-callout-error-cta-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-error-callout-cta:hover {
+  opacity: 0.9;
+}
+
+.insytful-theme .insytful-search-error-callout-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--insytful-callout-error-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.insytful-theme .insytful-search-error-callout-btn:hover {
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+.insytful-theme .insytful-search-error-callout-btn:focus-visible,
+.insytful-theme .insytful-search-error-callout-cta:focus-visible {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: var(--insytful-semantic-focus-ring-offset);
+}

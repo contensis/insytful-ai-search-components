@@ -20,7 +20,9 @@ export type { SearchDescriptionProps } from "./search-description";
 export { SearchInput as Input } from "./search-input";
 export type { SearchInputProps } from "./search-input";
 
-export { SearchMessages as Messages, SearchErrorCallout as ErrorCallout } from "./search-messages";
+export { SearchMessages as Messages } from "./search-messages";
+export { SearchErrorCallout as ErrorCallout } from "./search-error-callout";
+export type { SearchErrorCalloutCta, SearchErrorCalloutProps } from "./search-error-callout";
 export type { SearchMessagesProps } from "./search-messages";
 
 export { SearchCtas as Ctas } from "./search-ctas";
@@ -35,6 +37,9 @@ export type { SearchDisclaimerProps } from "./search-disclaimer";
 export { SearchOverview as Overview } from "./ai-overview";
 export type { SearchOverviewProp, SearchOverviewType } from "./ai-overview";
 export type { SearchOverviewFeedback, SearchOverviewVote } from "./feedback-reporting";
+
+export { KeywordSearch as Keyword } from "./keyword-search";
+export type { KeywordSearchProps } from "./keyword-search";
 
 export {
   SearchModes as Modes,

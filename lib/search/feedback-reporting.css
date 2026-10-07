@@ -1,23 +1,25 @@
 /* Feedback row: report link + helpful / unhelpful vote */
 .insytful-theme .insytful-search-overview-feedback {
-  font-size: 14px;
-  outline: none; /* only focused programmatically (tabIndex -1) */
-
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  
   gap: 8px;
+  font-size: 14px;
+  outline: none; /* only focused programmatically (tabIndex -1) */
 }
 
 .insytful-theme .insytful-search-overview-feedback-report {
   color: var(--insytful-text-link-default);
   text-decoration: underline;
+  text-decoration-thickness: max(1px, 0.0625rem);
+  text-underline-offset: 0.15em;
+  transition: color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
 }
 
 .insytful-theme .insytful-search-overview-feedback-report:hover {
   color: var(--insytful-text-link-hover);
+  text-decoration-thickness: max(3px, 0.1875rem);
 }
 
 .insytful-theme .insytful-search-overview-feedback-report:focus-visible,
@@ -37,14 +39,15 @@
   justify-content: center;
   padding: 8px;
   border: 0;
-  border-radius: 99px;
+  border-radius: 9999px;
   background: none;
   color: var(--insytful-text-default);
   cursor: pointer;
+  transition: background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
 }
 
 .insytful-theme .insytful-search-overview-feedback-vote:hover {
-  background: var(--insytful-btn-show-more-bg-hover);
+  background: var(--insytful-feedback-vote-bg-hover);
 }
 
 .insytful-theme .insytful-search-overview-feedback-vote[aria-pressed="true"] {

@@ -1,0 +1,78 @@
+/* Search.Keyword pagination — Previous, page numbers and Next, with an
+   ellipsis item (`data-ellipsis`) for skipped pages. The current page is
+   `data-active` on the item. Each page is a button (`-link`, styled as a
+   link) whose ::after covers its item, so the whole box is the click target,
+   and the focus ring is drawn on the item for the same reason. */
+
+.insytful-theme .insytful-search-pagination {
+  margin: 0 0 30px;
+}
+
+.insytful-theme .insytful-search-pagination-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--insytful-pagination-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.insytful-theme .insytful-search-pagination-item {
+  position: relative;
+  min-width: var(--insytful-pagination-item-size);
+  min-height: var(--insytful-pagination-item-size);
+  margin: 0;
+  padding: 10px 15px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: var(--insytful-pagination-radius);
+  transition: background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-pagination-item:hover {
+  background: var(--insytful-pagination-item-bg-hover);
+}
+.insytful-theme .insytful-search-pagination-item:has(.insytful-search-pagination-link:focus-visible) {
+  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
+  outline-offset: 0;
+  z-index: 1;
+}
+/* After :hover, so the ellipsis gets no hover fill and the current page
+   keeps its own. */
+.insytful-theme .insytful-search-pagination-item[data-ellipsis] {
+  background: none;
+  color: var(--insytful-text-muted);
+  font-weight: 700;
+}
+.insytful-theme .insytful-search-pagination-item[data-active] {
+  background: var(--insytful-pagination-current-bg);
+  font-weight: 700;
+}
+
+.insytful-theme .insytful-search-pagination-link {
+  display: block;
+  width: 100%;
+  color: var(--insytful-pagination-link);
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, 0.0625rem);
+  text-underline-offset: 0.15em;
+  transition: color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
+}
+.insytful-theme .insytful-search-pagination-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.insytful-theme .insytful-search-pagination-link:hover {
+  color: var(--insytful-pagination-link-hover);
+  text-decoration-thickness: max(3px, 0.1875rem);
+}
+.insytful-theme .insytful-search-pagination-link:focus-visible {
+  outline: none;
+}
+/* :hover listed too: the build drops the ancestors' weight, so without it
+   the link :hover rule above would out-rank this one. */
+.insytful-theme .insytful-search-pagination-item[data-active] .insytful-search-pagination-link,
+.insytful-theme .insytful-search-pagination-item[data-active] .insytful-search-pagination-link:hover {
+  color: var(--insytful-pagination-current-text);
+  text-decoration: none;
+}

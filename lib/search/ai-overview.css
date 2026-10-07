@@ -61,13 +61,12 @@
 }
 
 .insytful-theme .insytful-search-overview-show-more {
-  max-width: 100%;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  width: 100%;
+  max-width: 100%;
   margin-top: 12px;
   padding: 12px 20px;
   border: 1px solid var(--insytful-btn-show-more-border);
@@ -78,6 +77,7 @@
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
+  text-align: center;
   cursor: pointer;
   transition: background-color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
 }

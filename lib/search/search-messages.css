@@ -66,7 +66,7 @@
 .insytful-theme .insytful-search-message-content-outer {
   font-size: 1em;
   line-height: 2;
-  border-radius: 16px;
+  border-radius: var(--insytful-message-radius);
   color: var(--insytful-text-default);
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -78,7 +78,7 @@
   align-items: flex-end;
   gap: 10px;
   padding: 12px 16px;
-  background: var(--insytful-btn-prompt-bg-default);
+  background: var(--insytful-message-user-bg);
 }
 .insytful-theme .insytful-search-message[data-role="assistant"] .insytful-search-message-content-outer {
   width: 100%;
@@ -141,9 +141,9 @@
   min-width: 42px;
   height: 42px;
   padding: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--insytful-scroll-hint-border);
   border-radius: 9999px;
-  background: #ffffff;
+  background: var(--insytful-scroll-hint-bg);
   color: var(--insytful-text-default);
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
   animation: insytful-slide-to-bounce 2s ease-in-out infinite;
@@ -168,76 +168,4 @@
     display: block;
     gap: 0;
   }
-}
-
-/* Search.ErrorCallout (lives in search-messages.tsx) */
-
-.insytful-theme .insytful-search-error-callout-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-  max-width: var(--insytful-modal-max-width);
-  margin: 0 auto;
-  padding: 16px;
-  border-left: 4px solid var(--insytful-callout-error-border);
-  border-radius: 0 8px 8px 0;
-  background: var(--insytful-callout-error-bg);
-  color: var(--insytful-callout-error-text);
-}
-
-.insytful-theme .insytful-search-error-callout-content {
-  display: flex;
-  flex: 1 1 0%;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.insytful-theme .insytful-search-error-callout-title,
-.insytful-theme .insytful-search-error-callout-text {
-  margin: 0;
-  color: var(--insytful-callout-error-text);
-}
-.insytful-theme .insytful-search-error-callout-title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.insytful-theme .insytful-search-error-callout-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  border-radius: var(--insytful-callout-error-cta-border-radius);
-  background: var(--insytful-callout-error-cta-bg);
-  color: var(--insytful-callout-error-cta-text);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: opacity var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
-}
-.insytful-theme .insytful-search-error-callout-cta:hover {
-  opacity: 0.9;
-}
-
-.insytful-theme .insytful-search-error-callout-btn {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--insytful-callout-error-text);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.insytful-theme .insytful-search-error-callout-btn:hover {
-  opacity: 0.8;
-  text-decoration: none;
-}
-
-.insytful-theme .insytful-search-error-callout-btn:focus-visible,
-.insytful-theme .insytful-search-error-callout-cta:focus-visible {
-  outline: var(--insytful-semantic-focus-ring-width) solid var(--insytful-semantic-focus-ring);
-  outline-offset: var(--insytful-semantic-focus-ring-offset);
 }

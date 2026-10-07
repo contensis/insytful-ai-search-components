@@ -65,12 +65,15 @@
 .insytful-theme .insytful-search-overview-content a {
   color: var(--insytful-text-link-default);
   text-decoration: underline;
+  text-decoration-thickness: max(1px, 0.0625rem);
+  text-underline-offset: 0.15em;
   font-weight: 500;
+  transition: color var(--insytful-search-transition-duration) var(--insytful-search-transition-easing);
 }
 .insytful-theme .insytful-search-message-content a:hover,
 .insytful-theme .insytful-search-overview-content a:hover {
   color: var(--insytful-text-link-hover);
-  text-decoration: none;
+  text-decoration-thickness: max(3px, 0.1875rem);
 }
 .insytful-theme .insytful-search-message-content a:focus-visible,
 .insytful-theme .insytful-search-overview-content a:focus-visible {
@@ -105,8 +108,8 @@
 }
 .insytful-theme .insytful-search-message-content code,
 .insytful-theme .insytful-search-overview-content code {
-  background-color: #f7fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--insytful-prose-code-bg);
+  border: 1px solid var(--insytful-prose-code-border);
   border-radius: 4px;
   padding: 2px 6px;
   font-family: monospace;
@@ -114,8 +117,8 @@
 }
 .insytful-theme .insytful-search-message-content pre,
 .insytful-theme .insytful-search-overview-content pre {
-  background-color: #2d3748;
-  color: #e2e8f0;
+  background-color: var(--insytful-prose-pre-bg);
+  color: var(--insytful-prose-pre-text);
   border-radius: 8px;
   padding: 1em;
   overflow-x: auto;
@@ -130,12 +133,12 @@
 }
 .insytful-theme .insytful-search-message-content blockquote,
 .insytful-theme .insytful-search-overview-content blockquote {
-  border-left: 4px solid var(--insytful-brand-primary);
+  border-left: 4px solid var(--insytful-prose-quote-border);
   padding: 0.75em 1em;
   margin: 1em 0;
   font-style: italic;
   color: var(--insytful-text-muted);
-  background-color: #f7fafc;
+  background-color: var(--insytful-prose-quote-bg);
   border-radius: 0 4px 4px 0;
 }
 .insytful-theme .insytful-search-message-content blockquote p,

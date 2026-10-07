@@ -90,7 +90,6 @@
 .insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-textarea {
   min-height: 48px;
   padding: 12px 54px 12px 38px;
-  border-radius: 8px;
 }
 
 /* Send / search button */
@@ -106,14 +105,11 @@
   height: 40px;
   padding: 0;
   border: none;
-  border-radius: 9999px;
+  border-radius: var(--insytful-btn-icon-search-radius);
   background: var(--insytful-btn-icon-search-bg-default);
   color: var(--insytful-btn-icon-search-icon);
   cursor: pointer;
   transform: translateY(-50%);
-}
-.insytful-theme .insytful-search-message-input[data-embedded] .insytful-search-message-input-btn {
-  right: 8px;
 }
 .insytful-theme .insytful-search-message-input-btn:hover {
   background: var(--insytful-btn-icon-search-bg-hover);

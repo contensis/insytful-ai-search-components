@@ -57,7 +57,9 @@
   }
   .insytful-theme .insytful-search-messages-icon,
   .insytful-theme .insytful-search-skeleton-bar,
+  .insytful-theme .insytful-search-skeleton-card-image,
   .insytful-theme .insytful-search-skeleton-text,
+  .insytful-theme .insytful-search-skeleton-dot,
   .insytful-theme .insytful-search-cta-btn {
     animation: none;
   }

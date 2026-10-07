@@ -463,7 +463,7 @@ export function renderModeSwitchTabs(
 
 /**
  * Create an error callout `<li>` element.
- * The callout markup matches React's `SearchErrorCallout`.
+ * The callout markup matches React's `SearchErrorCallout` (search/search-error-callout.tsx).
  */
 export function renderErrorMessage(
   message: string,

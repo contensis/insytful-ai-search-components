@@ -13,7 +13,7 @@
 
 :where(.insytful-theme [class*="insytful-search-"]),
 :where(.insytful-theme [class*="insytful-search-"])::before,
-:where(.insytful-theme [class*="insytful-search-"])::after{
+:where(.insytful-theme [class*="insytful-search-"])::after {
   box-sizing: border-box;
 }
 :where(.insytful-theme button[class*="insytful-search-"]),

@@ -45,8 +45,10 @@ export type { SearchTriggerProps } from "./search/search-trigger";
 export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps } from "./search/search-modes";
 export type { SearchSuggestionsProps } from "./search/search-suggestions";
 export type { SearchCtasProps } from "./search/search-ctas";
+export type { SearchErrorCalloutProps, SearchErrorCalloutCta } from "./search/search-error-callout";
 export type { SearchOverviewProp, SearchOverviewType } from "./search/ai-overview";
 export type { SearchOverviewFeedback, SearchOverviewVote } from "./search/feedback-reporting";
+export type { KeywordSearchProps } from "./search/keyword-search";
 
 // AI hooks — used internally by Search.Root, also available standalone.
 // Wrap them in <InsytfulSearch.Provider> for the context-reading variants.
@@ -55,6 +57,17 @@ export {
   useAIResponseContext,
   useAIConversation,
   useAIConversationContext,
+} from "./api";
+
+// Keyword search hook — used by InsytfulSearch.Keyword, also available standalone.
+export { useKeywordSearch } from "./api";
+export type {
+  KeywordSearchHit,
+  KeywordResultCard,
+  KeywordHighlights,
+  KeywordPagination,
+  KeywordSearchResponse,
+  KeywordSearchError,
 } from "./api";
 export type {
   SearchConfig,

@@ -59,10 +59,14 @@
 @import "../search/search-suggestions.css";
 @import "../search/search-modes.css";
 @import "../search/search-messages.css";
+@import "../search/search-error-callout.css";
 @import "../search/search-ctas.css";
 @import "../search/skeleton.css";
 @import "../search/ai-overview.css";
 @import "../search/feedback-reporting.css";
+@import "../search/keyword-search.css";
+@import "../search/keyword-result-card.css";
+@import "../search/keyword-pagination.css";
 
 /* Shared by messages + overview, and keyframes used across components */
 @import "./prose.css";

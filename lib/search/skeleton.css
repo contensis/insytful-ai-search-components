@@ -32,7 +32,7 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 0;
-  gap: 10px;
+  gap: 16px;
   height: 0;
   min-height: 0;
   overflow: hidden;
@@ -86,7 +86,6 @@
   left: 8px;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
   background: var(--insytful-skeleton-bg);
 }
 /* Alternate item widths so the list doesn't read as a block. */
@@ -113,4 +112,61 @@
 
 .insytful-theme .insytful-search-skeleton-dot {
   animation: insytful-skeleton-dots 1.5s ease-in-out infinite;
+}
+
+/* Result-card skeleton for Search.Keyword: the same box as the default
+   result card (keyword-result-card.css), so nothing jumps when results
+   arrive. An image box, then a title bar and three lines of text; the image
+   sits on top below 768px and to the left above. */
+.insytful-theme .insytful-search-skeleton-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--insytful-result-card-border);
+  border-radius: var(--insytful-result-card-radius);
+  background: var(--insytful-result-card-bg);
+}
+
+.insytful-theme .insytful-search-skeleton-card-image {
+  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: var(--insytful-skeleton-bg);
+  background-image: var(--insytful-skeleton-shimmer);
+  background-size: 200% 100%;
+  animation: insytful-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.insytful-theme .insytful-search-skeleton-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 20px;
+}
+/* Title: taller and shorter than the text lines below it. */
+.insytful-theme .insytful-search-skeleton-card-body > .insytful-search-skeleton-bar:nth-child(1) {
+  width: 55%;
+  height: 20px;
+  margin-bottom: 4px;
+}
+.insytful-theme .insytful-search-skeleton-card-body > .insytful-search-skeleton-bar:nth-child(2) {
+  width: 100%;
+}
+.insytful-theme .insytful-search-skeleton-card-body > .insytful-search-skeleton-bar:nth-child(3) {
+  width: 95%;
+}
+.insytful-theme .insytful-search-skeleton-card-body > .insytful-search-skeleton-bar:nth-child(4) {
+  width: 70%;
+}
+
+@media (min-width: 768px) {
+  .insytful-theme .insytful-search-skeleton-card {
+    flex-direction: row;
+  }
+  .insytful-theme .insytful-search-skeleton-card-image {
+    width: var(--insytful-result-card-image-width);
+    aspect-ratio: auto; /* stretches to the body's height */
+  }
 }

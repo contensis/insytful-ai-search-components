@@ -1,0 +1,17 @@
+/* Search.Keyword: list spacing, for the results and the loading skeleton.
+   The default card is in keyword-result-card.css; a `renderHit` card is the
+   consumer's to style. */
+/* Focused only programmatically (tabIndex -1), after a page change. */
+.insytful-theme .insytful-search-keyword {
+  outline: none;
+}
+
+.insytful-theme .insytful-search-keyword-list {
+  list-style: none;
+  padding: 0;
+  margin: 40px 0;
+}
+
+.insytful-theme .insytful-search-keyword-item:not(:last-child) {
+  margin-bottom: 24px;
+}

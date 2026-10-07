@@ -2,11 +2,23 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
-import type { SearchOverviewFeedback, SearchOverviewType } from "../../lib/main";
-import { renderMarkdown, useFailingFetch, usePendingFetch, options } from "../helpers";
+import type {
+  SearchOverviewFeedback,
+  SearchOverviewType,
+} from "../../lib/main";
+import {
+  renderMarkdown,
+  useFailingFetch,
+  usePendingFetch,
+  options,
+} from "../helpers";
 
 const feedback: SearchOverviewFeedback = {
-  report: { text: "Report an error", href: "https://www.example.com/report", newTab: true },
+  report: {
+    text: "Report an error",
+    href: "https://www.example.com/report",
+    newTab: true,
+  },
   onVote: fn().mockName("onVote"),
 };
 
@@ -23,8 +35,8 @@ const css = `
 
   .sb-insytful-search-input {
     font-family: 'Nunito Sans';
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid #b1b4b6;
+    border-radius: 4px;
     padding: 8px 12px;
     font-size: 14px;
     min-height: 42px;
@@ -65,25 +77,25 @@ function OverviewPage({
 
   return (
     <Theme css={css}>
-    <div style={{ padding: 24, maxWidth: 760 }}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setTerm(draft.trim());
-        }}
-      >
-        <label>
-          <span className="sb-insytful-search-label">Search</span>
-          <input
-            className="sb-insytful-search-input"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type a question and press Enter"
-          />
-        </label>
-      </form>
+      <div style={{ padding: 24, maxWidth: 760 }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setTerm(draft.trim());
+          }}
+        >
+          <label>
+            <span className="sb-insytful-search-label">Search</span>
+            <input
+              className="sb-insytful-search-input"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Type a question and press Enter"
+            />
+          </label>
+        </form>
 
-      {term && (
+        {term && (
           <InsytfulSearch.Overview
             type={type}
             term={term}
@@ -97,12 +109,10 @@ function OverviewPage({
             error={{
               title: "We couldn't generate an overview",
               text: "The rest of your search results are unaffected.",
-              cta: { text: "Visit the help centre", path: "https://www.example.com/help" },
             }}
           />
-
-      )}
-    </div>
+        )}
+      </div>
     </Theme>
   );
 }
@@ -121,11 +131,18 @@ const meta: Meta = { title: "React/Overview" };
 export default meta;
 type Story = StoryObj;
 
-const disclaimer = "AI generated answers may not always be accurate. Please verify information.";
+const disclaimer =
+  "AI generated answers may not always be accurate. Please verify information.";
 
 /** The disclaimer sits under each finished answer, as in the feedback story. */
 export const DefaultState: Story = {
-  render: () => <OverviewPage isDevMode disclaimer={disclaimer} />,
+  render: () => (
+    <OverviewPage
+      openWith="How do I apply?"
+      disclaimer={disclaimer}
+      isDevMode
+    />
+  ),
 };
 
 export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
@@ -142,7 +159,9 @@ export const LoadingState: Story = { render: () => <LoadingStateDemo /> };
  * follow-up input. Each follow-up renders beneath the first answer.
  */
 export const ConversationalState: Story = {
-  render: () => <OverviewPage isDevMode type="conversational" openWith="How do I apply?" />,
+  render: () => (
+    <OverviewPage isDevMode type="conversational" openWith="How do I apply?" />
+  ),
 };
 
 /**
