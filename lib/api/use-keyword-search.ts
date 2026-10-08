@@ -76,8 +76,9 @@ export type KeywordSearchError = { code: string; message: string };
  *
  * @param config - The search config alias.
  * @param baseUrl - The API base URL, as for the AI hooks.
+ * @param searchConfig - An aggregated search's slug; `config` then only names the home site.
  */
-export const useKeywordSearch = (config: string, baseUrl: string) => {
+export const useKeywordSearch = (config: string, baseUrl: string, searchConfig?: string) => {
   const [results, setResults] = useState<KeywordSearchHit[]>([]);
   const [pagination, setPagination] = useState<KeywordPagination | null>(null);
   const [loading, setLoading] = useState(false);
@@ -106,6 +107,7 @@ export const useKeywordSearch = (config: string, baseUrl: string) => {
 
       const payloadToSend = {
         config: config,
+        ...(searchConfig ? { searchConfig } : {}),
         q: query,
         page: pageNumber ?? 1,
         pageSize: pageSize ?? 10,
@@ -169,7 +171,7 @@ export const useKeywordSearch = (config: string, baseUrl: string) => {
         setLoading(false);
       }
     },
-    [config, baseUrl],
+    [config, searchConfig, baseUrl],
   );
 
   return { error, results, pagination, loading, search };

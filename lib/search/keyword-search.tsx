@@ -117,12 +117,13 @@ export const KeywordSearch = ({
   const opts = useMemo(
     () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolved.config, resolved.baseUrl, resolved.recaptchaSiteKey],
+    [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey],
   );
 
   const { results, pagination, loading, error, search } = useKeywordSearch(
-    opts.config,
+    opts.config || "",
     opts.baseUrl,
+    opts.searchConfig,
   );
 
   // Before the search effect: effects run in order, so the mock is in place for the first request.

@@ -103,6 +103,22 @@ describe("useAIConversation", () => {
     });
   });
 
+  it("sends searchConfig alongside config for an aggregated search", async () => {
+    const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
+    const { result } = renderHook(() =>
+      useAIConversation("member-site", "https://api.example.com", undefined, "marketing-sites")
+    );
+
+    await act(async () => {
+      await result.current.ask("question");
+    });
+
+    expect(requestBody(fetchMock)).toMatchObject({
+      config: "member-site",
+      searchConfig: "marketing-sites",
+    });
+  });
+
   it("serializes the sections param when provided", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
     const { result } = renderHook(() => useAIConversation("my-config", "https://api.example.com"));

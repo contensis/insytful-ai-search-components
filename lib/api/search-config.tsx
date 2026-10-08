@@ -2,7 +2,17 @@ import React, { createContext, useContext } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 export type SearchConfig = {
-  config: string;
+  /**
+   * A site's config alias. With `searchConfig` it is optional and names the
+   * member site the search is embedded on, whose pages are favoured; an alias
+   * that isn't a member is ignored.
+   */
+  config?: string;
+  /**
+   * The slug of an aggregated search, which answers from several sites' content
+   * under its own settings. Sessions, votes and usage are keyed on the slug.
+   */
+  searchConfig?: string;
   baseUrl: string;
   /**
    * Optional reCAPTCHA site key for human verification. When set, every query
@@ -22,16 +32,18 @@ export const SearchConfigProvider = ({
   children,
   baseUrl,
   config,
+  searchConfig,
   recaptchaSiteKey,
 }: {
   children: React.ReactNode;
-  config: string;
+  config?: string;
+  searchConfig?: string;
   baseUrl: string;
   recaptchaSiteKey?: string;
 }) => {
   const parent = useContext(SearchConfigContext);
   const content = (
-    <SearchConfigContext.Provider value={{ config, baseUrl, recaptchaSiteKey }}>
+    <SearchConfigContext.Provider value={{ config, searchConfig, baseUrl, recaptchaSiteKey }}>
       {children}
     </SearchConfigContext.Provider>
   );

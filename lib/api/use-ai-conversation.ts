@@ -14,6 +14,8 @@ export const useAIConversation = (
   config: string,
   baseUrl: string,
   recaptchaSiteKey?: string,
+  /** An aggregated search's slug; `config` then only names the home site. */
+  searchConfig?: string,
 ) => {
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,6 +71,8 @@ export const useAIConversation = (
           history: true,
           stream: true,
         };
+
+        if (searchConfig) body.searchConfig = searchConfig;
 
         if (sections && sections?.length >= 1) {
           body.sections = sections.join(",");
@@ -194,7 +198,7 @@ export const useAIConversation = (
         setElapsed(0);
       }
     },
-    [config, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
+    [config, searchConfig, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
   return { messages, loading, error, elapsed, ask };
