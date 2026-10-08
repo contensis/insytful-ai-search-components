@@ -73,8 +73,9 @@ export type KeywordSearchError = {
  *
  * @param config - The search config alias.
  * @param baseUrl - The API base URL, as for the AI hooks.
+ * @param searchConfig - An aggregated search's slug; `config` then only names the home site.
  */
-export declare const useKeywordSearch: (config: string, baseUrl: string) => {
+export declare const useKeywordSearch: (config: string, baseUrl: string, searchConfig?: string) => {
     error: KeywordSearchError | null;
     results: KeywordSearchHit[];
     pagination: KeywordPagination | null;

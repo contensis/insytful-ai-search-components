@@ -106,10 +106,6 @@ function OverviewPage({
             collapsible={collapsible}
             reserve={reserve}
             feedback={feedback}
-            error={{
-              title: "We couldn't generate an overview",
-              text: "The rest of your search results are unaffected.",
-            }}
           />
         )}
       </div>

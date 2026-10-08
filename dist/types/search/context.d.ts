@@ -11,7 +11,8 @@ export type SearchContextValue = {
     titleId: string;
     descriptionId: string;
     options: {
-        config: string;
+        config?: string;
+        searchConfig?: string;
         baseUrl: string;
     };
     messages: AIMessage[];

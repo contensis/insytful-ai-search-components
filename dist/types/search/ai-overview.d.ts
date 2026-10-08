@@ -1,7 +1,6 @@
 import { default as React } from 'react';
 import { Cta, SearchConfig } from '../api';
 import { SearchSkeletonProps } from './skeleton';
-import { SearchErrorCalloutCta } from './search-error-callout';
 import { SearchOverviewFeedback } from './feedback-reporting';
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
@@ -41,11 +40,12 @@ export type SearchOverviewProp = {
     style?: React.CSSProperties;
     renderMarkdown?: (markdown: string) => React.ReactNode;
     onCtaClick?: (cta: Cta) => void;
-    error?: {
-        title?: string;
-        text?: string;
-        cta?: SearchErrorCalloutCta;
-    };
+    /** Shown when the answer fails. Defaults to the library's error callout
+     *  with a general message; the API's message (passed as `error`) can be
+     *  technical, so it isn't shown by default. */
+    renderError?: (error: string) => React.ReactNode;
+    /** Shown when the answer finishes with no text. Renders nothing by default. */
+    renderEmpty?: () => React.ReactNode;
     /** Placeholder for the follow-up input (conversational only). */
     placeholder?: string;
     /** Small print rendered under the answer (and thread). */
@@ -59,7 +59,8 @@ export type SearchOverviewProp = {
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
  * State attributes on the root: `data-loading`, `data-streaming`,
- * `data-overflowing`, `data-expanded`, `data-conversational`.
+ * `data-error`, `data-empty`, `data-overflowing`, `data-expanded`,
+ * `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -67,6 +68,6 @@ export type SearchOverviewProp = {
  * tab: the thread and input render only while expanded.
  */
 export declare const SearchOverview: {
-    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, error, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
+    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, renderError, renderEmpty, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
     displayName: string;
 };

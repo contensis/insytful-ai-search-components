@@ -226,8 +226,8 @@ describe("Search.Overview type=conversational", () => {
   it("surfaces conversation errors through the callout", () => {
     conversationCtx.messages = firstAnswer();
     conversationCtx.error = "boom";
-    renderConversational({ error: { title: "Oops", text: "Try again" } });
-    expect(screen.getByRole("alert").textContent).toContain("Oops");
+    renderConversational();
+    expect(screen.getByRole("alert").textContent).toContain("Something went wrong");
   });
 });
 

@@ -92,10 +92,16 @@ standalone answer above search results, without a modal.
   [Feedback](#feedback) for the options.
 - `disclaimer` — small print under the answer, below the feedback row. In
   `"conversational"` mode it also appears under each follow-up.
+- `renderError(error)` — your own error state, given the error message.
+  Defaults to `Search.ErrorCallout` with a general message.
+- `renderEmpty` — shown when the answer finishes with no text. Renders nothing
+  by default. An empty answer doesn't hold the teaser's space or show the
+  disclaimer.
 
-Also: `heading`, `hLevel`, `icon`, `searching`, `error`, `onCtaClick`,
+Also: `heading`, `hLevel`, `icon`, `searching`, `onCtaClick`,
 `placeholder`, `isDevMode`, `className`, `style`. Root state attributes:
-`data-overflowing`, `data-expanded`, `data-conversational`, `data-error`.
+`data-overflowing`, `data-expanded`, `data-conversational`, `data-error`,
+`data-empty`.
 
 ### `Search.Keyword`
 

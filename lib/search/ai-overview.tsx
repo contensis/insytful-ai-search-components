@@ -12,7 +12,7 @@ import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { useMockFetch } from "../utilities/mock-fetch";
 import { SearchCtas } from "./search-ctas";
 import { Message } from "./search-messages";
-import { SearchErrorCallout, type SearchErrorCalloutCta } from "./search-error-callout";
+import { SearchErrorCallout } from "./search-error-callout";
 import { SearchInput } from "./search-input";
 import { useStableId } from "./hooks.util";
 import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
@@ -59,7 +59,12 @@ export type SearchOverviewProp = {
   style?: React.CSSProperties;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   onCtaClick?: (cta: Cta) => void;
-  error?: { title?: string; text?: string; cta?: SearchErrorCalloutCta };
+  /** Shown when the answer fails. Defaults to the library's error callout
+   *  with a general message; the API's message (passed as `error`) can be
+   *  technical, so it isn't shown by default. */
+  renderError?: (error: string) => React.ReactNode;
+  /** Shown when the answer finishes with no text. Renders nothing by default. */
+  renderEmpty?: () => React.ReactNode;
   /** Placeholder for the follow-up input (conversational only). */
   placeholder?: string;
   /** Small print rendered under the answer (and thread). */
@@ -76,6 +81,8 @@ type OverviewViewModel = {
   loading: boolean;
   elapsed: number;
   error: string | null;
+  /** The answer finished, without error, with no text. */
+  empty: boolean;
 };
 
 type ResolvedOverviewProps = Omit<SearchOverviewProp, "options"> & { options: SearchConfig };
@@ -93,7 +100,8 @@ type BodyProps = ResolvedOverviewProps & {
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
  * State attributes on the root: `data-loading`, `data-streaming`,
- * `data-overflowing`, `data-expanded`, `data-conversational`.
+ * `data-error`, `data-empty`, `data-overflowing`, `data-expanded`,
+ * `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -114,7 +122,8 @@ export const SearchOverview = ({
   reserve,
   options,
   searching,
-  error,
+  renderError,
+  renderEmpty,
   renderMarkdown,
   onCtaClick,
   style,
@@ -143,7 +152,8 @@ export const SearchOverview = ({
     reserve,
     options: opts,
     searching,
-    error,
+    renderError,
+    renderEmpty,
     renderMarkdown,
     onCtaClick,
     style,
@@ -173,11 +183,17 @@ export const SearchOverview = ({
 /** Single-answer variant: `history: false`, no thread. */
 const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
   const { ask, ...ctx } = useAIResponseContext();
+  // `response` starts as "" and `loading` only flips after reCAPTCHA, so
+  // "finished with nothing" needs to know a request actually ran.
+  // Set during render (React's "adjusting state when a prop changes" pattern).
+  const [hasLoaded, setHasLoaded] = React.useState(false);
+  if (ctx.loading && !hasLoaded) setHasLoaded(true);
+  const empty = hasLoaded && !ctx.loading && !ctx.error && !ctx.response;
   useMockFetch(props.isDevMode, props.options.baseUrl);
   useEffect(() => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
-  return <SearchOverviewBody {...props} vm={{ ...ctx, ids: ctx.answerIds ?? undefined }} />;
+  return <SearchOverviewBody {...props} vm={{ ...ctx, ids: ctx.answerIds ?? undefined, empty }} />;
 };
 
 /**
@@ -198,16 +214,19 @@ const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
   const firstIndex = messages.findIndex((m) => m.role === "assistant");
   const first = firstIndex >= 0 ? messages[firstIndex] : undefined;
   const followUps = firstIndex >= 0 ? messages.slice(firstIndex + 1) : [];
+  // Only the first answer drives the body's skeleton; follow-ups show
+  // their own inside the thread.
+  const isFirstLoading = loading && followUps.length === 0;
   // mid = message id and sid = session id
   const vm: OverviewViewModel = {
     ids: first?.mid && first?.sid ? { mid: first.mid, sid: first.sid } : undefined,
     response: first?.content || null,
     ctas: first?.ctas,
-    // Only the first answer drives the body's skeleton; follow-ups show
-    // their own inside the thread.
-    loading: loading && followUps.length === 0,
+    loading: isFirstLoading,
     elapsed,
     error,
+    // The first answer arrived and finished with no text.
+    empty: !!first && !first.content && !isFirstLoading && !error,
   };
 
   return (
@@ -227,6 +246,15 @@ const COLLAPSED_HEIGHT = 220;
  *  follow-up question scrolled to the top of the viewport. */
 const SCROLL_MARGIN = 16;
 
+// The API's message can be technical ("Request failed (502)"), so the
+// default shows a general one; custom states get it via `renderError`.
+const DefaultError = () => (
+  <SearchErrorCallout
+    title="Something went wrong"
+    text="We couldn't generate an overview right now. Please try again later."
+  />
+);
+
 const SearchOverviewBody = ({
   className,
   type = "keyword",
@@ -240,7 +268,8 @@ const SearchOverviewBody = ({
   searching,
   renderMarkdown,
   onCtaClick,
-  error,
+  renderError = DefaultError,
+  renderEmpty,
   style,
   placeholder,
   vm,
@@ -277,9 +306,10 @@ const SearchOverviewBody = ({
   const isCollapsible = collapsible === "auto" ? isOverflowing : collapsible;
   const isCollapsed = isCollapsible && !isExpanded && !!vm.response;
   const isAnswerStreaming = vm.loading && !!vm.response;
-  // Collapsed and not failed: the teaser's footprint is held throughout, so
-  // loading, streaming and the finished answer all take the same space.
-  const isHoldingSpace = reserve !== false && !isExpanded && !vm.error;
+  // Collapsed and not failed or empty: the teaser's footprint is held
+  // throughout, so loading, streaming and the finished answer all take the
+  // same space.
+  const isHoldingSpace = reserve !== false && !isExpanded && !vm.error && !vm.empty;
 
   const hasFeedback = !!feedback && !doShowSkeleton && !!vm.response && !isCollapsed;
   // The first answer failed (an error with no follow-ups yet): no footer for it.
@@ -398,6 +428,7 @@ const SearchOverviewBody = ({
       {...(doShowSkeleton ? { "data-loading": "" } : {})}
       {...(isAnswerStreaming ? { "data-streaming": "" } : {})}
       {...(vm.error ? { "data-error": "" } : {})}
+      {...(vm.empty ? { "data-empty": "" } : {})}
       {...(isOverflowing ? { "data-overflowing": "" } : {})}
       {...(isExpanded ? { "data-expanded": "" } : {})}
       {...(isConversational ? { "data-conversational": "" } : {})}
@@ -445,7 +476,7 @@ const SearchOverviewBody = ({
         )}
         {/* The feedback row is hidden while collapsed; without a disclaimer the
             footer would be an empty bordered box. */}
-        {!vm.loading && !isFirstFailed && (disclaimer || hasFeedback) && (
+        {!vm.loading && !isFirstFailed && !vm.empty && (disclaimer || hasFeedback) && (
           <div className="insytful-search-overview-footer">
             {feedback && (
               <FeedbackReporting
@@ -459,14 +490,9 @@ const SearchOverviewBody = ({
           </div>
         )}
         {vm.error && (
-          <div className="insytful-search-overview-error">
-            <SearchErrorCallout
-              title={error?.title ?? "Error"}
-              text={error?.text ?? vm.error ?? "We couldn't generate an overview right now."}
-              cta={error?.cta}
-            />
-          </div>
+          <div className="insytful-search-overview-error">{renderError(vm.error)}</div>
         )}
+        {vm.empty && renderEmpty?.()}
         {!doShowSkeleton && isCollapsed && (
           <div className="insytful-search-overview-fade" aria-hidden="true" />
         )}

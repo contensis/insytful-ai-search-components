@@ -1,6 +1,16 @@
 import { default as React } from 'react';
 export type SearchConfig = {
-    config: string;
+    /**
+     * A site's config alias. With `searchConfig` it is optional and names the
+     * member site the search is embedded on, whose pages are favoured; an alias
+     * that isn't a member is ignored.
+     */
+    config?: string;
+    /**
+     * The slug of an aggregated search, which answers from several sites' content
+     * under its own settings. Sessions, votes and usage are keyed on the slug.
+     */
+    searchConfig?: string;
     baseUrl: string;
     /**
      * Optional reCAPTCHA site key for human verification. When set, every query
@@ -13,9 +23,10 @@ export type SearchConfig = {
  * `InsytfulSearch.Provider`; components and hooks underneath can then omit
  * their own `options`.
  */
-export declare const SearchConfigProvider: ({ children, baseUrl, config, recaptchaSiteKey, }: {
+export declare const SearchConfigProvider: ({ children, baseUrl, config, searchConfig, recaptchaSiteKey, }: {
     children: React.ReactNode;
-    config: string;
+    config?: string;
+    searchConfig?: string;
     baseUrl: string;
     recaptchaSiteKey?: string;
 }) => React.JSX.Element;

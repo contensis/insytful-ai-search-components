@@ -1,5 +1,22 @@
 # Changelog
 
+## 5.0.0-beta.1 — 2026-10-08
+
+A beta. Install it with `npm install insytful-ai-search-components@beta`.
+
+**Breaking:** `Search.Overview`'s `error` prop has been removed. Use `renderError`.
+
+### Added
+
+- **`Search.Overview` takes `renderError` and `renderEmpty`**, like `InsytfulSearch.Keyword`.
+  - **`renderError(error)`** replaces the default error callout. `error` is the error message (a string): unlike keyword search, the AI endpoint doesn't give an error code. Without it, the default callout shows a general message.
+  - **`renderEmpty()`** shows when the answer finishes without error and with no text. It renders nothing by default. In `"conversational"` mode, this applies to the first answer. An empty answer doesn't hold the teaser's space (`reserve`) or show the disclaimer, and any CTAs still show above it.
+  - **`data-empty`** on the root marks the empty state, alongside `data-error`.
+
+### Removed
+
+- **`Search.Overview`'s `error` prop.** The default callout now shows a general message rather than the API's, as on `InsytfulSearch.Keyword`. To customise it, return your own `<InsytfulSearch.ErrorCallout title=… text=… cta=… />` from `renderError`.
+
 ## 5.0.0-beta.0 — 2026-10-07
 
 A beta. Install it with `npm install insytful-ai-search-components@beta`; `^4` ranges won't pick it up.
