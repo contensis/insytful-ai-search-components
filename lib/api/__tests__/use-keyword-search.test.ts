@@ -41,6 +41,19 @@ describe("useKeywordSearch", () => {
     expect(requestBody(fetchMock)).toEqual({ config: "my-config", q: "q", page: 1, pageSize: 10 });
   });
 
+  it("sends searchConfig for an aggregated search", async () => {
+    const fetchMock = stubFetch(async () => json(mockResults("q", 1)));
+    const { result } = renderHook(() =>
+      useKeywordSearch("", "https://api.example.com", "marketing-sites"),
+    );
+
+    await act(async () => {
+      await result.current.search("q");
+    });
+
+    expect(requestBody(fetchMock)).toMatchObject({ searchConfig: "marketing-sites", q: "q" });
+  });
+
   it("sets results and pagination on success", async () => {
     const data = mockResults("q", 3);
     stubFetch(async () => json(data));

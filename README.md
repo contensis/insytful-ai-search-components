@@ -149,6 +149,19 @@ Clicking the other button changes the vote; clicking the pressed one retracts
 it. If the vote window has closed, or the answer can't be voted on, the buttons
 are hidden for that answer.
 
+### Aggregated searches
+
+An aggregated search answers from several sites' content under its own
+settings. Pass its slug as `searchConfig` in place of `config`:
+
+```tsx
+options={{ searchConfig: 'your-aggregated-search', baseUrl: 'https://your-api.com' }}
+```
+
+Embedded on one member's site? Pass that site's alias as `config` too, and its
+pages are favoured. Sessions and votes are keyed on the slug. Use the
+`recaptchaSiteKey` from `GET /search-configuration/:slug`, not a member's.
+
 - [React guide](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-reacttsx-implementation)
 - [Theming](https://www.insytful.com/help-and-docs/guides/insytful-ai-search/front-end-implementation/ai-search-theming)
 

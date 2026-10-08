@@ -126,7 +126,7 @@ export const SearchOverview = ({
   const opts = useMemo(
     () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolved.config, resolved.baseUrl, resolved.recaptchaSiteKey],
+    [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey],
   );
 
   const innerProps: ResolvedOverviewProps = {
@@ -154,8 +154,9 @@ export const SearchOverview = ({
 
   return (
     <SearchConfigProvider
-      key={opts.config || "default"}
+      key={`${opts.searchConfig || ""}|${opts.config || ""}`}
       config={opts.config || ""}
+      searchConfig={opts.searchConfig}
       baseUrl={opts.baseUrl}
       recaptchaSiteKey={opts.recaptchaSiteKey}
     >
@@ -450,7 +451,7 @@ const SearchOverviewBody = ({
               <FeedbackReporting
                 feedback={feedback}
                 hidden={!hasFeedback}
-                target={vm.ids && { ...vm.ids, baseUrl: options.baseUrl, config: options.config }}
+                target={vm.ids && { ...vm.ids, baseUrl: options.baseUrl, config: options.config, searchConfig: options.searchConfig }}
                 voteState={voteState}
               />
             )}
@@ -524,7 +525,7 @@ const SearchOverviewBody = ({
                               feedback={feedback}
                               target={
                                 message.mid && message.sid
-                                  ? { mid: message.mid, sid: message.sid, baseUrl: options.baseUrl, config: options.config }
+                                  ? { mid: message.mid, sid: message.sid, baseUrl: options.baseUrl, config: options.config, searchConfig: options.searchConfig }
                                   : undefined
                               }
                               voteState={voteState}

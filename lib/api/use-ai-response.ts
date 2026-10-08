@@ -15,6 +15,8 @@ export const useAIResponse = (
   config: string,
   baseUrl: string,
   recaptchaSiteKey?: string,
+  /** An aggregated search's slug; `config` then only names the home site. */
+  searchConfig?: string,
 ) => {
   const [response, setResponse] = useState<string>(""); // accumulated streamed text
   const [loading, setLoading] = useState(false);
@@ -77,6 +79,8 @@ export const useAIResponse = (
           history,
           stream,
         };
+
+        if (searchConfig) body.searchConfig = searchConfig;
 
         if (sections && sections?.length >= 1) {
           body.sections = sections.join(",");
@@ -168,7 +172,7 @@ export const useAIResponse = (
         setLoading(false);
       }
     },
-    [config, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
+    [config, searchConfig, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
   return { response, ctas, loading, elapsed, error, ask, answerIds };

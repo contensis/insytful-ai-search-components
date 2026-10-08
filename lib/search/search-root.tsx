@@ -78,7 +78,7 @@ export function SearchRoot({
   const resolved = useResolvedSearchConfig(options);
   // Stabilise object props so inline literals don't break context memoisation
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const opts = useMemo(() => resolved, [resolved.config, resolved.baseUrl, resolved.recaptchaSiteKey]);
+  const opts = useMemo(() => resolved, [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
@@ -96,8 +96,9 @@ export function SearchRoot({
 
   return (
     <SearchConfigProvider
-      key={opts.config || "default"}
+      key={`${opts.searchConfig || ""}|${opts.config || ""}`}
       config={opts.config || ""}
+      searchConfig={opts.searchConfig}
       baseUrl={opts.baseUrl}
       recaptchaSiteKey={opts.recaptchaSiteKey}
     >
@@ -128,7 +129,7 @@ function SearchRootInner({
   setOpen: (open: boolean) => void;
   titleId: string;
   descriptionId: string;
-  options: { config: string; baseUrl: string; recaptchaSiteKey?: string };
+  options: SearchConfig;
   renderMarkdown?: (markdown: string) => React.ReactNode;
   logo?: React.ReactNode;
   isDevMode: boolean;
