@@ -94,6 +94,6 @@ All bubble and cross the Shadow DOM boundary.
 
 ## Not supported yet
 
-The Web Component has no aggregated search (`searchConfig`) or reCAPTCHA
+The Web Component has no aggregated search (`aggregated`) or reCAPTCHA
 support, and no `Overview` or `Keyword` equivalents. Use the React components
 for those.

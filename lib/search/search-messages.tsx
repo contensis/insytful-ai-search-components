@@ -26,7 +26,7 @@ export type MessageProps = {
   /** Report link + helpful / unhelpful vote under a finished answer. */
   feedback?: SearchOverviewFeedback;
   /** Where votes are sent; needed alongside `feedback` for the vote buttons. */
-  voteOptions?: { config?: string; searchConfig?: string; baseUrl: string };
+  voteOptions?: { config: string; aggregated?: boolean; apiUrl: string };
   /** This answer is still streaming: no feedback row yet. */
   isStreaming?: boolean;
   /** This answer failed: no footer. */

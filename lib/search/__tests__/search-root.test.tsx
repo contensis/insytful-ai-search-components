@@ -17,7 +17,7 @@ vi.mock("react-google-recaptcha-v3", () => ({
 describe("SearchRoot recaptcha wiring", () => {
   it("does not wrap children in GoogleReCaptchaProvider when no recaptchaSiteKey is set", () => {
     render(
-      <SearchRoot options={{ config: "my-config", baseUrl: "https://api.example.com" }}>
+      <SearchRoot options={{ config: "my-config", apiUrl: "https://api.example.com" }}>
         <div>content</div>
       </SearchRoot>
     );
@@ -30,7 +30,7 @@ describe("SearchRoot recaptcha wiring", () => {
       <SearchRoot
         options={{
           config: "my-config",
-          baseUrl: "https://api.example.com",
+          apiUrl: "https://api.example.com",
           recaptchaSiteKey: "site-key",
         }}
       >

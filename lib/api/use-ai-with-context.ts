@@ -3,11 +3,11 @@ import { useAIConversation } from "./use-ai-conversation";
 import { useAIResponse } from "./use-ai-response";
 
 export const useAIResponseContext = () => {
-  const { config = "", searchConfig, baseUrl, recaptchaSiteKey } = useSearchConfig();
-  return useAIResponse(config, baseUrl, recaptchaSiteKey, searchConfig);
+  const { config, aggregated, apiUrl, recaptchaSiteKey } = useSearchConfig();
+  return useAIResponse(config, apiUrl, recaptchaSiteKey, aggregated);
 };
 
 export const useAIConversationContext = () => {
-  const { config = "", searchConfig, baseUrl, recaptchaSiteKey } = useSearchConfig();
-  return useAIConversation(config, baseUrl, recaptchaSiteKey, searchConfig);
+  const { config, aggregated, apiUrl, recaptchaSiteKey } = useSearchConfig();
+  return useAIConversation(config, apiUrl, recaptchaSiteKey, aggregated);
 };

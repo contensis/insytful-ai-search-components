@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SESSION_STORAGE_KEY } from "../shared/session";
+import { configFields } from "../shared/config-fields";
 
 export type KeywordResultCard = {
   title: string; // never empty
@@ -70,15 +71,15 @@ export type KeywordSearchResponse =
 export type KeywordSearchError = { code: string; message: string };
 
 /**
- * Keyword search against the Insytful search API (`POST {baseUrl}/search`).
+ * Keyword search against the Insytful search API (`POST {apiUrl}/search`).
  * Headless: returns the hits, pagination and any error for you to render;
  * `InsytfulSearch.Keyword` is the ready-made wrapper.
  *
- * @param config - The search config alias.
- * @param baseUrl - The API base URL, as for the AI hooks.
- * @param searchConfig - An aggregated search's slug; `config` then only names the home site.
+ * @param config - The search config alias, or an aggregated search's slug.
+ * @param apiUrl - The API base URL, as for the AI hooks.
+ * @param aggregated - `config` is an aggregated search's slug rather than a site's alias.
  */
-export const useKeywordSearch = (config: string, baseUrl: string, searchConfig?: string) => {
+export const useKeywordSearch = (config: string, apiUrl: string, aggregated?: boolean) => {
   const [results, setResults] = useState<KeywordSearchHit[]>([]);
   const [pagination, setPagination] = useState<KeywordPagination | null>(null);
   const [loading, setLoading] = useState(false);
@@ -106,8 +107,7 @@ export const useKeywordSearch = (config: string, baseUrl: string, searchConfig?:
       const { signal } = controller;
 
       const payloadToSend = {
-        config: config,
-        ...(searchConfig ? { searchConfig } : {}),
+        ...configFields(config, aggregated),
         q: query,
         page: pageNumber ?? 1,
         pageSize: pageSize ?? 10,
@@ -130,7 +130,7 @@ export const useKeywordSearch = (config: string, baseUrl: string, searchConfig?:
         const sid = localStorage.getItem(SESSION_STORAGE_KEY);
         if (sid) headers.append("X-Session-Id", sid);
 
-        const payload = await fetch(`${baseUrl}/search`, {
+        const payload = await fetch(`${apiUrl}/search`, {
           method: "POST",
           headers,
           body: JSON.stringify(payloadToSend),
@@ -171,7 +171,7 @@ export const useKeywordSearch = (config: string, baseUrl: string, searchConfig?:
         setLoading(false);
       }
     },
-    [config, searchConfig, baseUrl],
+    [config, aggregated, apiUrl],
   );
 
   return { error, results, pagination, loading, search };

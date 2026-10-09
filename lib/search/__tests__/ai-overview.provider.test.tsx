@@ -10,8 +10,8 @@ import { useSearchContext } from "../context";
 // Overview and Root take their config from `InsytfulSearch.Provider` when
 // `options` is omitted, and `options` wins when both are present.
 //
-const provider = { config: "from-provider", baseUrl: "https://provider.example.com" };
-const prop = { config: "from-prop", baseUrl: "https://prop.example.com" };
+const provider = { config: "from-provider", apiUrl: "https://provider.example.com" };
+const prop = { config: "from-prop", apiUrl: "https://prop.example.com" };
 
 function sseResponse(content: string) {
   const encoder = new TextEncoder();
@@ -57,7 +57,7 @@ describe("Search.Overview config resolution", () => {
 
       await waitFor(() => expect(screen.getByText("Answer.")).toBeTruthy());
       expect(firstRequest(fetchMock)).toEqual({
-        url: `${provider.baseUrl}/query-collection`,
+        url: `${provider.apiUrl}/query-collection`,
         config: provider.config,
       });
     },
@@ -73,7 +73,7 @@ describe("Search.Overview config resolution", () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(firstRequest(fetchMock)).toEqual({
-      url: `${prop.baseUrl}/query-collection`,
+      url: `${prop.apiUrl}/query-collection`,
       config: prop.config,
     });
   });
@@ -107,7 +107,7 @@ describe("Search.Overview config resolution", () => {
 describe("Search.Root config resolution", () => {
   function Options() {
     const { options } = useSearchContext("Options");
-    return <output>{`${options.config} ${options.baseUrl}`}</output>;
+    return <output>{`${options.config} ${options.apiUrl}`}</output>;
   }
 
   it("uses the provider's config when options is omitted", () => {
@@ -118,7 +118,7 @@ describe("Search.Root config resolution", () => {
         </SearchRoot>
       </SearchConfigProvider>,
     );
-    expect(screen.getByRole("status").textContent).toBe(`${provider.config} ${provider.baseUrl}`);
+    expect(screen.getByRole("status").textContent).toBe(`${provider.config} ${provider.apiUrl}`);
   });
 
   it("prefers options over the provider", () => {
@@ -129,6 +129,6 @@ describe("Search.Root config resolution", () => {
         </SearchRoot>
       </SearchConfigProvider>,
     );
-    expect(screen.getByRole("status").textContent).toBe(`${prop.config} ${prop.baseUrl}`);
+    expect(screen.getByRole("status").textContent).toBe(`${prop.config} ${prop.apiUrl}`);
   });
 });

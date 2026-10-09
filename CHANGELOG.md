@@ -1,10 +1,25 @@
 # Changelog
 
-## 5.0.0-beta.1 — 2026-10-08
+## 5.0.0-beta.1 — 2026-10-09
 
 A beta. Install it with `npm install insytful-ai-search-components@beta`.
 
-**Breaking:** `Search.Overview`'s `error` prop has been removed. Use `renderError`.
+**Breaking:** the connection options have been renamed: `baseUrl` is now `apiUrl`, and aggregated searches use `aggregated: true` instead of `searchConfig`. `Search.Overview`'s `error` prop has also been removed; use `renderError`.
+
+### Migrating
+
+```diff
+- options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
++ options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}
+
+- options={{ searchConfig: 'your-aggregated-search', baseUrl: 'https://your-api.com' }}
++ options={{ config: 'your-aggregated-search', apiUrl: 'https://your-api.com', aggregated: true }}
+
+- <InsytfulSearch.Provider config="your-config" baseUrl="https://your-api.com">
++ <InsytfulSearch.Provider config="your-config" apiUrl="https://your-api.com">
+```
+
+The Web Component is unchanged: it still takes `api-uri`.
 
 ### Added
 
@@ -13,8 +28,15 @@ A beta. Install it with `npm install insytful-ai-search-components@beta`.
   - **`renderEmpty()`** shows when the answer finishes without error and with no text. It renders nothing by default. In `"conversational"` mode, this applies to the first answer. An empty answer doesn't hold the teaser's space (`reserve`) or show the disclaimer, and any CTAs still show above it.
   - **`data-empty`** on the root marks the empty state, alongside `data-error`.
 
+### Changed
+
+- **`baseUrl` is now `apiUrl`** in `options`, on `InsytfulSearch.Provider` and in the `SearchConfig` type.
+- **Aggregated searches: pass the slug as `config` and set `aggregated: true`**, e.g. `options={{ config: 'your-aggregated-search', apiUrl, aggregated: true }}`. `config` is now required.
+- **The hooks' last argument is the `aggregated` boolean** instead of the slug: `useAIResponse(config, apiUrl, recaptchaSiteKey?, aggregated?)`, `useAIConversation(config, apiUrl, recaptchaSiteKey?, aggregated?)` and `useKeywordSearch(config, apiUrl, aggregated?)`.
+
 ### Removed
 
+- **`searchConfig`.** Passing a member site's alias alongside an aggregated search's slug, so that site's pages are favoured, is no longer possible.
 - **`Search.Overview`'s `error` prop.** The default callout now shows a general message rather than the API's, as on `InsytfulSearch.Keyword`. To customise it, return your own `<InsytfulSearch.ErrorCallout title=… text=… cta=… />` from `renderError`.
 
 ## 5.0.0-beta.0 — 2026-10-07

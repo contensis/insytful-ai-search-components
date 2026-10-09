@@ -14,9 +14,9 @@ export type MessageProps = {
     feedback?: SearchOverviewFeedback;
     /** Where votes are sent; needed alongside `feedback` for the vote buttons. */
     voteOptions?: {
-        config?: string;
-        searchConfig?: string;
-        baseUrl: string;
+        config: string;
+        aggregated?: boolean;
+        apiUrl: string;
     };
     /** This answer is still streaming: no feedback row yet. */
     isStreaming?: boolean;

@@ -2,18 +2,16 @@ import React, { createContext, useContext } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 export type SearchConfig = {
+  /** A site's config alias or, with `aggregated`, an aggregated search's slug. */
+  config: string;
   /**
-   * A site's config alias. With `searchConfig` it is optional and names the
-   * member site the search is embedded on, whose pages are favoured; an alias
-   * that isn't a member is ignored.
+   * Treat `config` as the slug of an aggregated search, which answers from
+   * several sites' content under its own settings. Sessions, votes and usage
+   * are keyed on the slug.
    */
-  config?: string;
-  /**
-   * The slug of an aggregated search, which answers from several sites' content
-   * under its own settings. Sessions, votes and usage are keyed on the slug.
-   */
-  searchConfig?: string;
-  baseUrl: string;
+  aggregated?: boolean;
+  /** Root URL of the Insytful AI Search API. */
+  apiUrl: string;
   /**
    * Optional reCAPTCHA site key for human verification. When set, every query
    * needs a successful reCAPTCHA challenge before it reaches the backend.
@@ -30,20 +28,20 @@ const SearchConfigContext = createContext<SearchConfig | null>(null);
  */
 export const SearchConfigProvider = ({
   children,
-  baseUrl,
+  apiUrl,
   config,
-  searchConfig,
+  aggregated,
   recaptchaSiteKey,
 }: {
   children: React.ReactNode;
-  config?: string;
-  searchConfig?: string;
-  baseUrl: string;
+  config: string;
+  aggregated?: boolean;
+  apiUrl: string;
   recaptchaSiteKey?: string;
 }) => {
   const parent = useContext(SearchConfigContext);
   const content = (
-    <SearchConfigContext.Provider value={{ config, searchConfig, baseUrl, recaptchaSiteKey }}>
+    <SearchConfigContext.Provider value={{ config, aggregated, apiUrl, recaptchaSiteKey }}>
       {children}
     </SearchConfigContext.Provider>
   );

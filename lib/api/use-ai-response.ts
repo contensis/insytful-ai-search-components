@@ -5,6 +5,7 @@ import { readSSEFrames } from "../shared/sse";
 import { debug } from "../shared/debug";
 import { midFromDoneData } from "../shared/vote";
 import { SESSION_STORAGE_KEY } from "../shared/session";
+import { configFields } from "../shared/config-fields";
 import { useElapsedTime } from "../utilities/use-elapsed-time";
 import type { Cta } from "./types";
 
@@ -13,10 +14,10 @@ const stream = true;
 
 export const useAIResponse = (
   config: string,
-  baseUrl: string,
+  apiUrl: string,
   recaptchaSiteKey?: string,
-  /** An aggregated search's slug; `config` then only names the home site. */
-  searchConfig?: string,
+  /** `config` is an aggregated search's slug rather than a site's alias. */
+  aggregated?: boolean,
 ) => {
   const [response, setResponse] = useState<string>(""); // accumulated streamed text
   const [loading, setLoading] = useState(false);
@@ -75,12 +76,10 @@ export const useAIResponse = (
         // URL length ceiling on `question` and no encoding to get wrong.
         const body: Record<string, unknown> = {
           question,
-          config,
+          ...configFields(config, aggregated),
           history,
           stream,
         };
-
-        if (searchConfig) body.searchConfig = searchConfig;
 
         if (sections && sections?.length >= 1) {
           body.sections = sections.join(",");
@@ -97,7 +96,7 @@ export const useAIResponse = (
         const sid = localStorage.getItem(SESSION_STORAGE_KEY);
         if (sid) headers.append("X-Session-Id", sid);
 
-        const payload = await fetch(`${baseUrl}/query-collection`, {
+        const payload = await fetch(`${apiUrl}/query-collection`, {
           method: "POST",
           headers,
           body: JSON.stringify(body),
@@ -172,7 +171,7 @@ export const useAIResponse = (
         setLoading(false);
       }
     },
-    [config, searchConfig, baseUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
+    [config, aggregated, apiUrl, recaptchaSiteKey, executeRecaptcha, setElapsed],
   );
 
   return { response, ctas, loading, elapsed, error, ask, answerIds };

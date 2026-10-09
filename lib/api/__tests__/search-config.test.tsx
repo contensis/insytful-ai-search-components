@@ -32,7 +32,7 @@ describe("SearchConfigProvider / useSearchConfig", () => {
   it("exposes the config passed to SearchConfigProvider", () => {
     const { result } = renderHook(() => useSearchConfig(), {
       wrapper: ({ children }) => (
-        <SearchConfigProvider config="my-config" baseUrl="https://api.example.com">
+        <SearchConfigProvider config="my-config" apiUrl="https://api.example.com">
           {children}
         </SearchConfigProvider>
       ),
@@ -40,14 +40,14 @@ describe("SearchConfigProvider / useSearchConfig", () => {
 
     expect(result.current).toEqual({
       config: "my-config",
-      baseUrl: "https://api.example.com",
+      apiUrl: "https://api.example.com",
       recaptchaSiteKey: undefined,
     });
   });
 
   it("does not wrap children in GoogleReCaptchaProvider when no recaptchaSiteKey is set", () => {
     render(
-      <SearchConfigProvider config="my-config" baseUrl="https://api.example.com">
+      <SearchConfigProvider config="my-config" apiUrl="https://api.example.com">
         <div>content</div>
       </SearchConfigProvider>
     );
@@ -57,7 +57,7 @@ describe("SearchConfigProvider / useSearchConfig", () => {
 
   it("wraps children in GoogleReCaptchaProvider when a recaptchaSiteKey is set", () => {
     render(
-      <SearchConfigProvider config="my-config" baseUrl="https://api.example.com" recaptchaSiteKey="site-key">
+      <SearchConfigProvider config="my-config" apiUrl="https://api.example.com" recaptchaSiteKey="site-key">
         <div>content</div>
       </SearchConfigProvider>
     );
@@ -69,8 +69,8 @@ describe("SearchConfigProvider / useSearchConfig", () => {
 });
 
 describe("useSearchConfigSafe / useResolvedSearchConfig", () => {
-  const providerConfig = { config: "provider-config", baseUrl: "https://provider.example.com" };
-  const propConfig = { config: "prop-config", baseUrl: "https://prop.example.com" };
+  const providerConfig = { config: "provider-config", apiUrl: "https://provider.example.com" };
+  const propConfig = { config: "prop-config", apiUrl: "https://prop.example.com" };
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <SearchConfigProvider {...providerConfig}>{children}</SearchConfigProvider>
   );
@@ -107,8 +107,8 @@ describe("nested SearchConfigProvider", () => {
   it("wraps in GoogleReCaptchaProvider once when the outer provider has the same key", () => {
     googleReCaptchaProvider.mockClear();
     render(
-      <SearchConfigProvider config="outer" baseUrl="https://api.example.com" recaptchaSiteKey="site-key">
-        <SearchConfigProvider config="inner" baseUrl="https://api.example.com" recaptchaSiteKey="site-key">
+      <SearchConfigProvider config="outer" apiUrl="https://api.example.com" recaptchaSiteKey="site-key">
+        <SearchConfigProvider config="inner" apiUrl="https://api.example.com" recaptchaSiteKey="site-key">
           <div>content</div>
         </SearchConfigProvider>
       </SearchConfigProvider>
@@ -120,8 +120,8 @@ describe("nested SearchConfigProvider", () => {
   it("wraps again when the inner provider has a different key", () => {
     googleReCaptchaProvider.mockClear();
     render(
-      <SearchConfigProvider config="outer" baseUrl="https://api.example.com" recaptchaSiteKey="outer-key">
-        <SearchConfigProvider config="inner" baseUrl="https://api.example.com" recaptchaSiteKey="inner-key">
+      <SearchConfigProvider config="outer" apiUrl="https://api.example.com" recaptchaSiteKey="outer-key">
+        <SearchConfigProvider config="inner" apiUrl="https://api.example.com" recaptchaSiteKey="inner-key">
           <div>content</div>
         </SearchConfigProvider>
       </SearchConfigProvider>

@@ -5,8 +5,8 @@ import { SearchConfigProvider } from "../../api";
 import { KeywordSearch } from "../keyword-search";
 import { mockResults } from "../../utilities/mock-keyword-search";
 
-const provider = { config: "from-provider", baseUrl: "https://provider.example.com" };
-const prop = { config: "from-prop", baseUrl: "https://prop.example.com" };
+const provider = { config: "from-provider", apiUrl: "https://provider.example.com" };
+const prop = { config: "from-prop", apiUrl: "https://prop.example.com" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -81,7 +81,7 @@ describe("InsytfulSearch.Keyword", () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(firstRequest(fetchMock)).toEqual({
-      url: `${provider.baseUrl}/search`,
+      url: `${provider.apiUrl}/search`,
       config: provider.config,
     });
   });
@@ -95,7 +95,7 @@ describe("InsytfulSearch.Keyword", () => {
     );
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    expect(firstRequest(fetchMock)).toEqual({ url: `${prop.baseUrl}/search`, config: prop.config });
+    expect(firstRequest(fetchMock)).toEqual({ url: `${prop.apiUrl}/search`, config: prop.config });
   });
 
   it("doesn't search for an empty term", () => {

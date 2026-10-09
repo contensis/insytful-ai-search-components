@@ -10,7 +10,7 @@ vi.stubGlobal("ResizeObserver", class {
   disconnect() {}
 });
 
-const options = { config: "my-config", baseUrl: "https://api.example.com" };
+const options = { config: "my-config", apiUrl: "https://api.example.com" };
 
 function getDialog(): HTMLElement {
   const portal = document.querySelector('[id^="insytful-ai-modal-portal"]');

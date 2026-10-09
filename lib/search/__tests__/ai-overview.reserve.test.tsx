@@ -33,7 +33,7 @@ vi.mock("../../api", async (importOriginal) => {
 
 import { SearchOverview } from "../ai-overview";
 
-const options = { config: "cfg", baseUrl: "https://api.example.com" };
+const options = { config: "cfg", apiUrl: "https://api.example.com" };
 const renderMarkdown = (md: string) => <p>{md}</p>;
 
 /** jsdom has no layout; control whether the body counts as overflowing. */

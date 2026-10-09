@@ -6,7 +6,7 @@ parts to use and how to lay them out.
 ```tsx
 <Theme>
   <InsytfulSearch.Root
-    options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+    options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}
     renderMarkdown={renderMarkdown}
   >
     <InsytfulSearch.Trigger>Search</InsytfulSearch.Trigger>

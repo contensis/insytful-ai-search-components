@@ -13,7 +13,7 @@ A multi-turn conversation, as used by the modal.
 
 ```ts
 const { messages, loading, error, elapsed, ask } =
-  useAIConversation(config, baseUrl, recaptchaSiteKey?, searchConfig?);
+  useAIConversation(config, apiUrl, recaptchaSiteKey?, aggregated?);
 
 // inside InsytfulSearch.Provider:
 const conversation = useAIConversationContext();
@@ -33,7 +33,7 @@ A single answer, as used by `Search.Overview`.
 
 ```ts
 const { response, ctas, loading, elapsed, error, ask, answerIds } =
-  useAIResponse(config, baseUrl, recaptchaSiteKey?, searchConfig?);
+  useAIResponse(config, apiUrl, recaptchaSiteKey?, aggregated?);
 
 // inside InsytfulSearch.Provider:
 const answer = useAIResponseContext();
@@ -53,7 +53,7 @@ Keyword search, as used by `Search.Keyword`. It has no `…Context` variant.
 
 ```ts
 const { results, pagination, loading, error, search } =
-  useKeywordSearch(config, baseUrl, searchConfig?);
+  useKeywordSearch(config, apiUrl, aggregated?);
 
 search('term dates');     // first page
 search('term dates', 2);  // page 2

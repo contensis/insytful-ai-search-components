@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { mockKeywordResponse, mockResults } from "../lib/utilities/mock-keyword-search";
 
-export const options = { config: "demo", baseUrl: "https://api.insytful.com/v1" };
+export const options = { config: "demo", apiUrl: "https://api.insytful.com/v1" };
 export const renderMarkdown = (md: string) => <ReactMarkdown>{md}</ReactMarkdown>;
 export const useFailingFetch = (
   status = 500,
@@ -57,7 +57,7 @@ export function useMockKeywordFetch(mode: KeywordMockMode) {
     const original = window.fetch;
     window.fetch = (input, init) => {
       const url = typeof input === "string" ? input : input.toString();
-      if (!url.startsWith(options.baseUrl) || !url.endsWith("/search")) {
+      if (!url.startsWith(options.apiUrl) || !url.endsWith("/search")) {
         return original(input, init);
       }
       const { q = "", page = 1, pageSize = 10 } = JSON.parse(String(init?.body ?? "{}"));

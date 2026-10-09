@@ -7,7 +7,7 @@ import { SearchOverview } from "../ai-overview";
 // `renderError` and `renderEmpty` replace the Overview's error and empty
 // states, as on InsytfulSearch.Keyword.
 //
-const options = { config: "c", baseUrl: "https://api.example.com" };
+const options = { config: "c", apiUrl: "https://api.example.com" };
 const renderMarkdown = (md: string) => <p>{md}</p>;
 
 /** An SSE stream of the given content chunks, then `done`. */

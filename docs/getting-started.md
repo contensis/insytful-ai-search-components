@@ -35,13 +35,13 @@ object:
 
 | Option | Description |
 |---|---|
-| `baseUrl` | Root URL of the Insytful AI Search API. Required. |
-| `config` | The site's config alias. Required unless `searchConfig` is set. |
-| `searchConfig` | The slug of an [aggregated search](#aggregated-searches). |
+| `apiUrl` | Root URL of the Insytful AI Search API. Required. |
+| `config` | The site's config alias, or an aggregated search's slug when `aggregated` is set. Required. |
+| `aggregated` | `true` when `config` is the slug of an [aggregated search](#aggregated-searches). Default `false`. |
 | `recaptchaSiteKey` | Google reCAPTCHA v3 **site** key (the public one). When set, every AI query needs a passing reCAPTCHA check. Keyword search doesn't use it. |
 
 ```tsx
-<InsytfulSearch.Root options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}>
+<InsytfulSearch.Root options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}>
 ```
 
 ### Sharing options with `InsytfulSearch.Provider`
@@ -51,7 +51,7 @@ When several components on a page use the same connection, wrap them in
 set; with neither, the component throws.
 
 ```tsx
-<InsytfulSearch.Provider config="your-config" baseUrl="https://your-api.com">
+<InsytfulSearch.Provider config="your-config" apiUrl="https://your-api.com">
   <InsytfulSearch.Overview term={searchTerm} renderMarkdown={renderMarkdown} />
   <InsytfulSearch.Keyword term={searchTerm} />
 </InsytfulSearch.Provider>
@@ -63,14 +63,13 @@ The Provider also loads reCAPTCHA once for everything inside it when
 ### Aggregated searches
 
 An aggregated search answers from several sites' content under its own
-settings. Pass its slug as `searchConfig` in place of `config`:
+settings. Pass its slug as `config` and set `aggregated`:
 
 ```tsx
-options={{ searchConfig: 'your-aggregated-search', baseUrl: 'https://your-api.com' }}
+options={{ config: 'your-aggregated-search', apiUrl: 'https://your-api.com', aggregated: true }}
 ```
 
-Embedded on one member's site? Pass that site's alias as `config` too, and its
-pages are favoured. Sessions and votes are keyed on the slug. Use the
+Sessions and votes are keyed on the slug. Use the
 `recaptchaSiteKey` from `GET /search-configuration/:slug`, not a member's.
 
 ## Rendering answers

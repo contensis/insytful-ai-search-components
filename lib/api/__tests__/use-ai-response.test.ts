@@ -124,20 +124,19 @@ describe("useAIResponse", () => {
     });
   });
 
-  it("sends searchConfig alongside config for an aggregated search", async () => {
+  it("sends an aggregated search's slug as searchConfig, without config", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
     const { result } = renderHook(() =>
-      useAIResponse("member-site", "https://api.example.com", undefined, "marketing-sites")
+      useAIResponse("marketing-sites", "https://api.example.com", undefined, true)
     );
 
     await act(async () => {
       await result.current.ask("question");
     });
 
-    expect(requestBody(fetchMock)).toMatchObject({
-      config: "member-site",
-      searchConfig: "marketing-sites",
-    });
+    const body = requestBody(fetchMock);
+    expect(body).toMatchObject({ searchConfig: "marketing-sites" });
+    expect(body).not.toHaveProperty("config");
   });
 
   it("serializes the sections param when provided", async () => {

@@ -8,7 +8,7 @@
  *   import { Theme, InsytfulSearch } from 'insytful-ai-search-components';
  *
  *   <Theme>
- *     <InsytfulSearch.Root options={{ config: 'my-config', baseUrl: 'https://your-api.com' }}>
+ *     <InsytfulSearch.Root options={{ config: 'my-config', apiUrl: 'https://your-api.com' }}>
  *       <InsytfulSearch.Portal>
  *         <InsytfulSearch.Title>Search</InsytfulSearch.Title>
  *         <InsytfulSearch.Input />

@@ -10,8 +10,8 @@ import { SearchOverview } from "../ai-overview";
 // and the `mid` from the `done` frame. Guards against the row being gated on
 // a state the stream never reaches.
 //
-const baseUrl = "https://api.example.com/v1";
-const options = { config: "cfg", baseUrl };
+const apiUrl = "https://api.example.com/v1";
+const options = { config: "cfg", apiUrl };
 const sid = "s_streamsession01";
 const mid = "5f0f4b0e-0000-4000-8000-000000000001";
 const followUpMid = "5f0f4b0e-0000-4000-8000-000000000002";
@@ -83,7 +83,7 @@ describe("Search.Overview feedback with a streamed answer", () => {
         expect(onVote).toHaveBeenCalledWith("helpful", { mid }),
       );
       expect(fetchMock).toHaveBeenLastCalledWith(
-        `${baseUrl}/sessions/cfg/${sid}/${mid}/vote`,
+        `${apiUrl}/sessions/cfg/${sid}/${mid}/vote`,
         expect.objectContaining({ method: "PUT" }),
       );
       expect(document.querySelector(".insytful-search-overview-feedback-status")!.textContent).toBe(
@@ -140,7 +140,7 @@ describe("Search.Overview feedback with a streamed answer", () => {
     fireEvent.click(followUp.getByRole("button", { name: "Unhelpful" }));
     await waitFor(() => expect(onVote).toHaveBeenCalledWith("unhelpful", { mid: followUpMid }));
     expect(fetchMock).toHaveBeenLastCalledWith(
-      `${baseUrl}/sessions/cfg/${sid}/${followUpMid}/vote`,
+      `${apiUrl}/sessions/cfg/${sid}/${followUpMid}/vote`,
       expect.objectContaining({ method: "PUT" }),
     );
 

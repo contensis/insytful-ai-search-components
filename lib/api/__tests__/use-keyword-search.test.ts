@@ -27,7 +27,7 @@ describe("useKeywordSearch", () => {
     vi.restoreAllMocks();
   });
 
-  it("POSTs the config and term to {baseUrl}/search", async () => {
+  it("POSTs the config and term to {apiUrl}/search", async () => {
     const fetchMock = stubFetch(async () => json(mockResults("q", 1)));
     const { result } = renderSearch();
 
@@ -41,17 +41,17 @@ describe("useKeywordSearch", () => {
     expect(requestBody(fetchMock)).toEqual({ config: "my-config", q: "q", page: 1, pageSize: 10 });
   });
 
-  it("sends searchConfig for an aggregated search", async () => {
+  it("sends an aggregated search's slug as searchConfig, without config", async () => {
     const fetchMock = stubFetch(async () => json(mockResults("q", 1)));
     const { result } = renderHook(() =>
-      useKeywordSearch("", "https://api.example.com", "marketing-sites"),
+      useKeywordSearch("marketing-sites", "https://api.example.com", true),
     );
 
     await act(async () => {
       await result.current.search("q");
     });
 
-    expect(requestBody(fetchMock)).toMatchObject({ searchConfig: "marketing-sites", q: "q" });
+    expect(requestBody(fetchMock)).toEqual({ searchConfig: "marketing-sites", q: "q", page: 1, pageSize: 10 });
   });
 
   it("sets results and pagination on success", async () => {

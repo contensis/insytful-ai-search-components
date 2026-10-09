@@ -88,7 +88,7 @@ function WebComponentStory({
     <div style={{ padding: 24 }}>
       <insytful-search
         ref={ref}
-        api-uri={options.baseUrl}
+        api-uri={options.apiUrl}
         project-id={options.config}
         theme={theme}
         suggestions-position="below"

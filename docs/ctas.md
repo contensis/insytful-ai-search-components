@@ -22,7 +22,7 @@ receives the full sanitized `Cta`:
 
 ```tsx
 <InsytfulSearch.Root
-  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}
   onCtaClick={(cta) => analytics.track('ai_search_cta_click', { type: cta.type, label: cta.label })}
 >
 ```

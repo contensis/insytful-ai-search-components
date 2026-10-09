@@ -39,7 +39,7 @@ export type SearchContextValue = {
   descriptionId: string;
 
   // Search config
-  options: { config?: string; searchConfig?: string; baseUrl: string };
+  options: { config: string; aggregated?: boolean; apiUrl: string };
 
   // Conversation state (from useAIConversationContext)
   messages: AIMessage[];

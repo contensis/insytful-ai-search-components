@@ -6,7 +6,7 @@ more than one page. It doesn't need `Search.Root`.
 ```tsx
 <InsytfulSearch.Keyword
   term={searchTerm}
-  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}
   renderEmpty={() => <p>No results for “{searchTerm}”.</p>}
 />
 ```

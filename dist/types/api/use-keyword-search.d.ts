@@ -67,15 +67,15 @@ export type KeywordSearchError = {
     message: string;
 };
 /**
- * Keyword search against the Insytful search API (`POST {baseUrl}/search`).
+ * Keyword search against the Insytful search API (`POST {apiUrl}/search`).
  * Headless: returns the hits, pagination and any error for you to render;
  * `InsytfulSearch.Keyword` is the ready-made wrapper.
  *
- * @param config - The search config alias.
- * @param baseUrl - The API base URL, as for the AI hooks.
- * @param searchConfig - An aggregated search's slug; `config` then only names the home site.
+ * @param config - The search config alias, or an aggregated search's slug.
+ * @param apiUrl - The API base URL, as for the AI hooks.
+ * @param aggregated - `config` is an aggregated search's slug rather than a site's alias.
  */
-export declare const useKeywordSearch: (config: string, baseUrl: string, searchConfig?: string) => {
+export declare const useKeywordSearch: (config: string, apiUrl: string, aggregated?: boolean) => {
     error: KeywordSearchError | null;
     results: KeywordSearchHit[];
     pagination: KeywordPagination | null;

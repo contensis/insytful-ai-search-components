@@ -10,9 +10,9 @@ vi.mock("react-google-recaptcha-v3", () => ({
   GoogleReCaptchaProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-function wrapperFor(config: string, baseUrl: string) {
+function wrapperFor(config: string, apiUrl: string) {
   return ({ children }: { children: React.ReactNode }) => (
-    <SearchConfigProvider config={config} baseUrl={baseUrl}>
+    <SearchConfigProvider config={config} apiUrl={apiUrl}>
       {children}
     </SearchConfigProvider>
   );
@@ -27,7 +27,7 @@ describe("useAIResponseContext / useAIConversationContext", () => {
     vi.unstubAllGlobals();
   });
 
-  it("useAIResponseContext sends requests using the SearchConfigProvider's config and baseUrl", async () => {
+  it("useAIResponseContext sends requests using the SearchConfigProvider's config and apiUrl", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [sseDataFrame("answer")] }));
 
     const { result } = renderHook(() => useAIResponseContext(), {
@@ -43,7 +43,7 @@ describe("useAIResponseContext / useAIConversationContext", () => {
     expect(result.current.response).toBe("answer");
   });
 
-  it("useAIConversationContext sends requests using the SearchConfigProvider's config and baseUrl", async () => {
+  it("useAIConversationContext sends requests using the SearchConfigProvider's config and apiUrl", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [sseDataFrame("answer")] }));
 
     const { result } = renderHook(() => useAIConversationContext(), {

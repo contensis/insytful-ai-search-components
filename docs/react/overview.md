@@ -6,7 +6,7 @@ results. It doesn't need `Search.Root` or a modal.
 ```tsx
 <InsytfulSearch.Overview
   term={searchTerm}
-  options={{ config: 'your-config', baseUrl: 'https://your-api.com' }}
+  options={{ config: 'your-config', apiUrl: 'https://your-api.com' }}
   renderMarkdown={renderMarkdown}
   feedback={{ report: { text: 'Report an error', href: '/report' } }}
   disclaimer="AI generated answers may not always be accurate."

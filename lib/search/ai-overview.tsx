@@ -135,7 +135,7 @@ export const SearchOverview = ({
   const opts = useMemo(
     () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey],
+    [resolved.config, resolved.aggregated, resolved.apiUrl, resolved.recaptchaSiteKey],
   );
 
   const innerProps: ResolvedOverviewProps = {
@@ -164,10 +164,10 @@ export const SearchOverview = ({
 
   return (
     <SearchConfigProvider
-      key={`${opts.searchConfig || ""}|${opts.config || ""}`}
-      config={opts.config || ""}
-      searchConfig={opts.searchConfig}
-      baseUrl={opts.baseUrl}
+      key={`${opts.aggregated ? "aggregated" : "site"}|${opts.config}`}
+      config={opts.config}
+      aggregated={opts.aggregated}
+      apiUrl={opts.apiUrl}
       recaptchaSiteKey={opts.recaptchaSiteKey}
     >
       {type === "conversational" ? (
@@ -189,7 +189,7 @@ const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
   const [hasLoaded, setHasLoaded] = React.useState(false);
   if (ctx.loading && !hasLoaded) setHasLoaded(true);
   const empty = hasLoaded && !ctx.loading && !ctx.error && !ctx.response;
-  useMockFetch(props.isDevMode, props.options.baseUrl);
+  useMockFetch(props.isDevMode, props.options.apiUrl);
   useEffect(() => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
@@ -203,7 +203,7 @@ const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
  */
 const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
   const { messages, loading, elapsed, error, ask } = useAIConversationContext();
-  useMockFetch(props.isDevMode, props.options.baseUrl);
+  useMockFetch(props.isDevMode, props.options.apiUrl);
   useEffect(() => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
@@ -482,7 +482,7 @@ const SearchOverviewBody = ({
               <FeedbackReporting
                 feedback={feedback}
                 hidden={!hasFeedback}
-                target={vm.ids && { ...vm.ids, baseUrl: options.baseUrl, config: options.config, searchConfig: options.searchConfig }}
+                target={vm.ids && { ...vm.ids, apiUrl: options.apiUrl, config: options.config }}
                 voteState={voteState}
               />
             )}
@@ -551,7 +551,7 @@ const SearchOverviewBody = ({
                               feedback={feedback}
                               target={
                                 message.mid && message.sid
-                                  ? { mid: message.mid, sid: message.sid, baseUrl: options.baseUrl, config: options.config, searchConfig: options.searchConfig }
+                                  ? { mid: message.mid, sid: message.sid, apiUrl: options.apiUrl, config: options.config }
                                   : undefined
                               }
                               voteState={voteState}

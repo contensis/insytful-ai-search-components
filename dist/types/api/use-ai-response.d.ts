@@ -1,7 +1,7 @@
 import { Cta } from './types';
-export declare const useAIResponse: (config: string, baseUrl: string, recaptchaSiteKey?: string, 
-/** An aggregated search's slug; `config` then only names the home site. */
-searchConfig?: string) => {
+export declare const useAIResponse: (config: string, apiUrl: string, recaptchaSiteKey?: string, 
+/** `config` is an aggregated search's slug rather than a site's alias. */
+aggregated?: boolean) => {
     response: string;
     ctas: Cta[];
     loading: boolean;

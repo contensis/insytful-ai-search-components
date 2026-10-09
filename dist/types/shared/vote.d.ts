@@ -1,6 +1,6 @@
 /**
  * Answer voting — PUT / DELETE `/sessions/:config/:sid/:mid/vote`. An
- * aggregated search's votes are keyed on its slug, not a member's alias.
+ * aggregated search's votes are keyed on its slug, which is its `config`.
  *
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
  * access — importable by both entry points.
@@ -9,9 +9,8 @@ export type VoteRating = "helpful" | "unhelpful";
 /** Everything needed to address one answer's vote. `mid` comes from the
  *  answer's `done` frame, `sid` from the response's `X-Session-Id` header. */
 export type VoteTarget = {
-    baseUrl: string;
-    config?: string;
-    searchConfig?: string;
+    apiUrl: string;
+    config: string;
     sid: string;
     mid: string;
 };

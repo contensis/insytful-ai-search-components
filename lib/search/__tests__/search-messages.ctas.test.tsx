@@ -18,7 +18,7 @@ function makeCtx(overrides: Partial<SearchContextValue> = {}): SearchContextValu
     onOpenChange: () => {},
     titleId: "title-id",
     descriptionId: "description-id",
-    options: { config: "my-config", baseUrl: "https://api.example.com" },
+    options: { config: "my-config", apiUrl: "https://api.example.com" },
     messages: [],
     loading: false,
     elapsed: 0,

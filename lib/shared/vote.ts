@@ -1,6 +1,6 @@
 /**
  * Answer voting — PUT / DELETE `/sessions/:config/:sid/:mid/vote`. An
- * aggregated search's votes are keyed on its slug, not a member's alias.
+ * aggregated search's votes are keyed on its slug, which is its `config`.
  *
  * `lib/shared/` invariants: no React imports; no module-top-level window/DOM
  * access — importable by both entry points.
@@ -11,12 +11,12 @@ import { debug } from "./debug";
 export type VoteRating = "helpful" | "unhelpful";
 /** Everything needed to address one answer's vote. `mid` comes from the
  *  answer's `done` frame, `sid` from the response's `X-Session-Id` header. */
-export type VoteTarget = { baseUrl: string; config?: string; searchConfig?: string; sid: string; mid: string };
+export type VoteTarget = { apiUrl: string; config: string; sid: string; mid: string };
 /** `retryable: false` (400/404) means the answer can't be voted on: hide the control. */
 export type VoteResult = { ok: true } | { ok: false; retryable: boolean };
 
-const getVoteUrl = ({ baseUrl, config, searchConfig, sid, mid }: VoteTarget) =>
-  `${baseUrl}/sessions/${encodeURIComponent(searchConfig || config || "")}/${encodeURIComponent(sid)}/${encodeURIComponent(mid)}/vote`;
+const getVoteUrl = ({ apiUrl, config, sid, mid }: VoteTarget) =>
+  `${apiUrl}/sessions/${encodeURIComponent(config)}/${encodeURIComponent(sid)}/${encodeURIComponent(mid)}/vote`;
 
 /** PUT a rating, or DELETE (retract) when `rating` is null. */
 export async function onSendVote(target: VoteTarget, rating: VoteRating | null, comment?: string): Promise<VoteResult> {

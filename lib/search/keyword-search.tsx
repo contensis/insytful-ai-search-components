@@ -117,17 +117,17 @@ export const KeywordSearch = ({
   const opts = useMemo(
     () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey],
+    [resolved.config, resolved.aggregated, resolved.apiUrl, resolved.recaptchaSiteKey],
   );
 
   const { results, pagination, loading, error, search } = useKeywordSearch(
-    opts.config || "",
-    opts.baseUrl,
-    opts.searchConfig,
+    opts.config,
+    opts.apiUrl,
+    opts.aggregated,
   );
 
   // Before the search effect: effects run in order, so the mock is in place for the first request.
-  useMockFetch(isDevMode, opts.baseUrl);
+  useMockFetch(isDevMode, opts.apiUrl);
 
   useEffect(() => {
     if (term) search(term);

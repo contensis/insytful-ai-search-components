@@ -78,7 +78,7 @@ export function SearchRoot({
   const resolved = useResolvedSearchConfig(options);
   // Stabilise object props so inline literals don't break context memoisation
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const opts = useMemo(() => resolved, [resolved.config, resolved.searchConfig, resolved.baseUrl, resolved.recaptchaSiteKey]);
+  const opts = useMemo(() => resolved, [resolved.config, resolved.aggregated, resolved.apiUrl, resolved.recaptchaSiteKey]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableOffsets = useMemo(() => offsets, [offsets?.top, offsets?.left, offsets?.right]);
 
@@ -96,10 +96,10 @@ export function SearchRoot({
 
   return (
     <SearchConfigProvider
-      key={`${opts.searchConfig || ""}|${opts.config || ""}`}
-      config={opts.config || ""}
-      searchConfig={opts.searchConfig}
-      baseUrl={opts.baseUrl}
+      key={`${opts.aggregated ? "aggregated" : "site"}|${opts.config}`}
+      config={opts.config}
+      aggregated={opts.aggregated}
+      apiUrl={opts.apiUrl}
       recaptchaSiteKey={opts.recaptchaSiteKey}
     >
       <SearchRootInner
@@ -139,7 +139,7 @@ function SearchRootInner({
   const { messages, loading, elapsed, error, ask } = useAIConversationContext();
 
   // Auto-enable mock fetch when isDevMode is true
-  useMockFetch(isDevMode, options.baseUrl);
+  useMockFetch(isDevMode, options.apiUrl);
 
   // Body scroll lock + scroll position save/restore.
   const prevOverflow = useRef("");

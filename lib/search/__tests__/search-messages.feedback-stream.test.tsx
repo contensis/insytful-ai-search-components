@@ -12,8 +12,8 @@ import type { SearchOverviewFeedback } from "../feedback-reporting";
 // `X-Session-Id` header and that answer's `mid` from its `done` frame. The
 // modal counterpart of ai-overview.feedback-stream.test.tsx.
 //
-const baseUrl = "https://api.example.com/v1";
-const options = { config: "cfg", baseUrl };
+const apiUrl = "https://api.example.com/v1";
+const options = { config: "cfg", apiUrl };
 const sid = "s_streamsession01";
 const mid1 = "5f0f4b0e-0000-4000-8000-000000000001";
 const mid2 = "5f0f4b0e-0000-4000-8000-000000000002";
@@ -116,7 +116,7 @@ describe("Search.Messages feedback with streamed answers", () => {
     fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
     await waitFor(() => expect(onVote).toHaveBeenCalledWith("helpful", { mid: mid1 }));
     expect(fetchMock).toHaveBeenLastCalledWith(
-      `${baseUrl}/sessions/cfg/${sid}/${mid1}/vote`,
+      `${apiUrl}/sessions/cfg/${sid}/${mid1}/vote`,
       expect.objectContaining({ method: "PUT" }),
     );
     expect(document.querySelector(".insytful-search-overview-feedback-status")!.textContent).toBe(
@@ -143,7 +143,7 @@ describe("Search.Messages feedback with streamed answers", () => {
     fireEvent.click(within(answerItem("Second answer.")).getByRole("button", { name: "Unhelpful" }));
     await waitFor(() => expect(onVote).toHaveBeenLastCalledWith("unhelpful", { mid: mid2 }));
     expect(fetchMock).toHaveBeenLastCalledWith(
-      `${baseUrl}/sessions/cfg/${sid}/${mid2}/vote`,
+      `${apiUrl}/sessions/cfg/${sid}/${mid2}/vote`,
       expect.objectContaining({ method: "PUT" }),
     );
 
