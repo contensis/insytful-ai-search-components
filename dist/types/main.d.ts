@@ -9,7 +9,7 @@ export type { SearchModesProps, SearchModeProps, SearchModeSwitchProps } from '.
 export type { SearchSuggestionsProps } from './search/search-suggestions';
 export type { SearchCtasProps } from './search/search-ctas';
 export type { SearchErrorCalloutProps, SearchErrorCalloutCta } from './search/search-error-callout';
-export type { SearchOverviewProp, SearchOverviewType } from './search/ai-overview';
+export type { SearchOverviewProp, SearchOverviewType, SearchOverviewRevealProps } from './search/ai-overview';
 export type { SearchOverviewFeedback, SearchOverviewVote } from './search/feedback-reporting';
 export type { KeywordSearchProps } from './search/keyword-search';
 export { useAIResponse, useAIResponseContext, useAIConversation, useAIConversationContext, } from './api';

@@ -8,6 +8,16 @@ import { SearchOverviewFeedback } from './feedback-reporting';
  * input and each follow-up renders beneath the first answer.
  */
 export type SearchOverviewType = "keyword" | "conversational";
+/** Props handed to `renderReveal`. Spread `aria` onto your control
+ *  so screen readers hear the expanded state and which region it controls. */
+export type SearchOverviewRevealProps = {
+    isExpanded: boolean;
+    toggle: () => void;
+    aria: {
+        "aria-expanded": boolean;
+        "aria-controls": string;
+    };
+};
 export type SearchOverviewProp = {
     className?: string;
     type?: SearchOverviewType;
@@ -39,6 +49,10 @@ export type SearchOverviewProp = {
     searching?: SearchSkeletonProps["messages"];
     style?: React.CSSProperties;
     renderMarkdown?: (markdown: string) => React.ReactNode;
+    /** Replaces the default Show more / Show less button. Keep the control
+     *  mounted whatever `isExpanded` is, or keyboard focus is lost on toggle.
+     *  Listen for changes with `onExpandedChange`. */
+    renderReveal?: (props: SearchOverviewRevealProps) => React.ReactNode;
     onCtaClick?: (cta: Cta) => void;
     /** Shown when the answer fails. Defaults to the library's error callout
      *  with a general message; the API's message (passed as `error`) can be
@@ -59,8 +73,8 @@ export type SearchOverviewProp = {
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
  * State attributes on the root: `data-loading`, `data-streaming`,
- * `data-error`, `data-empty`, `data-overflowing`, `data-expanded`,
- * `data-conversational`.
+ * `data-error`, `data-empty`, `data-overflowing`, `data-collapsed`,
+ * `data-expanded`, `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -68,6 +82,6 @@ export type SearchOverviewProp = {
  * tab: the thread and input render only while expanded.
  */
 export declare const SearchOverview: {
-    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, renderError, renderEmpty, renderMarkdown, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
+    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, renderError, renderEmpty, renderMarkdown, renderReveal, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
     displayName: string;
 };

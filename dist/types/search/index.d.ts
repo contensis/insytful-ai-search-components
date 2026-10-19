@@ -23,7 +23,7 @@ export type { SearchSuggestionsProps } from './search-suggestions';
 export { SearchDisclaimer as Disclaimer } from './search-disclaimer';
 export type { SearchDisclaimerProps } from './search-disclaimer';
 export { SearchOverview as Overview } from './ai-overview';
-export type { SearchOverviewProp, SearchOverviewType } from './ai-overview';
+export type { SearchOverviewProp, SearchOverviewType, SearchOverviewRevealProps } from './ai-overview';
 export type { SearchOverviewFeedback, SearchOverviewVote } from './feedback-reporting';
 export { KeywordSearch as Keyword } from './keyword-search';
 export type { KeywordSearchProps } from './keyword-search';
