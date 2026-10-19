@@ -4,6 +4,7 @@ import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
 import type {
   SearchOverviewFeedback,
+  SearchOverviewProp,
   SearchOverviewType,
 } from "../../lib/main";
 import {
@@ -59,6 +60,7 @@ function OverviewPage({
   disclaimer,
   collapsible,
   reserve,
+  renderReveal,
   feedback,
 }: {
   isDevMode?: boolean;
@@ -71,6 +73,7 @@ function OverviewPage({
   /** Left unset, the component's default (on) applies. */
   reserve?: boolean | number;
   feedback?: SearchOverviewFeedback;
+  renderReveal?: SearchOverviewProp["renderReveal"];
 }) {
   const [draft, setDraft] = useState(openWith);
   const [term, setTerm] = useState(openWith);
@@ -106,6 +109,7 @@ function OverviewPage({
             collapsible={collapsible}
             reserve={reserve}
             feedback={feedback}
+            renderReveal={renderReveal}
           />
         )}
       </div>
@@ -137,6 +141,21 @@ export const DefaultState: Story = {
       openWith="How do I apply?"
       disclaimer={disclaimer}
       isDevMode
+    />
+  ),
+};
+
+export const CustomReveal: Story = {
+  render: () => (
+    <OverviewPage
+      openWith="How do I apply?"
+      disclaimer={disclaimer}
+      isDevMode
+      renderReveal={({ isExpanded, toggle, aria }) => (
+        <button type="button" onClick={toggle} {...aria}>
+          {isExpanded ? "Hide the full answer" : "Read the full answer"}
+        </button>
+      )}
     />
   ),
 };

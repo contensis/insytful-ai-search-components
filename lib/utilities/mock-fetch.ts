@@ -147,7 +147,7 @@ const setupMockFetch = (baseUrl: string, isDevMode: boolean = false): (() => voi
 
           // In dev mode, delay the response by 8 seconds so skeleton loading messages have time to display
           if (isDevMode) {
-            await new Promise(res => setTimeout(res, 8000));
+            await new Promise(res => setTimeout(res, 600));
           }
 
           // The API sends the cta frame before any token frames.

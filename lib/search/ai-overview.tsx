@@ -15,9 +15,15 @@ import { Message } from "./search-messages";
 import { SearchErrorCallout } from "./search-error-callout";
 import { SearchInput } from "./search-input";
 import { useStableId } from "./hooks.util";
-import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
+import {
+  lastUserMessageEl,
+  scrollMessageToTop,
+} from "../utilities/scroll-message-to-top";
 import { observeOffsetHeight } from "../utilities/offset-elements";
-import { FeedbackReporting, type SearchOverviewFeedback } from "./feedback-reporting";
+import {
+  FeedbackReporting,
+  type SearchOverviewFeedback,
+} from "./feedback-reporting";
 import { useVoteState } from "./vote-state";
 
 /**
@@ -26,6 +32,17 @@ import { useVoteState } from "./vote-state";
  * input and each follow-up renders beneath the first answer.
  */
 export type SearchOverviewType = "keyword" | "conversational";
+
+/** Props handed to `renderReveal`. Spread `aria` onto your control
+ *  so screen readers hear the expanded state and which region it controls. */
+export type SearchOverviewRevealProps = {
+  isExpanded: boolean;
+  toggle: () => void;
+  aria: {
+    "aria-expanded": boolean;
+    "aria-controls": string;
+  };
+};
 
 export type SearchOverviewProp = {
   className?: string;
@@ -58,6 +75,10 @@ export type SearchOverviewProp = {
   searching?: SearchSkeletonProps["messages"];
   style?: React.CSSProperties;
   renderMarkdown?: (markdown: string) => React.ReactNode;
+  /** Replaces the default Show more / Show less button. Keep the control
+   *  mounted whatever `isExpanded` is, or keyboard focus is lost on toggle.
+   *  Listen for changes with `onExpandedChange`. */
+  renderReveal?: (props: SearchOverviewRevealProps) => React.ReactNode;
   onCtaClick?: (cta: Cta) => void;
   /** Shown when the answer fails. Defaults to the library's error callout
    *  with a general message; the API's message (passed as `error`) can be
@@ -85,7 +106,9 @@ type OverviewViewModel = {
   empty: boolean;
 };
 
-type ResolvedOverviewProps = Omit<SearchOverviewProp, "options"> & { options: SearchConfig };
+type ResolvedOverviewProps = Omit<SearchOverviewProp, "options"> & {
+  options: SearchConfig;
+};
 
 type BodyProps = ResolvedOverviewProps & {
   vm: OverviewViewModel;
@@ -125,6 +148,7 @@ export const SearchOverview = ({
   renderError,
   renderEmpty,
   renderMarkdown,
+  renderReveal,
   onCtaClick,
   style,
   placeholder,
@@ -135,7 +159,12 @@ export const SearchOverview = ({
   const opts = useMemo(
     () => resolved,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolved.config, resolved.aggregated, resolved.apiUrl, resolved.recaptchaSiteKey],
+    [
+      resolved.config,
+      resolved.aggregated,
+      resolved.apiUrl,
+      resolved.recaptchaSiteKey,
+    ],
   );
 
   const innerProps: ResolvedOverviewProps = {
@@ -155,6 +184,7 @@ export const SearchOverview = ({
     renderError,
     renderEmpty,
     renderMarkdown,
+    renderReveal,
     onCtaClick,
     style,
     placeholder,
@@ -193,7 +223,12 @@ const SearchOverviewKeyword = (props: ResolvedOverviewProps) => {
   useEffect(() => {
     if (props.term) ask(props.term);
   }, [ask, props.term]);
-  return <SearchOverviewBody {...props} vm={{ ...ctx, ids: ctx.answerIds ?? undefined, empty }} />;
+  return (
+    <SearchOverviewBody
+      {...props}
+      vm={{ ...ctx, ids: ctx.answerIds ?? undefined, empty }}
+    />
+  );
 };
 
 /**
@@ -219,7 +254,8 @@ const SearchOverviewConversational = (props: ResolvedOverviewProps) => {
   const isFirstLoading = loading && followUps.length === 0;
   // mid = message id and sid = session id
   const vm: OverviewViewModel = {
-    ids: first?.mid && first?.sid ? { mid: first.mid, sid: first.sid } : undefined,
+    ids:
+      first?.mid && first?.sid ? { mid: first.mid, sid: first.sid } : undefined,
     response: first?.content || null,
     ctas: first?.ctas,
     loading: isFirstLoading,
@@ -279,6 +315,7 @@ const SearchOverviewBody = ({
   disclaimer,
   feedback,
   options,
+  renderReveal,
 }: BodyProps) => {
   // Expansion is uncontrolled by default; a consumer that passes `expanded`
   // takes ownership (e.g. to collapse the overview when it switches tabs).
@@ -296,7 +333,8 @@ const SearchOverviewBody = ({
   const followUpsRef = useRef<HTMLDivElement>(null);
   const prevFollowUpCountRef = useRef(0);
 
-  const collapsedHeight = typeof reserve === "number" ? reserve : COLLAPSED_HEIGHT;
+  const collapsedHeight =
+    typeof reserve === "number" ? reserve : COLLAPSED_HEIGHT;
   const isConversational = type === "conversational";
   const hasFollowUps = followUps.length > 0;
   const doShowSkeleton = vm.loading && !vm.response && !vm.error;
@@ -309,9 +347,11 @@ const SearchOverviewBody = ({
   // Collapsed and not failed or empty: the teaser's footprint is held
   // throughout, so loading, streaming and the finished answer all take the
   // same space.
-  const isHoldingSpace = reserve !== false && !isExpanded && !vm.error && !vm.empty;
+  const isHoldingSpace =
+    reserve !== false && !isExpanded && !vm.error && !vm.empty;
 
-  const hasFeedback = !!feedback && !doShowSkeleton && !!vm.response && !isCollapsed;
+  const hasFeedback =
+    !!feedback && !doShowSkeleton && !!vm.response && !isCollapsed;
   // The first answer failed (an error with no follow-ups yet): no footer for it.
   const isFirstFailed = !!vm.error && followUps.length === 0;
   // Owned here, not by each row: follow-ups unmount while collapsed, and
@@ -369,7 +409,10 @@ const SearchOverviewBody = ({
   // Keyword: the toggle only exists when the answer overflows. Conversational:
   // always offer a way into the thread, and stop offering "Show less" once a
   // follow-up has been sent (collapsing would hide the input mid-conversation).
-  const hasToggle = !doShowSkeleton && !!vm.response && (isConversational ? !isExpanded : isCollapsible);
+  const hasToggle =
+    !doShowSkeleton &&
+    !!vm.response &&
+    (isConversational ? !isExpanded : isCollapsible);
 
   const isLastFollowUp = followUps[followUps.length - 1];
 
@@ -392,7 +435,12 @@ const SearchOverviewBody = ({
     if (count > prevFollowUpCountRef.current && last?.role === "user") {
       const el = threadRef.current && lastUserMessageEl(threadRef.current);
       if (el && spacerRef.current) {
-        scrollMessageToTop(window, el, spacerRef.current, hostOffset + SCROLL_MARGIN);
+        scrollMessageToTop(
+          window,
+          el,
+          spacerRef.current,
+          hostOffset + SCROLL_MARGIN,
+        );
       }
     }
     prevFollowUpCountRef.current = count;
@@ -424,7 +472,12 @@ const SearchOverviewBody = ({
   return (
     <div
       className={`insytful-search-overview ${className ?? ""}`.trim()}
-      style={{ "--insytful-overview-collapsed-height": `${collapsedHeight}px`, ...style } as React.CSSProperties}
+      style={
+        {
+          "--insytful-overview-collapsed-height": `${collapsedHeight}px`,
+          ...style,
+        } as React.CSSProperties
+      }
       {...(doShowSkeleton ? { "data-loading": "" } : {})}
       {...(isAnswerStreaming ? { "data-streaming": "" } : {})}
       {...(vm.error ? { "data-error": "" } : {})}
@@ -452,7 +505,9 @@ const SearchOverviewBody = ({
       >
         {heading && (
           <div className="insytful-search-overview-heading">
-            {icon && <span className="insytful-search-overview-icon">{icon}</span>}
+            {icon && (
+              <span className="insytful-search-overview-icon">{icon}</span>
+            )}
             <Heading>{heading}</Heading>
           </div>
         )}
@@ -476,21 +531,36 @@ const SearchOverviewBody = ({
         )}
         {/* The feedback row is hidden while collapsed; without a disclaimer the
             footer would be an empty bordered box. */}
-        {!vm.loading && !isFirstFailed && !vm.empty && (disclaimer || hasFeedback) && (
-          <div className="insytful-search-overview-footer">
-            {feedback && (
-              <FeedbackReporting
-                feedback={feedback}
-                hidden={!hasFeedback}
-                target={vm.ids && { ...vm.ids, apiUrl: options.apiUrl, config: options.config }}
-                voteState={voteState}
-              />
-            )}
-            {disclaimer && <div className="insytful-search-overview-disclaimer">{disclaimer}</div>}
-          </div>
-        )}
+        {!vm.loading &&
+          !isFirstFailed &&
+          !vm.empty &&
+          (disclaimer || hasFeedback) && (
+            <div className="insytful-search-overview-footer">
+              {feedback && (
+                <FeedbackReporting
+                  feedback={feedback}
+                  hidden={!hasFeedback}
+                  target={
+                    vm.ids && {
+                      ...vm.ids,
+                      apiUrl: options.apiUrl,
+                      config: options.config,
+                    }
+                  }
+                  voteState={voteState}
+                />
+              )}
+              {disclaimer && (
+                <div className="insytful-search-overview-disclaimer">
+                  {disclaimer}
+                </div>
+              )}
+            </div>
+          )}
         {vm.error && (
-          <div className="insytful-search-overview-error">{renderError(vm.error)}</div>
+          <div className="insytful-search-overview-error">
+            {renderError(vm.error)}
+          </div>
         )}
         {vm.empty && renderEmpty?.()}
         {!doShowSkeleton && isCollapsed && (
@@ -500,29 +570,46 @@ const SearchOverviewBody = ({
       {hasToggle && (
         // Stays mounted as a toggle so focus is never dropped when the
         // collapsed state changes.
-        <button
-          type="button"
-          className="insytful-search-overview-show-more"
-          aria-expanded={isExpanded}
-          aria-controls={bodyId}
-          onClick={onToggle}
-        >
-          <span>
-            {isExpanded ? "Show less" : "Show more"}{" "}
-            <span className="insytful-sr-only">of the response</span>
-          </span>
-        </button>
+        renderReveal ? (
+          renderReveal({
+            isExpanded,
+            toggle: onToggle,
+            aria: {
+              "aria-expanded": isExpanded,
+              "aria-controls": bodyId,
+            },
+          })
+        ) : (
+          <button
+            type="button"
+            className="insytful-search-overview-show-more"
+            aria-expanded={isExpanded}
+            aria-controls={bodyId}
+            onClick={onToggle}
+          >
+            <span>
+              {isExpanded ? "Show less" : "Show more"}{" "}
+              <span className="insytful-sr-only">of the response</span>
+            </span>
+          </button>
+        )
       )}
       {isConversational && isExpanded && (
         <div className="insytful-search-overview-followups" ref={followUpsRef}>
           {hasFollowUps && (
             <ul className="insytful-search-overview-thread" ref={threadRef}>
               {followUps.map((message, i) => {
-                if (message.role === "user") return <Message key={i} message={message} />;
+                if (message.role === "user")
+                  return <Message key={i} message={message} />;
 
-                const isStreaming = isThreadLoading && message === isLastFollowUp;
+                const isStreaming =
+                  isThreadLoading && message === isLastFollowUp;
                 const isFailed = !!vm.error && message === isLastFollowUp;
-                const hasFooter = (feedback || disclaimer) && !isStreaming && !isFailed && !!message.content;
+                const hasFooter =
+                  (feedback || disclaimer) &&
+                  !isStreaming &&
+                  !isFailed &&
+                  !!message.content;
 
                 // Assistant follow-ups use the SAME markup as the first
                 // answer (whole markdown, unshifted headings, CTAs above) so
@@ -530,11 +617,18 @@ const SearchOverviewBody = ({
                 // <Message> is modal-flavoured: it demotes headings a level
                 // and splits the reply per paragraph.
                 return (
-                  <li key={i} className="insytful-search-message" data-role="assistant">
+                  <li
+                    key={i}
+                    className="insytful-search-message"
+                    data-role="assistant"
+                  >
                     <div className="insytful-search-message-content-outer">
                       <SearchCtas ctas={message.ctas} onCtaClick={onCtaClick} />
                       {isStreaming && !message.content ? (
-                        <SearchSkeletonBody elapsed={vm.elapsed} messages={searching || []} />
+                        <SearchSkeletonBody
+                          elapsed={vm.elapsed}
+                          messages={searching || []}
+                        />
                       ) : (
                         renderMarkdown &&
                         message.content && (
@@ -551,13 +645,22 @@ const SearchOverviewBody = ({
                               feedback={feedback}
                               target={
                                 message.mid && message.sid
-                                  ? { mid: message.mid, sid: message.sid, apiUrl: options.apiUrl, config: options.config }
+                                  ? {
+                                      mid: message.mid,
+                                      sid: message.sid,
+                                      apiUrl: options.apiUrl,
+                                      config: options.config,
+                                    }
                                   : undefined
                               }
                               voteState={voteState}
                             />
                           )}
-                          {disclaimer && <div className="insytful-search-message-disclaimer">{disclaimer}</div>}
+                          {disclaimer && (
+                            <div className="insytful-search-message-disclaimer">
+                              {disclaimer}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -566,7 +669,11 @@ const SearchOverviewBody = ({
               })}
             </ul>
           )}
-          <div ref={spacerRef} className="insytful-search-overview-spacer" aria-hidden="true" />
+          <div
+            ref={spacerRef}
+            className="insytful-search-overview-spacer"
+            aria-hidden="true"
+          />
         </div>
       )}
       {isConversational && isExpanded && (

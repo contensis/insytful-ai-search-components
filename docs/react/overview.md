@@ -34,6 +34,7 @@ reveals the rest.
 | `disclaimer` | `ReactNode` | — | Small print under the answer, below the feedback row. |
 | `renderError` | `(error: string) => ReactNode` | `ErrorCallout` | Your own error state, given the error message. The default shows a general message, since the API's can be technical. |
 | `renderEmpty` | `() => ReactNode` | nothing | Shown when the answer finishes with no text. An empty answer doesn't hold the teaser's space or show the disclaimer. |
+| `renderReveal` | `(props: SearchOverviewRevealProps) => ReactNode` | Show more button | Your own control in place of the Show more / Show less button. See [Custom reveal](#custom-reveal). |
 | `searching` | `{ from, to?, text }[]` | — | Timed loading messages, as on [`Search.Messages`](./messages.md). |
 | `placeholder` | `string` | — | Follow-up input placeholder (conversational only). |
 | `onCtaClick` | `(cta) => void` | — | Called on every quick-action click. See [CTAs](../ctas.md). |
@@ -47,6 +48,35 @@ reveals the rest.
   renders beneath the first answer, with its own feedback and disclaimer, and
   scrolls to the top of the page clear of any
   [sticky header](../sticky-headers.md).
+
+## Custom reveal
+
+`renderReveal` replaces the Show more / Show less button. It's called with:
+
+| Field | Type | Description |
+|---|---|---|
+| `isExpanded` | `boolean` | Whether the answer is expanded. |
+| `toggle` | `() => void` | Expands or collapses the answer. Goes through `onExpandedChange`, so it works with controlled `expanded` too. |
+| `aria` | `{ "aria-expanded", "aria-controls" }` | Spread onto your control so screen readers hear the expanded state and which region it controls. |
+
+```tsx
+<InsytfulSearch.Overview
+  term={searchTerm}
+  renderMarkdown={renderMarkdown}
+  renderReveal={({ isExpanded, toggle, aria }) => (
+    <button type="button" onClick={toggle} {...aria}>
+      {isExpanded ? 'Hide the full answer' : 'Read the full answer'}
+    </button>
+  )}
+/>
+```
+
+Render the same control whether the answer is expanded or collapsed, and
+change only its content. Swapping one element for another on toggle loses
+keyboard focus. The control only shows when the default button would (see
+`collapsible`), and a custom control doesn't get the `-show-more` class or
+the `--insytful-btn-show-more-*` variables. To find out when the state
+changes, use `onExpandedChange`.
 
 ## Feedback
 
