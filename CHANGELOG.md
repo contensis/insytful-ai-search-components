@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 5.0.0-beta.3 — 2026-10-19
 
 **Breaking:** `Search.Overview` and `Search.Messages` show the answer feedback row by default. Pass `feedback={false}` to turn it off.
 

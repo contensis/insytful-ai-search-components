@@ -1,7 +1,7 @@
 import { default as React } from 'react';
 import { Cta, SearchConfig } from '../api';
 import { SearchSkeletonProps } from './skeleton';
-import { SearchOverviewFeedback } from './feedback-reporting';
+import { SearchOverviewFeedback, SearchOverviewReportingProps } from './feedback-reporting';
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
  * "conversational" keeps a thread: expanding the answer reveals a follow-up
@@ -64,8 +64,12 @@ export type SearchOverviewProp = {
     placeholder?: string;
     /** Small print rendered under the answer (and thread). */
     disclaimer?: React.ReactNode;
-    /** Helpful / unhelpful vote and report link under the answer. */
-    feedback?: SearchOverviewFeedback;
+    /** Helpful / unhelpful vote under each answer. On by default; pass `false`
+     *  to turn it off. */
+    feedback?: SearchOverviewFeedback | false;
+    /** Replaces the feedback row's label and vote buttons. The library still
+     *  sends, rolls back and announces votes; call `setVote`. */
+    renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
 };
 /**
  * Search.Overview — standalone AI answer rendered in the light DOM.
@@ -82,6 +86,6 @@ export type SearchOverviewProp = {
  * tab: the thread and input render only while expanded.
  */
 export declare const SearchOverview: {
-    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, renderError, renderEmpty, renderMarkdown, renderReveal, onCtaClick, style, placeholder, disclaimer, feedback, }: SearchOverviewProp): React.JSX.Element;
+    ({ className, type, isDevMode, icon, heading, hLevel, term, expanded, onExpandedChange, collapsible, reserve, options, searching, renderError, renderEmpty, renderMarkdown, renderReveal, onCtaClick, style, placeholder, disclaimer, feedback, renderReporting, }: SearchOverviewProp): React.JSX.Element;
     displayName: string;
 };
