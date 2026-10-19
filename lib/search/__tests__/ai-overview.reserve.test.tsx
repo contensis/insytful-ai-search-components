@@ -165,6 +165,7 @@ describe("Search.Overview reserve height", () => {
 
     expect(root(container).style.getPropertyValue("--insytful-overview-collapsed-height")).toBe("250px");
     expect(root(container).hasAttribute("data-overflowing")).toBe(true);
+    expect(root(container).hasAttribute("data-collapsed")).toBe(true);
     expect(body(container).style.height).toBe("250px");
     expect(body(container).style.minHeight).toBe("250px");
   });
@@ -176,5 +177,6 @@ describe("Search.Overview reserve height", () => {
 
     expect(root(container).style.getPropertyValue("--insytful-overview-collapsed-height")).toBe("220px");
     expect(root(container).hasAttribute("data-overflowing")).toBe(false);
+    expect(root(container).hasAttribute("data-collapsed")).toBe(false);
   });
 });

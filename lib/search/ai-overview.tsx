@@ -123,8 +123,8 @@ type BodyProps = ResolvedOverviewProps & {
  * Wrap it in <Theme> (and import the stylesheet) for the default look, or
  * leave it bare and style the `insytful-search-overview-*` hooks yourself.
  * State attributes on the root: `data-loading`, `data-streaming`,
- * `data-error`, `data-empty`, `data-overflowing`, `data-expanded`,
- * `data-conversational`.
+ * `data-error`, `data-empty`, `data-overflowing`, `data-collapsed`,
+ * `data-expanded`, `data-conversational`.
  *
  * Expansion is uncontrolled by default. Pass `expanded` (with
  * `onExpandedChange`) to control it from outside, e.g. a host that keeps one
@@ -483,6 +483,7 @@ const SearchOverviewBody = ({
       {...(vm.error ? { "data-error": "" } : {})}
       {...(vm.empty ? { "data-empty": "" } : {})}
       {...(isOverflowing ? { "data-overflowing": "" } : {})}
+      {...(isCollapsed ? { "data-collapsed": "" } : {})}
       {...(isExpanded ? { "data-expanded": "" } : {})}
       {...(isConversational ? { "data-conversational": "" } : {})}
     >
@@ -563,9 +564,6 @@ const SearchOverviewBody = ({
           </div>
         )}
         {vm.empty && renderEmpty?.()}
-        {!doShowSkeleton && isCollapsed && (
-          <div className="insytful-search-overview-fade" aria-hidden="true" />
-        )}
       </div>
       {hasToggle && (
         // Stays mounted as a toggle so focus is never dropped when the

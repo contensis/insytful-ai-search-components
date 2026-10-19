@@ -86,11 +86,11 @@ while the answer is collapsed.
 
 ## Customising
 
-**State attributes on the root:** `data-overflowing`, `data-expanded`,
-`data-conversational`, `data-error`, `data-empty`.
+**State attributes on the root:** `data-overflowing`, `data-collapsed`,
+`data-expanded`, `data-conversational`, `data-error`, `data-empty`.
 
 **Hook classes:** `insytful-search-overview` (root), then `-body`, `-heading`,
-`-icon`, `-content`, `-footer`, `-disclaimer`, `-error`, `-fade`, `-show-more`,
+`-icon`, `-content`, `-footer`, `-disclaimer`, `-error`, `-show-more`,
 `-followups`, `-thread`, `-input`, each prefixed `insytful-search-overview`.
 Follow-ups reuse the modal's `insytful-search-message*` classes.
 

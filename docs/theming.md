@@ -81,7 +81,7 @@ the classes inside each one.
 | `Messages` | `insytful-search-messages-container` | each message: `data-role="user\|assistant"` |
 | `Disclaimer` | `insytful-search-disclaimer-inner` | |
 | `Ctas` | `insytful-search-cta-outer` | each chip: `data-intent="primary\|secondary"` |
-| `Overview` | `insytful-search-overview` | `data-overflowing`, `data-expanded`, `data-conversational`, `data-error`, `data-empty` |
+| `Overview` | `insytful-search-overview` | `data-overflowing`, `data-collapsed`, `data-expanded`, `data-conversational`, `data-error`, `data-empty` |
 | `Keyword` | `insytful-search-keyword` | `data-loading`, `data-error`, `data-empty`; each card: `data-has-image`; pagination items: `data-active`, `data-direction`, `data-ellipsis` |
 | `ErrorCallout` | `insytful-search-error-callout-inner` | |
 

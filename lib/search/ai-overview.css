@@ -3,6 +3,7 @@
      data-loading       first answer requested, nothing streamed yet
      data-streaming     first answer is streaming in
      data-overflowing   answer is taller than the collapsed height
+     data-collapsed     answer is clipped to the teaser height
      data-expanded      "Show more" has been pressed */
 
 .insytful-theme .insytful-search-overview {
@@ -50,14 +51,11 @@
   flex: 1 0 auto;
 }
 
-.insytful-theme .insytful-search-overview-fade {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 80px;
-  pointer-events: none;
-  background: linear-gradient(transparent, var(--insytful-overview-bg));
+/* Fade the clipped answer out with a mask rather than an overlay painted in
+   --insytful-overview-bg, so it works over gradients and images too. */
+.insytful-theme .insytful-search-overview[data-collapsed] .insytful-search-overview-body {
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 80px), transparent);
+  mask-image: linear-gradient(#000 calc(100% - 80px), transparent);
 }
 
 .insytful-theme .insytful-search-overview-show-more {
