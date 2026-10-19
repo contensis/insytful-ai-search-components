@@ -1,9 +1,68 @@
 import React, { useEffect, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { mockKeywordResponse, mockResults } from "../lib/utilities/mock-keyword-search";
+import type { SearchOverviewReportingProps } from "../lib/main";
 
 export const options = { config: "demo", apiUrl: "https://api.insytful.com/v1" };
 export const renderMarkdown = (md: string) => <ReactMarkdown>{md}</ReactMarkdown>;
+
+/** Story-only CSS for renderFeedbackPills; add it to the story's <Theme css>. */
+export const feedbackPillsCss = `
+  .sb-feedback {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Nunito Sans';
+    font-size: 14px;
+  }
+
+  .sb-feedback-button {
+    font: inherit;
+    border: 1px solid #b1b4b6;
+    border-radius: 9999px;
+    background: #fff;
+    padding: 4px 14px;
+    cursor: pointer;
+  }
+
+  .sb-feedback-button[aria-pressed="true"] {
+    background: #1d70b8;
+    border-color: #1d70b8;
+    color: #fff;
+  }
+
+  .sb-feedback-button[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+`;
+
+/** A host's own `renderReporting`: "Was this helpful? Yes / No" pills. */
+export const renderFeedbackPills = ({ vote, isVotingAllowed, pending, setVote }: SearchOverviewReportingProps) =>
+  isVotingAllowed && (
+    <div className="sb-feedback" role="group" aria-label="Was this helpful?">
+      <span aria-hidden="true">Was this helpful?</span>
+      <button
+        type="button"
+        className="sb-feedback-button"
+        aria-pressed={vote === "helpful"}
+        aria-disabled={pending}
+        onClick={() => setVote("helpful")}
+      >
+        Yes
+      </button>
+      <button
+        type="button"
+        className="sb-feedback-button"
+        aria-pressed={vote === "unhelpful"}
+        aria-disabled={pending}
+        onClick={() => setVote("unhelpful")}
+      >
+        No
+      </button>
+    </div>
+  );
+
 export const useFailingFetch = (
   status = 500,
   message = "Search service unavailable",

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { SearchPortal, SearchRoot } from "../search-root";
-import { SearchMessages } from "../search-messages";
+import { SearchMessages, type SearchMessagesProps } from "../search-messages";
 import { useSearchContext } from "../context";
 import type { SearchOverviewFeedback } from "../feedback-reporting";
 
@@ -71,12 +71,16 @@ const ask = (question: string) => {
   fireEvent.click(screen.getByRole("button", { name: "Send" }));
 };
 
-const renderModal = (feedback: SearchOverviewFeedback, disclaimer?: string) =>
+const renderModal = (
+  feedback?: SearchOverviewFeedback | false,
+  disclaimer?: string,
+  renderReporting?: SearchMessagesProps["renderReporting"],
+) =>
   render(
     <SearchRoot options={options} open>
       <SearchPortal isolation="none">
         <Ask />
-        <SearchMessages feedback={feedback} disclaimer={disclaimer} />
+        <SearchMessages feedback={feedback} disclaimer={disclaimer} renderReporting={renderReporting} />
       </SearchPortal>
     </SearchRoot>,
   );
@@ -103,15 +107,61 @@ afterEach(() => {
 });
 
 describe("Search.Messages feedback with streamed answers", () => {
+  it("shows the vote buttons by default, without the prop", async () => {
+    vi.stubGlobal("fetch", mockApi([{ content: "Hello world.", done: { mid: mid1 } }]));
+    renderModal();
+
+    ask("How do I apply?");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Helpful" })).toBeTruthy());
+    expect(screen.getByRole("button", { name: "Unhelpful" })).toBeTruthy();
+  });
+
+  it("renders no feedback row with feedback={false}", async () => {
+    vi.stubGlobal("fetch", mockApi([{ content: "Hello world.", done: { mid: mid1 } }]));
+    renderModal(false, "AI can be wrong.");
+
+    ask("How do I apply?");
+    // The disclaimer marks the finished answer's footer.
+    await waitFor(() => expect(screen.getByText("AI can be wrong.")).toBeTruthy());
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+  });
+
+  it("renderReporting replaces the controls and setVote sends the vote", async () => {
+    const fetchMock = mockApi([{ content: "Hello world.", done: { mid: mid1 } }]);
+    vi.stubGlobal("fetch", fetchMock);
+    renderModal(undefined, undefined, ({ vote, isVotingAllowed, setVote }) =>
+      isVotingAllowed && (
+        <button type="button" aria-pressed={vote === "helpful"} onClick={() => setVote("helpful")}>
+          Yes
+        </button>
+      ),
+    );
+
+    ask("How do I apply?");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Yes" })).toBeTruthy());
+    expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Yes" }));
+    await waitFor(() =>
+      expect(document.querySelector(".insytful-search-overview-feedback-status")!.textContent).toBe(
+        "Thanks for your feedback",
+      ),
+    );
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      `${apiUrl}/sessions/cfg/${sid}/${mid1}/vote`,
+      expect.objectContaining({ method: "PUT" }),
+    );
+    expect(screen.getByRole("button", { name: "Yes" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
   it("votes against the streamed answer's sid and mid", async () => {
     const fetchMock = mockApi([{ content: "Hello world.", done: { mid: mid1 } }]);
     vi.stubGlobal("fetch", fetchMock);
     const onVote = vi.fn();
-    renderModal({ report: { text: "Report an error", href: "/report" }, onVote });
+    renderModal({ onVote });
 
     ask("How do I apply?");
     await waitFor(() => expect(screen.getByRole("button", { name: "Helpful" })).toBeTruthy());
-    expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
     await waitFor(() => expect(onVote).toHaveBeenCalledWith("helpful", { mid: mid1 }));
@@ -161,7 +211,7 @@ describe("Search.Messages feedback with streamed answers", () => {
         { content: "Second answer.", done: { mid: mid2 } },
       ]),
     );
-    renderModal({ report: { text: "Report an error", href: "/report" } }, "AI can be wrong.");
+    renderModal({}, "AI can be wrong.");
 
     ask("First question");
     await waitFor(() => expect(within(answerItem("First answer.")).getByText("AI can be wrong.")).toBeTruthy());
@@ -180,10 +230,11 @@ describe("Search.Messages feedback with streamed answers", () => {
 
   it("offers no vote when the done frame has no mid", async () => {
     vi.stubGlobal("fetch", mockApi([{ content: "Not sure.", done: {} }]));
-    renderModal({ report: { text: "Report an error", href: "/report" } });
+    renderModal({});
 
     ask("Something vague");
-    await waitFor(() => expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy());
+    // The row still mounts once the answer is done, just without vote buttons.
+    await waitFor(() => expect(document.querySelector(".insytful-search-overview-feedback")).toBeTruthy());
     expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
   });
 
@@ -203,13 +254,13 @@ describe("Search.Messages feedback with streamed answers", () => {
     });
     vi.stubGlobal("fetch", vi.fn(async () => new Response(failing, { status: 200, headers: { "X-Session-Id": sid } })));
     vi.spyOn(console, "error").mockImplementation(() => {});
-    renderModal({ report: { text: "Report an error", href: "/report" } }, "AI can be wrong.");
+    renderModal({}, "AI can be wrong.");
 
     ask("How do I apply?");
     await waitFor(() => expect(screen.getByText("Partial answer")).toBeTruthy());
     await waitFor(() => expect(console.error).toHaveBeenCalled()); // the hook caught the dropped stream
     expect(answerItem("Partial answer").querySelector(".insytful-search-message-footer")).toBeNull();
-    expect(screen.queryByRole("link", { name: "Report an error" })).toBeNull();
+    expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
     expect(screen.queryByText("AI can be wrong.")).toBeNull();
   });
 });

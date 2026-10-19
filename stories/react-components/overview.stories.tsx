@@ -1,27 +1,18 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
 import type {
-  SearchOverviewFeedback,
   SearchOverviewProp,
   SearchOverviewType,
 } from "../../lib/main";
 import {
+  feedbackPillsCss,
+  renderFeedbackPills,
   renderMarkdown,
   useFailingFetch,
   usePendingFetch,
   options,
 } from "../helpers";
-
-const feedback: SearchOverviewFeedback = {
-  report: {
-    text: "Report an error",
-    href: "https://www.example.com/report",
-    newTab: true,
-  },
-  onVote: fn().mockName("onVote"),
-};
 
 // Story-only CSS: the brand font, plus the demo search form that sits outside
 // the component. Overview spacing and prose headings are library defaults now.
@@ -51,7 +42,7 @@ const css = `
     font-family: 'Nunito Sans';
     margin-top: 24px;
   }
-`;
+${feedbackPillsCss}`;
 
 function OverviewPage({
   isDevMode = false,
@@ -61,7 +52,7 @@ function OverviewPage({
   collapsible,
   reserve,
   renderReveal,
-  feedback,
+  renderReporting,
 }: {
   isDevMode?: boolean;
   /** Pre-fill the form and fetch an overview for this term on load. */
@@ -72,8 +63,8 @@ function OverviewPage({
   collapsible?: "auto" | boolean;
   /** Left unset, the component's default (on) applies. */
   reserve?: boolean | number;
-  feedback?: SearchOverviewFeedback;
   renderReveal?: SearchOverviewProp["renderReveal"];
+  renderReporting?: SearchOverviewProp["renderReporting"];
 }) {
   const [draft, setDraft] = useState(openWith);
   const [term, setTerm] = useState(openWith);
@@ -108,8 +99,8 @@ function OverviewPage({
             disclaimer={disclaimer}
             collapsible={collapsible}
             reserve={reserve}
-            feedback={feedback}
             renderReveal={renderReveal}
+            renderReporting={renderReporting}
           />
         )}
       </div>
@@ -134,7 +125,7 @@ type Story = StoryObj;
 const disclaimer =
   "AI generated answers may not always be accurate. Please verify information.";
 
-/** The disclaimer sits under each finished answer, as in the feedback story. */
+/** The disclaimer sits under each finished answer, below the feedback row. */
 export const DefaultState: Story = {
   render: () => (
     <OverviewPage
@@ -172,29 +163,38 @@ export const LoadingState: Story = { render: () => <LoadingStateDemo /> };
 /**
  * Expand the answer ("Show more" / "Continue the conversation") to reveal the
  * follow-up input. Each follow-up renders beneath the first answer.
+ *
+ * The feedback row is on by default: a "Was this helpful?" label and Helpful /
+ * Unhelpful buttons under each finished answer, each voting on its own `mid`.
+ * Clicking the other button changes the vote, clicking the pressed one
+ * retracts it, and a status message is announced. Dev mode answers the vote
+ * API with a mock. The row is hidden on the collapsed teaser.
  */
 export const ConversationalState: Story = {
-  render: () => (
-    <OverviewPage isDevMode type="conversational" openWith="How do I apply?" />
-  ),
-};
-
-/**
- * Once the answer has arrived, a feedback row appears under it: a "Report an
- * error" link and Helpful / Unhelpful buttons. Clicking the other button
- * changes the vote, clicking the pressed one retracts it, and a status message
- * is announced. Dev mode answers the vote API with a mock; accepted votes are
- * logged in the Actions panel. The row is hidden on the collapsed teaser and appears once
- * the answer is expanded via Show more.
- */
-export const FeedbackState: Story = {
   render: () => (
     <OverviewPage
       isDevMode
       type="conversational"
       openWith="How do I apply?"
-      feedback={feedback}
       disclaimer={disclaimer}
+    />
+  ),
+};
+
+/**
+ * `renderReporting` swaps the default feedback row for the host's own
+ * controls, here "Was this helpful? Yes / No" pills. The library still sends
+ * the vote via `setVote`, rolls it back on failure and announces the result.
+ * Clicking the pressed pill retracts the vote. Expand the answer to see it.
+ */
+export const CustomFeedbackReporting: Story = {
+  render: () => (
+    <OverviewPage
+      isDevMode
+      type="conversational"
+      openWith="How do I apply?"
+      disclaimer={disclaimer}
+      renderReporting={renderFeedbackPills}
     />
   ),
 };

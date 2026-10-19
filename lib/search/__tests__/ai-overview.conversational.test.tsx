@@ -401,10 +401,38 @@ describe("Search.Overview feedback", () => {
 
   afterEach(() => vi.unstubAllGlobals());
 
-  it("renders nothing without the prop", () => {
+  it("shows the vote buttons by default, without the prop", () => {
     conversationCtx.messages = votableAnswer();
-    renderConversational();
+    renderConversational({ expanded: true });
+    expect(screen.getByRole("button", { name: "Helpful" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Unhelpful" })).toBeTruthy();
+  });
+
+  it("renders nothing with feedback={false}", () => {
+    conversationCtx.messages = votableAnswer();
+    renderConversational({ feedback: false, expanded: true });
     expect(document.querySelector(".insytful-search-overview-feedback")).toBeNull();
+    expect(document.querySelector(".insytful-search-overview-footer")).toBeNull();
+  });
+
+  it("renderReporting replaces the controls and setVote sends the vote", async () => {
+    const fetchMock = stubVoteApi();
+    conversationCtx.messages = votableAnswer("The answer");
+    renderConversational({
+      expanded: true,
+      renderReporting: ({ vote, isVotingAllowed, setVote }) =>
+        isVotingAllowed && (
+          <button type="button" aria-pressed={vote === "helpful"} onClick={() => setVote("helpful")}>
+            Yes
+          </button>
+        ),
+    });
+    expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Yes" }));
+    await waitFor(() => expect(status()).toBe("Thanks for your feedback"));
+    expect(fetchMock).toHaveBeenCalledWith(voteUrl, expect.objectContaining({ method: "PUT" }));
+    expect(screen.getByRole("button", { name: "Yes" }).getAttribute("aria-pressed")).toBe("true");
   });
 
   it("stays hidden while generating and on the collapsed teaser", () => {
@@ -424,10 +452,10 @@ describe("Search.Overview feedback", () => {
     expect(document.querySelector(".insytful-search-overview-feedback")).toBeTruthy();
   });
 
-  it("shows the report link but no vote buttons when the answer has no mid", () => {
+  it("shows no label or vote buttons when the answer has no mid", () => {
     conversationCtx.messages = firstAnswer();
-    renderConversational({ feedback: { report: { text: "Report an error", href: "/report" } }, expanded: true });
-    expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy();
+    renderConversational({ expanded: true });
+    expect(screen.queryByText("Was this helpful?")).toBeNull();
     expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
   });
 
@@ -532,19 +560,7 @@ describe("Search.Overview feedback", () => {
     expect(status()).toBe("Feedback isn't available for this answer");
   });
 
-  it("moves focus to the report link when the focused vote button is removed", async () => {
-    stubVoteApi(404);
-    conversationCtx.messages = votableAnswer();
-    renderConversational({ feedback: { report: { text: "Report an error", href: "/report" } }, expanded: true });
-    const helpful = screen.getByRole("button", { name: "Helpful" });
-
-    helpful.focus();
-    fireEvent.click(helpful);
-    await waitFor(() => expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull());
-    expect(document.activeElement).toBe(screen.getByRole("link", { name: "Report an error" }));
-  });
-
-  it("moves focus to the row when there's no report link", async () => {
+  it("moves focus to the row when the focused vote button is removed", async () => {
     stubVoteApi(404);
     conversationCtx.messages = votableAnswer();
     renderConversational({ feedback: {}, expanded: true });
@@ -571,18 +587,11 @@ describe("Search.Overview feedback", () => {
     expect(status()).toBe("");
   });
 
-  it("renders the report link, marking a new-tab link for screen readers", async () => {
-    stubVoteApi();
+  it("labels the vote group with the visible question", () => {
     conversationCtx.messages = votableAnswer();
-    renderConversational({
-      feedback: { report: { text: "Report an error", href: "/report", newTab: true }, helpful: "Yes", unhelpful: "No", thanks: "Cheers" },
-      expanded: true,
-    });
-    const link = screen.getByRole("link", { name: /report an error \(opens in a new tab\)/i });
-    expect(link.getAttribute("href")).toBe("/report");
-    expect(link.getAttribute("target")).toBe("_blank");
-    expect(link.getAttribute("rel")).toContain("noopener");
-    fireEvent.click(screen.getByRole("button", { name: "Yes" }));
-    await waitFor(() => expect(status()).toBe("Cheers"));
+    renderConversational({ expanded: true });
+    const label = screen.getByText("Was this helpful?");
+    expect(label.classList.contains("insytful-search-overview-feedback-label")).toBe(true);
+    expect(screen.getByRole("group", { name: "Was this helpful?" })).toBeTruthy();
   });
 });

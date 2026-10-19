@@ -1,9 +1,8 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "storybook/test";
 import { InsytfulSearch, Theme } from "../../lib/main";
-import type { SearchOverviewFeedback } from "../../lib/main";
-import { renderMarkdown, useFailingFetch, options } from "../helpers";
+import type { SearchOverviewReportingProps } from "../../lib/main";
+import { feedbackPillsCss, renderFeedbackPills, renderMarkdown, useFailingFetch, options } from "../helpers";
 
 // Story-only CSS, passed through <Theme css> so it also reaches the Shadow DOM
 // portal. Everything else (title/description scale, input, callout width,
@@ -26,7 +25,7 @@ const css = `
     font-weight: 800;
     font-size: 16px;
   }
-`;
+${feedbackPillsCss}`;
 
 /**
  * Sends `openWith` once, on mount — the story equivalent of the Web
@@ -51,10 +50,10 @@ const disclaimer =
 
 const DialogContent = ({
   openWith,
-  feedback,
+  renderReporting,
 }: {
   openWith?: string;
-  feedback?: SearchOverviewFeedback;
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
 }) => {
   const { messages, error } = InsytfulSearch.useSearchContext("DialogContent");
 
@@ -81,9 +80,9 @@ const DialogContent = ({
           />
         </>
       )}
-      {/* The disclaimer goes under each finished answer (not failed ones), as
-          in the feedback story, rather than fixed under the input. */}
-      <InsytfulSearch.Messages feedback={feedback} disclaimer={disclaimer} />
+      {/* The disclaimer goes under each finished answer's feedback row (not
+          failed ones), rather than fixed under the input. */}
+      <InsytfulSearch.Messages disclaimer={disclaimer} renderReporting={renderReporting} />
       {error && (
         <InsytfulSearch.ErrorCallout
           title="Something went wrong"
@@ -102,10 +101,10 @@ const DialogContent = ({
 const ModalStory = ({
   isDevMode = false,
   openWith,
-  feedback,
+  renderReporting,
 }: {
   isDevMode?: boolean;
-  feedback?: SearchOverviewFeedback;
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
   /** Open the modal and send this query straight away. */
   openWith?: string;
 }) => {
@@ -141,7 +140,7 @@ const ModalStory = ({
           </InsytfulSearch.Trigger>
         </div>
         <InsytfulSearch.Portal>
-          <DialogContent openWith={openWith} feedback={feedback} />
+          <DialogContent openWith={openWith} renderReporting={renderReporting} />
         </InsytfulSearch.Portal>
       </InsytfulSearch.Root>
     </Theme>
@@ -157,24 +156,27 @@ const meta: Meta = { title: "React/Modal" };
 export default meta;
 type Story = StoryObj<typeof ModalStory>;
 
+/**
+ * The feedback row is on by default: a "Was this helpful?" label and Helpful /
+ * Unhelpful buttons under each finished answer. Each answer votes on its own
+ * `mid`, so follow-ups get their own row and earlier votes are kept. Dev mode
+ * answers the vote API with a mock.
+ */
 export const DefaultState: Story = { render: () => <ModalStory isDevMode /> };
 export const ErrorState: Story = { render: () => <ErrorStateDemo /> };
 
 /**
- * Report link and Helpful / Unhelpful vote under each finished answer. Each
- * answer votes on its own `mid`, so follow-ups get their own row and earlier
- * votes are kept. Dev mode answers the vote API with a mock; accepted votes are
- * logged in the Actions panel.
+ * `renderReporting` swaps the default feedback row for the host's own
+ * controls, here "Was this helpful? Yes / No" pills. The library still sends
+ * the vote via `setVote`, rolls it back on failure and announces the result.
+ * Clicking the pressed pill retracts the vote.
  */
-export const FeedbackState: Story = {
+export const CustomFeedbackReporting: Story = {
   render: () => (
     <ModalStory
       isDevMode
       openWith="How do I apply?"
-      feedback={{
-        report: { text: "Report an error", href: "https://www.example.com/report", newTab: true },
-        onVote: fn().mockName("onVote"),
-      }}
+      renderReporting={renderFeedbackPills}
     />
   ),
 };

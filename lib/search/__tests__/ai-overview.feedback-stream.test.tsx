@@ -51,7 +51,7 @@ const renderOverview = (type: "keyword" | "conversational", onVote = vi.fn()) =>
       options={options}
       renderMarkdown={(md) => <p>{md}</p>}
       collapsible={false}
-      feedback={{ report: { text: "Report an error", href: "/report" }, onVote }}
+      feedback={{ onVote }}
     />,
   );
 
@@ -76,7 +76,6 @@ describe("Search.Overview feedback with a streamed answer", () => {
 
       await waitFor(() => expect(screen.getByText("Hello world.")).toBeTruthy());
       await waitFor(() => expect(screen.getByRole("button", { name: "Helpful" })).toBeTruthy());
-      expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy();
 
       fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
       await waitFor(() =>
@@ -96,7 +95,8 @@ describe("Search.Overview feedback with a streamed answer", () => {
     vi.stubGlobal("fetch", mockApi(["Not sure."], {}));
     renderOverview("conversational");
 
-    await waitFor(() => expect(screen.getByRole("link", { name: "Report an error" })).toBeTruthy());
+    // The row still mounts once the answer is done, just without vote buttons.
+    await waitFor(() => expect(document.querySelector(".insytful-search-overview-feedback")).toBeTruthy());
     expect(screen.queryByRole("button", { name: "Helpful" })).toBeNull();
   });
 
@@ -175,7 +175,6 @@ describe("Search.Overview feedback with a streamed answer", () => {
         options={options}
         renderMarkdown={(md) => <p>{md}</p>}
         collapsible={false}
-        feedback={{ report: { text: "Report an error", href: "/report" } }}
         disclaimer="AI can be wrong."
       />,
     );

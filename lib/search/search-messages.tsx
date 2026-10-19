@@ -5,8 +5,12 @@ import { hash } from "../utilities/hash.util";
 import { SearchSkeletonBody, type SearchSkeletonProps } from "./skeleton";
 import { SearchCtas } from "./search-ctas";
 import { lastUserMessageEl, scrollMessageToTop } from "../utilities/scroll-message-to-top";
-import { FeedbackReporting, type SearchOverviewFeedback } from "./feedback-reporting";
+import { FeedbackReporting, type SearchOverviewFeedback, type SearchOverviewReportingProps } from "./feedback-reporting";
 import { useVoteState, type VoteStateHandle } from "./vote-state";
+
+// Feedback is on unless the host passes `false`. Module-level so the default
+// keeps one identity across renders.
+const DEFAULT_FEEDBACK: SearchOverviewFeedback = {};
 
 /* ------------------------------------------------------------------ */
 /* Single Message                                                       */
@@ -23,8 +27,10 @@ export type MessageProps = {
   showSkeleton?: boolean;
   elapsed?: SearchSkeletonProps["elapsed"];
   searching?: SearchSkeletonProps['messages'];
-  /** Report link + helpful / unhelpful vote under a finished answer. */
+  /** Helpful / unhelpful vote under a finished answer. */
   feedback?: SearchOverviewFeedback;
+  /** Replaces the feedback row's label and vote buttons. */
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
   /** Where votes are sent; needed alongside `feedback` for the vote buttons. */
   voteOptions?: { config: string; aggregated?: boolean; apiUrl: string };
   /** This answer is still streaming: no feedback row yet. */
@@ -45,6 +51,7 @@ export function Message({
   elapsed,
   searching,
   feedback,
+  renderReporting,
   voteOptions,
   isStreaming,
   isFailed,
@@ -104,6 +111,7 @@ export function Message({
               {feedback && (
                 <FeedbackReporting
                   feedback={feedback}
+                  renderReporting={renderReporting}
                   target={
                     voteOptions && message.mid && message.sid
                       ? { mid: message.mid, sid: message.sid, ...voteOptions }
@@ -128,8 +136,12 @@ export function Message({
 export type SearchMessagesProps = {
   className?: string;
   searching?: SearchSkeletonProps['messages'];
-  /** Report link + helpful / unhelpful vote under each finished answer. */
-  feedback?: SearchOverviewFeedback;
+  /** Helpful / unhelpful vote under each finished answer. On by default;
+   *  pass `false` to turn it off. */
+  feedback?: SearchOverviewFeedback | false;
+  /** Replaces the feedback row's label and vote buttons. The library still
+   *  sends, rolls back and announces votes; call `setVote`. */
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
   /** Rendered below each finished answer's feedback row. Use instead of
    *  Search.Disclaimer, not alongside it. */
   disclaimer?: React.ReactNode;
@@ -139,7 +151,8 @@ export type SearchMessagesProps = {
 export function SearchMessages({
   className,
   searching,
-  feedback,
+  feedback = DEFAULT_FEEDBACK,
+  renderReporting,
   disclaimer,
   children,
 }: SearchMessagesProps) {
@@ -295,7 +308,8 @@ export function SearchMessages({
                   showSkeleton={isLastAssistant && showSkeleton}
                   elapsed={elapsed}
                   searching={searching}
-                  feedback={feedback}
+                  feedback={feedback || undefined}
+                  renderReporting={renderReporting}
                   voteOptions={options}
                   isStreaming={isLastAssistant && loading}
                   isFailed={isLastAssistant && !!error}

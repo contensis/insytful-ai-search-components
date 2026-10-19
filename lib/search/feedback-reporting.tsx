@@ -1,32 +1,42 @@
 import React from "react";
 import { debug } from "../shared/debug";
 import { onSendVote, type VoteTarget } from "../shared/vote";
+import { useStableId } from "./hooks.util";
 import { useVoteState, type SearchOverviewVote, type VoteEntry, type VoteStateHandle } from "./vote-state";
 
 export type { SearchOverviewVote };
 
-/** Optional feedback row under the answer: a "report" link and a
- *  helpful / unhelpful vote. Votes are sent to the AI Search vote API; the
- *  host is only told about them (e.g. for analytics) via `onVote`. */
+/** Feedback row under the answer: a helpful / unhelpful vote. Votes are sent
+ *  to the AI Search vote API; the host is only told about them (e.g. for
+ *  analytics) via `onVote`. To change the row, use `renderReporting`. */
 export type SearchOverviewFeedback = {
-  /** Link shown before the vote buttons, e.g. "Report an error". */
-  report?: { text: string; href: string; newTab?: boolean };
   /** Called after the API accepts a vote (null = retracted). For host analytics. */
   onVote?: (vote: SearchOverviewVote | null, ctx: { mid: string }) => void;
-  /** Button contents. Defaults to thumb icons with visually-hidden text. */
-  helpful?: React.ReactNode;
-  unhelpful?: React.ReactNode;
-  /** Announced (role="status") once a vote is cast. Defaults to
-   *  "Thanks for your feedback". */
-  thanks?: React.ReactNode;
+};
+
+/** Props handed to `renderReporting`. The library still sends the vote,
+ *  rolls it back on failure and announces the result; the renderer only
+ *  draws the controls. */
+export type SearchOverviewReportingProps = {
+  /** The current vote, null if none. */
+  vote: SearchOverviewVote | null;
+  /** False when the answer wasn't substantive (no `mid`) or the API refused
+   *  it (400/404): render no vote controls. */
+  isVotingAllowed: boolean;
+  /** A vote is being sent; ignore clicks (setVote already does). */
+  pending: boolean;
+  /** Sends the vote. Setting the current vote again retracts it. */
+  setVote: (vote: SearchOverviewVote) => void;
 };
 
 type FeedbackReportingProps = {
   feedback: SearchOverviewFeedback;
+  /** Replaces the row's label and vote buttons. */
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
   /** Render nothing but keep the vote state (e.g. while collapsed). */
   hidden?: boolean;
   /** Where the vote is sent. Absent when the answer wasn't substantive (no
-   *  `mid`): the report link still renders, the vote buttons don't. */
+   *  `mid`): the vote buttons don't render. */
   target?: VoteTarget;
   /** Vote state owned by a parent (from useVoteState), so it survives this
    *  row unmounting, e.g. a follow-up while the Overview is collapsed. There
@@ -35,10 +45,9 @@ type FeedbackReportingProps = {
   voteState?: VoteStateHandle;
 };
 
-
 /**
- * Feedback row under a Search.Overview answer: an optional report link and a
- * Helpful / Unhelpful vote sent to the vote API.
+ * Feedback row under a Search.Overview or Search.Messages answer: a "Was this
+ * helpful?" label and a Helpful / Unhelpful vote sent to the vote API.
  *
  * Clicking the other button changes the vote; clicking the pressed one
  * retracts it. The UI updates optimistically and rolls back if the request
@@ -46,17 +55,17 @@ type FeedbackReportingProps = {
  * buttons for that answer. Vote state is keyed on the answer's `mid`, so a
  * new answer reads as unvoted with no effect needed to reset it.
  *
- * Hook classes: `insytful-search-overview-feedback`, `-feedback-report`,
+ * Hook classes: `insytful-search-overview-feedback`, `-feedback-label`,
  * `-feedback-votes`, `-feedback-vote[data-vote]`, `-feedback-status`.
  */
-export function FeedbackReporting({ feedback, hidden = false, target, voteState }: FeedbackReportingProps) {
+export function FeedbackReporting({ feedback, renderReporting, hidden = false, target, voteState }: FeedbackReportingProps) {
   const localVoteState = useVoteState();
   const [votes, setVotes] = voteState ?? localVoteState;
   const [pending, setPending] = React.useState(false);
   const rowRef = React.useRef<HTMLDivElement>(null);
-  const reportRef = React.useRef<HTMLAnchorElement>(null);
+  const labelId = useStableId("insytful-search-overview-feedback-label");
   // Set when a 400/404 removes the buttons while one had focus: move focus to
-  // the report link (or the row) so it isn't dropped to <body>.
+  // the row so it isn't dropped to <body>.
   const restoreFocusRef = React.useRef(false);
   const current = target ? votes[target.mid] : undefined;
   const vote = current?.vote ?? null;
@@ -67,7 +76,7 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
   React.useLayoutEffect(() => {
     if (isVotingAllowed || !restoreFocusRef.current) return;
     restoreFocusRef.current = false;
-    (reportRef.current ?? rowRef.current)?.focus();
+    rowRef.current?.focus();
   }, [isVotingAllowed]);
 
   const castVote = async (clicked: SearchOverviewVote) => {
@@ -104,58 +113,49 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
 
   return (
     <div className="insytful-search-overview-feedback" ref={rowRef} tabIndex={-1}>
-      {feedback.report && (
-        <a
-          ref={reportRef}
-          className="insytful-search-overview-feedback-report"
-          href={feedback.report.href}
-          {...(feedback.report.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        >
-          {feedback.report.text}
-          {feedback.report.newTab && (
-            <>
-              {" "}
-              <span className="insytful-sr-only">(opens in a new tab)</span>
-            </>
-          )}
-        </a>
-      )}
-      {isVotingAllowed && (
-        <div className="insytful-search-overview-feedback-votes" role="group" aria-label="Was this response helpful?">
-          <button
-            type="button"
-            className="insytful-search-overview-feedback-vote"
-            data-vote="helpful"
-            aria-pressed={vote === "helpful"}
-            aria-disabled={pending}
-            onClick={() => castVote("helpful")}
-          >
-            {feedback.helpful ?? (
-              <>
+      {renderReporting ? (
+        <CustomReporting
+          render={renderReporting}
+          vote={vote}
+          isVotingAllowed={isVotingAllowed}
+          pending={pending}
+          setVote={(v) => void castVote(v)}
+        />
+      ) : (
+        isVotingAllowed && (
+          <>
+            <span id={labelId} className="insytful-search-overview-feedback-label">
+              Was this helpful?
+            </span>
+            <div className="insytful-search-overview-feedback-votes" role="group" aria-labelledby={labelId}>
+              <button
+                type="button"
+                className="insytful-search-overview-feedback-vote"
+                data-vote="helpful"
+                aria-pressed={vote === "helpful"}
+                aria-disabled={pending}
+                onClick={() => castVote("helpful")}
+              >
                 <ThumbUpIcon />
                 <span className="insytful-sr-only">Helpful</span>
-              </>
-            )}
-          </button>
-          <button
-            type="button"
-            className="insytful-search-overview-feedback-vote"
-            data-vote="unhelpful"
-            aria-pressed={vote === "unhelpful"}
-            aria-disabled={pending}
-            onClick={() => castVote("unhelpful")}
-          >
-            {feedback.unhelpful ?? (
-              <>
+              </button>
+              <button
+                type="button"
+                className="insytful-search-overview-feedback-vote"
+                data-vote="unhelpful"
+                aria-pressed={vote === "unhelpful"}
+                aria-disabled={pending}
+                onClick={() => castVote("unhelpful")}
+              >
                 <ThumbDownIcon />
                 <span className="insytful-sr-only">Unhelpful</span>
-              </>
-            )}
-          </button>
-        </div>
+              </button>
+            </div>
+          </>
+        )
       )}
       <div className="insytful-search-overview-feedback-status insytful-sr-only" role="status">
-        {current?.status === "thanks" && (feedback.thanks ?? "Thanks for your feedback")}
+        {current?.status === "thanks" && "Thanks for your feedback"}
         {current?.status === "removed" && "Feedback removed"}
         {current?.status === "failed" && "Couldn't send your feedback, please try again"}
         {current?.status === "unavailable" && "Feedback isn't available for this answer"}
@@ -163,6 +163,15 @@ export function FeedbackReporting({ feedback, hidden = false, target, voteState 
     </div>
   );
 }
+
+// A component rather than a direct call, so setVote (which reads refs) is
+// only handed to the host's renderer as a prop, not invoked during render.
+const CustomReporting = ({
+  render,
+  ...props
+}: SearchOverviewReportingProps & {
+  render: (props: SearchOverviewReportingProps) => React.ReactNode;
+}) => <>{render(props)}</>;
 
 const ThumbUpIcon = () => (
   <svg focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+**Breaking:** `Search.Overview` and `Search.Messages` show the answer feedback row by default. Pass `feedback={false}` to turn it off.
+
+**Breaking:** the feedback row is now a fixed "Was this helpful?" label and Helpful / Unhelpful buttons. `feedback` only takes `onVote`; its `report`, `helpful`, `unhelpful` and `thanks` options have been removed, along with the report link and its `-feedback-report` hook class. To change the row, use `renderReporting`.
+
+### Added
+
+- **`Search.Overview` and `Search.Messages` take `renderReporting`**, like `renderReveal`. It replaces the feedback row's label and vote buttons under every answer: the Overview's first answer and each follow-up, and each answer in the modal thread. It receives `{ vote, isVotingAllowed, pending, setVote }`. The library still sends the vote, rolls it back if the request fails and announces the result, so the renderer only draws the controls and calls `setVote("helpful" | "unhelpful")`; setting the current vote again retracts it. Render no vote controls when `isVotingAllowed` is false. `SearchOverviewReportingProps` is exported from the package root.
+- New hook class `insytful-search-overview-feedback-label` on the "Was this helpful?" label, which also names the vote group for screen readers.
+
 ## 5.0.0-beta.1 — 2026-10-09
 
 A beta. Install it with `npm install insytful-ai-search-components@beta`.

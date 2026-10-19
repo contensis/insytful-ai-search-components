@@ -23,8 +23,13 @@ import { observeOffsetHeight } from "../utilities/offset-elements";
 import {
   FeedbackReporting,
   type SearchOverviewFeedback,
+  type SearchOverviewReportingProps,
 } from "./feedback-reporting";
 import { useVoteState } from "./vote-state";
+
+// Feedback is on unless the host passes `false`. Module-level so the default
+// keeps one identity across renders.
+const DEFAULT_FEEDBACK: SearchOverviewFeedback = {};
 
 /**
  * "keyword" (default) is a single answer with a Show more toggle.
@@ -90,8 +95,12 @@ export type SearchOverviewProp = {
   placeholder?: string;
   /** Small print rendered under the answer (and thread). */
   disclaimer?: React.ReactNode;
-  /** Helpful / unhelpful vote and report link under the answer. */
-  feedback?: SearchOverviewFeedback;
+  /** Helpful / unhelpful vote under each answer. On by default; pass `false`
+   *  to turn it off. */
+  feedback?: SearchOverviewFeedback | false;
+  /** Replaces the feedback row's label and vote buttons. The library still
+   *  sends, rolls back and announces votes; call `setVote`. */
+  renderReporting?: (props: SearchOverviewReportingProps) => React.ReactNode;
 };
 
 /** What the body needs from either AI hook. */
@@ -106,8 +115,10 @@ type OverviewViewModel = {
   empty: boolean;
 };
 
-type ResolvedOverviewProps = Omit<SearchOverviewProp, "options"> & {
+type ResolvedOverviewProps = Omit<SearchOverviewProp, "options" | "feedback"> & {
   options: SearchConfig;
+  /** Undefined when the host turned feedback off. */
+  feedback?: SearchOverviewFeedback;
 };
 
 type BodyProps = ResolvedOverviewProps & {
@@ -153,7 +164,8 @@ export const SearchOverview = ({
   style,
   placeholder,
   disclaimer,
-  feedback,
+  feedback = DEFAULT_FEEDBACK,
+  renderReporting,
 }: SearchOverviewProp) => {
   const resolved = useResolvedSearchConfig(options);
   const opts = useMemo(
@@ -189,7 +201,8 @@ export const SearchOverview = ({
     style,
     placeholder,
     disclaimer,
-    feedback,
+    feedback: feedback || undefined,
+    renderReporting,
   };
 
   return (
@@ -314,6 +327,7 @@ const SearchOverviewBody = ({
   onFollowUp,
   disclaimer,
   feedback,
+  renderReporting,
   options,
   renderReveal,
 }: BodyProps) => {
@@ -540,6 +554,7 @@ const SearchOverviewBody = ({
               {feedback && (
                 <FeedbackReporting
                   feedback={feedback}
+                  renderReporting={renderReporting}
                   hidden={!hasFeedback}
                   target={
                     vm.ids && {
@@ -641,6 +656,7 @@ const SearchOverviewBody = ({
                           {feedback && (
                             <FeedbackReporting
                               feedback={feedback}
+                              renderReporting={renderReporting}
                               target={
                                 message.mid && message.sid
                                   ? {
